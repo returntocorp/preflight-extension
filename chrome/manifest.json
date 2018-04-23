@@ -1,6 +1,16 @@
 {
-  "name": "Getting Started Example",
+  "name": "Secarta",
   "version": "1.0",
-  "description": "Build an Extension!",
-  "manifest_version": 2
+  "description": "Measure Security in Code",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*/*"
+      ],
+      "js": [
+        "src/inject.js"
+      ]
+    }
+  ]
 }
