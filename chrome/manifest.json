@@ -2,7 +2,7 @@
   "name": "Secarta",
   "version": "1.0",
   "description": "Measure Security in Code",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": [ "storage", "https://app.returntocorp.com/*/*"],
   "background": {
     "scripts": ["src/background.js"]
