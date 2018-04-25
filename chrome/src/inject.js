@@ -5,7 +5,8 @@ var badge_html;
 
 chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
   var badge_xhr = new XMLHttpRequest();
-  badge_xhr.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/badge", true);
+  badge_xhr.open("GET", "https://app.returntocorp.com/api/packages/repos/github.com/" + project_name + "/badge", true);
+
   
   var score_xhr = new XMLHttpRequest();
   score_xhr.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/score", true);
@@ -69,15 +70,16 @@ function injectElem(elem) {
 
 function makeBadgeElem() {
   var badge = document.createElement('a');
-  badge.href = `http://127.0.0.1:3000/reports/repos/github.com/${project_name}`;
+  badge.href = `https://app.returntocorp.com/reports/repos/github.com/${project_name}`;
   badge.className = "button special-plugin-button";
   badge.style.marginLeft = "10px";
   return badge;
 }
 
+// unsafe!
 function makeFailureElem(text) {
   var elem = document.createElement('div');
   elem.style.marginLeft = "10px";
-  elem.innerHTML = `${text}`;
+  elem.innerHTML = text;
   return elem;
 }

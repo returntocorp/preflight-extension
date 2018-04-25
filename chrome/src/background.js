@@ -14,10 +14,9 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
 });
 
 function onload() {
-  console.log("bg script");
   // set default click handler for when we don't have a popup set
   chrome.browserAction.onClicked.addListener(function(tab) {
-    var loginURL = "localhost:3000";
+    var loginURL = "https://app.returntocorp.com";
     chrome.tabs.create({ url: loginURL });
   });
 }
@@ -25,8 +24,6 @@ function onload() {
 function resetPopup() {
   console.log("resetting popup.");
   if (chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
-    console.log("access token is: " + res.access_token);
-    console.log("expires_at is: " + res.expires_at);
     if (res.access_token !== undefined && (new Date()).getTime() < res.expires_at) {
       chrome.browserAction.setPopup({popup: "scores_popup.html"});
     } else {

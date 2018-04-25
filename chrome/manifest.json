@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "Measure Security in Code",
   "manifest_version": 2,
-  "permissions": [ "storage", "tabs", "*://localhost/*", "https://app.returntocorp.com/*/*", "http://*/*", "https://*/*"],
+  "permissions": [ "storage", "https://app.returntocorp.com/*/*"],
   "background": {
     "scripts": ["src/background.js"]
   },
@@ -22,7 +22,7 @@
     },
     {
       "matches": [
-        "https://app.returntocorp.com/*", "*://localhost/*"
+        "https://app.returntocorp.com/*"
       ],
       "js": [
         "src/steal-token.js"
