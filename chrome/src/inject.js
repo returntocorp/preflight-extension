@@ -9,7 +9,7 @@ chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
 
   
   var score_xhr = new XMLHttpRequest();
-  score_xhr.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/score", true);
+  score_xhr.open("GET", "https://app.returntocorp.com/api/packages/repos/github.com/" + project_name + "/score", true);
 
   badge_xhr.onload = function (e) {
     if (badge_xhr.readyState === 4) {
@@ -27,16 +27,7 @@ chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
         score_xhr.send(null);
         
       } else {
-        var elem;
-        if (badge_xhr.status === 401) {
-          console.error("You need to be logged in to see the Secarta badge for this project");
-          elem = makeFailureElem("Badge fetch error. Log in?");
-        } else {
-          console.error("Badge fetch error. Analyzed?");
-          elem = makeFailureElem("Badge fetch error. Analyzed?");
-        }
-         
-        injectElem(elem);
+        handleFailure(badge_xhr.status);
       }
     }
   };
@@ -47,11 +38,12 @@ chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
         console.log("got responseText:");
         console.log(score_xhr.responseText);
         
-        chrome.storage.sync.set({score: JSON.parse(score_xhr.responseText).result}, function() {
+        chrome.storage.sync.set({'project_name': project_name, score: JSON.parse(score_xhr.responseText).result}, function() {
           console.log("set the score in storage.");
         });
       } else {
         console.error("error getting score breakdown");
+        chrome.storage.sync.remove('score');
       }
     }
   }
@@ -82,4 +74,19 @@ function makeFailureElem(text) {
   elem.style.marginLeft = "10px";
   elem.innerHTML = text;
   return elem;
+}
+
+
+function handleFailure(status) {
+  var elem;
+  if (status === 401) {
+    console.error("You need to be logged in to see the Secarta badge for this project");
+    elem = makeFailureElem("Badge fetch error. Log in?");
+  } else {
+    console.error("Badge fetch error. Analyzed?");
+    elem = makeFailureElem("Badge fetch error. Analyzed?");
+  }
+  
+  chrome.storage.sync.remove(['score', 'project_name']);
+  injectElem(elem);
 }
