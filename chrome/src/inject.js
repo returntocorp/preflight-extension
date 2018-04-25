@@ -11,19 +11,19 @@ chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
         var badge = makeBadgeElem();
         badge.innerHTML = `<img src='data:image/svg+xml;utf8,${xhttp.responseText}' />`;
         injectElem(badge);
+      } else {
+        var elem;
+        if (xhttp.status === 401) {
+          console.error("You need to be logged in to see the Secarta badge for this project");
+          elem = makeFailureElem("Badge fetch error. Log in?");
+        } else {
+          console.error("Badge fetch error. Analyzed?");
+          elem = makeFailureElem("Badge fetch error. Analyzed?");
+        }
+         
+        injectElem(elem);
       }
     }
-  };
-  
-  xhttp.onerror = function (e) {
-    if (xhttp.status === 401) {  
-      console.error("You need to be logged in to see the Secarta badge for this project");
-    } else {
-      console.error("There was an error fetching the Secarta badge. Make sure the project is analyzed");
-    }
-    
-    var elem = makeFailureElem();
-    injectElem(elem);
   };
 
   xhttp.setRequestHeader("Authorization", res.access_token)
@@ -46,9 +46,9 @@ function makeBadgeElem() {
   return badge;
 }
 
-function makeFailureElem() {
+function makeFailureElem(text) {
   var elem = document.createElement('div');
   elem.style.marginLeft = "10px";
-  elem.innerHTML = `No repo found`;
+  elem.innerHTML = `${text}`;
   return elem;
 }
