@@ -1,19 +1,33 @@
 var project_name_element = document.querySelector('#js-repo-pjax-container > div.pagehead.repohead.instapaper_ignore.readability-menu.experiment-repo-nav > div > h1 > strong > a')
 var project_name = project_name_element.attributes.getNamedItem("href").value.substr(1)
 
+var badge_html;
+
 chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/badge", true);
+  var badge_xhr = new XMLHttpRequest();
+  badge_xhr.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/badge", true);
   
-  xhttp.onload = function (e) {
-    if (xhttp.readyState === 4) {
-      if (xhttp.status === 200) {        
+  var score_xhr = new XMLHttpRequest();
+  score_xhr.open("GET", "http://127.0.0.1:3000/api/packages/repos/github.com/" + project_name + "/score", true);
+
+  badge_xhr.onload = function (e) {
+    if (badge_xhr.readyState === 4) {
+      if (badge_xhr.status === 200) {
         var badge = makeBadgeElem();
-        badge.innerHTML = `<img src='data:image/svg+xml;utf8,${xhttp.responseText}' />`;
+        badge.innerHTML = `<img src='data:image/svg+xml;utf8,${badge_xhr.responseText}' />`;
         injectElem(badge);
+        badge_html = badge.outerHTML;
+        
+        // add badge to storage for popup
+        chrome.storage.sync.set({"badge_html": badge.outerHTML});
+
+        // also grab score for popup
+        score_xhr.setRequestHeader("Authorization", res.access_token);
+        score_xhr.send(null);
+        
       } else {
         var elem;
-        if (xhttp.status === 401) {
+        if (badge_xhr.status === 401) {
           console.error("You need to be logged in to see the Secarta badge for this project");
           elem = makeFailureElem("Badge fetch error. Log in?");
         } else {
@@ -26,8 +40,23 @@ chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
     }
   };
 
-  xhttp.setRequestHeader("Authorization", res.access_token)
-  xhttp.send(null);
+  score_xhr.onload = function (e) {
+    if (score_xhr.readyState === 4) {
+      if (score_xhr.status === 200) {
+        console.log("got responseText:");
+        console.log(score_xhr.responseText);
+        
+        chrome.storage.sync.set({score: JSON.parse(score_xhr.responseText).result}, function() {
+          console.log("set the score in storage.");
+        });
+      } else {
+        console.error("error getting score breakdown");
+      }
+    }
+  }
+
+  badge_xhr.setRequestHeader("Authorization", res.access_token)
+  badge_xhr.send(null);
 });
 
 

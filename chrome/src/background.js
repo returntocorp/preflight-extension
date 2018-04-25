@@ -20,9 +20,6 @@ function onload() {
     var loginURL = "localhost:3000";
     chrome.tabs.create({ url: loginURL });
   });
-
-  // TODO: remove this:
-  chrome.storage.sync.remove(['access_token', 'expires_at'], resetPopup);
 }
 
 function resetPopup() {
@@ -30,9 +27,8 @@ function resetPopup() {
   if (chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
     console.log("access token is: " + res.access_token);
     console.log("expires_at is: " + res.expires_at);
-
     if (res.access_token !== undefined && (new Date()).getTime() < res.expires_at) {
-      chrome.browserAction.setPopup({popup: "popup.html"});
+      chrome.browserAction.setPopup({popup: "scores_popup.html"});
     } else {
       chrome.browserAction.setPopup({popup: ""});
     }
