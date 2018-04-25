@@ -3,6 +3,14 @@
   "version": "1.0",
   "description": "Measure Security in Code",
   "manifest_version": 2,
+  "permissions": [ "cookies", "storage", "*://localhost/*", "https://app.returntocorp.com/*/*", "http://*/*", "https://*/*"],
+  "background": {
+    "scripts": ["src/background.js"]
+  },
+  "browser_action": {
+    "default_title": "Secarta",
+    "default_icon": "secarta.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -10,6 +18,14 @@
       ],
       "js": [
         "src/inject.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://app.returntocorp.com/*", "*://localhost/*"
+      ],
+      "js": [
+        "src/steal-token.js"
       ]
     }
   ]
