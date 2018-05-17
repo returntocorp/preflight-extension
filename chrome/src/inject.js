@@ -5,11 +5,11 @@ var badge_html;
 
 chrome.storage.sync.get(['access_token', 'expires_at'], function(res) {
   var badge_xhr = new XMLHttpRequest();
-  badge_xhr.open("GET", "https://app.returntocorp.com/api/packages/repos/github.com/" + project_name + "/badge", true);
+  badge_xhr.open("GET", "https://app.returntocorp.com/api/packages/github.com/" + project_name + "/badge", true);
 
   
   var score_xhr = new XMLHttpRequest();
-  score_xhr.open("GET", "https://app.returntocorp.com/api/packages/repos/github.com/" + project_name + "/score", true);
+  score_xhr.open("GET", "https://app.returntocorp.com/api/packages/github.com/" + project_name + "/score", true);
 
   badge_xhr.onload = function (e) {
     if (badge_xhr.readyState === 4) {
