@@ -30,9 +30,7 @@ browser.storage.sync.get(["access_token", "expires_at"], function(res) {
     if (badge_xhr.readyState === 4) {
       if (badge_xhr.status === 200) {
         var badge = makeBadgeElem();
-        badge.innerHTML = `<img src='data:image/svg+xml;utf8,${
-          badge_xhr.responseText
-        }' />`;
+        badge.innerHTML = badge_xhr.responseText;
         injectElem(badge);
         badge_html = badge.outerHTML;
 
