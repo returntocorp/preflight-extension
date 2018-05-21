@@ -19,11 +19,11 @@ browser.storage.sync.get(["access_token", "expires_at"]).then(res => {
     .then(response => response.json())
     .then(response => {
       console.log("Received score!", response);
-      browser.storage.sync.get("projects").then(projects =>
+      browser.storage.sync.get("projects").then(prevState =>
         browser.storage.sync.set({
           projects: {
-            ...projects,
-            repoName: {
+            ...prevState.projects,
+            [repoName]: {
               score: response
             }
           }
