@@ -90,11 +90,15 @@ function buildCount(response) {
   const githubClasses = ["social-count"];
   const secartaClasses = ["secarta-injected-count", "secarta-score-count"];
 
-  return buildElemWithClasses(
+  const link = buildElemWithClasses(
     "a",
     [...githubClasses, ...secartaClasses],
-    response.result != null ? response.result.score : "?"
+    response.success ? response.result.score : "?"
   );
+
+  link.setAttribute("href", buildReportLinkForRepo(repoName));
+
+  return link;
 }
 
 /**
