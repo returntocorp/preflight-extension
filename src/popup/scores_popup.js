@@ -13,8 +13,8 @@ onload = function() {
       } else if (tabs != null && tabs.length > 0 && tabs[0].url != null) {
         const activeTab = tabs[0];
         const url = activeTab.url;
-        const repo = getRepoFromGitHubUrl(url);
         console.log("active tab url:", url);
+        const repo = getRepoFromGitHubUrl(url);
         console.log("active repo:", repo);
 
         if (repo != null) {
@@ -60,7 +60,7 @@ onload = function() {
 
 function getRepoFromGitHubUrl(url) {
   const regexed = /^https:\/\/github.com\/([A-Za-z0-9\-\.\_\/]+)$/.exec(url);
-  if (regexed.length > 1) {
+  if (regexed != null && regexed.length > 1) {
     return regexed[1];
   } else {
     return null;
