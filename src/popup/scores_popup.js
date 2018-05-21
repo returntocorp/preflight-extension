@@ -1,8 +1,25 @@
+if (window.browser == null) {
+  /* chrome are jerks */ window.browser = window.chrome;
+}
+
+function promisifyTabsQuery() {
+  return new Promise((resolve, reject) => {
+    browser.tabs.query({ active: true, currentWindow: true }, tabs =>
+      resolve(tabs)
+    );
+  });
+}
+
 onload = function() {
-  Promise.all([
-    browser.tabs.query({ active: true, currentWindow: true }),
-    browser.storage.sync.get("projects")
-  ])
+  promisifyTabsQuery()
+    .then(tabs => {
+      return Promise.all([
+        Promise.resolve(tabs),
+        new Promise((resolve, reject) =>
+          browser.storage.sync.get("projects", results => resolve(results))
+        )
+      ]);
+    })
     .then(([tabs, store]) => [tabs, store.projects])
     .then(([tabs, projects]) => {
       console.log("current tabs", tabs);

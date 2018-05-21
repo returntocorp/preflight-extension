@@ -1,3 +1,7 @@
+if (window.browser == null) {
+  /* chrome are jerks */ window.browser = window.chrome;
+}
+
 browser.runtime.onMessage.addListener(function(msg, sender) {
   console.log("received message");
   console.log(msg);

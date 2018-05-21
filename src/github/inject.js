@@ -1,3 +1,7 @@
+if (window.browser == null) {
+  /* chrome are jerks */ window.browser = window.chrome;
+}
+
 console.log("Injecting");
 
 const SECARTA_BADGE_ID = "secarta-score-badge";
@@ -8,7 +12,7 @@ const REPO_NAME_CSS_PATH =
 var repoNameElem = document.querySelector(REPO_NAME_CSS_PATH);
 var repoName = repoNameElem.attributes.getNamedItem("href").value.substr(1);
 
-browser.storage.sync.get(["access_token", "expires_at"]).then(res => {
+browser.storage.sync.get(["access_token", "expires_at"], res => {
   console.log("Starting fetch");
   fetch(buildApiScoreLinkForRepo(repoName), {
     method: "get",
@@ -19,14 +23,13 @@ browser.storage.sync.get(["access_token", "expires_at"]).then(res => {
     .then(response => response.json())
     .then(response => {
       console.log("Received score!", response);
-      browser.storage.sync.get("projects").then(prevState =>
+      browser.storage.sync.get("projects", prevState =>
         browser.storage.sync.set({
-          projects: {
-            ...prevState.projects,
+          projects: Object.assign({}, prevState.projects, {
             [repoName]: {
               score: response
             }
-          }
+          })
         })
       );
 
@@ -73,7 +76,7 @@ function buildButton(response) {
 
   const link = buildElemWithClasses(
     "a",
-    [...githubClasses, ...secartaClasses],
+    [].concat(githubClasses, secartaClasses),
     "Secarta"
   );
 
@@ -92,7 +95,7 @@ function buildCount(response) {
 
   const link = buildElemWithClasses(
     "a",
-    [...githubClasses, ...secartaClasses],
+    [].concat(githubClasses, secartaClasses),
     response.success ? response.result.score : "?"
   );
 
