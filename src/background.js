@@ -1,3 +1,7 @@
+if (window.browser == null) {
+  /* chrome are jerks */ window.browser = window.chrome;
+}
+
 browser.runtime.onMessage.addListener(function(msg, sender) {
   console.log("received message");
   console.log(msg);
@@ -21,6 +25,7 @@ function onload() {
   browser.browserAction.onClicked.addListener(function(tab) {
     var loginURL = "https://app.returntocorp.com";
     browser.tabs.create({ url: loginURL });
+    browser.storage.sync.clear();
   });
 }
 
@@ -32,7 +37,9 @@ function resetPopup() {
         res.access_token !== undefined &&
         new Date().getTime() < res.expires_at
       ) {
-        browser.browserAction.setPopup({ popup: "scores_popup.html" });
+        browser.browserAction.setPopup({
+          popup: "src/popup/scores_popup.html"
+        });
       } else {
         browser.browserAction.setPopup({ popup: "" });
       }

@@ -4,10 +4,10 @@
   "version": "1.0.3",
   "description": "Measure Security in Code",
   "manifest_version": 2,
-  "permissions": ["storage", "https://app.returntocorp.com/*/*"],
+  "permissions": ["storage", "https://app.returntocorp.com/*/*", "activeTab"],
   "background": {
     "scripts": ["src/background.js"],
-    "persistent": false
+    "persistent": true
   },
   "applications": {
     "gecko": {
@@ -21,11 +21,11 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*"],
-      "js": ["src/inject.js"]
+      "js": ["src/github/inject.js"]
     },
     {
       "matches": ["https://app.returntocorp.com/*"],
-      "js": ["src/steal-token.js"]
+      "js": ["src/returntocorp/steal-token.js"]
     }
   ]
 }
