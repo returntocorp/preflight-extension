@@ -21,6 +21,7 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*"],
+      "css": ["src/github/styles.css"],
       "js": ["src/github/inject.js"]
     },
     {

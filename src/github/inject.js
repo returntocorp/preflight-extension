@@ -59,6 +59,8 @@ function buildContainer(response) {
   const container = document.createElement("li");
 
   container.id = SECARTA_BADGE_ID;
+  container.className = getScoreBucket(response);
+
   container.appendChild(buildButton(response));
   container.appendChild(buildCount(response));
 
@@ -134,6 +136,30 @@ function buildReportLinkForRepo(repoName) {
  */
 function buildApiScoreLinkForRepo(repoName) {
   return `https://app.returntocorp.com/api/packages/github.com/${repoName}/score`;
+}
+
+/**
+ *
+ * @param {*} response
+ * @returns {string}
+ */
+function getScoreBucket(response) {
+  if (
+    response != null &&
+    response.result != null &&
+    response.result.score != null
+  ) {
+    const score = response.result.score;
+    if (score > 75) {
+      return "score-good";
+    } else if (score < 40) {
+      return "score-bad";
+    } else {
+      return "score-average";
+    }
+  } else {
+    return "score-indeterminate";
+  }
 }
 
 // function makeBadgeElem() {
