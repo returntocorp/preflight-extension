@@ -21,6 +21,7 @@ function onload() {
   browser.browserAction.onClicked.addListener(function(tab) {
     var loginURL = "https://app.returntocorp.com";
     browser.tabs.create({ url: loginURL });
+    browser.storage.sync.clear();
   });
 }
 
