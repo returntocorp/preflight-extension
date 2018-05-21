@@ -60,17 +60,12 @@ onload = function() {
         }
       } else {
         console.log("No score in storage");
-        browser.storage.sync.get(["access_token", "expires_at"]).then(
-          res => {
-            document.querySelector(
-              "body"
-            ).innerHTML = `<p>Access token: <code>${res.access_token}</code></p>
+        browser.storage.sync.get(["access_token", "expires_at"], res => {
+          document.querySelector("body").innerHTML = `<p>Access token: <code>${
+            res.access_token
+          }</code></p>
         <p>Expires at: <code>${res.expires_at}</code></p>`;
-          },
-          err => {
-            document.querySelector("body").innerHTML = `Error: ${err}`;
-          }
-        );
+        });
       }
     });
 };
