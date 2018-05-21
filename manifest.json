@@ -21,11 +21,11 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*"],
-      "js": ["src/inject.js"]
+      "js": ["src/github/inject.js"]
     },
     {
       "matches": ["https://app.returntocorp.com/*"],
-      "js": ["src/steal-token.js"]
+      "js": ["src/returntocorp/steal-token.js"]
     }
   ]
 }

@@ -32,7 +32,9 @@ function resetPopup() {
         res.access_token !== undefined &&
         new Date().getTime() < res.expires_at
       ) {
-        browser.browserAction.setPopup({ popup: "scores_popup.html" });
+        browser.browserAction.setPopup({
+          popup: "src/popup/scores_popup.html"
+        });
       } else {
         browser.browserAction.setPopup({ popup: "" });
       }
