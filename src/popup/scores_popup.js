@@ -16,17 +16,30 @@ onload = function() {
       return Promise.all([
         Promise.resolve(tabs),
         new Promise((resolve, reject) =>
-          browser.storage.local.get("projects", results => resolve(results))
+          browser.storage.local.get(
+            ["access_token", "expires_at", "projects"],
+            results => resolve(results)
+          )
         )
       ]);
     })
-    .then(([tabs, store]) => [tabs, store.projects])
-    .then(([tabs, projects]) => {
+    .then(([tabs, store]) => [
+      tabs,
+      store.projects,
+      store.access_token,
+      store.expires_at
+    ])
+    .then(([tabs, projects, token, expiresAt]) => {
       console.log("current tabs", tabs);
       console.log("projects:", projects);
+      console.log("access_token:", token);
+      console.log("expires:", expiresAt);
 
       if (projects == null) {
-        document.querySelector("body").innerHTML = "No repos analyzed yet.";
+        document.querySelector(
+          "body"
+        ).innerHTML = `<p>No repos analyzed yet</p><p>Access token: <code>${token}</code></p>
+      <p>Expires at: <code>${expiresAt}</code></p>`;
       } else if (tabs != null && tabs.length > 0 && tabs[0].url != null) {
         const activeTab = tabs[0];
         const url = activeTab.url;
@@ -51,21 +64,17 @@ onload = function() {
           } else {
             document.querySelector(
               "body"
-            ).innerHTML = `<p>Haven't analyzed current tab</p>`;
+            ).innerHTML = `<p>Haven't analyzed current tab</p><p>Access token: <code>${token}</code></p>
+          <p>Expires at: <code>${expiresAt}</code></p>`;
           }
         } else {
           document.querySelector(
             "body"
-          ).innerHTML = `<p>Current tab isn't GitHub, or couldn't divine repo from url ${url}</p>`;
+          ).innerHTML = `<p>Current tab isn't GitHub, or couldn't divine repo from url ${url}</p><p>Access token: <code>${token}</code></p>
+        <p>Expires at: <code>${res.expiresAt}</code></p>`;
         }
       } else {
         console.log("No score in storage");
-        browser.storage.local.get(["access_token", "expires_at"], res => {
-          document.querySelector("body").innerHTML = `<p>Access token: <code>${
-            res.access_token
-          }</code></p>
-        <p>Expires at: <code>${res.expires_at}</code></p>`;
-        });
       }
     });
 };
