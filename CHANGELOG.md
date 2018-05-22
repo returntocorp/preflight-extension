@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Links now open in new tab with referrer protection
 * Promisify more things
+* Accident where I replaced the shield icon instead of the notice icon with the padlock
 
 ## [1.1.1] - 2018-05-21
 
