@@ -38,8 +38,8 @@ onload = function() {
       if (projects == null) {
         document.querySelector(
           "body"
-        ).innerHTML = `<p>No repos analyzed yet</p><p>Access token: <code>${token}</code></p>
-      <p>Expires at: <code>${expiresAt}</code></p>`;
+        ).innerHTML = `<p>Get started by visiting a repository on GitHub.</p><div class="debug"><p>Access token: <code>${token}</code></p>
+      <p>Expires at: <code>${expiresAt}</code></p></div>`;
       } else if (tabs != null && tabs.length > 0 && tabs[0].url != null) {
         const activeTab = tabs[0];
         const url = activeTab.url;
@@ -64,14 +64,14 @@ onload = function() {
           } else {
             document.querySelector(
               "body"
-            ).innerHTML = `<p>Haven't analyzed current tab</p><p>Access token: <code>${token}</code></p>
-          <p>Expires at: <code>${expiresAt}</code></p>`;
+            ).innerHTML = `<p>We haven't analyzed ${repo} yet. Visit Secarta to learn more.</p><div class="debug"><p>Access token: <code>${token}</code></p>
+          <p>Expires at: <code>${expiresAt}</code></p></div>`;
           }
         } else {
           document.querySelector(
             "body"
-          ).innerHTML = `<p>Current tab isn't GitHub, or couldn't divine repo from url ${url}</p><p>Access token: <code>${token}</code></p>
-        <p>Expires at: <code>${res.expiresAt}</code></p>`;
+          ).innerHTML = `<p>Visit a repository on GitHub to see a score breakdown here.</p><div class="debug"><p>Access token: <code>${token}</code></p>
+        <p>Expires at: <code>${expiresAt}</code></p></div>`;
         }
       } else {
         console.log("No score in storage");
