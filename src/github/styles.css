@@ -1,0 +1,35 @@
+.secarta-score-button svg,
+.secarta-score-count svg {
+  vertical-align: text-top;
+}
+
+#secarta-score-badge.secarta-error .secarta-score-count {
+  fill: #1678b7;
+}
+
+#secarta-score-badge.score-good .secarta-score-button {
+  border-right-color: #0a0;
+}
+
+#secarta-score-badge.score-good .secarta-score-count {
+  border-color: #0a0;
+  background-color: rgba(0, 200, 0, 0.1);
+}
+
+#secarta-score-badge.score-average .secarta-score-button {
+  border-right-color: #aa0;
+}
+
+#secarta-score-badge.score-average .secarta-score-count {
+  border-color: #aa0;
+  background-color: rgba(200, 200, 0, 0.1);
+}
+
+#secarta-score-badge.score-bad .secarta-score-button {
+  border-right-color: #a00;
+}
+
+#secarta-score-badge.score-bad .secarta-score-count {
+  border-color: #a00;
+  background-color: rgba(200, 0, 0, 0.1);
+}
