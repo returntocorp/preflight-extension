@@ -82,7 +82,11 @@ onload = function() {
 function getRepoFromGitHubUrl(url) {
   const regexed = /^https:\/\/github.com\/([A-Za-z0-9\-\.\_\/]+)$/.exec(url);
   if (regexed != null && regexed.length > 1) {
-    return regexed[1];
+    const firstSlash = regexed[1].indexOf("/");
+    const secondSlash = regexed[1].indexOf("/", firstSlash + 1);
+    const slug =
+      secondSlash === -1 ? regexed[1] : regexed[1].substring(0, secondSlash);
+    return slug.trim();
   } else {
     return null;
   }
