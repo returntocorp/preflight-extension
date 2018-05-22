@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Basic color buckets (red, yellow, green) for projects < 40, 40 < score <= 75, and > 75 respectively.
 * Shield icon (actual logo TBD)
+* Lock icon when you're not logged in
+* This changelog
 
 ## [1.1.0] - 2018-05-21
 
