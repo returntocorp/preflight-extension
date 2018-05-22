@@ -1,3 +1,7 @@
+.secarta-score-button svg {
+  vertical-align: text-top;
+}
+
 #secarta-score-badge.score-good .secarta-score-button {
   border-right-color: #0a0;
 }
