@@ -35,17 +35,16 @@ browser.storage.sync.get(["access_token", "expires_at"], res => {
 
       return response;
     })
-    .then(response => tryInjectBadge(response))
+    .then(response => tryInjectBadge(buildContainer(response)))
     .catch(err => {
       console.error("error getting score breakdown", err);
-      browser.storage.sync.remove("score");
+      tryInjectBadge(buildContainer(null, err));
     });
 });
 
-function tryInjectBadge(response) {
+function tryInjectBadge(payload) {
   if (document.querySelector(`#${SECARTA_BADGE_ID}`) == null) {
     const injectSite = document.querySelector(INJECT_CSS_PATH);
-    const payload = buildContainer(response);
     injectSite.insertAdjacentElement("afterbegin", payload);
   }
 }
@@ -55,11 +54,12 @@ function tryInjectBadge(response) {
  * @param {*} response
  * @returns {HTMLUListElement}
  */
-function buildContainer(response) {
+function buildContainer(response, err) {
   const container = document.createElement("li");
 
   container.id = SECARTA_BADGE_ID;
-  container.className = getScoreBucket(response);
+  container.className =
+    err == null ? getScoreBucket(response) : "secarta-error";
 
   container.appendChild(buildButton(response));
   container.appendChild(buildCount(response));
@@ -81,7 +81,7 @@ function buildButton(response) {
     [].concat(githubClasses, secartaClasses)
   );
 
-  link.innerHTML = `${SHIELD_ICON} Secarta`;
+  link.innerHTML = `${LOGIN_ICON} Secarta`;
   link.setAttribute("href", buildReportLinkForRepo(repoName));
 
   return link;
@@ -95,15 +95,28 @@ function buildCount(response) {
   const githubClasses = ["social-count"];
   const secartaClasses = ["secarta-injected-count", "secarta-score-count"];
 
-  const link = buildElemWithClasses(
-    "a",
-    [].concat(githubClasses, secartaClasses),
-    response.success ? response.result.score : "?"
-  );
+  if (response != null) {
+    const link = buildElemWithClasses(
+      "a",
+      [].concat(githubClasses, secartaClasses),
+      response.success ? response.result.score : "?"
+    );
 
-  link.setAttribute("href", buildReportLinkForRepo(repoName));
+    link.setAttribute("href", buildReportLinkForRepo(repoName));
 
-  return link;
+    return link;
+  } else {
+    const link = buildElemWithClasses(
+      "a",
+      [].concat(githubClasses, secartaClasses)
+    );
+
+    link.innerHTML = NOTICE_ICON;
+    link.setAttribute("href", buildLoginLink());
+    link.setAttribute("title", "You need to log in to see scores");
+
+    return link;
+  }
 }
 
 /**
@@ -138,6 +151,10 @@ function buildApiScoreLinkForRepo(repoName) {
   return `https://app.returntocorp.com/api/packages/github.com/${repoName}/score`;
 }
 
+function buildLoginLink() {
+  return `https://app.returntocorp.com`;
+}
+
 /**
  *
  * @param {*} response
@@ -162,15 +179,8 @@ function getScoreBucket(response) {
   }
 }
 
-const SHIELD_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M12 0c-3.371 2.866-5.484 3-9 3v11.535c0 4.603 3.203 5.804 9 9.465 5.797-3.661 9-4.862 9-9.465v-11.535c-3.516 0-5.629-.134-9-3zm-7 14.535v-2.535h7v-9.456c2.5 1.805 4.554 2.292 7 2.416v7.04h-7v9.643c-5.31-3.278-7-4.065-7-7.108z"/></svg>`;
-
-// function makeBadgeElem() {
-//   var badge = document.createElement("a");
-//   badge.href = `https://app.returntocorp.com/reports/github.com/${repoName}`;
-//   badge.className = "button special-plugin-button";
-//   badge.style.marginLeft = "10px";
-//   return badge;
-// }
+const LOGIN_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-4.138 9.975l-1.862-1.836-1.835 1.861-1.13-1.129 1.827-1.86-1.862-1.837 1.129-1.13 1.859 1.827 1.838-1.871 1.139 1.139-1.833 1.86 1.868 1.836-1.138 1.14zm-5.862-9.975v-4c0-2.206 1.795-4 4-4s4 1.794 4 4v4h-8z"/></svg>`;
+const NOTICE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1 5h2v10h-2v-10zm1 14.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>`;
 
 // // unsafe!
 // function makeFailureElem(text) {
