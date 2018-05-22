@@ -16,7 +16,7 @@ onload = function() {
       return Promise.all([
         Promise.resolve(tabs),
         new Promise((resolve, reject) =>
-          browser.storage.sync.get("projects", results => resolve(results))
+          browser.storage.local.get("projects", results => resolve(results))
         )
       ]);
     })
@@ -60,7 +60,7 @@ onload = function() {
         }
       } else {
         console.log("No score in storage");
-        browser.storage.sync.get(["access_token", "expires_at"], res => {
+        browser.storage.local.get(["access_token", "expires_at"], res => {
           document.querySelector("body").innerHTML = `<p>Access token: <code>${
             res.access_token
           }</code></p>

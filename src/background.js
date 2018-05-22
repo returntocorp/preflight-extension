@@ -7,7 +7,7 @@ browser.runtime.onMessage.addListener(function(msg, sender) {
   console.log(msg);
   if (msg.subject === "token") {
     if (msg.access_token) {
-      browser.storage.sync.set(
+      browser.storage.local.set(
         {
           access_token: msg.access_token,
           expires_at: msg.expires_at
@@ -15,7 +15,7 @@ browser.runtime.onMessage.addListener(function(msg, sender) {
         resetPopup
       );
     } else {
-      browser.storage.sync.remove(["access_token", "expires_at"], resetPopup);
+      browser.storage.local.remove(["access_token", "expires_at"], resetPopup);
     }
   }
 });
@@ -27,13 +27,13 @@ function onload() {
     browser.tabs.create({ url: loginURL });
   });
 
-  browser.storage.sync.clear();
+  browser.storage.local.clear();
 }
 
 function resetPopup() {
   console.log("resetting popup.");
   if (
-    browser.storage.sync.get(["access_token", "expires_at"], function(res) {
+    browser.storage.local.get(["access_token", "expires_at"], function(res) {
       if (
         res.access_token !== undefined &&
         new Date().getTime() < res.expires_at
