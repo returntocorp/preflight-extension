@@ -1,3 +1,9 @@
+#secarta-score-badge {
+  opacity: 0;
+  animation: animate-in 0.3s;
+  animation-fill-mode: forwards;
+}
+
 .secarta-score-button svg,
 .secarta-score-count svg {
   vertical-align: text-top;
@@ -32,4 +38,14 @@
 #secarta-score-badge.score-bad .secarta-score-count {
   border-color: #a00;
   background-color: rgba(200, 0, 0, 0.1);
+}
+
+@keyframes animate-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
