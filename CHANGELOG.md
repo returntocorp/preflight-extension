@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Fade in the badge
 * Access token is now displayed more often in the extension popup for debugging purposes
 
+### Changed
+
+* Copy
+* Slight styling tweaks
+
 ### Fixed
 
 * Links now open in new tab with referrer protection
