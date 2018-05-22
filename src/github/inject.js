@@ -8,39 +8,88 @@ const SECARTA_BADGE_ID = "secarta-score-badge";
 const INJECT_CSS_PATH = "div.repohead-details-container ul.pagehead-actions";
 const REPO_NAME_CSS_PATH =
   "#js-repo-pjax-container > div.pagehead.repohead.instapaper_ignore.readability-menu.experiment-repo-nav > div > h1 > strong > a";
+const CACHE_STALE_THRESHOLD = 1000 * 60 * 60 * 24; // 1 day
 
 var repoNameElem = document.querySelector(REPO_NAME_CSS_PATH);
 var repoName = repoNameElem.attributes.getNamedItem("href").value.substr(1);
 
-browser.storage.sync.get(["access_token", "expires_at"], res => {
-  console.log("Starting fetch");
-  fetch(buildApiScoreLinkForRepo(repoName), {
-    method: "get",
-    headers: new Headers({
-      Authorization: res.access_token
-    })
-  })
-    .then(response => response.json())
-    .then(response => {
-      console.log("Received score!", response);
-      browser.storage.sync.get("projects", prevState =>
-        browser.storage.sync.set({
-          projects: Object.assign({}, prevState.projects, {
+/**
+ *
+ * @param {string | string[]} param
+ * @returns {Promise<any>}
+ */
+function promisifyBrowserStorageGet(param) {
+  return new Promise((resolve, reject) => {
+    browser.storage.local.get(param, res => resolve(res));
+  });
+}
+
+/**
+ *
+ * @param {string} repoName
+ * @returns {Promise<any>}
+ */
+function fetchCached(repoName) {
+  return promisifyBrowserStorageGet([
+    "access_token",
+    "expires_at",
+    "projects"
+  ]).then(({ access_token: token, expires_at: expiresAt, projects }) => {
+    if (token == null || expiresAt == null) {
+      throw new Error("No access_token found");
+    }
+
+    const currentDate = new Date();
+    const currentRepo = projects != null ? projects[repoName] : null;
+    if (
+      currentRepo == null ||
+      currentRepo.fetched == null ||
+      currentDate.valueOf() - currentRepo.fetched > CACHE_STALE_THRESHOLD
+    ) {
+      console.log("Cache miss, will fetch");
+      // Write through cache
+      return fetchRepo(repoName, token).then(response => {
+        console.log("Received score!", response);
+        const fetched = new Date();
+        browser.storage.local.set({
+          projects: Object.assign({}, projects, {
             [repoName]: {
-              score: response
+              score: response,
+              fetched: fetched.valueOf()
             }
           })
-        })
-      );
+        });
+        return response;
+      });
+    } else {
+      console.log("Found in cache");
+      return Promise.resolve(currentRepo.score);
+    }
+  });
+}
 
-      return response;
-    })
+function fetchAndInjectBadge() {
+  fetchCached(repoName)
     .then(response => tryInjectBadge(buildContainer(response)))
     .catch(err => {
-      console.error("error getting score breakdown", err);
+      console.warn("couldn't get score breakdown:", err);
       tryInjectBadge(buildContainer(null, err));
     });
-});
+}
+
+/**
+ *
+ * @param {string} repoName
+ * @param {string} token
+ */
+function fetchRepo(repoName, token) {
+  return fetch(buildApiScoreLinkForRepo(repoName), {
+    method: "get",
+    headers: new Headers({
+      Authorization: token
+    })
+  }).then(response => response.json());
+}
 
 function tryInjectBadge(payload) {
   if (document.querySelector(`#${SECARTA_BADGE_ID}`) == null) {
@@ -83,6 +132,8 @@ function buildButton(response) {
 
   link.innerHTML = `${SHIELD_ICON} Secarta`;
   link.setAttribute("href", buildReportLinkForRepo(repoName));
+  link.setAttribute("target", "_blank");
+  link.setAttribute("rel", "noopener noreferrer");
 
   return link;
 }
@@ -103,6 +154,8 @@ function buildCount(response) {
     );
 
     link.setAttribute("href", buildReportLinkForRepo(repoName));
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
 
     return link;
   } else {
@@ -114,6 +167,9 @@ function buildCount(response) {
     link.innerHTML = LOCK_ICON;
     link.setAttribute("href", buildLoginLink());
     link.setAttribute("title", "You need to log in to see scores");
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+    link.onclick = () => location.reload();
 
     return link;
   }
@@ -182,26 +238,4 @@ function getScoreBucket(response) {
 const SHIELD_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M12 0c-3.371 2.866-5.484 3-9 3v11.535c0 4.603 3.203 5.804 9 9.465 5.797-3.661 9-4.862 9-9.465v-11.535c-3.516 0-5.629-.134-9-3zm-7 14.535v-2.535h7v-9.456c2.5 1.805 4.554 2.292 7 2.416v7.04h-7v9.643c-5.31-3.278-7-4.065-7-7.108z"/></svg>`;
 const LOCK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-4.138 9.975l-1.862-1.836-1.835 1.861-1.13-1.129 1.827-1.86-1.862-1.837 1.129-1.13 1.859 1.827 1.838-1.871 1.139 1.139-1.833 1.86 1.868 1.836-1.138 1.14zm-5.862-9.975v-4c0-2.206 1.795-4 4-4s4 1.794 4 4v4h-8z"/></svg>`;
 
-// // unsafe!
-// function makeFailureElem(text) {
-//   var elem = document.createElement("div");
-//   elem.style.marginLeft = "10px";
-//   elem.innerHTML = text;
-//   return elem;
-// }
-
-// function handleFailure(status) {
-//   var elem;
-//   if (status === 401) {
-//     console.error(
-//       "You need to be logged in to see the Secarta badge for this project"
-//     );
-//     elem = makeFailureElem("Badge fetch error. Log in?");
-//   } else {
-//     console.error("Badge fetch error. Analyzed?");
-//     elem = makeFailureElem("Badge fetch error. Analyzed?");
-//   }
-
-//   browser.storage.sync.remove(["score", "repoName"]);
-//   injectElem(elem);
-// }
+fetchAndInjectBadge();
