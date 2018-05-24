@@ -1,9 +1,3 @@
-#secarta-score-badge {
-  opacity: 0;
-  animation: animate-in 0.3s;
-  animation-fill-mode: forwards;
-}
-
 .secarta-score-button svg,
 .secarta-score-count svg {
   vertical-align: text-top;
