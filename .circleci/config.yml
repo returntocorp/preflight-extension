@@ -22,10 +22,12 @@ jobs:
       - image: cibuilds/chrome-extension:latest
     steps:
       - checkout
-      - run: jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
-      - run: git archive -o extension.zip HEAD
+      - run: |
+        jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
+        git commit -a -m "Bump extension version to match git tag"
+        mkdir -p dist && git archive -o dist/extension.zip HEAD
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: ~/dist
           paths:
             - extension.zip
 
