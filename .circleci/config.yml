@@ -32,11 +32,10 @@ jobs:
     docker:
       - image: cibuilds/chrome-extension:latest
     environment:
-      - APP_ID: <INSERT-APP-ID>
+      - APP_ID: emaioeinhnifhcmlihcbooknbpjdbllb
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - run:
           name: "Publish to the Google Chrome Store"
-          # command: publish /tmp/workspace/extension.zip
-          command: echo "this is a test"
+          command: publish /tmp/workspace/extension.zip
