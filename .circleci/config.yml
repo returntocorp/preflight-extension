@@ -23,6 +23,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup Github user
+          command: |
+            git config user.email "circleci@returntocorp.com"
+            git config user.name "circleci"
+      - run:
           name: Update manifest version 
           command: |
             jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
