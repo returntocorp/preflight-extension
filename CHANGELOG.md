@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+* Display Secarta badge on all repository tabs
+
 ## [1.1.2] - 2018-05-22
 
 ### Added

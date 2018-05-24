@@ -1,5 +1,5 @@
 {
-  "name": "Secarta",
+  "name": "Secarta - Dev",
   "author": "",
   "version": "0.0.1",
   "description": "Measure Security in Code",
@@ -15,7 +15,7 @@
     }
   },
   "browser_action": {
-    "default_title": "Secarta",
+    "default_title": "Secarta - Dev",
     "default_icon": "secarta.png"
   },
   "content_scripts": [
