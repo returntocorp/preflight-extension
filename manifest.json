@@ -1,7 +1,7 @@
 {
   "name": "Secarta",
   "author": "",
-  "version": "0.0.0.1",
+  "version": "0.0.1",
   "description": "Measure Security in Code",
   "manifest_version": 2,
   "permissions": ["storage", "https://app.returntocorp.com/*/*", "activeTab"],
