@@ -1,0 +1,42 @@
+version: 2
+
+workflows:
+  version: 2
+  build-publish:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+            tags:
+              # See https://developer.chrome.com/apps/manifest/version for valid Chrome version strings
+              only: /^[0-9]+(\.[0-9]+){0,3}$/
+
+jobs:
+  build:
+    docker:
+      - image: cibuilds/chrome-extension:latest
+    steps:
+      - checkout
+      - run: jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
+      - run: git archive -o extension.zip HEAD
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - extension.zip
+
+  publish:
+    docker:
+      - image: cibuilds/chrome-extension:latest
+    environment:
+      - APP_ID: <INSERT-APP-ID>
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: "Publish to the Google Chrome Store"
+          # command: publish /tmp/workspace/extension.zip
+          command: echo "this is a test"
