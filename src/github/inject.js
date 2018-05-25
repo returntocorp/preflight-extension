@@ -153,7 +153,7 @@ function buildCount(response) {
     const link = buildElemWithClasses(
       "a",
       [].concat(githubClasses, secartaClasses),
-      response.success ? response.result.score : "?"
+      response.success ? response.result.score + " pts" : "?"
     );
 
     link.setAttribute("href", buildReportLinkForRepo(repoName));
@@ -169,7 +169,10 @@ function buildCount(response) {
 
     link.innerHTML = LOCK_ICON;
     link.setAttribute("href", buildLoginLink());
-    link.setAttribute("title", "You need to log in to see scores");
+    link.setAttribute(
+      "title",
+      "You must be logged into Secarta to see scores for projects"
+    );
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener noreferrer");
     link.onclick = () => location.reload();
