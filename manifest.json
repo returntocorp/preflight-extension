@@ -27,6 +27,10 @@
     {
       "matches": ["https://app.returntocorp.com/*"],
       "js": ["src/returntocorp/steal-token.js"]
+    },
+    {
+      "matches": ["https://*.returntocorp.com/*"],
+      "js": ["src/returntocorp/inject.js"]
     }
   ]
 }
