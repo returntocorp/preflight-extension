@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.7] - 2018-05-31
+
+### Fixed
+
+* Updated badge button to link to new report URLs
+
+## [1.1.6] - 2018-05-24
+
+### Changed
+
+* Updated badge language
+* Add "pts" to the output
+
 ## [1.1.5] - 2018-05-24
 
 ### Fixed
