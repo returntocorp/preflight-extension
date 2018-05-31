@@ -201,7 +201,7 @@ function buildElemWithClasses(tag, classes, textContent) {
  * @returns {string}
  */
 function buildReportLinkForRepo(repoName) {
-  return `https://app.returntocorp.com/reports/repos/github.com/${repoName}`;
+  return `https://app.returntocorp.com/reports/github.com/${repoName}`;
 }
 
 /**
