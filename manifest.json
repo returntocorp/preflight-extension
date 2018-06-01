@@ -29,7 +29,7 @@
       "js": ["src/returntocorp/steal-token.js"]
     },
     {
-      "matches": ["https://*.returntocorp.com/*"],
+      "matches": ["https://*.returntocorp.com/*", "http://localhost:3000/*"],
       "js": ["src/returntocorp/inject.js"]
     }
   ]
