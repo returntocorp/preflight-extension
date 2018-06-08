@@ -2,16 +2,16 @@
   "name": "Secarta - Dev",
   "author": "",
   "version": "0.0.1",
-  "description": "Measure Security in Code",
+  "description": "Write Secure Code.",
   "manifest_version": 2,
-  "permissions": ["storage", "https://app.returntocorp.com/*/*", "activeTab"],
+  "permissions": ["storage", "https://app.secarta.io/*", "activeTab"],
   "background": {
     "scripts": ["src/background.js"],
     "persistent": true
   },
   "applications": {
     "gecko": {
-      "id": "secarta-extension@returntocorp.com"
+      "id": "extension@secarta.io"
     }
   },
   "browser_action": {
@@ -25,8 +25,8 @@
       "js": ["src/github/inject.js"]
     },
     {
-      "matches": ["https://app.returntocorp.com/*"],
-      "js": ["src/returntocorp/steal-token.js"]
+      "matches": ["https://app.secarta.io/*"],
+      "js": ["src/secarta/steal-token.js"]
     }
   ]
 }

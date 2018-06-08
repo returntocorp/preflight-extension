@@ -201,7 +201,7 @@ function buildElemWithClasses(tag, classes, textContent) {
  * @returns {string}
  */
 function buildReportLinkForRepo(repoName) {
-  return `https://app.returntocorp.com/reports/github.com/${repoName}`;
+  return `https://app.secarta.io/reports/github.com/${repoName}`;
 }
 
 /**
@@ -210,11 +210,11 @@ function buildReportLinkForRepo(repoName) {
  * @returns {string}
  */
 function buildApiScoreLinkForRepo(repoName) {
-  return `https://app.returntocorp.com/api/packages/github.com/${repoName}/score`;
+  return `https://app.secarta.io/api/packages/github.com/${repoName}/score`;
 }
 
 function buildLoginLink() {
-  return `https://app.returntocorp.com`;
+  return `https://app.secarta.io`;
 }
 
 /**
