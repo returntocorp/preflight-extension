@@ -23,7 +23,7 @@ browser.runtime.onMessage.addListener(function(msg, sender) {
 function onload() {
   // set default click handler for when we don't have a popup set
   browser.browserAction.onClicked.addListener(function(tab) {
-    var loginURL = "https://app.returntocorp.com";
+    var loginURL = "https://app.secarta.io";
     browser.tabs.create({ url: loginURL });
   });
 
