@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.9] - 2018-06-08
+
+### Changed
+
+- Lock icon now links to project page, not just secarta.io (for better user experience and engagement)
+
 ## [1.1.8] - 2018-06-08
 
 ### Fixed
