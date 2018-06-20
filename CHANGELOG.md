@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.10] - 2018-06-20
+
+### Added
+
+- New icon and hover over state if an analysis hasn't been performed yet
+
+### Fixed
+
+- We no longer cache the Secarta score for 1 day, which caused issues if a faulty score was returned
+- Apply consistent lock icon styling, where previously certain error states led to CSS classes being misapplied
+
 ## [1.1.9] - 2018-06-08
 
 ### Changed
