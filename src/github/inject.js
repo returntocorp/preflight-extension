@@ -105,7 +105,7 @@ function buildContainer(response, err) {
  */
 function buildButton() {
   const githubClasses = ["btn", "btn-sm", "btn-with-count"];
-  const secartaClasses = ["secarta-injected-button", "secarta-score-button"];
+  const secartaClasses = ["secarta-score-button"];
 
   const link = buildElemWithClasses(
     "a",
@@ -126,7 +126,7 @@ function buildButton() {
  */
 function buildCount(response) {
   const githubClasses = ["social-count"];
-  const secartaClasses = ["secarta-injected-count", "secarta-score-count"];
+  const secartaClasses = ["secarta-score-count"];
 
   const link = buildElemWithClasses(
     "a",
