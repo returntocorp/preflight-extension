@@ -3,8 +3,12 @@
   vertical-align: text-top;
 }
 
-#secarta-score-badge.secarta-error .secarta-score-count {
+#secarta-score-badge.secarta-locked .secarta-score-count {
   fill: #1678b7;
+}
+
+#secarta-score-badge.secarta-unanalyzed .secarta-score-count {
+  fill: rgb(255, 123, 0);
 }
 
 #secarta-score-badge.score-good .secarta-score-button {
