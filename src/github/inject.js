@@ -74,27 +74,31 @@ function fetchAndInjectBadge() {
 
   if (secartaElem) {
     var scoreElem = buildCountElem();
+    var className = "";
 
     getProjectScore()
       .then(score => {
         scoreElem.innerText = score + " pts";
-        secartaElem.className = getScoreClassName(score);
+        className = getScoreClassName(score);
       })
       .catch(err => {
+        console.warn(err);
+        scoreElem.innerHTML = LOCK_ICON;
+        className = "secarta-error";
+
         // TODO (dlukeomalley): This title is misleading because we may be catching errors that aren't just auth related
         scoreElem.setAttribute(
           "title",
           "You must be logged into Secarta to see scores for projects"
         );
-
-        scoreElem.innerHTML = LOCK_ICON;
-        secartaElem.className = "secarta-error";
-
-        console.warn(err);
+      })
+      .then(() => {
+        // Calling #getElementById immediately before #replaceChild reduces the number of #replaceChild failures,
+        // likely because of how GitHub reloads the project page
+        const existingScoreElem = document.getElementById(SECARTA_SCORE_ID);
+        secartaElem.replaceChild(scoreElem, existingScoreElem);
+        secartaElem.className = className;
       });
-
-    const existingScoreElem = document.getElementById(SECARTA_SCORE_ID);
-    secartaElem.replaceChild(scoreElem, existingScoreElem);
   }
 }
 
