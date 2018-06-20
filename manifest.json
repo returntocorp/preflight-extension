@@ -26,7 +26,7 @@
     },
     {
       "matches": ["https://app.secarta.io/*"],
-      "js": ["src/secarta/steal-token.js"]
+      "js": ["src/secarta/get-token.js"]
     }
   ]
 }
