@@ -32,6 +32,9 @@ function getBrowserStorage(param) {
 }
 
 function fetchAndInjectBadge() {
+  // We inject the main body of the badge as soon as possible to avoid visual flicker.
+  injectPageHeadActionElem(buildContainer());
+
   if (document.getElementById(SECARTA_BADGE_ID) == null) {
     getBrowserStorage([ACCESS_TOKEN_KEY, EXPIRES_AT_KEY])
       .then(storage => {
@@ -48,10 +51,10 @@ function fetchAndInjectBadge() {
       .then(storage => {
         return fetchRepo(REPO_NAME, storage[ACCESS_TOKEN_KEY]);
       })
-      .then(response => tryInjectBadge(buildContainer(response)))
+      .then(response => injectPageHeadActionElem(buildContainer(response)))
       .catch(err => {
         console.warn("couldn't get score breakdown: ", err);
-        tryInjectBadge(buildContainer(null, err));
+        injectPageHeadActionElem(buildContainer(null, err));
       });
   }
 }
@@ -70,7 +73,7 @@ function fetchRepo(repoName, token) {
   }).then(response => response.json());
 }
 
-function tryInjectBadge(payload) {
+function injectPageHeadActionElem(payload) {
   if (document.querySelector(`#${SECARTA_BADGE_ID}`) == null) {
     const injectSite = document.querySelector(INJECT_CSS_PATH);
     injectSite.insertAdjacentElement("afterbegin", payload);
