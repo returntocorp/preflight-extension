@@ -22,7 +22,7 @@ const REPO_NAME_ELEM = document.querySelector(REPO_NAME_CSS_PATH);
 const PROJECT = REPO_NAME_ELEM.attributes.getNamedItem("href").value.substr(1);
 
 // We cache the score response to reduce jitter / flicker as users navigate around the GitHub project page
-var CACHED_SCORE_RESPONSE = undefined;
+let CACHED_SCORE_RESPONSE = undefined;
 
 /**
  *
@@ -76,18 +76,19 @@ function fetchAndInjectBadge() {
   const secartaElem = injectSecartaPageHeadActionElem();
 
   if (secartaElem) {
-    var scoreElem = buildCountElem();
-    var className = "";
-
     getProjectScore()
       .then(response => {
+        const scoreElem = buildCountElem();
+
         switch (response.statusCode) {
           // success
           case 200:
             const score = response.result.score;
-            scoreElem.innerText = score + " pts";
-            className = getScoreClassName(score);
-            break;
+            scoreElem.innerText = `${score} pts`;
+            return {
+              scoreElem,
+              secartaElemClassName: getScoreClassName(score)
+            };
           // unauthorized
           case 401:
             scoreElem.innerHTML = LOCK_ICON;
@@ -95,8 +96,10 @@ function fetchAndInjectBadge() {
               "title",
               "You must be logged in to Secarta to see scores for projects. Click through to log in"
             );
-            className = "secarta-locked";
-            break;
+            return {
+              scoreElem,
+              secartaElemClassName: "secarta-locked"
+            };
           // missing score, which happens if we haven't analyzed the project before
           case 404:
             scoreElem.innerHTML = OUTDATED_ICON;
@@ -104,8 +107,10 @@ function fetchAndInjectBadge() {
               "title",
               "Couldn't retrieve project score. Click through to trigger analysis"
             );
-            className = "secarta-unanalyzed";
-            break;
+            return {
+              scoreElem,
+              secartaElemClassName: "secarta-unanalyzed"
+            };
           // unknown
           default:
             scoreElem.innerText = "?";
@@ -113,15 +118,20 @@ function fetchAndInjectBadge() {
               "title",
               "Unknown error. Please try refreshing the page"
             );
-            break;
+            return {
+              scoreElem,
+              secartaElemClassName: ""
+            };
         }
       })
-      .then(() => {
+      .then(({ scoreElem, secartaElemClassName }) => {
         // N.B. Calling #getElementById immediately before #replaceChild reduces the number of #replaceChild failures,
         //      likely because of how GitHub reloads the project page
-        const existingScoreElem = document.getElementById(SECARTA_SCORE_ID);
-        secartaElem.replaceChild(scoreElem, existingScoreElem);
-        secartaElem.className = className;
+        secartaElem.replaceChild(
+          scoreElem,
+          document.getElementById(SECARTA_SCORE_ID)
+        );
+        secartaElem.className = secartaElemClassName;
       });
   }
 }
