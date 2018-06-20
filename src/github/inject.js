@@ -73,29 +73,28 @@ function fetchAndInjectBadge() {
   const secartaElem = injectSecartaPageHeadActionElem();
 
   if (secartaElem) {
-    const existingScoreElem = document.getElementById(SECARTA_SCORE_ID);
+    var scoreElem = buildCountElem();
 
     getProjectScore()
       .then(score => {
-        secartaElem.className = getScoreClassName(score);
-        const scoreElem = buildCountElem();
         scoreElem.innerText = score + " pts";
-        secartaElem.replaceChild(scoreElem, existingScoreElem);
+        secartaElem.className = getScoreClassName(score);
       })
       .catch(err => {
-        secartaElem.className = "secarta-error";
-        const scoreElem = buildCountElem();
-        scoreElem.innerHTML = LOCK_ICON;
-        secartaElem.replaceChild(scoreElem, existingScoreElem);
-
         // TODO (dlukeomalley): This title is misleading because we may be catching errors that aren't just auth related
         scoreElem.setAttribute(
           "title",
           "You must be logged into Secarta to see scores for projects"
         );
 
+        scoreElem.innerHTML = LOCK_ICON;
+        secartaElem.className = "secarta-error";
+
         console.warn(err);
       });
+
+    const existingScoreElem = document.getElementById(SECARTA_SCORE_ID);
+    secartaElem.replaceChild(scoreElem, existingScoreElem);
   }
 }
 
