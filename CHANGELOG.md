@@ -7,15 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
-
-- Preliminary npmjs.com support.
-
-## [1.1.11] - 2018-06-20
+## [1.1.11] - 2018-06-25
 
 ### Added
 
-- License files
+- Preliminary npmjs.com support
+- Add license files
 
 ## [1.1.10] - 2018-06-20
 
