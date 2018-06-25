@@ -12,7 +12,7 @@ const OUTDATED_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height
 const ACCESS_TOKEN_KEY = "access_token";
 const EXPIRES_AT_KEY = "expires_at";
 
-const INJECT_CSS_PATH =
+const INJECT_BEFORE_CSS_PATH =
   "#top > div.package__rightSidebar___9dMXo.w-third-ns.mt3.w-100.w-100-m.pt3.ph2.pv0-ns.order-1-ns.order-0 > div:nth-child(4)";
 const REPO_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
 const REPO_NAME_ELEM = document.querySelector(REPO_NAME_CSS_PATH);
@@ -56,66 +56,45 @@ function getProjectScore() {
 
 function fetchAndInjectBadge() {
   // We inject the main body of the badge as soon as possible to avoid visual flicker.
-  const secartaElem = injectSecartaRightSidebarElem();
+  injectSecartaRightSidebarElem(buildSecartaElem("--"));
 
-  if (secartaElem) {
-    getProjectScore()
-      .then(response => {
-        const scoreElem = buildScoreElem();
-        switch (response.statusCode) {
-          // success
-          case 200:
-            const score = response.result.score;
-            scoreElem.innerText = `${score} pts`;
-            return {
-              scoreElem,
-              secartaElemClassName: getScoreClassName(score)
-            };
-          // unauthorized
-          case 401:
-            scoreElem.innerHTML = LOCK_ICON;
-            scoreElem.setAttribute(
-              "title",
-              "You must be logged in to Secarta to see scores for projects. Click through to log in"
-            );
-            return {
-              scoreElem,
-              secartaElemClassName: "secarta-locked"
-            };
-          // missing score, which happens if we haven't analyzed the project before
-          case 404:
-            scoreElem.innerHTML = OUTDATED_ICON;
-            scoreElem.setAttribute(
-              "title",
-              "Couldn't retrieve project score. Click through to trigger analysis"
-            );
-            return {
-              scoreElem,
-              secartaElemClassName: "secarta-unanalyzed"
-            };
-          // unknown
-          default:
-            scoreElem.innerText = "?";
-            scoreElem.setAttribute(
-              "title",
-              "Unknown error. Please try refreshing the page"
-            );
-            return {
-              scoreElem,
-              secartaElemClassName: ""
-            };
-        }
-      })
-      .then(({ scoreElem, secartaElemClassName }) => {
-        // N.B. Calling #getElementById immediately before #replaceChild reduces the number of #replaceChild failures,
-        //      likely because of how GitHub reloads the project page
-        secartaElem.replaceChild(
-          scoreElem,
-          document.getElementById(SECARTA_SCORE_ID)
-        );
-        secartaElem.className = secartaElemClassName;
-      });
-  }
+  getProjectScore()
+    .then(response => {
+      switch (response.statusCode) {
+        // success
+        case 200:
+          const score = response.result.score;
+          return buildSecartaElem(`${score} pts`, [getScoreClassName(score)]);
+        // unauthorized
+        case 401:
+          // scoreElem.innerHTML = LOCK_ICON;
+          // scoreElem.setAttribute(
+          //   "title",
+          //   "You must be logged in to Secarta to see scores for projects. Click through to log in"
+          // );
+          return buildSecartaElem("unauthed", ["secarta-locked"]);
+        // missing score, which happens if we haven't analyzed the project before
+        case 404:
+          // scoreElem.innerHTML = OUTDATED_ICON;
+          // scoreElem.setAttribute(
+          //   "title",
+          //   "Couldn't retrieve project score. Click through to trigger analysis"
+          // );
+
+          return buildSecartaElem("missing", ["secarta-unanalyzed"]);
+        // unknown
+        default:
+          // scoreElem.innerText = "?";
+          // scoreElem.setAttribute(
+          //   "title",
+          //   "Unknown error. Please try refreshing the page"
+          // );
+          return buildSecartaElem("?");
+      }
+    })
+    .then(secartaElem => {
+      injectSecartaRightSidebarElem(secartaElem);
+    });
 }
 
 /**
@@ -134,24 +113,54 @@ function fetchScore(packageName, token) {
 /**
  * @returns {HTMLElement | null}
  */
-function injectSecartaRightSidebarElem() {
-  const secartaElem = document.getElementById(SECARTA_BADGE_ID);
+function injectSecartaRightSidebarElem(secartaElem) {
+  const existingSecartaElem = document.getElementById(SECARTA_BADGE_ID);
 
-  if (secartaElem) {
+  if (existingSecartaElem) {
+    existingSecartaElem.parentElement.replaceChild(
+      secartaElem,
+      existingSecartaElem
+    );
     return secartaElem;
   } else {
-    const injectBeforeSite = document.querySelector(INJECT_CSS_PATH);
-    return injectBeforeSite.parentNode.insertBefore(
-      buildContainerElem(),
+    const injectBeforeSite = document.querySelector(INJECT_BEFORE_CSS_PATH);
+    const injectedElem = injectBeforeSite.parentNode.insertBefore(
+      secartaElem,
       injectBeforeSite
     );
+
+    // NPM adds a w-100 (width 100%) classname to the last child. We add / remove this based on if we've made the number of children even / odd.
+    const sideBarElements = document.querySelectorAll(
+      ".package__sidebarSection___2_OuR"
+    );
+
+    if (sideBarElements.length <= 0) {
+      throw "Expected there to be sidebar elements.";
+    }
+
+    const length = sideBarElements.length;
+    const lastSidebarElement = sideBarElements[length - 1];
+    const WIDTH_CLASS = "w-100";
+    if (length % 2) {
+      // odd number of elements
+      lastSidebarElement.classList.add(WIDTH_CLASS);
+    } else {
+      // even number of elements
+      lastSidebarElement.classList.remove(WIDTH_CLASS);
+    }
+
+    return injectedElem;
   }
 }
 
 /**
+ *
+ * @param {*} scoreText
+ * @param {string[] | null} additionalClasses
  * @returns {HTMLUListElement}
  */
-function buildContainerElem() {
+function buildSecartaElem(scoreText, additionalClasses) {
+  const secartaClasses = additionalClasses ? additionalClasses : [];
   const npmClasses = [
     "package__sidebarSection___2_OuR",
     "dib",
@@ -160,11 +169,14 @@ function buildContainerElem() {
     "b--black-10",
     "pr2"
   ];
-  const container = buildElemWithClasses("div", [].concat(npmClasses));
+  const container = buildElemWithClasses(
+    "div",
+    [].concat(npmClasses, secartaClasses)
+  );
   container.id = SECARTA_BADGE_ID;
 
   container.appendChild(buildH3Elem());
-  container.appendChild(buildScoreElem());
+  container.appendChild(buildScoreElem(scoreText));
   return container;
 }
 
@@ -190,7 +202,7 @@ function buildH3Elem() {
  * The innter text of the element is the score. Can be overwritten.
  * @returns {HTMLAnchorElement}
  */
-function buildScoreElem() {
+function buildScoreElem(scoreText) {
   const npmClasses = [
     "package__sidebarText___n8Z-E",
     "fw6",
@@ -207,7 +219,7 @@ function buildScoreElem() {
     [].concat(npmClasses, secartaClasses)
   );
   paragraph.id = SECARTA_SCORE_ID;
-  paragraph.innerText = "--";
+  paragraph.innerText = scoreText;
   return paragraph;
 }
 
