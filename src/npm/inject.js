@@ -9,9 +9,14 @@ const ACCESS_TOKEN_KEY = "access_token";
 const EXPIRES_AT_KEY = "expires_at";
 
 const INJECT_CSS_PATH = ".package__sidebarSection___2_OuR";
-const REPO_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
-const REPO_NAME_ELEM = document.querySelector(REPO_NAME_CSS_PATH);
-const PROJECT = REPO_NAME_ELEM.innerText;
+const PACKAGE_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
+
+const RIGHT_SIDEBAR_CLASS = "package__rightSidebar___9dMXo";
+
+function getProjectName() {
+  // retrieve the project name every time. NPM is a SPA and the title can change between calls
+  return document.querySelector(PACKAGE_NAME_CSS_PATH).innerText;
+}
 
 /**
  *
@@ -41,7 +46,7 @@ function getProjectScore() {
       return storage;
     })
     .then(storage => {
-      return fetchScore(PROJECT, storage[ACCESS_TOKEN_KEY]);
+      return fetchScore(this.getProjectName(), storage[ACCESS_TOKEN_KEY]);
     })
     .catch(err => {
       console.log(err);
@@ -50,46 +55,48 @@ function getProjectScore() {
 }
 
 function fetchAndInjectBadge() {
-  // We inject the main body of the badge as soon as possible to avoid visual flicker.
-  injectSecartaRightSidebarElem(buildSecartaElem("--"));
+  // N.B. We load our extension for NPM broadly, and must check that the element we mutate exists
+  //      The broad loading is to ensure the extension is loaded given NPMs SPA
+  const rightSidebar = document.getElementsByClassName(RIGHT_SIDEBAR_CLASS);
 
-  getProjectScore()
-    .then(response => {
-      switch (response.statusCode) {
-        // success
-        case 200:
-          const score = response.result.score;
-          return buildSecartaElem(`${score} pts`, [getScoreClassName(score)]);
-        // unauthorized
-        case 401:
-          // scoreElem.innerHTML = LOCK_ICON;
-          // scoreElem.setAttribute(
-          //   "title",
-          //   "You must be logged in to Secarta to see scores for projects. Click through to log in"
-          // );
-          return buildSecartaElem("unauthed", ["secarta-locked"]);
-        // missing score, which happens if we haven't analyzed the project before
-        case 404:
-          // scoreElem.innerHTML = OUTDATED_ICON;
-          // scoreElem.setAttribute(
-          //   "title",
-          //   "Couldn't retrieve project score. Click through to trigger analysis"
-          // );
+  if (rightSidebar.length > 0) {
+    // We inject the main body of the badge as soon as possible to avoid visual flicker.
+    injectSecartaRightSidebarElem(
+      buildSecartaElem("--", [], "Loading score...")
+    );
 
-          return buildSecartaElem("missing", ["secarta-unanalyzed"]);
-        // unknown
-        default:
-          // scoreElem.innerText = "?";
-          // scoreElem.setAttribute(
-          //   "title",
-          //   "Unknown error. Please try refreshing the page"
-          // );
-          return buildSecartaElem("?");
-      }
-    })
-    .then(secartaElem => {
-      injectSecartaRightSidebarElem(secartaElem);
-    });
+    getProjectScore()
+      .then(response => {
+        let titleText;
+        switch (response.statusCode) {
+          // success
+          case 200:
+            const score = response.result.score;
+            return buildSecartaElem(`${score} pts`);
+          // unauthorized
+          case 401:
+            titleText =
+              "You must be logged in to Secarta to see scores for projects. Click through to log in";
+            return buildSecartaElem(
+              "missing login",
+              ["secarta-locked"],
+              titleText
+            );
+          // missing score, which happens if we haven't analyzed the project before
+          case 404:
+            titleText =
+              "Couldn't retrieve project score. Click through to trigger analysis";
+            return buildSecartaElem("n/a", ["secarta-unanalyzed"], titleText);
+          // unknown
+          default:
+            titleText = "Unknown error. Please try refreshing the page";
+            return buildSecartaElem("?", [], titleText);
+        }
+      })
+      .then(secartaElem => {
+        injectSecartaRightSidebarElem(secartaElem);
+      });
+  }
 }
 
 /**
@@ -151,9 +158,10 @@ function injectSecartaRightSidebarElem(secartaElem) {
  *
  * @param {string} scoreText
  * @param {string[] | null} additionalClasses
+ * @param {string | null} titleText
  * @returns {HTMLUListElement}
  */
-function buildSecartaElem(scoreText, additionalClasses) {
+function buildSecartaElem(scoreText, additionalClasses, titleText) {
   const secartaClasses = additionalClasses ? additionalClasses : [];
   const npmClasses = [
     "package__sidebarSection___2_OuR",
@@ -163,15 +171,21 @@ function buildSecartaElem(scoreText, additionalClasses) {
     "b--black-10",
     "pr2"
   ];
-  const container = buildElemWithClasses(
+  const secartaElem = buildElemWithClasses(
     "div",
     [].concat(npmClasses, secartaClasses)
   );
-  container.id = SECARTA_BADGE_ID;
+  secartaElem.id = SECARTA_BADGE_ID;
 
-  container.appendChild(buildH3Elem());
-  container.appendChild(buildScoreElem(scoreText));
-  return container;
+  secartaElem.appendChild(buildH3Elem());
+  const scoreElem = buildScoreElem(scoreText);
+
+  if (titleText) {
+    scoreElem.setAttribute("title", titleText);
+  }
+
+  secartaElem.appendChild(scoreElem);
+  return secartaElem;
 }
 
 /**
@@ -230,12 +244,11 @@ function buildLinkElem(scoreText) {
   const link = buildElemWithClasses("a", npmClasses);
 
   link.innerText = scoreText;
-  link.setAttribute("href", buildReportLinkForRepo(PROJECT));
+  link.setAttribute("href", buildReportLinkForRepo(this.getProjectName()));
   link.setAttribute("target", "_blank");
   link.setAttribute("rel", "noopener noreferrer");
 
   return link;
-  debugger;
 }
 
 /**
@@ -268,19 +281,24 @@ function buildApiScoreLinkForRepo(packageName) {
   return `${SECARTA_URL}/api/packages/npm/${packageName}/score`;
 }
 
-/**
- *
- * @param {*} response
- * @returns {string}
- */
-function getScoreClassName(score) {
-  if (score > 75) {
-    return "score-good";
-  } else if (score < 40) {
-    return "score-bad";
-  } else {
-    return "score-average";
-  }
-}
+const mutationObserver = new MutationObserver(mutations => {
+  const validMutations = mutations.filter(
+    mutation => !mutation.target.classList.contains(RIGHT_SIDEBAR_CLASS)
+  );
 
-fetchAndInjectBadge();
+  // If we don't filter the badge mutation we get cyclic behavior and Chrome crashes
+  if (validMutations.length > 0) {
+    fetchAndInjectBadge();
+  }
+});
+
+const packageTitle = document.querySelector("main");
+if (packageTitle != null) {
+  // Ensure badge loads on initial page load
+  fetchAndInjectBadge();
+  const options = {
+    subtree: true,
+    childList: true
+  };
+  mutationObserver.observe(packageTitle, options);
+}

@@ -25,7 +25,7 @@
       "js": ["src/github/inject.js"]
     },
     {
-      "matches": ["https://www.npmjs.com/package/*"],
+      "matches": ["https://www.npmjs.com/*"],
       "css": ["src/npm/styles.css"],
       "js": ["src/npm/inject.js"]
     },
