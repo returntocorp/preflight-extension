@@ -13,6 +13,8 @@ const PACKAGE_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
 
 const RIGHT_SIDEBAR_CLASS = "package__rightSidebar___9dMXo";
 
+const SCORE_CACHE = {};
+
 function getProjectName() {
   // retrieve the project name every time. NPM is a SPA and the title can change between calls
   return document.querySelector(PACKAGE_NAME_CSS_PATH).innerText;
@@ -33,25 +35,38 @@ function getBrowserStorage(param) {
  * @returns {Promise<any>}
  */
 function getProjectScore() {
-  return getBrowserStorage([ACCESS_TOKEN_KEY, EXPIRES_AT_KEY])
-    .then(storage => {
-      if (
-        storage[ACCESS_TOKEN_KEY] == null ||
-        storage[EXPIRES_AT_KEY] == null
-      ) {
-        throw new Error("missing Secarta access_token, log in to Secarta");
-      } else if (storage[EXPIRES_AT_KEY] < new Date().getTime()) {
-        throw new Error("expired Secarta access_token");
-      }
-      return storage;
-    })
-    .then(storage => {
-      return fetchScore(this.getProjectName(), storage[ACCESS_TOKEN_KEY]);
-    })
-    .catch(err => {
-      console.log(err);
-      return { statusCode: 401 };
-    });
+  const projectName = this.getProjectName();
+
+  const cachedScore = SCORE_CACHE[projectName];
+
+  if (cachedScore) {
+    console.log(`Secarta cache hit for ${projectName}`);
+    return Promise.resolve(cachedScore);
+  } else {
+    return getBrowserStorage([ACCESS_TOKEN_KEY, EXPIRES_AT_KEY])
+      .then(storage => {
+        if (
+          storage[ACCESS_TOKEN_KEY] == null ||
+          storage[EXPIRES_AT_KEY] == null
+        ) {
+          throw new Error("missing Secarta access_token, log in to Secarta");
+        } else if (storage[EXPIRES_AT_KEY] < new Date().getTime()) {
+          throw new Error("expired Secarta access_token");
+        }
+        return storage;
+      })
+      .then(storage => {
+        return fetchScore(projectName, storage[ACCESS_TOKEN_KEY]);
+      })
+      .then(score => {
+        SCORE_CACHE[projectName] = score;
+        return score;
+      })
+      .catch(err => {
+        console.log(err);
+        return { statusCode: 401 };
+      });
+  }
 }
 
 function fetchAndInjectBadge() {
