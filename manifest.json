@@ -25,6 +25,11 @@
       "js": ["src/github/inject.js"]
     },
     {
+      "matches": ["https://www.npmjs.com/package/*"],
+      "css": ["src/npm/styles.css"],
+      "js": ["src/npm/inject.js"]
+    },
+    {
       "matches": ["https://app.secarta.io/*"],
       "js": ["src/secarta/get-token.js"]
     }
