@@ -4,16 +4,11 @@ if (window.browser == null) {
 
 const SECARTA_URL = "https://app.secarta.io";
 const SECARTA_BADGE_ID = "secarta-score-badge";
-const SECARTA_SCORE_ID = "secarta-score-score";
-
-const LOCK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-4.138 9.975l-1.862-1.836-1.835 1.861-1.13-1.129 1.827-1.86-1.862-1.837 1.129-1.13 1.859 1.827 1.838-1.871 1.139 1.139-1.833 1.86 1.868 1.836-1.138 1.14zm-5.862-9.975v-4c0-2.206 1.795-4 4-4s4 1.794 4 4v4h-8z"/></svg>`;
-const OUTDATED_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M8,0 C12.42,0 16,3.58 16,8 C16,12.06 12.98,15.4 9.06,15.92 C9.04,15.92 9.02,15.93 9,15.93 C8.67,15.97 8.34,16 8,16 C3.58,16 0,12.42 0,8 C0,7.45 0.45,7 1,7 C1.55,7 2,7.45 2,8 C2,11.31 4.69,14 8,14 C8.71,14 9.37,13.85 10,13.62 L10,13.63 C12.33,12.81 14,10.61 14,8 C14,4.69 11.31,2 8,2 C6.22,2 4.64,2.78 3.54,4 L5,4 C5.55,4 6,4.45 6,5 C6,5.55 5.55,6 5,6 L1,6 C0.45,6 0,5.55 0,5 L0,1 C0,0.45 0.45,0 1,0 C1.55,0 2,0.45 2,1 L2,2.74 C3.46,1.07 5.6,0 8,0 Z M9,12 L7,12 L7,10 L9,10 L9,12 Z M9,9 L7,9 L7,4 L9,4 L9,9 Z"/></svg>`;
 
 const ACCESS_TOKEN_KEY = "access_token";
 const EXPIRES_AT_KEY = "expires_at";
 
-const INJECT_BEFORE_CSS_PATH =
-  "#top > div.package__rightSidebar___9dMXo.w-third-ns.mt3.w-100.w-100-m.pt3.ph2.pv0-ns.order-1-ns.order-0 > div:nth-child(4)";
+const INJECT_CSS_PATH = ".package__sidebarSection___2_OuR";
 const REPO_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
 const REPO_NAME_ELEM = document.querySelector(REPO_NAME_CSS_PATH);
 const PROJECT = REPO_NAME_ELEM.innerText;
@@ -123,19 +118,18 @@ function injectSecartaRightSidebarElem(secartaElem) {
     );
     return secartaElem;
   } else {
-    const injectBeforeSite = document.querySelector(INJECT_BEFORE_CSS_PATH);
+    // Get the first matching element, and insert the secarta score before it
+    const injectBeforeSite = document.querySelector(INJECT_CSS_PATH);
     const injectedElem = injectBeforeSite.parentNode.insertBefore(
       secartaElem,
       injectBeforeSite
     );
 
     // NPM adds a w-100 (width 100%) classname to the last child. We add / remove this based on if we've made the number of children even / odd.
-    const sideBarElements = document.querySelectorAll(
-      ".package__sidebarSection___2_OuR"
-    );
+    const sideBarElements = document.querySelectorAll(INJECT_CSS_PATH);
 
     if (sideBarElements.length <= 0) {
-      throw "Expected there to be sidebar elements.";
+      throw "Expected sidebar elements, but found none";
     }
 
     const length = sideBarElements.length;
@@ -155,7 +149,7 @@ function injectSecartaRightSidebarElem(secartaElem) {
 
 /**
  *
- * @param {*} scoreText
+ * @param {string} scoreText
  * @param {string[] | null} additionalClasses
  * @returns {HTMLUListElement}
  */
@@ -199,7 +193,6 @@ function buildH3Elem() {
 }
 
 /**
- * The innter text of the element is the score. Can be overwritten.
  * @returns {HTMLAnchorElement}
  */
 function buildScoreElem(scoreText) {
@@ -218,9 +211,31 @@ function buildScoreElem(scoreText) {
     "p",
     [].concat(npmClasses, secartaClasses)
   );
-  paragraph.id = SECARTA_SCORE_ID;
-  paragraph.innerText = scoreText;
+  paragraph.appendChild(buildLinkElem(scoreText));
   return paragraph;
+}
+
+function buildLinkElem(scoreText) {
+  const npmClasses = [
+    "package__sidebarLink___zE7yA",
+    "package__sidebarText___n8Z-E",
+    "fw6",
+    "mb3",
+    "mt2",
+    "truncate",
+    "black-80",
+    "f4",
+    "link"
+  ];
+  const link = buildElemWithClasses("a", npmClasses);
+
+  link.innerText = scoreText;
+  link.setAttribute("href", buildReportLinkForRepo(PROJECT));
+  link.setAttribute("target", "_blank");
+  link.setAttribute("rel", "noopener noreferrer");
+
+  return link;
+  debugger;
 }
 
 /**
