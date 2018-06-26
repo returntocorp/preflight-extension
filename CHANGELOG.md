@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.12] - 2018-06-25
+
 ### Removed
 
 - No longer show popup when extension icon is clicked.
