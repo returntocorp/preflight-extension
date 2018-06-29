@@ -6,7 +6,6 @@ const SECARTA_URL = "https://app.secarta.io";
 const SECARTA_BADGE_ID = "secarta-score-badge";
 
 const ACCESS_TOKEN_KEY = "access_token";
-const EXPIRES_AT_KEY = "expires_at";
 
 const INJECT_CSS_PATH = ".package__sidebarSection___2_OuR";
 const RIGHT_SIDEBAR_CLASS = "package__rightSidebar___9dMXo";
