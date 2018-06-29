@@ -80,7 +80,7 @@ function fetchAndInjectBadge() {
             scoreElem.innerText = "?";
             scoreElem.setAttribute(
               "title",
-              "Please click to visit Secarta. If this is a private project you likely need to log in or we haven't yet analyzed the project."
+              "Please click to visit Secarta. If this is a private project you likely need to log in or we haven't yet analyzed this project."
             );
             return {
               scoreElem,

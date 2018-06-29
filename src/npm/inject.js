@@ -9,15 +9,19 @@ const ACCESS_TOKEN_KEY = "access_token";
 const EXPIRES_AT_KEY = "expires_at";
 
 const INJECT_CSS_PATH = ".package__sidebarSection___2_OuR";
-const PACKAGE_NAME_CSS_PATH = "#top > div.w-100.ph0-ns.ph3 > h2 > span";
-
 const RIGHT_SIDEBAR_CLASS = "package__rightSidebar___9dMXo";
 
 const SCORE_CACHE = {};
 
 function getProjectName() {
-  // retrieve the project name every time. NPM is a SPA and the title can change between calls
-  return document.querySelector(PACKAGE_NAME_CSS_PATH).innerText;
+  const pathName = window.location.pathname;
+  if (pathName.startsWith("/package")) {
+    return pathName.split("/").pop();
+  } else {
+    throw new Error(
+      "Unable to find package name. URL path doesn't contain '/package/{packageName}'."
+    );
+  }
 }
 
 /**
@@ -36,25 +40,12 @@ function getBrowserStorage(param) {
  */
 function getProjectScore() {
   const projectName = this.getProjectName();
-
   const cachedScore = SCORE_CACHE[projectName];
 
   if (cachedScore) {
-    console.log(`Secarta cache hit for ${projectName}`);
     return Promise.resolve(cachedScore);
   } else {
-    return getBrowserStorage([ACCESS_TOKEN_KEY, EXPIRES_AT_KEY])
-      .then(storage => {
-        if (
-          storage[ACCESS_TOKEN_KEY] == null ||
-          storage[EXPIRES_AT_KEY] == null
-        ) {
-          throw new Error("missing Secarta access_token, log in to Secarta");
-        } else if (storage[EXPIRES_AT_KEY] < new Date().getTime()) {
-          throw new Error("expired Secarta access_token");
-        }
-        return storage;
-      })
+    return getBrowserStorage([ACCESS_TOKEN_KEY])
       .then(storage => {
         return fetchScore(projectName, storage[ACCESS_TOKEN_KEY]);
       })
@@ -64,7 +55,7 @@ function getProjectScore() {
       })
       .catch(err => {
         console.log(err);
-        return { statusCode: 401 };
+        return { statusCode: 500 };
       });
   }
 }
@@ -89,22 +80,9 @@ function fetchAndInjectBadge() {
             const score = response.result.score;
             return buildSecartaElem(`${score} pts`);
           // unauthorized
-          case 401:
-            titleText =
-              "You must be logged in to Secarta to see scores for projects. Click through to log in";
-            return buildSecartaElem(
-              "missing login",
-              ["secarta-locked"],
-              titleText
-            );
-          // missing score, which happens if we haven't analyzed the project before
-          case 404:
-            titleText =
-              "Couldn't retrieve project score. Click through to trigger analysis";
-            return buildSecartaElem("n/a", ["secarta-unanalyzed"], titleText);
-          // unknown
           default:
-            titleText = "Unknown error. Please try refreshing the page";
+            titleText =
+              "Please click to visit Secarta. If this is a private project you likely need to log in or we haven't yet analyzed this project.";
             return buildSecartaElem("?", [], titleText);
         }
       })
@@ -115,16 +93,17 @@ function fetchAndInjectBadge() {
 }
 
 /**
- * @param {string} packageName
- * @param {string} token
+ * @param {string} repoName
+ * @param {string | null} token
  */
-function fetchScore(packageName, token) {
-  return fetch(buildApiScoreLinkForRepo(packageName), {
-    method: "get",
-    headers: new Headers({
-      Authorization: token
-    })
-  }).then(response => response.json());
+function fetchScore(repoName, token) {
+  const requestBody = token
+    ? { headers: new Headers({ Authorization: token }) }
+    : {};
+
+  return fetch(buildApiScoreLinkForRepo(repoName), requestBody).then(response =>
+    response.json()
+  );
 }
 
 /**
