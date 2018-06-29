@@ -6,8 +6,7 @@ browser.runtime.onMessage.addListener(function(msg, sender) {
   if (msg.subject === "token") {
     if (msg.access_token) {
       browser.storage.local.set({
-        access_token: msg.access_token,
-        expires_at: msg.expires_at
+        access_token: msg.access_token
       });
     }
   }

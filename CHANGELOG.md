@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.13] - 2018-06-29
+
+### Fixed
+
+- Fix issue getting package name on npmjs.com
+
+### Added
+
+- No longer require users to be logged in to Secarta to view scores for public projects
+
 ## [1.1.12] - 2018-06-25
 
 ### Removed
