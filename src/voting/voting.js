@@ -69,7 +69,6 @@ function buildExtensionHeaders(user) {
  */
 function handleVoteAnimation(animationType, vote, error) {
   clearAllVoteState();
-
   const voteButtons = document.getElementsByClassName(`vote-${vote}`);
 
   if (voteButtons.length == 0) {
@@ -77,7 +76,7 @@ function handleVoteAnimation(animationType, vote, error) {
   } else {
     const voteButton = voteButtons[0];
     const voteAnimationClass = `vote-${animationType}`;
-    voteButton.classList.add(voteAnimationClass);
+    voteButton.classList.add(voteAnimationClass, "voted");
 
     const votedText = buildElemWithClasses("div", ["voted-text"]);
 
@@ -111,7 +110,7 @@ function handleVoteAnimation(animationType, vote, error) {
 function clearAllVoteState() {
   document
     .querySelectorAll(".secarta-vote-button")
-    .forEach(node => node.classList.remove("vote-success"));
+    .forEach(node => node.classList.remove("vote-success", "voted"));
 }
 
 function updateVoteCounts(voteCounts) {
@@ -124,6 +123,14 @@ function updateVoteCounts(voteCounts) {
     if (voteButtonCounter != null) {
       voteButtonCounter.innerText = voteCount;
     }
+  }
+}
+
+function updateCurrentVote(currentVote) {
+  const currentVoteButton = document.querySelector(`.vote-${currentVote}`);
+
+  if (currentVoteButton != null) {
+    currentVoteButton.classList.add("voted");
   }
 }
 
@@ -140,6 +147,7 @@ function submitVote(vote, user) {
     };
 
     const headers = buildExtensionHeaders(user);
+    handleVoteAnimation("success", vote);
     fetch(buildVotingUrl(getAnalyticsParams()), {
       method: "POST",
       body: JSON.stringify(body),
@@ -150,8 +158,8 @@ function submitVote(vote, user) {
           handleVoteAnimation("failed", vote, response.status);
         } else {
           response.json().then(response => {
-            handleVoteAnimation("success", vote);
             updateVoteCounts(response.votes);
+            updateCurrentVote(response.currentVote);
           });
         }
       })
@@ -274,6 +282,7 @@ function buildVoteContainerElem() {
       container.appendChild(
         buildVoteButton("question", response.votes.question)
       );
+      updateCurrentVote(response.currentVote);
     });
   }
 
