@@ -67,7 +67,9 @@ function buildExtensionHeaders(user) {
  * @param {"up" | "down" | "question"} vote
  * @param {* | undefined} error
  */
-function handleVoteAnimation(animationType, vote, { error, count }) {
+function handleVoteAnimation(animationType, vote, error) {
+  clearAllVoteState();
+
   const voteButtons = document.getElementsByClassName(`vote-${vote}`);
 
   if (voteButtons.length == 0) {
@@ -85,10 +87,6 @@ function handleVoteAnimation(animationType, vote, { error, count }) {
       votedText.innerText = "Voted";
     }
 
-    if (count != null) {
-      voteButton.querySelector(".vote-count").innerText = count;
-    }
-
     voteButton.querySelector(".vote-icon").appendChild(votedText);
 
     voteButton.addEventListener(
@@ -96,8 +94,6 @@ function handleVoteAnimation(animationType, vote, { error, count }) {
       e => {
         e.preventDefault();
         setTimeout(() => {
-          voteButton.classList.remove(voteAnimationClass);
-
           if (votedText != null) {
             voteButton.querySelector(".vote-icon").removeChild(votedText);
           }
@@ -108,6 +104,25 @@ function handleVoteAnimation(animationType, vote, { error, count }) {
 
     if (error) {
       console.error("Couldn't vote:", error);
+    }
+  }
+}
+
+function clearAllVoteState() {
+  document
+    .querySelectorAll(".secarta-vote-button")
+    .forEach(node => node.classList.remove("vote-success"));
+}
+
+function updateVoteCounts(voteCounts) {
+  for (let key in voteCounts) {
+    const voteCount = voteCounts[key];
+    const voteButtonCounter = document.querySelector(
+      `.vote-${key} .vote-count`
+    );
+
+    if (voteButtonCounter != null) {
+      voteButtonCounter.innerText = voteCount;
     }
   }
 }
@@ -132,12 +147,11 @@ function submitVote(vote, user) {
     })
       .then(response => {
         if (!response.ok) {
-          handleVoteAnimation("failed", vote, { error: response.status });
+          handleVoteAnimation("failed", vote, response.status);
         } else {
           response.json().then(response => {
-            handleVoteAnimation("success", vote, {
-              count: response.votes[vote]
-            });
+            handleVoteAnimation("success", vote);
+            updateVoteCounts(response.votes);
           });
         }
       })
