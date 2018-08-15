@@ -105,7 +105,13 @@ function handleVoteAnimation(animationType, vote, error) {
 function submitVote(vote, user) {
   return e => {
     e.preventDefault();
-    const body = { vote, user };
+    const body = {
+      vote,
+      user,
+      _source: document.location.toString(),
+      _medium: "extension",
+      _content: "voting-check-cross"
+    };
     console.log(body);
     fetch(buildVotingUrl(), {
       method: "POST",
