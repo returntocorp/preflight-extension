@@ -55,6 +55,14 @@ function buildVotingUrl({ source, medium, content }) {
 
 /**
  *
+ * @param {string} user
+ */
+function buildExtensionHeaders(user) {
+  return user != null ? { "X-Secarta-GitHub-User": user } : undefined;
+}
+
+/**
+ *
  * @param {"succeeded" | "failed"} animationType
  * @param {"up" | "down" | "question"} vote
  * @param {* | undefined} error
@@ -65,12 +73,12 @@ function handleVoteAnimation(animationType, vote, error) {
   if (voteButtons.length == 0) {
     console.error(`Couldn't find vote button corresponding to ${vote}`);
   } else {
+    console.log("Found vote buttons");
     const voteButton = voteButtons[0];
     const voteAnimationClass = `vote-${animationType}`;
     voteButton.classList.add(voteAnimationClass);
 
-    const votedText = document.createElement("div");
-    votedText.classList.add("voted-text");
+    const votedText = buildElemWithClasses("div", ["voted-text"]);
 
     if (error) {
       votedText.innerText = "Couldn't vote";
@@ -78,7 +86,7 @@ function handleVoteAnimation(animationType, vote, error) {
       votedText.innerText = "Voted";
     }
 
-    voteButton.appendChild(votedText);
+    voteButton.querySelector(".vote-icon").appendChild(votedText);
 
     voteButton.addEventListener(
       "animationend",
@@ -88,9 +96,9 @@ function handleVoteAnimation(animationType, vote, error) {
           voteButton.classList.remove(voteAnimationClass);
 
           if (votedText != null) {
-            voteButton.removeChild(votedText);
+            voteButton.querySelector(".vote-icon").removeChild(votedText);
           }
-        }, 2000);
+        }, 1000);
       },
       { once: true }
     );
@@ -112,12 +120,9 @@ function submitVote(vote, user) {
       vote,
       user
     };
-    const source = document.location.toString();
-    const medium = "extension";
-    const content = "voting-bluecheck-redcross-greenquestion";
-    const headers =
-      user != null ? { "X-Secarta-GitHub-User": user } : undefined;
-    fetch(buildVotingUrl({ source, medium, content }), {
+
+    const headers = buildExtensionHeaders(user);
+    fetch(buildVotingUrl(getAnalyticsParams()), {
       method: "POST",
       body: JSON.stringify(body),
       headers
@@ -143,16 +148,21 @@ function submitVote(vote, user) {
 function buildElemWithClasses(tag, classes, textContent) {
   const elem = document.createElement(tag);
   elem.className = classes.join(" ");
-  elem.innerText = textContent;
+
+  if (textContent != null) {
+    elem.innerText = textContent;
+  }
+
   return elem;
 }
 
 /**
  *
  * @param {"up" | "down" | "question"} vote
+ * @param {number} count
  * @returns {HTMLAnchorElement}
  */
-function buildVoteButton(vote) {
+function buildVoteButton(vote, count) {
   const user = extractGitHubUserFromPage();
   const { org, repo } = extractSlugFromCurrentUrl();
   const button = buildElemWithClasses("a", [
@@ -160,7 +170,15 @@ function buildVoteButton(vote) {
     `vote-${vote}`
   ]);
   button.setAttribute("title", `${vote}vote ${org}/${repo}`);
-  button.innerHTML = R2C_VOTING_ICONS[vote];
+
+  const iconContainer = buildElemWithClasses("div", ["vote-icon"]);
+  iconContainer.innerHTML = `${R2C_VOTING_ICONS[vote]}`;
+  button.appendChild(iconContainer);
+
+  const voteCount = buildElemWithClasses("div", ["vote-count"]);
+  voteCount.innerText = count.toFixed(0);
+  button.appendChild(voteCount);
+
   button.onclick = submitVote(vote, user);
   button.setAttribute("href", "javascript:;");
   return button;
@@ -185,6 +203,34 @@ function isRepositoryPrivate() {
 }
 
 /**
+ * @returns {{ source: string, medium: string, content: string }}
+ */
+function getAnalyticsParams() {
+  return {
+    source: document.location.toString(),
+    medium: "extension",
+    content: "voting-bluecheck-redcross-greenquestion"
+  };
+}
+
+/**
+ * @param {{ domain: string, org: string, repo: string }}
+ * @returns {Promise<{ votes: {[voteType: string]: number} }>}
+ */
+function getVotesForProject({ domain, org, repo }) {
+  const votesUrl = buildVotingUrl(getAnalyticsParams());
+  return fetch(votesUrl, {
+    headers: buildExtensionHeaders(extractGitHubUserFromPage())
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw response;
+    }
+  });
+}
+
+/**
  * @returns {HTMLDivElement}
  */
 function buildVoteContainerElem() {
@@ -201,9 +247,13 @@ function buildVoteContainerElem() {
     lockIcon.setAttribute("href", "javascript:;");
     container.appendChild(lockIcon);
   } else {
-    container.appendChild(buildVoteButton("up"));
-    container.appendChild(buildVoteButton("down"));
-    container.appendChild(buildVoteButton("question"));
+    getVotesForProject(extractSlugFromCurrentUrl()).then(response => {
+      container.appendChild(buildVoteButton("up", response.votes.up));
+      container.appendChild(buildVoteButton("down", response.votes.down));
+      container.appendChild(
+        buildVoteButton("question", response.votes.question)
+      );
+    });
   }
 
   return container;

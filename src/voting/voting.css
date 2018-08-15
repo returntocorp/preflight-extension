@@ -2,7 +2,6 @@
   position: fixed;
   bottom: 40px;
   right: 0px;
-  overflow: hidden;
 
   display: flex;
 
@@ -15,7 +14,8 @@
 }
 
 .secarta-vote-button,
-.r2c-button {
+.r2c-button,
+.secarta-vote-button .vote-icon {
   height: 48px;
   width: 48px;
 
@@ -25,13 +25,22 @@
 
   color: #fff;
   text-decoration: none;
+}
 
+.secarta-vote-button .vote-icon {
   overflow: hidden;
 }
 
 .secarta-vote-button {
   background-color: #aaa;
   fill: white;
+  transition: background-color 0.3s;
+}
+
+.secarta-vote-button .vote-count {
+  position: absolute;
+  top: -20px;
+  text-decoration: none;
 }
 
 .r2c-button {
@@ -85,6 +94,11 @@
 .secarta-vote-button.vote-up {
   background-color: #fff;
   fill: rgb(33, 102, 172);
+  color: rgb(33, 102, 172);
+}
+
+.secarta-vote-button.vote-up.vote-success {
+  background-color: rgb(33, 102, 172);
 }
 
 .secarta-vote-button.vote-up:hover {
@@ -95,6 +109,7 @@
 .secarta-vote-button.vote-down {
   background-color: #fff;
   fill: rgb(178, 24, 43);
+  color: rgb(178, 24, 43);
 }
 
 .secarta-vote-button.vote-down:hover {
@@ -102,14 +117,23 @@
   fill: #fff;
 }
 
+.secarta-vote-button.vote-down.vote-success {
+  background-color: rgb(178, 24, 43);
+}
+
 .secarta-vote-button.vote-question {
   background-color: #fff;
   fill: rgb(51, 160, 44);
+  color: rgb(51, 160, 44);
 }
 
 .secarta-vote-button.vote-question:hover {
   background-color: #43b33d;
   fill: #fff;
+}
+
+.secarta-vote-button.vote-question.vote-success {
+  background-color: rgb(51, 160, 44);
 }
 
 @keyframes vote-container-in {
