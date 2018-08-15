@@ -79,7 +79,6 @@ function handleVoteAnimation(animationType, vote, error) {
     voteButton.addEventListener(
       "animationend",
       e => {
-        console.log("animation ended");
         e.preventDefault();
         setTimeout(() => {
           voteButton.classList.remove(voteAnimationClass);
@@ -211,10 +210,8 @@ const votingButtons = document.querySelector(`#${R2C_VOTING_CONTAINER_ID}`);
 if (mainDiv != null) {
   const container = buildVoteContainerElem();
   if (votingButtons == null) {
-    console.log("attaching");
     mainDiv.appendChild(container);
   } else {
-    console.log("replacing");
     mainDiv.replaceChild(container);
   }
 }
