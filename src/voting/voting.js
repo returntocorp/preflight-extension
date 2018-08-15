@@ -14,6 +14,8 @@ const R2C_LOGO = `<svg width="89" height="114" viewBox="0 0 89 114" xmlns="http:
 <path fill-rule="evenodd" clip-rule="evenodd" d="M0 21.6326L21.5494 0L29.3661 7.84687L15.6334 21.6326L29.3662 35.4183L21.5494 43.2652L0 21.6326ZM2.823 21.6326L21.5494 40.4313L26.5432 35.4183L12.8104 21.6326L26.5431 7.84687L21.5494 2.83389L2.823 21.6326Z"/>
 </svg>`;
 
+const R2C_PRIVATE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8v-4zm11 16h-14v-10h14v10z"/></svg>`;
+
 const R2C_VOTING_ICONS = {
   up: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>`,
   down: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>`,
@@ -21,12 +23,12 @@ const R2C_VOTING_ICONS = {
 };
 
 /**
- * @returns {{ domain: string, org: string, repo: string }}
+ * @returns {{ domain: string, org: string, repo: string, pathname: string, rest: string }}
  */
 function extractSlugFromCurrentUrl() {
   const { hostname: domain, pathname } = document.location;
-  const [_, org, repo] = pathname.split("/");
-  return { domain, org, repo };
+  const [_, org, repo, ...rest] = pathname.split("/");
+  return { domain, org, repo, pathname, rest: rest.join("/") };
 }
 
 /**
@@ -147,7 +149,7 @@ function buildVoteButton(vote) {
     "secarta-vote-button",
     `vote-${vote}`
   ]);
-  button.setAttribute("title", `Upvote ${org}/${repo}`);
+  button.setAttribute("title", `${vote}vote ${org}/${repo}`);
   button.innerHTML = R2C_VOTING_ICONS[vote];
   button.onclick = submitVote(vote, user);
   button.setAttribute("href", "javascript:;");
@@ -167,6 +169,11 @@ function buildR2CButton(vote) {
   return button;
 }
 
+function isRepositoryPrivate() {
+  const private = document.querySelector("h1.private");
+  return private != null;
+}
+
 /**
  * @returns {HTMLDivElement}
  */
@@ -174,9 +181,21 @@ function buildVoteContainerElem() {
   const container = document.createElement("div");
   container.id = R2C_VOTING_CONTAINER_ID;
   container.appendChild(buildR2CButton());
-  container.appendChild(buildVoteButton("up"));
-  container.appendChild(buildVoteButton("down"));
-  container.appendChild(buildVoteButton("question"));
+
+  if (isRepositoryPrivate()) {
+    const lockIcon = buildElemWithClasses("a", [
+      "r2c-button",
+      "button-private-repository"
+    ]);
+    lockIcon.innerHTML = `${R2C_PRIVATE_ICON} Private repository`;
+    lockIcon.setAttribute("href", "javascript:;");
+    container.appendChild(lockIcon);
+  } else {
+    container.appendChild(buildVoteButton("up"));
+    container.appendChild(buildVoteButton("down"));
+    container.appendChild(buildVoteButton("question"));
+  }
+
   return container;
 }
 

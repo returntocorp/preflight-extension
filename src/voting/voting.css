@@ -19,6 +19,9 @@
   justify-content: center;
   align-items: center;
 
+  color: #fff;
+  text-decoration: none;
+
   overflow: hidden;
 }
 
@@ -31,6 +34,20 @@
   background-color: #fff;
   border: 1px solid #ddd;
   fill: #0a9bda;
+}
+
+.r2c-button.button-private-repository {
+  width: inherit;
+  padding: 15px;
+  background-color: #ddd;
+  fill: #777;
+  color: #777;
+  cursor: default;
+  pointer-events: none;
+}
+
+.r2c-button.button-private-repository svg {
+  margin-right: 10px;
 }
 
 .r2c-button svg {
@@ -55,8 +72,6 @@
 .secarta-vote-button.vote-success .voted-text,
 .secarta-vote-button.vote-failed .voted-text {
   position: absolute;
-  color: #fff;
-  text-decoration: none;
   animation: 1s vote-succeeded-text 0.3s both
     cubic-bezier(0.645, 0.045, 0.355, 1);
 }
