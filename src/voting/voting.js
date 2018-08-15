@@ -114,7 +114,7 @@ function submitVote(vote, user) {
     };
     const source = document.location.toString();
     const medium = "extension";
-    const content = "voting-check-cross";
+    const content = "voting-bluecheck-redcross-greenquestion";
     const headers =
       user != null ? { "X-Secarta-GitHub-User": user } : undefined;
     fetch(buildVotingUrl({ source, medium, content }), {
