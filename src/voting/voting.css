@@ -59,6 +59,8 @@
 .secarta-vote-button.vote-success,
 .secarta-vote-button.vote-failed {
   animation: vote-submitted both 2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .secarta-vote-button.vote-success svg {
