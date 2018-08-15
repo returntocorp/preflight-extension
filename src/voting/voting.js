@@ -199,7 +199,7 @@ function buildVoteContainerElem() {
   return container;
 }
 
-const mainDiv = document.querySelector(GITHUB_APPLICATION_MAIN_DIV);
+const mainDiv = document.querySelector("body");
 const votingButtons = document.querySelector(`#${R2C_VOTING_CONTAINER_ID}`);
 
 if (mainDiv != null) {
