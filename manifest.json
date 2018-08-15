@@ -4,7 +4,12 @@
   "version": "0.0.1",
   "description": "Write Secure Code.",
   "manifest_version": 2,
-  "permissions": ["storage", "https://app.secarta.io/*", "activeTab"],
+  "permissions": [
+    "storage",
+    "https://app.secarta.io/*",
+    "https://api.secarta.io/*",
+    "activeTab"
+  ],
   "background": {
     "scripts": ["src/background.js"],
     "persistent": true
@@ -20,14 +25,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://github.com/*/*"],
-      "css": ["src/github/styles.css"],
-      "js": ["src/github/inject.js"]
-    },
-    {
-      "matches": ["https://www.npmjs.com/*"],
-      "css": ["src/npm/styles.css"],
-      "js": ["src/npm/inject.js"]
+      "matches": ["https://github.com/*/*", "https://www.npmjs.com/*"],
+      "css": ["src/voting/voting.css"],
+      "js": ["src/voting/voting.js"]
     },
     {
       "matches": ["https://app.secarta.io/*"],

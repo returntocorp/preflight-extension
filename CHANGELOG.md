@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Replaced Secarta button with voting bar
+
 ## [1.1.13] - 2018-06-29
 
 ### Fixed
