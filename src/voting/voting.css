@@ -74,8 +74,8 @@
 .secarta-vote-button.vote-success .voted-text,
 .secarta-vote-button.vote-failed .voted-text {
   position: absolute;
-  animation: 1s vote-succeeded-text 0.3s both
-    cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation: vote-succeeded-text both cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-duration: 1.5s;
 }
 
 .secarta-vote-button.vote-up {
@@ -117,11 +117,11 @@
     transform: translateY(0);
   }
 
-  49% {
+  49.99% {
     transform: translateY(-100px);
   }
 
-  50% {
+  50.01% {
     transform: translateY(100px);
   }
 
@@ -149,7 +149,11 @@
     transform: translateY(100px);
   }
 
-  50% {
+  30% {
+    transform: translateY(0px);
+  }
+
+  60% {
     transform: translateY(0px);
   }
 
@@ -164,7 +168,7 @@
   }
 
   50% {
-    width: 144px;
+    width: 96px;
   }
 
   100% {
