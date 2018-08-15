@@ -97,17 +97,17 @@
 
 .secarta-vote-button.vote-up {
   background-color: #fff;
-  fill: rgb(33, 102, 172);
-  color: rgb(33, 102, 172);
+  fill: #33a02c;
+  color: #33a02c;
 }
 
 .secarta-vote-button.vote-up.vote-success {
-  background-color: rgb(33, 102, 172);
+  background-color: #33a02c;
   fill: #fff;
 }
 
 .secarta-vote-button.vote-up:hover {
-  background-color: #2e78c6;
+  background-color: #33a02c;
   fill: #fff;
 }
 
@@ -129,17 +129,17 @@
 
 .secarta-vote-button.vote-question {
   background-color: #fff;
-  fill: rgb(51, 160, 44);
-  color: rgb(51, 160, 44);
+  fill: #634dbf;
+  color: #634dbf;
 }
 
 .secarta-vote-button.vote-question:hover {
-  background-color: #43b33d;
+  background-color: #634dbf;
   fill: #fff;
 }
 
 .secarta-vote-button.vote-question.vote-success {
-  background-color: rgb(51, 160, 44);
+  background-color: #634dbf;
   fill: #fff;
 }
 

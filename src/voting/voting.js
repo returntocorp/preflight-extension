@@ -216,7 +216,7 @@ function getAnalyticsParams() {
   return {
     source: document.location.toString(),
     medium: "extension",
-    content: "voting-bluecheck-redcross-greenquestion"
+    content: "voting-checkcross-newcolors"
   };
 }
 
