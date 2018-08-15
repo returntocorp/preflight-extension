@@ -101,7 +101,7 @@ function handleVoteAnimation(animationType, vote, { error, count }) {
           if (votedText != null) {
             voteButton.querySelector(".vote-icon").removeChild(votedText);
           }
-        }, 1000);
+        }, 1500);
       },
       { once: true }
     );
