@@ -44,9 +44,13 @@ function extractGitHubUserFromPage() {
   return userLoginMetaTags[0].getAttribute("content") || undefined;
 }
 
-function buildVotingUrl() {
+/**
+ * @param {{ source: string, medium: string, content: string }} utm
+ */
+function buildVotingUrl({ source, medium, content }) {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
-  return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}`;
+  const params = new URLSearchParams({ source, medium, content });
+  return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
 }
 
 /**
@@ -106,13 +110,12 @@ function submitVote(vote, user) {
     e.preventDefault();
     const body = {
       vote,
-      user,
-      _source: document.location.toString(),
-      _medium: "extension",
-      _content: "voting-check-cross"
+      user
     };
-    console.log(body);
-    fetch(buildVotingUrl(), {
+    const source = document.location.toString();
+    const medium = "extension";
+    const content = "voting-check-cross";
+    fetch(buildVotingUrl({ source, medium, content }), {
       method: "POST",
       body: JSON.stringify(body),
       headers: { "X-Secarta-GitHub-User": user }
