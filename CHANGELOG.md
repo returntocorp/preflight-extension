@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2018-08-15
 
 ### Added
 
-- Replaced Secarta button with voting bar
+- You can now vote on GitHub repositories and NPM packages. More coming soon.
+
+### Removed
+
+- Ability to see score in a Secarta badge. This will come back in a near future release.
 
 ## [1.1.13] - 2018-06-29
 
