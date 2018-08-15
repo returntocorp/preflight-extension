@@ -67,23 +67,26 @@ function buildExtensionHeaders(user) {
  * @param {"up" | "down" | "question"} vote
  * @param {* | undefined} error
  */
-function handleVoteAnimation(animationType, vote, error) {
+function handleVoteAnimation(animationType, vote, { error, count }) {
   const voteButtons = document.getElementsByClassName(`vote-${vote}`);
 
   if (voteButtons.length == 0) {
     console.error(`Couldn't find vote button corresponding to ${vote}`);
   } else {
-    console.log("Found vote buttons");
     const voteButton = voteButtons[0];
     const voteAnimationClass = `vote-${animationType}`;
     voteButton.classList.add(voteAnimationClass);
 
     const votedText = buildElemWithClasses("div", ["voted-text"]);
 
-    if (error) {
+    if (error != null) {
       votedText.innerText = "Couldn't vote";
     } else {
       votedText.innerText = "Voted";
+    }
+
+    if (count != null) {
+      voteButton.querySelector(".vote-count").innerText = count;
     }
 
     voteButton.querySelector(".vote-icon").appendChild(votedText);
@@ -129,9 +132,13 @@ function submitVote(vote, user) {
     })
       .then(response => {
         if (!response.ok) {
-          handleVoteAnimation("failed", vote, response.status);
+          handleVoteAnimation("failed", vote, { error: response.status });
         } else {
-          handleVoteAnimation("success", vote);
+          response.json().then(response => {
+            handleVoteAnimation("success", vote, {
+              count: response.votes[vote]
+            });
+          });
         }
       })
       .catch(e => handleVoteAnimation("failed", vote, e));
