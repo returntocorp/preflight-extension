@@ -115,10 +115,12 @@ function submitVote(vote, user) {
     const source = document.location.toString();
     const medium = "extension";
     const content = "voting-check-cross";
+    const headers =
+      user != null ? { "X-Secarta-GitHub-User": user } : undefined;
     fetch(buildVotingUrl({ source, medium, content }), {
       method: "POST",
       body: JSON.stringify(body),
-      headers: { "X-Secarta-GitHub-User": user }
+      headers
     })
       .then(response => {
         if (!response.ok) {
