@@ -4,9 +4,10 @@
   "version": "0.0.1",
   "description": "Write Secure Code.",
   "manifest_version": 2,
-  "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
+  "permissions": ["storage", "https://api.secarta.io/*"],
+  "optional_permissions": ["<all_urls>"],
   "background": {
-    "scripts": ["src/background.js"],
+    "scripts": ["background.js"],
     "persistent": true
   },
   "applications": {
@@ -21,8 +22,8 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*", "https://www.npmjs.com/*"],
-      "css": ["src/voting/voting.css"],
-      "js": ["src/voting/voting.js"]
+      "css": ["./hot-reload-stub.css"],
+      "js": ["./static/js/bundle.js"]
     }
   ]
 }

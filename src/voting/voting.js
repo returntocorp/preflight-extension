@@ -1,3 +1,4 @@
+// tslint:disable
 if (window.browser == null) {
   /* chrome are jerks */ window.browser = window.chrome;
 }
