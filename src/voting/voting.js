@@ -41,7 +41,7 @@ function getOrCreateExtensionUniqueId() {
       if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
         resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
       } else {
-        const arr = new Uint8Array(40 / 2);
+        const arr = new Uint8Array(20 / 2);
         window.crypto.getRandomValues(arr);
         const installationId = [].map.call(arr, byteToHex).join("");
         browser.storage.local.set({
@@ -67,9 +67,12 @@ async function extractCurrentUserFromPage() {
       return undefined;
     }
 
-    return userLoginMetaTags[0].getAttribute("content") || extensionUniqueId;
+    return (
+      userLoginMetaTags[0].getAttribute("content") ||
+      `anonymous-${extensionUniqueId}`
+    );
   } else {
-    return extensionUniqueId;
+    return `anonymous-${extensionUniqueId}`;
   }
 }
 
