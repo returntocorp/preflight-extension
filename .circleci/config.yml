@@ -31,6 +31,11 @@ jobs:
             git config user.email "circleci@returntocorp.com"
             git config user.name "circleci"
       - run:
+          name: Install yarn deps and build
+          command: |
+            yarn
+            yarn build
+      - run:
           name: Update manifest version
           command: |
             jq '.name = "R2C Beta"' manifest.json | sponge manifest.json
@@ -39,7 +44,7 @@ jobs:
             git commit -a -m "Bump extension version to match git tag"
       - run:
           name: Build extension zip
-          command: mkdir -p dist && git archive -o dist/extension.zip HEAD
+          command: mkdir -p dist && git archive -o dist/extension.zip HEAD build
       - persist_to_workspace:
           root: dist
           paths:
