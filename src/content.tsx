@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import ContentHost from "./content/index";
-import "./index.css";
 
 if (document.getElementById("r2c-popup-root") == null) {
   const extensionRoot = document.createElement("div");
