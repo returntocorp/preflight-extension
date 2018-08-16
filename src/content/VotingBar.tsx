@@ -107,8 +107,6 @@ async function extractCurrentUserFromPage(): Promise<string> {
     const userLoginMetaTags = document.getElementsByName("user-login");
 
     if (userLoginMetaTags.length === 0) {
-      console.log(anonUserId);
-
       return anonUserId;
     }
 
@@ -323,7 +321,6 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
 
   private updateCurrentUser = async () => {
     const currentUser = await extractCurrentUserFromPage();
-    console.log(currentUser);
     this.setState({ currentUser });
   };
 
