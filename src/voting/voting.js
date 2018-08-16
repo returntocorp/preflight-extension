@@ -55,11 +55,20 @@ function buildVotingUrl({ source, medium, content }) {
 
 /**
  *
+ * @param {string} user
+ */
+function buildExtensionHeaders(user) {
+  return user != null ? { "X-Secarta-GitHub-User": user } : undefined;
+}
+
+/**
+ *
  * @param {"succeeded" | "failed"} animationType
  * @param {"up" | "down" | "question"} vote
  * @param {* | undefined} error
  */
 function handleVoteAnimation(animationType, vote, error) {
+  clearAllVoteState();
   const voteButtons = document.getElementsByClassName(`vote-${vote}`);
 
   if (voteButtons.length == 0) {
@@ -67,30 +76,27 @@ function handleVoteAnimation(animationType, vote, error) {
   } else {
     const voteButton = voteButtons[0];
     const voteAnimationClass = `vote-${animationType}`;
-    voteButton.classList.add(voteAnimationClass);
+    voteButton.classList.add(voteAnimationClass, "voted");
 
-    const votedText = document.createElement("div");
-    votedText.classList.add("voted-text");
+    const votedText = buildElemWithClasses("div", ["voted-text"]);
 
-    if (error) {
+    if (error != null) {
       votedText.innerText = "Couldn't vote";
     } else {
       votedText.innerText = "Voted";
     }
 
-    voteButton.appendChild(votedText);
+    voteButton.querySelector(".vote-icon").appendChild(votedText);
 
     voteButton.addEventListener(
       "animationend",
       e => {
         e.preventDefault();
         setTimeout(() => {
-          voteButton.classList.remove(voteAnimationClass);
-
           if (votedText != null) {
-            voteButton.removeChild(votedText);
+            voteButton.querySelector(".vote-icon").removeChild(votedText);
           }
-        }, 2000);
+        }, 1500);
       },
       { once: true }
     );
@@ -98,6 +104,33 @@ function handleVoteAnimation(animationType, vote, error) {
     if (error) {
       console.error("Couldn't vote:", error);
     }
+  }
+}
+
+function clearAllVoteState() {
+  document
+    .querySelectorAll(".secarta-vote-button")
+    .forEach(node => node.classList.remove("vote-success", "voted"));
+}
+
+function updateVoteCounts(voteCounts) {
+  for (let key in voteCounts) {
+    const voteCount = voteCounts[key];
+    const voteButtonCounter = document.querySelector(
+      `.vote-${key} .vote-count`
+    );
+
+    if (voteButtonCounter != null) {
+      voteButtonCounter.innerText = voteCount;
+    }
+  }
+}
+
+function updateCurrentVote(currentVote) {
+  const currentVoteButton = document.querySelector(`.vote-${currentVote}`);
+
+  if (currentVoteButton != null) {
+    currentVoteButton.classList.add("voted");
   }
 }
 
@@ -112,12 +145,10 @@ function submitVote(vote, user) {
       vote,
       user
     };
-    const source = document.location.toString();
-    const medium = "extension";
-    const content = "voting-bluecheck-redcross-greenquestion";
-    const headers =
-      user != null ? { "X-Secarta-GitHub-User": user } : undefined;
-    fetch(buildVotingUrl({ source, medium, content }), {
+
+    const headers = buildExtensionHeaders(user);
+    handleVoteAnimation("success", vote);
+    fetch(buildVotingUrl(getAnalyticsParams()), {
       method: "POST",
       body: JSON.stringify(body),
       headers
@@ -126,7 +157,10 @@ function submitVote(vote, user) {
         if (!response.ok) {
           handleVoteAnimation("failed", vote, response.status);
         } else {
-          handleVoteAnimation("success", vote);
+          response.json().then(response => {
+            updateVoteCounts(response.votes);
+            updateCurrentVote(response.currentVote);
+          });
         }
       })
       .catch(e => handleVoteAnimation("failed", vote, e));
@@ -143,16 +177,21 @@ function submitVote(vote, user) {
 function buildElemWithClasses(tag, classes, textContent) {
   const elem = document.createElement(tag);
   elem.className = classes.join(" ");
-  elem.innerText = textContent;
+
+  if (textContent != null) {
+    elem.innerText = textContent;
+  }
+
   return elem;
 }
 
 /**
  *
  * @param {"up" | "down" | "question"} vote
+ * @param {number} count
  * @returns {HTMLAnchorElement}
  */
-function buildVoteButton(vote) {
+function buildVoteButton(vote, count) {
   const user = extractGitHubUserFromPage();
   const { org, repo } = extractSlugFromCurrentUrl();
   const button = buildElemWithClasses("a", [
@@ -160,7 +199,15 @@ function buildVoteButton(vote) {
     `vote-${vote}`
   ]);
   button.setAttribute("title", `${vote}vote ${org}/${repo}`);
-  button.innerHTML = R2C_VOTING_ICONS[vote];
+
+  const iconContainer = buildElemWithClasses("div", ["vote-icon"]);
+  iconContainer.innerHTML = `${R2C_VOTING_ICONS[vote]}`;
+  button.appendChild(iconContainer);
+
+  const voteCount = buildElemWithClasses("div", ["vote-count"]);
+  voteCount.innerText = count.toFixed(0);
+  button.appendChild(voteCount);
+
   button.onclick = submitVote(vote, user);
   button.setAttribute("href", "javascript:;");
   return button;
@@ -185,6 +232,34 @@ function isRepositoryPrivate() {
 }
 
 /**
+ * @returns {{ source: string, medium: string, content: string }}
+ */
+function getAnalyticsParams() {
+  return {
+    source: document.location.toString(),
+    medium: "extension",
+    content: "voting-checkcross-newcolors"
+  };
+}
+
+/**
+ * @param {{ domain: string, org: string, repo: string }}
+ * @returns {Promise<{ votes: {[voteType: string]: number} }>}
+ */
+function getVotesForProject({ domain, org, repo }) {
+  const votesUrl = buildVotingUrl(getAnalyticsParams());
+  return fetch(votesUrl, {
+    headers: buildExtensionHeaders(extractGitHubUserFromPage())
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw response;
+    }
+  });
+}
+
+/**
  * @returns {HTMLDivElement}
  */
 function buildVoteContainerElem() {
@@ -201,9 +276,14 @@ function buildVoteContainerElem() {
     lockIcon.setAttribute("href", "javascript:;");
     container.appendChild(lockIcon);
   } else {
-    container.appendChild(buildVoteButton("up"));
-    container.appendChild(buildVoteButton("down"));
-    container.appendChild(buildVoteButton("question"));
+    getVotesForProject(extractSlugFromCurrentUrl()).then(response => {
+      container.appendChild(buildVoteButton("up", response.votes.up));
+      container.appendChild(buildVoteButton("down", response.votes.down));
+      container.appendChild(
+        buildVoteButton("question", response.votes.question)
+      );
+      updateCurrentVote(response.currentVote);
+    });
   }
 
   return container;

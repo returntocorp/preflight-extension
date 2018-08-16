@@ -2,9 +2,10 @@
   position: fixed;
   bottom: 40px;
   right: 0px;
-  overflow: hidden;
 
   display: flex;
+
+  background-color: #ddd;
 
   animation: vote-container-in both 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.15);
@@ -13,7 +14,8 @@
 }
 
 .secarta-vote-button,
-.r2c-button {
+.r2c-button,
+.secarta-vote-button .vote-icon {
   height: 48px;
   width: 48px;
 
@@ -23,18 +25,27 @@
 
   color: #fff;
   text-decoration: none;
+}
 
+.secarta-vote-button .vote-icon {
   overflow: hidden;
 }
 
 .secarta-vote-button {
   background-color: #aaa;
   fill: white;
+  transition: background-color 0.3s, fill 0.3s, box-shadow 0.3s;
+}
+
+.secarta-vote-button .vote-count {
+  position: absolute;
+  top: -20px;
+  text-decoration: none;
 }
 
 .r2c-button {
   background-color: #fff;
-  border: 1px solid #ddd;
+  border-right: 1px solid #ddd;
   fill: #0a9bda;
 }
 
@@ -80,28 +91,60 @@
   animation-duration: 1.5s;
 }
 
+.secarta-vote-button.vote-success .vote-count {
+  animation: vote-succeeded-count both cubic-bezier(0.215, 0.61, 0.355, 1) 0.3s;
+}
+
 .secarta-vote-button.vote-up {
-  background-color: #2166ac;
+  background-color: #fff;
+  fill: #33a02c;
+  color: #33a02c;
+}
+
+.secarta-vote-button.vote-up.voted {
+  background-color: #33a02c;
+  fill: #fff;
 }
 
 .secarta-vote-button.vote-up:hover {
-  background-color: #2e78c6;
+  background-color: #33a02c;
+  fill: #fff;
+}
+
+.secarta-vote-button:active {
+  box-shadow: inset 0px 0px 20px rgba(255, 255, 255, 0.5);
 }
 
 .secarta-vote-button.vote-down {
-  background-color: #b2182b;
+  background-color: #fff;
+  fill: rgb(178, 24, 43);
+  color: rgb(178, 24, 43);
 }
 
 .secarta-vote-button.vote-down:hover {
   background-color: #d23043;
+  fill: #fff;
+}
+
+.secarta-vote-button.vote-down.voted {
+  background-color: rgb(178, 24, 43);
+  fill: #fff;
 }
 
 .secarta-vote-button.vote-question {
-  background-color: #33a02c;
+  background-color: #fff;
+  fill: #634dbf;
+  color: #634dbf;
 }
 
 .secarta-vote-button.vote-question:hover {
-  background-color: #43b33d;
+  background-color: #634dbf;
+  fill: #fff;
+}
+
+.secarta-vote-button.vote-question.voted {
+  background-color: #634dbf;
+  fill: #fff;
 }
 
 @keyframes vote-container-in {
@@ -161,6 +204,21 @@
 
   100% {
     transform: translateY(-48px);
+  }
+}
+
+@keyframes vote-succeeded-count {
+  0% {
+    top: -20px;
+    transform: scale(1);
+  }
+
+  50% {
+    top: -30px;
+  }
+
+  100% {
+    top: -20px;
   }
 }
 
