@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+
+- Removed global style that accidentally changed the fonts used on GitHub. Sorry
+
 ## [1.2.6] - 2018-08-16
 
 ### Changed
