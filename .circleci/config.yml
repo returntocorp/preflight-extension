@@ -38,13 +38,13 @@ jobs:
       - run:
           name: Update manifest version
           command: |
-            jq '.name = "R2C Beta"' build/manifest.json > build/manifest.json
-            jq '.browser_action.default_title = "R2C Beta"' build/manifest.json > build/manifest.json
-            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json > build/manifest.json
-            git commit -a -m "Bump extension version to match git tag"
+            jq '.name = "R2C Beta"' build/manifest.json > build/manifest-tmp.json
+            jq '.browser_action.default_title = "R2C Beta"' build/manifest.json > build/manifest-tmp.json
+            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json > build/manifest-tmp.json
+            mv build/manifest-tmp.json build/manifest.json
       - run:
           name: Build extension zip
-          command: mkdir -p dist && git archive -o dist/extension.zip HEAD build
+          command: mkdir -p dist && zip -r dist/extension.zip build
       - persist_to_workspace:
           root: dist
           paths:
