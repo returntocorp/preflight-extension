@@ -6,8 +6,8 @@ workflows:
     jobs:
       - build:
           filters:
-              tags:
-                only: /.*/
+            tags:
+              only: /.*/
       - publish:
           requires:
             - build
@@ -31,10 +31,10 @@ jobs:
             git config user.email "circleci@returntocorp.com"
             git config user.name "circleci"
       - run:
-          name: Update manifest version 
+          name: Update manifest version
           command: |
-            jq '.name = "Secarta"' manifest.json | sponge manifest.json
-            jq '.browser_action.default_title = "Secarta"' manifest.json | sponge manifest.json
+            jq '.name = "R2C Beta"' manifest.json | sponge manifest.json
+            jq '.browser_action.default_title = "R2C Beta"' manifest.json | sponge manifest.json
             jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
             git commit -a -m "Bump extension version to match git tag"
       - run:

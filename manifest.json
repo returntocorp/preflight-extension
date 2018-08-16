@@ -1,5 +1,5 @@
 {
-  "name": "Secarta - Dev",
+  "name": "R2C Beta - Dev",
   "author": "",
   "version": "0.0.1",
   "description": "Write Secure Code.",
@@ -16,22 +16,18 @@
   },
   "applications": {
     "gecko": {
-      "id": "extension@secarta.io"
+      "id": "extension@ret2.co"
     }
   },
   "browser_action": {
-    "default_title": "Secarta - Dev",
-    "default_icon": "secarta.png"
+    "default_title": "R2C - Dev",
+    "default_icon": "r2c.png"
   },
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*", "https://www.npmjs.com/*"],
       "css": ["src/voting/voting.css"],
       "js": ["src/voting/voting.js"]
-    },
-    {
-      "matches": ["https://app.secarta.io/*"],
-      "js": ["src/secarta/get-token.js"]
     }
   ]
 }
