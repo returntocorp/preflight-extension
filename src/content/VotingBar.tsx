@@ -1,3 +1,4 @@
+import * as classnames from "classnames";
 import * as React from "react";
 import "./VotingBar.css";
 
@@ -244,6 +245,7 @@ function getAnalyticsParams(): {
 
 interface VoteResponse {
   votes: VoteCounts;
+  currentVote: string | undefined;
 }
 
 interface VotingBarState {
@@ -289,7 +291,11 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     return (
       <a
         key={voteType}
-        className={`secarta-vote-button vote-${voteType}`}
+        className={classnames("secarta-vote-button", `vote-${voteType}`, {
+          voted:
+            this.state.response != null &&
+            this.state.response.currentVote === voteType
+        })}
         title={`Vote ${voteType} on ${org}/${repo}`}
         role="button"
         onClick={this.submitVote(voteType, user)}
