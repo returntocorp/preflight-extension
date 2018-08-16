@@ -17,7 +17,16 @@
     "no-unsafe-any": false,
     "no-backbone-get-set-outside-model": false,
     "match-default-export-name": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "variable-name": false,
+    "export-name": false,
+    "class-name": false,
+    "interface-name": false,
+    "no-suspicious-comment": false,
+    "no-console": false,
+    "no-floating-promises": false,
+    "strict-boolean-expressions": false,
+    "no-void-expression": [true, "ignore-arrow-function-shorthand"]
   },
   "linterOptions": {
     "exclude": [
