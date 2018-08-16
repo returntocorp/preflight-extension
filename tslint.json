@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-microsoft-contrib",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "missing-jsdoc": false,
+    "no-implicit-dependencies": false,
+    "no-default-export": false,
+    "no-import-side-effect": false,
+    "import-name": false,
+    "typedef": false,
+    "no-relative-imports": false,
+    "completed-docs": false,
+    "no-unsafe-any": false,
+    "no-backbone-get-set-outside-model": false,
+    "match-default-export-name": false,
+    "object-literal-sort-keys": false,
+    "variable-name": false,
+    "export-name": false,
+    "class-name": false,
+    "interface-name": false,
+    "no-suspicious-comment": false,
+    "no-console": false,
+    "no-floating-promises": false,
+    "strict-boolean-expressions": false,
+    "no-void-expression": [true, "ignore-arrow-function-shorthand"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "build-script.js",
+      "config-overrides.js",
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js"
+    ]
+  }
+}

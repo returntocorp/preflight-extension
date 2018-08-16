@@ -6,7 +6,7 @@
   "manifest_version": 2,
   "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
   "background": {
-    "scripts": ["src/background.js"],
+    "scripts": ["background.js"],
     "persistent": true
   },
   "applications": {
@@ -21,8 +21,8 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*/*", "https://www.npmjs.com/*"],
-      "css": ["src/voting/voting.css"],
-      "js": ["src/voting/voting.js"]
+      "css": ["./hot-reload-stub.css"],
+      "js": ["./static/js/content.bundle.js"]
     }
   ]
 }

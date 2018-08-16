@@ -22,7 +22,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cibuilds/chrome-extension:latest
+      - image: circleci/node:latest
     steps:
       - checkout
       - run:
@@ -31,15 +31,20 @@ jobs:
             git config user.email "circleci@returntocorp.com"
             git config user.name "circleci"
       - run:
+          name: Install yarn deps and build
+          command: |
+            yarn
+            yarn build
+      - run:
           name: Update manifest version
           command: |
-            jq '.name = "R2C Beta"' manifest.json | sponge manifest.json
-            jq '.browser_action.default_title = "R2C Beta"' manifest.json | sponge manifest.json
-            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json | sponge manifest.json
-            git commit -a -m "Bump extension version to match git tag"
+            sudo apt-get install moreutils
+            jq '.name = "R2C Beta"' build/manifest.json | sponge build/manifest.json
+            jq '.browser_action.default_title = "R2C Beta"' build/manifest.json | sponge build/manifest.json
+            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json | sponge build/manifest.json
       - run:
           name: Build extension zip
-          command: mkdir -p dist && git archive -o dist/extension.zip HEAD
+          command: mkdir -p dist && cd build && zip -r ../dist/extension.zip *
       - persist_to_workspace:
           root: dist
           paths:
