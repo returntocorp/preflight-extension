@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.2.5] - 2018-08-15
+
+### Removed
+
+- Removed unnecessary permission for app.secarta.io
+
 ## [1.2.4] - 2018-08-15
 
 ### Changed

@@ -4,12 +4,7 @@
   "version": "0.0.1",
   "description": "Write Secure Code.",
   "manifest_version": 2,
-  "permissions": [
-    "storage",
-    "https://app.secarta.io/*",
-    "https://api.secarta.io/*",
-    "activeTab"
-  ],
+  "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
   "background": {
     "scripts": ["src/background.js"],
     "persistent": true
