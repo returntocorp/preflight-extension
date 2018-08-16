@@ -23,7 +23,7 @@
     {
       "matches": ["https://github.com/*/*", "https://www.npmjs.com/*"],
       "css": ["./hot-reload-stub.css"],
-      "js": ["./static/js/bundle.js"]
+      "js": ["./static/js/content.bundle.js"]
     }
   ]
 }

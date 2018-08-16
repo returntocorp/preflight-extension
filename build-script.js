@@ -28,15 +28,15 @@ const updateBackgroundFile = buildPath => {
 };
 
 const updateExtensionManifest = buildPath => {
-  const extensionManifest = `${buildPath}/manifest.js`;
+  const extensionManifest = `${buildPath}/manifest.json`;
   const assetManifest = `${buildPath}/asset-manifest.json`;
   const assetContents = JSON.parse(fs.readFileSync(assetManifest, "utf8"));
 
-  const jsPlaceholder = "./static/js/bundle.js";
+  const jsPlaceholder = "./static/js/content.bundle.js";
   const cssPlaceholder = "./hot-reload-stub.css";
 
-  const jsLocation = `./${assetContents["main.js"]}`;
-  const cssLocation = `./${assetContents["main.css"]}`;
+  const jsLocation = `./${assetContents["content.js"]}`;
+  const cssLocation = `./${assetContents["content.css"]}`;
 
   let manifestContents = fs.readFileSync(extensionManifest, "utf8");
   manifestContents = manifestContents.replace(jsPlaceholder, jsLocation);
