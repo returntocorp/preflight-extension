@@ -44,7 +44,7 @@ jobs:
             mv build/manifest-tmp.json build/manifest.json
       - run:
           name: Build extension zip
-          command: mkdir -p dist && zip -r dist/extension.zip build
+          command: mkdir -p dist && cd build && zip -r ../dist/extension.zip *
       - persist_to_workspace:
           root: dist
           paths:
