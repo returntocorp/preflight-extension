@@ -59,14 +59,14 @@
   height: 30px;
 }
 
-.secarta-vote-button.vote-success,
+.secarta-vote-button.vote-success-enter,
 .secarta-vote-button.vote-failed {
   animation: vote-submitted both 2s cubic-bezier(0.215, 0.61, 0.355, 1);
   pointer-events: none;
   cursor: not-allowed;
 }
 
-.secarta-vote-button.vote-success svg {
+.secarta-vote-button.vote-success-enter svg {
   animation: vote-succeeded-icon both 1.5s 0s
     cubic-bezier(0.215, 0.61, 0.355, 1);
 }
@@ -76,14 +76,14 @@
     cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.secarta-vote-button.vote-success .voted-text,
+.secarta-vote-button.vote-success-enter .voted-text,
 .secarta-vote-button.vote-failed .voted-text {
   position: absolute;
   animation: vote-succeeded-text both cubic-bezier(0.645, 0.045, 0.355, 1);
   animation-duration: 1.5s;
 }
 
-.secarta-vote-button.vote-success .vote-count {
+.secarta-vote-button.vote-success-enter .vote-count {
   animation: vote-succeeded-count both cubic-bezier(0.215, 0.61, 0.355, 1) 0.3s;
 }
 

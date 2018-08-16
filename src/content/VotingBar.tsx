@@ -1,10 +1,10 @@
 import * as classnames from "classnames";
 import * as React from "react";
+import { CSSTransition } from "react-transition-group";
 import "./VotingBar.css";
 
 // tslint:disable:no-any
 type WindowBrowserShim = any;
-type ErrorShim = any;
 // tslint:enable:no-any
 
 declare global {
@@ -142,89 +142,8 @@ function buildExtensionHeaders(user: string | undefined) {
   return user != null ? { "X-Secarta-GitHub-User": user } : undefined;
 }
 
-function handleVoteAnimation(
-  animationType: "success" | "failed",
-  vote: string,
-  error?: ErrorShim
-) {
-  clearAllVoteState();
-  const voteButtons = document.getElementsByClassName(`vote-${vote}`);
-
-  if (voteButtons.length === 0) {
-    console.error(`Couldn't find vote button corresponding to ${vote}`);
-  } else {
-    const voteButton = voteButtons[0];
-    const voteAnimationClass = `vote-${animationType}`;
-    voteButton.classList.add(voteAnimationClass, "voted");
-
-    const votedText = buildElemWithClasses("div", ["voted-text"]);
-
-    if (error != null) {
-      votedText.innerText = "Couldn't vote";
-    } else {
-      votedText.innerText = "Voted";
-    }
-
-    const voteIcon = voteButton.querySelector(".vote-icon");
-    if (voteIcon != null) {
-      voteIcon.appendChild(votedText);
-    }
-
-    voteButton.addEventListener(
-      "animationend",
-      e => {
-        e.preventDefault();
-        setTimeout(() => {
-          if (votedText != null && voteIcon != null) {
-            voteIcon.removeChild(votedText);
-          }
-        }, 1500);
-      },
-      { once: true }
-    );
-
-    if (error) {
-      console.error("Couldn't vote:", error);
-    }
-  }
-}
-
-function clearAllVoteState() {
-  document.querySelectorAll(".secarta-vote-button").forEach(node => {
-    node.classList.remove("vote-success", "voted");
-  });
-}
-
 interface VoteCounts {
   [key: string]: number;
-}
-
-function updateVoteCounts(voteCounts: VoteCounts) {
-  Object.keys(voteCounts).forEach(key => {
-    const voteCount = voteCounts[key];
-    const voteButtonCounter = document.querySelector(
-      `.vote-${key} .vote-count`
-    );
-
-    if (voteButtonCounter != null) {
-      (voteButtonCounter as HTMLElement).innerText = voteCount.toFixed(0);
-    }
-  });
-}
-
-function buildElemWithClasses(
-  tag: string,
-  classes: string[],
-  textContent?: string
-): HTMLElement {
-  const elem = document.createElement(tag);
-  elem.className = classes.join(" ");
-
-  if (textContent != null) {
-    elem.innerText = textContent;
-  }
-
-  return elem;
 }
 
 function isRepositoryPrivate() {
@@ -251,6 +170,10 @@ interface VoteResponse {
 interface VotingBarState {
   currentUser: string;
   response: VoteResponse | undefined;
+  voting: boolean;
+  voteSuccess: boolean;
+  voteFailed: boolean;
+  voteError: string | undefined;
   fetchFailed: boolean;
   fetchError: string | undefined;
 }
@@ -259,6 +182,10 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   public state: VotingBarState = {
     currentUser: "",
     response: undefined,
+    voting: false,
+    voteSuccess: false,
+    voteFailed: false,
+    voteError: undefined,
     fetchFailed: false,
     fetchError: undefined
   };
@@ -289,25 +216,47 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     const user = this.state.currentUser;
 
     return (
-      <a
+      <CSSTransition
         key={voteType}
-        className={classnames("secarta-vote-button", `vote-${voteType}`, {
-          voted:
-            this.state.response != null &&
-            this.state.response.currentVote === voteType
-        })}
-        title={`Vote ${voteType} on ${org}/${repo}`}
-        role="button"
-        onClick={this.submitVote(voteType, user)}
+        in={
+          this.state.response != null &&
+          this.state.response.currentVote === voteType &&
+          (this.state.voting || this.state.voteSuccess)
+        }
+        classNames="vote-success"
+        timeout={2000}
+        onEntered={this.handleVoteAnimationEntered}
       >
-        <div className="vote-icon">{R2C_VOTING_ICONS[voteType]}</div>
-        <div className="vote-count">
-          {this.state.response != null
-            ? this.state.response.votes[voteType]
-            : "?"}
-        </div>
-      </a>
+        {transitionState => (
+          <a
+            className={classnames("secarta-vote-button", `vote-${voteType}`, {
+              voted:
+                this.state.response != null &&
+                this.state.response.currentVote === voteType
+            })}
+            title={`Vote ${voteType} on ${org}/${repo}`}
+            role="button"
+            onClick={this.submitVote(voteType, user)}
+          >
+            <div className="vote-icon">
+              {R2C_VOTING_ICONS[voteType]}
+              {transitionState === "entering" && (
+                <div className="voted-text">Voted</div>
+              )}
+            </div>
+            <div className="vote-count">
+              {this.state.response != null
+                ? this.state.response.votes[voteType]
+                : "?"}
+            </div>
+          </a>
+        )}
+      </CSSTransition>
     );
+  };
+
+  private handleVoteAnimationEntered = () => {
+    this.setState({ voteSuccess: false });
   };
 
   private fetchVoteData = async () => {
@@ -338,8 +287,18 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
       user
     };
 
+    this.setState({
+      voting: true,
+      response:
+        this.state.response != null
+          ? { ...this.state.response, currentVote: vote }
+          : undefined,
+      voteSuccess: false,
+      voteError: undefined,
+      voteFailed: false
+    });
+
     const headers = buildExtensionHeaders(user);
-    handleVoteAnimation("success", vote);
     fetch(buildVotingUrl(getAnalyticsParams()), {
       method: "POST",
       body: JSON.stringify(body),
@@ -347,14 +306,21 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     })
       .then(response => {
         if (!response.ok) {
-          handleVoteAnimation("failed", vote, response.status);
+          this.setState({
+            voting: false,
+            voteFailed: true,
+            voteError: response.statusText
+          });
         } else {
-          response.json().then(responseJson => {
-            updateVoteCounts(responseJson.votes);
+          this.setState({ voting: false, voteSuccess: true });
+          response.json().then((responseJson: VoteResponse) => {
+            this.setState({ response: responseJson });
           });
         }
       })
       // tslint:disable-next-line:no-any
-      .catch((error: any) => handleVoteAnimation("failed", vote, error));
+      .catch((error: any) =>
+        this.setState({ voteFailed: true, voteError: error })
+      );
   };
 }

@@ -6,7 +6,8 @@
     "classnames": "^2.2.6",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts-ts": "2.17.0"
+    "react-scripts-ts": "2.17.0",
+    "react-transition-group": "^2.4.0"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
@@ -21,6 +22,7 @@
     "@types/node": "^10.7.1",
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.7",
+    "@types/react-transition-group": "^2.0.13",
     "react-app-rewired": "^1.5.2",
     "tslint-microsoft-contrib": "^5.2.0",
     "typescript": "^3.0.1",
