@@ -31,17 +31,46 @@ function extractSlugFromCurrentUrl() {
   return { domain, org, repo, pathname, rest: rest.join("/") };
 }
 
+function byteToHex(byte) {
+  return ("0" + byte.toString(16)).slice(-2);
+}
+
+function getOrCreateExtensionUniqueId() {
+  return new Promise((resolve, reject) => {
+    browser.storage.local.get("SECARTA_EXTENSION_INSTALLATION_ID", res => {
+      if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
+        resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
+      } else {
+        const arr = new Uint8Array(40 / 2);
+        window.crypto.getRandomValues(arr);
+        const installationId = [].map.call(arr, byteToHex).join("");
+        browser.storage.local.set({
+          SECARTA_EXTENSION_INSTALLATION_ID: installationId
+        });
+        resolve(installationId);
+      }
+    });
+  });
+}
+
 /**
  * @returns {string | undefined}
  */
-function extractGitHubUserFromPage() {
-  const userLoginMetaTags = document.getElementsByName("user-login");
+async function extractCurrentUserFromPage() {
+  const { domain } = extractSlugFromCurrentUrl();
+  const extensionUniqueId = await getOrCreateExtensionUniqueId();
 
-  if (userLoginMetaTags.length == 0) {
-    return undefined;
+  if (domain.includes("github.com")) {
+    const userLoginMetaTags = document.getElementsByName("user-login");
+
+    if (userLoginMetaTags.length == 0) {
+      return undefined;
+    }
+
+    return userLoginMetaTags[0].getAttribute("content") || extensionUniqueId;
+  } else {
+    return extensionUniqueId;
   }
-
-  return userLoginMetaTags[0].getAttribute("content") || undefined;
 }
 
 /**
@@ -126,8 +155,10 @@ function updateVoteCounts(voteCounts) {
   }
 }
 
-function updateCurrentVote(currentVote) {
-  const currentVoteButton = document.querySelector(`.vote-${currentVote}`);
+function updateCurrentVote(currentVote, node) {
+  const toQuery = node || document;
+
+  const currentVoteButton = toQuery.querySelector(`.vote-${currentVote}`);
 
   if (currentVoteButton != null) {
     currentVoteButton.classList.add("voted");
@@ -191,8 +222,8 @@ function buildElemWithClasses(tag, classes, textContent) {
  * @param {number} count
  * @returns {HTMLAnchorElement}
  */
-function buildVoteButton(vote, count) {
-  const user = extractGitHubUserFromPage();
+async function buildVoteButton(vote, count) {
+  const user = await extractCurrentUserFromPage();
   const { org, repo } = extractSlugFromCurrentUrl();
   const button = buildElemWithClasses("a", [
     "secarta-vote-button",
@@ -246,10 +277,10 @@ function getAnalyticsParams() {
  * @param {{ domain: string, org: string, repo: string }}
  * @returns {Promise<{ votes: {[voteType: string]: number} }>}
  */
-function getVotesForProject({ domain, org, repo }) {
+async function getVotesForProject({ domain, org, repo }) {
   const votesUrl = buildVotingUrl(getAnalyticsParams());
-  return fetch(votesUrl, {
-    headers: buildExtensionHeaders(extractGitHubUserFromPage())
+  return await fetch(votesUrl, {
+    headers: buildExtensionHeaders(await extractCurrentUserFromPage())
   }).then(response => {
     if (response.ok) {
       return response.json();
@@ -262,7 +293,7 @@ function getVotesForProject({ domain, org, repo }) {
 /**
  * @returns {HTMLDivElement}
  */
-function buildVoteContainerElem() {
+async function buildVoteContainerElem() {
   const container = document.createElement("div");
   container.id = R2C_VOTING_CONTAINER_ID;
   container.appendChild(buildR2CButton());
@@ -276,14 +307,13 @@ function buildVoteContainerElem() {
     lockIcon.setAttribute("href", "javascript:;");
     container.appendChild(lockIcon);
   } else {
-    getVotesForProject(extractSlugFromCurrentUrl()).then(response => {
-      container.appendChild(buildVoteButton("up", response.votes.up));
-      container.appendChild(buildVoteButton("down", response.votes.down));
-      container.appendChild(
-        buildVoteButton("question", response.votes.question)
-      );
-      updateCurrentVote(response.currentVote);
-    });
+    const response = await getVotesForProject(extractSlugFromCurrentUrl());
+    container.appendChild(await buildVoteButton("up", response.votes.up));
+    container.appendChild(await buildVoteButton("down", response.votes.down));
+    container.appendChild(
+      await buildVoteButton("question", response.votes.question)
+    );
+    updateCurrentVote(response.currentVote, container);
   }
 
   return container;
@@ -293,10 +323,11 @@ const mainDiv = document.querySelector("body");
 const votingButtons = document.querySelector(`#${R2C_VOTING_CONTAINER_ID}`);
 
 if (mainDiv != null) {
-  const container = buildVoteContainerElem();
-  if (votingButtons == null) {
-    mainDiv.appendChild(container);
-  } else {
-    mainDiv.replaceChild(container);
-  }
+  buildVoteContainerElem().then(container => {
+    if (votingButtons == null) {
+      mainDiv.appendChild(container);
+    } else {
+      mainDiv.replaceChild(container);
+    }
+  });
 }
