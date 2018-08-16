@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Removed global style that accidentally changed the fonts used on GitHub. Sorry
+- Port remaining JS DOM manipulation to more understandable React stuff
 
 ## [1.2.6] - 2018-08-16
 
