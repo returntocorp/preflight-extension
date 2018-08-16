@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.2.6] - 2018-08-16
+
+### Changed
+
+- Ported extension framework to TypeScript and React.
+
 ## [1.2.5] - 2018-08-15
 
 ### Removed
