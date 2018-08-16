@@ -38,9 +38,9 @@ jobs:
       - run:
           name: Update manifest version
           command: |
-            jq '.name = "R2C Beta"' manifest.json > manifest.json
-            jq '.browser_action.default_title = "R2C Beta"' manifest.json > manifest.json
-            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' manifest.json > manifest.json
+            jq '.name = "R2C Beta"' build/manifest.json > build/manifest.json
+            jq '.browser_action.default_title = "R2C Beta"' build/manifest.json > build/manifest.json
+            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json > build/manifest.json
             git commit -a -m "Bump extension version to match git tag"
       - run:
           name: Build extension zip
