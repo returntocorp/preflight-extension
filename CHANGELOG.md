@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.3.1] - 2018-08-16
+
+### Fixed
+
+- Ensure we don't log or make network requests on private projects
+
 ## [1.3.0] - 2018-08-16
 
 ### Fixed
