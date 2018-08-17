@@ -1,6 +1,9 @@
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import ContentHost from "./content/index";
+import "./shims.css";
 
 if (document.getElementById("r2c-popup-root") == null) {
   const extensionRoot = document.createElement("div");

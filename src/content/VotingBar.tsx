@@ -1,3 +1,4 @@
+import { Position, Tooltip } from "@blueprintjs/core";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -203,17 +204,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
         >
           {R2C_LOGO}
         </a>
-        {!isRepositoryPrivate() && (
-          <div className="r2c-voting-button-group">
-            {this.renderVoteButton("up")}
-            <div className="vote-count">
-              {this.state.response != null
-                ? this.state.response.votes.up - this.state.response.votes.down
-                : "?"}
-            </div>
-            {this.renderVoteButton("down")}
-          </div>
-        )}
+        {!isRepositoryPrivate() && ["up", "down"].map(this.renderVoteButton)}
       </div>
     );
   }
@@ -221,6 +212,22 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   private renderVoteButton = (voteType: string) => {
     const { org, repo } = extractSlugFromCurrentUrl();
     const user = this.state.currentUser;
+    const sampleVoters =
+      this.state.response != null
+        ? this.state.response.sampleVoters[voteType].filter(
+            voter => !voter.startsWith("anonymous-")
+          )
+        : undefined;
+    const anonymousVoteCount =
+      this.state.response != null
+        ? this.state.response.sampleVoters[voteType].filter(voter =>
+            voter.startsWith("anonymous-")
+          ).length
+        : undefined;
+    const voteCount =
+      this.state.response != null
+        ? this.state.response.votes[voteType]
+        : undefined;
 
     return (
       <CSSTransition
@@ -255,6 +262,50 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
                 )}
               </div>
             </a>
+            <Tooltip
+              className="vote-count-container"
+              position={Position.LEFT}
+              content={
+                this.state.response != null &&
+                sampleVoters != null &&
+                voteCount != null ? (
+                  <div className="sample-votes-container">
+                    <div className="sample-vote-header">
+                      <span className="sample-vote-header-text">
+                        Others who voted {voteType}
+                      </span>
+                    </div>
+                    <ul className="sample-votes">
+                      {sampleVoters.map(voter => (
+                        <li key={voter} className="voter">
+                          {voter}
+                        </li>
+                      ))}
+                    </ul>
+                    {anonymousVoteCount != null && anonymousVoteCount > 0 ? (
+                      <span className="anonymous-voters">
+                        {anonymousVoteCount} anonymous votes{" "}
+                      </span>
+                    ) : (
+                      " "
+                    )}
+                    {voteCount - sampleVoters.length > 0 ? (
+                      <span className="more-voters">
+                        and {voteCount - sampleVoters.length} other voters
+                      </span>
+                    ) : null}
+                  </div>
+                ) : (
+                  undefined
+                )
+              }
+            >
+              <div className="vote-count">
+                {this.state.response != null
+                  ? this.state.response.votes[voteType]
+                  : "?"}
+              </div>
+            </Tooltip>
           </div>
         )}
       </CSSTransition>

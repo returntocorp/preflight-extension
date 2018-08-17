@@ -1,0 +1,5 @@
+/* Override global BlueprintJS styles to avoid trampling host site styling */
+
+a {
+  color: #0366d6;
+}

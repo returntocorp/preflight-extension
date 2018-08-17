@@ -1,7 +1,7 @@
 #r2c-extension-root {
   position: fixed;
   z-index: 2147400000;
-  bottom: 40px;
+  top: 200px;
   right: 0px;
 
   animation: extension-in both 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);

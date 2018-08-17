@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@blueprintjs/core": "^3.3.0",
     "classnames": "^2.2.6",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",

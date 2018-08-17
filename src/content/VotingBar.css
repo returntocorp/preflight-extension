@@ -29,12 +29,11 @@
   fill: white;
 }
 
-.r2c-voting-button-group .vote-count {
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
+.secarta-vote-button .vote-count-container {
+  position: absolute;
+  left: -20px;
+  text-decoration: none;
+  cursor: help;
 }
 
 .r2c-button {
