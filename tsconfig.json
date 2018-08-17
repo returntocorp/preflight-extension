@@ -16,7 +16,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "paths": {
-      "@r2c/*": ["src/*"]
+      "@r2c/extension/*": ["src/*"]
     }
   },
   "exclude": [

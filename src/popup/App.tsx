@@ -1,4 +1,4 @@
-import { fetchExtensionVersion } from "@r2c/utils";
+import { fetchExtensionVersion } from "@r2c/extension/utils";
 import * as React from "react";
 import "./App.css";
 
