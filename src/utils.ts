@@ -1,3 +1,7 @@
-export function fetchExtensionVersion() {
-  return browser.runtime.getManifest().version;
+export function fetchExtensionVersion(): string | undefined {
+  if (browser != null && browser.runtime != null) {
+    return browser.runtime.getManifest().version;
+  }
+
+  return undefined;
 }
