@@ -284,10 +284,12 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
             <Tooltip
               className="vote-count-container"
               position={Position.LEFT}
+              popoverClassName="vote-count-popover"
               content={
                 this.state.response != null &&
                 sampleVoters != null &&
-                voteCount != null ? (
+                voteCount != null &&
+                voteCount > 0 ? (
                   <div className="sample-votes-container">
                     <div className="sample-vote-header">
                       <span className="sample-vote-header-text">
@@ -297,22 +299,37 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
                     <ul className="sample-votes">
                       {sampleVoters.map(voter => (
                         <li key={voter} className="voter">
-                          {voter}
+                          <img
+                            src={`https://github.com/${voter}.png`}
+                            alt="" // Empty for presentation
+                            role="presentation"
+                            className="voter-profile-picture"
+                          />
+                          <span className="voter-name">{voter}</span>
                         </li>
                       ))}
                     </ul>
-                    {anonymousVoteCount != null && anonymousVoteCount > 0 ? (
-                      <span className="anonymous-voters">
-                        {anonymousVoteCount} anonymous votes{" "}
+                    {voteCount - sampleVoters.length > 0 &&
+                      sampleVoters.length > 0 && (
+                        <span className="more-voters">
+                          + {voteCount - sampleVoters.length} more{" "}
                       </span>
-                    ) : (
-                      " "
                     )}
-                    {voteCount - sampleVoters.length > 0 ? (
+                    {voteCount - sampleVoters.length > 0 &&
+                      sampleVoters.length === 0 && (
                       <span className="more-voters">
-                        and {voteCount - sampleVoters.length} other voters
+                          {voteCount - sampleVoters.length}
+                          {voteCount - sampleVoters.length > 1
+                            ? " voters "
+                            : " voter "}
+                        </span>
+                      )}
+                    {anonymousVoteCount != null &&
+                      anonymousVoteCount > 0 && (
+                        <span className="anonymous-voters">
+                          ({anonymousVoteCount} anonymous)
                       </span>
-                    ) : null}
+                      )}
                   </div>
                 ) : (
                   undefined

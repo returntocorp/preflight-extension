@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Show profile pictures next to voter counts
+
 ### Fixed
 
 - Remove dependency on blueprint icons to avoid errors
