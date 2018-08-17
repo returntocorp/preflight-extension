@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-
-  background-color: #ddd;
+  background-color: #fff;
 }
 
 .secarta-vote-button,
