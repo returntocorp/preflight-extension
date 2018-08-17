@@ -1,4 +1,5 @@
 import { Position, Tooltip } from "@blueprintjs/core";
+import { getExtensionVersion } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -153,7 +154,7 @@ function getAnalyticsParams(): {
 } {
   return {
     source: document.location.toString(),
-    medium: "extension",
+    medium: `extension@${getExtensionVersion()}`,
     content: "voting-updown-vertical"
   };
 }
