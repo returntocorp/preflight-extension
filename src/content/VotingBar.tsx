@@ -42,17 +42,12 @@ const R2C_LOGO = (
 const R2C_VOTING_ICONS = {
   up: (
     <svg width="24" height="24" viewBox="0 0 24 24">
-      <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
+      <path d="M0 16.67l2.829 2.83 9.175-9.339 9.167 9.339 2.829-2.83-11.996-12.17z" />
     </svg>
   ),
   down: (
     <svg width="24" height="24" viewBox="0 0 24 24">
-      <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
-    </svg>
-  ),
-  question: (
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <path d="M14.601 21.5c0 1.38-1.116 2.5-2.499 2.5-1.378 0-2.499-1.12-2.499-2.5s1.121-2.5 2.499-2.5c1.383 0 2.499 1.119 2.499 2.5zm-2.42-21.5c-4.029 0-7.06 2.693-7.06 8h3.955c0-2.304.906-4.189 3.024-4.189 1.247 0 2.57.828 2.684 2.411.123 1.666-.767 2.511-1.892 3.582-2.924 2.78-2.816 4.049-2.816 7.196h3.943c0-1.452-.157-2.508 1.838-4.659 1.331-1.436 2.986-3.222 3.021-5.943.047-3.963-2.751-6.398-6.697-6.398z" />
+      <path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
     </svg>
   )
 };
@@ -158,13 +153,16 @@ function getAnalyticsParams(): {
   return {
     source: document.location.toString(),
     medium: "extension",
-    content: "voting-checkcross-newcolors"
+    content: "voting-updown-vertical"
   };
 }
+
+type SampleVoters = { [K in keyof VoteCounts]: string[] };
 
 interface VoteResponse {
   votes: VoteCounts;
   currentVote: string | undefined;
+  sampleVoters: SampleVoters;
 }
 
 interface VotingBarState {
@@ -205,8 +203,17 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
         >
           {R2C_LOGO}
         </a>
-        {!isRepositoryPrivate() &&
-          ["up", "down", "question"].map(this.renderVoteButton)}
+        {!isRepositoryPrivate() && (
+          <div className="r2c-voting-button-group">
+            {this.renderVoteButton("up")}
+            <div className="vote-count">
+              {this.state.response != null
+                ? this.state.response.votes.up - this.state.response.votes.down
+                : "?"}
+            </div>
+            {this.renderVoteButton("down")}
+          </div>
+        )}
       </div>
     );
   }
@@ -228,28 +235,27 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
         onEntered={this.handleVoteAnimationEntered}
       >
         {transitionState => (
-          <a
+          <div
             className={classnames("secarta-vote-button", `vote-${voteType}`, {
               voted:
                 this.state.response != null &&
                 this.state.response.currentVote === voteType
             })}
-            title={`Vote ${voteType} on ${org}/${repo}`}
-            role="button"
-            onClick={this.submitVote(voteType, user)}
           >
-            <div className="vote-icon">
-              {R2C_VOTING_ICONS[voteType]}
-              {transitionState === "entering" && (
-                <div className="voted-text">Voted</div>
-              )}
-            </div>
-            <div className="vote-count">
-              {this.state.response != null
-                ? this.state.response.votes[voteType]
-                : "?"}
-            </div>
-          </a>
+            <a
+              className={classnames("secarta-vote-button-link")}
+              title={`Vote ${voteType} on ${org}/${repo}`}
+              role="button"
+              onClick={this.submitVote(voteType, user)}
+            >
+              <div className="vote-icon">
+                {R2C_VOTING_ICONS[voteType]}
+                {transitionState === "entering" && (
+                  <div className="voted-text">Voted</div>
+                )}
+              </div>
+            </a>
+          </div>
         )}
       </CSSTransition>
     );
