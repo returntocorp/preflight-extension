@@ -75,17 +75,29 @@ interface ExtensionStorage {
   SECARTA_EXTENSION_INSTALLATION_ID?: string;
 }
 
-async function getOrCreateExtensionUniqueId() {
-  return new Promise((resolve, reject) => {
+async function fetchOrCreateExtensionUniqueId(): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     browser.storage.local.get(
       "SECARTA_EXTENSION_INSTALLATION_ID",
       (res: ExtensionStorage) => {
         if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
           resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
         } else {
-          const arr = new Uint8Array(20 / 2);
-          window.crypto.getRandomValues(arr);
-          const installationId = [].map.call(arr, byteToHex).join("");
+          const randomBytes = new Uint8Array(20 / 2);
+          window.crypto.getRandomValues(randomBytes);
+          if (randomBytes.every(elem => elem === 0)) {
+            // Edge crypto.getRandomValues returns all 0s
+            // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11795162/
+            // Fall back to less cryptographically random method (PRNG strength doesn't really matter)
+            randomBytes.forEach(
+              // tslint:disable-next-line:insecure-random
+              (elem, index) => (randomBytes[index] = Math.random() * 255)
+            );
+          }
+
+          const installationId: string = [].map
+            .call(randomBytes, byteToHex)
+            .join("");
           browser.storage.local.set({
             SECARTA_EXTENSION_INSTALLATION_ID: installationId
           });
@@ -96,16 +108,14 @@ async function getOrCreateExtensionUniqueId() {
   });
 }
 
-async function extractCurrentUserFromPage(): Promise<string> {
+async function extractCurrentUserFromPage(): Promise<string | undefined> {
   const { domain } = extractSlugFromCurrentUrl();
-  const extensionUniqueId = await getOrCreateExtensionUniqueId();
-  const anonUserId = `anonymous-${extensionUniqueId}`;
 
   if (domain.includes("github.com")) {
     const userLoginMetaTags = document.getElementsByName("user-login");
 
     if (userLoginMetaTags.length === 0) {
-      return anonUserId;
+      return undefined;
     }
 
     const user = userLoginMetaTags[0].getAttribute("content");
@@ -113,10 +123,10 @@ async function extractCurrentUserFromPage(): Promise<string> {
     if (user != null && user !== "") {
       return user;
     } else {
-      return anonUserId;
+      return undefined;
     }
   } else {
-    return anonUserId;
+    return undefined;
   }
 }
 
@@ -135,8 +145,14 @@ function buildVotingUrl({
   return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
 }
 
-function buildExtensionHeaders(user: string | undefined) {
-  return user != null ? { "X-Secarta-GitHub-User": user } : undefined;
+function buildExtensionHeaders(
+  user: string | undefined,
+  installationId: string
+) {
+  return {
+    "X-Secarta-GitHub-User": user || "anonymous",
+    "X-R2C-Extension-Installation-Id": installationId
+  };
 }
 
 interface VoteCounts {
@@ -168,7 +184,8 @@ interface VoteResponse {
 }
 
 interface VotingBarState {
-  currentUser: string;
+  currentUser: string | undefined;
+  installationId: string;
   response: VoteResponse | undefined;
   voting: boolean;
   voteSuccess: boolean;
@@ -180,7 +197,8 @@ interface VotingBarState {
 
 export default class VotingBar extends React.Component<{}, VotingBarState> {
   public state: VotingBarState = {
-    currentUser: "",
+    currentUser: undefined,
+    installationId: "not-generated",
     response: undefined,
     voting: false,
     voteSuccess: false,
@@ -212,7 +230,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
 
   private renderVoteButton = (voteType: string) => {
     const { org, repo } = extractSlugFromCurrentUrl();
-    const user = this.state.currentUser;
+    const { currentUser, installationId } = this.state;
     const sampleVoters =
       this.state.response != null
         ? (this.state.response.sampleVoters[voteType] || []).filter(
@@ -254,7 +272,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
               className={classnames("secarta-vote-button-link")}
               title={`Vote ${voteType} on ${org}/${repo}`}
               role="button"
-              onClick={this.submitVote(voteType, user)}
+              onClick={this.submitVote(voteType, currentUser, installationId)}
             >
               <div className="vote-icon">
                 {R2C_VOTING_ICONS[voteType]}
@@ -321,9 +339,10 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       const votesUrl = buildVotingUrl(getAnalyticsParams());
-      const currentUser = await extractCurrentUserFromPage();
+      const installationId = await fetchOrCreateExtensionUniqueId();
+      const user = await extractCurrentUserFromPage();
       const response = await fetch(votesUrl, {
-        headers: buildExtensionHeaders(currentUser)
+        headers: buildExtensionHeaders(user, installationId)
       });
 
       if (response.ok) {
@@ -336,18 +355,21 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   };
 
   private updateCurrentUser = async () => {
+    const installationId = await fetchOrCreateExtensionUniqueId();
     const currentUser = await extractCurrentUserFromPage();
-    this.setState({ currentUser });
+    this.setState({ currentUser, installationId });
   };
 
-  private submitVote = (vote: string, user: string) => (
-    e: React.MouseEvent<HTMLAnchorElement>
-  ) => {
+  private submitVote = (
+    vote: string,
+    user: string | undefined,
+    installationId: string
+  ) => async (e: React.MouseEvent<HTMLAnchorElement>) => {
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       const body = {
         vote,
-        user
+        user: user || `anonymous-${installationId}`
       };
 
       this.setState({
@@ -361,7 +383,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
         voteFailed: false
       });
 
-      const headers = buildExtensionHeaders(user);
+      const headers = buildExtensionHeaders(user, installationId);
       fetch(buildVotingUrl(getAnalyticsParams()), {
         method: "POST",
         body: JSON.stringify(body),
