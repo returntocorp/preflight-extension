@@ -317,17 +317,20 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   };
 
   private fetchVoteData = async () => {
-    const votesUrl = buildVotingUrl(getAnalyticsParams());
-    const currentUser = await extractCurrentUserFromPage();
-    const response = await fetch(votesUrl, {
-      headers: buildExtensionHeaders(currentUser)
-    });
+    const isRepoPrivate = isRepositoryPrivate();
+    if (!isRepoPrivate) {
+      const votesUrl = buildVotingUrl(getAnalyticsParams());
+      const currentUser = await extractCurrentUserFromPage();
+      const response = await fetch(votesUrl, {
+        headers: buildExtensionHeaders(currentUser)
+      });
 
-    if (response.ok) {
-      const responseJson = await response.json();
-      this.setState({ response: responseJson });
-    } else {
-      this.setState({ fetchFailed: true, fetchError: response.statusText });
+      if (response.ok) {
+        const responseJson = await response.json();
+        this.setState({ response: responseJson });
+      } else {
+        this.setState({ fetchFailed: true, fetchError: response.statusText });
+      }
     }
   };
 
@@ -339,45 +342,48 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   private submitVote = (vote: string, user: string) => (
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
-    const body = {
-      vote,
-      user
-    };
+    const isRepoPrivate = isRepositoryPrivate();
+    if (!isRepoPrivate) {
+      const body = {
+        vote,
+        user
+      };
 
-    this.setState({
-      voting: true,
-      response:
-        this.state.response != null
-          ? { ...this.state.response, currentVote: vote }
-          : undefined,
-      voteSuccess: false,
-      voteError: undefined,
-      voteFailed: false
-    });
+      this.setState({
+        voting: true,
+        response:
+          this.state.response != null
+            ? { ...this.state.response, currentVote: vote }
+            : undefined,
+        voteSuccess: false,
+        voteError: undefined,
+        voteFailed: false
+      });
 
-    const headers = buildExtensionHeaders(user);
-    fetch(buildVotingUrl(getAnalyticsParams()), {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers
-    })
-      .then(response => {
-        if (!response.ok) {
-          this.setState({
-            voting: false,
-            voteFailed: true,
-            voteError: response.statusText
-          });
-        } else {
-          this.setState({ voting: false, voteSuccess: true });
-          response.json().then((responseJson: VoteResponse) => {
-            this.setState({ response: responseJson });
-          });
-        }
+      const headers = buildExtensionHeaders(user);
+      fetch(buildVotingUrl(getAnalyticsParams()), {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers
       })
-      // tslint:disable-next-line:no-any
-      .catch((error: any) =>
-        this.setState({ voteFailed: true, voteError: error })
-      );
+        .then(response => {
+          if (!response.ok) {
+            this.setState({
+              voting: false,
+              voteFailed: true,
+              voteError: response.statusText
+            });
+          } else {
+            this.setState({ voting: false, voteSuccess: true });
+            response.json().then((responseJson: VoteResponse) => {
+              this.setState({ response: responseJson });
+            });
+          }
+        })
+        // tslint:disable-next-line:no-any
+        .catch((error: any) =>
+          this.setState({ voteFailed: true, voteError: error })
+        );
+    }
   };
 }
