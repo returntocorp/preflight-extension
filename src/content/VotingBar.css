@@ -1,5 +1,6 @@
 #r2c-voting-container {
   display: flex;
+  flex-direction: column;
 
   background-color: #ddd;
 }
@@ -26,18 +27,18 @@
 .secarta-vote-button {
   background-color: #aaa;
   fill: white;
-  transition: background-color 0.3s, fill 0.3s, box-shadow 0.3s;
 }
 
-.secarta-vote-button .vote-count {
+.secarta-vote-button .vote-count-container {
   position: absolute;
-  top: -20px;
+  left: -20px;
   text-decoration: none;
+  cursor: help;
 }
 
 .r2c-button {
   background-color: #fff;
-  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   fill: #0a9bda;
 }
 
@@ -61,7 +62,6 @@
 
 .secarta-vote-button.vote-success-enter,
 .secarta-vote-button.vote-failed {
-  animation: vote-submitted both 2s cubic-bezier(0.215, 0.61, 0.355, 1);
   pointer-events: none;
   cursor: not-allowed;
 }
@@ -87,6 +87,14 @@
   animation: vote-succeeded-count both cubic-bezier(0.215, 0.61, 0.355, 1) 0.3s;
 }
 
+.secarta-vote-button-link {
+  transition: background-color 0.3s, fill 0.3s, box-shadow 0.3s;
+}
+
+.secarta-vote-button-link:active {
+  box-shadow: inset 0px 0px 20px rgba(255, 255, 255, 0.5);
+}
+
 .secarta-vote-button.vote-up {
   background-color: #fff;
   fill: #33a02c;
@@ -98,13 +106,9 @@
   fill: #fff;
 }
 
-.secarta-vote-button.vote-up:hover {
+.secarta-vote-button.vote-up a:hover {
   background-color: #33a02c;
   fill: #fff;
-}
-
-.secarta-vote-button:active {
-  box-shadow: inset 0px 0px 20px rgba(255, 255, 255, 0.5);
 }
 
 .secarta-vote-button.vote-down {
@@ -113,8 +117,8 @@
   color: rgb(178, 24, 43);
 }
 
-.secarta-vote-button.vote-down:hover {
-  background-color: #d23043;
+.secarta-vote-button.vote-down a:hover {
+  background-color: rgb(178, 24, 43);
   fill: #fff;
 }
 
@@ -129,7 +133,7 @@
   color: #634dbf;
 }
 
-.secarta-vote-button.vote-question:hover {
+.secarta-vote-button.vote-question a:hover {
   background-color: #634dbf;
   fill: #fff;
 }
@@ -137,6 +141,15 @@
 .secarta-vote-button.vote-question.voted {
   background-color: #634dbf;
   fill: #fff;
+}
+
+.sample-votes-container .sample-vote-header {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.sample-votes-container ul {
+  list-style: none;
 }
 
 @keyframes vote-succeeded-icon {
@@ -201,19 +214,5 @@
 
   100% {
     top: -20px;
-  }
-}
-
-@keyframes vote-submitted {
-  0% {
-    width: 48px;
-  }
-
-  50% {
-    width: 96px;
-  }
-
-  100% {
-    width: 48px;
   }
 }
