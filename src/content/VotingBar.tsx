@@ -179,7 +179,7 @@ type SampleVoters = { [K in keyof VoteCounts]: string[] };
 
 interface VoteResponse {
   votes: VoteCounts;
-  currentVote: string | undefined;
+  currentVote: string | null;
   sampleVoters: SampleVoters;
 }
 
@@ -272,7 +272,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
               className={classnames("secarta-vote-button-link")}
               title={`Vote ${voteType} on ${org}/${repo}`}
               role="button"
-              onClick={this.submitVote(voteType, currentUser, installationId)}
+              onClick={this.toggleVote(voteType, currentUser, installationId)}
             >
               <div className="vote-icon">
                 {R2C_VOTING_ICONS[voteType]}
@@ -313,11 +313,11 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
                       sampleVoters.length > 0 && (
                         <span className="more-voters">
                           + {voteCount - sampleVoters.length} more{" "}
-                      </span>
-                    )}
+                        </span>
+                      )}
                     {voteCount - sampleVoters.length > 0 &&
                       sampleVoters.length === 0 && (
-                      <span className="more-voters">
+                        <span className="more-voters">
                           {voteCount - sampleVoters.length}
                           {voteCount - sampleVoters.length > 1
                             ? " voters "
@@ -328,7 +328,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
                       anonymousVoteCount > 0 && (
                         <span className="anonymous-voters">
                           ({anonymousVoteCount} anonymous)
-                      </span>
+                        </span>
                       )}
                   </div>
                 ) : (
@@ -377,8 +377,23 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     this.setState({ currentUser, installationId });
   };
 
-  private submitVote = (
+  private toggleVote = (
     vote: string,
+    user: string | undefined,
+    installationId: string
+  ) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (
+      this.state.response != null &&
+      this.state.response.currentVote === vote
+    ) {
+      this.submitVote(null, user, installationId)(e);
+    } else {
+      this.submitVote(vote, user, installationId)(e);
+    }
+  };
+
+  private submitVote = (
+    vote: string | null,
     user: string | undefined,
     installationId: string
   ) => async (e: React.MouseEvent<HTMLAnchorElement>) => {
