@@ -122,7 +122,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               selected={this.state.guideTab === "discussion"}
             />
           )}
-          {!isRepositoryPrivate() && <VotingBar />}
+          {!isRepositoryPrivate() && (
+            <VotingBar
+              user={this.state.user}
+              installationId={this.state.installationId}
+            />
+          )}
         </ActionBar>
 
         <Guide isOpen={this.state.guideTab != null}>
