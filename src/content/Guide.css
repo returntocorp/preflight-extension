@@ -1,9 +1,6 @@
 .r2c-guide {
   position: relative;
   z-index: 200;
-}
-
-.r2c-guide.guide-transition-enter-done {
   width: 250px;
 }
 
@@ -28,20 +25,20 @@
 
 @keyframes guide-in {
   0% {
-    left: 250px;
+    margin-right: -250px;
   }
 
   100% {
-    left: 0;
+    margin-right: 0;
   }
 }
 
 @keyframes guide-out {
   0% {
-    left: 0px;
+    margin-right: 0px;
   }
 
   100% {
-    left: 250px;
+    margin-right: -250px;
   }
 }
