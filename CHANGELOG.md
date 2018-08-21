@@ -11,9 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Show profile pictures next to voter counts
 
+### Changed
+
+- You can now cancel your vote by clicking on the selected vote button again
+
 ### Fixed
 
 - Remove dependency on blueprint icons to avoid errors
+- Fixed anonymous voters appearing in list
+- Workaround for `crypto.getRandomValues` not working in WebExtension host on Microsoft Edge
 
 ## [1.3.1] - 2018-08-16
 
