@@ -59,3 +59,10 @@ export async function fetchOrCreateExtensionUniqueId(): Promise<string> {
     );
   });
 }
+
+export function userOrInstallationId(
+  user: string | undefined,
+  installationId: string
+): string {
+  return user || `anonymous-${installationId}`;
+}

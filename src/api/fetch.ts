@@ -68,3 +68,7 @@ export const fetchJson = async <T>(
     throw response.statusText;
   }
 };
+
+export interface PostResponse {
+  recorded: boolean;
+}

@@ -1,4 +1,6 @@
+import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
+import { fetchOrCreateExtensionUniqueId } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -85,12 +87,20 @@ const Guide: React.SFC<GuideProps> = ({ isOpen, children }) => (
 
 interface ContentHostState {
   guideTab: string | undefined;
+  user: string | undefined;
+  installationId: string;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = {
-    guideTab: undefined
+    guideTab: undefined,
+    user: undefined,
+    installationId: "not-generated"
   };
+
+  public componentDidMount() {
+    this.updateCurrentUser();
+  }
 
   public render() {
     return (
@@ -111,11 +121,20 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
         </ActionBar>
 
         <Guide isOpen={this.state.guideTab != null}>
-          <Discussion />
+          <Discussion
+            user={this.state.user}
+            installationId={this.state.installationId}
+          />
         </Guide>
       </div>
     );
   }
+
+  private updateCurrentUser = async () => {
+    const installationId = await fetchOrCreateExtensionUniqueId();
+    const user = await extractCurrentUserFromPage();
+    this.setState({ user, installationId });
+  };
 
   private openGuide = (
     page: string
