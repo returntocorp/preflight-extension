@@ -7,6 +7,7 @@ import {
 } from "@r2c/extension/api/comments";
 import { userOrInstallationId } from "@r2c/extension/utils";
 import * as classnames from "classnames";
+import { truncate } from "lodash";
 import * as React from "react";
 import "./Discussion.css";
 
@@ -16,40 +17,69 @@ interface TwistProps {
   installationId: string;
 }
 
-const DiscussionComment: React.SFC<DiscussionComment> = ({
-  text,
-  author,
-  created,
-  inFlight
-}) => (
-  <article
-    className={classnames("discussion-comment", { "in-flight": inFlight })}
-  >
-    <section className="comment-body">{text}</section>
-    <footer className="comment-meta">
-      <span className="comment-user">
-        <img
-          src={`https://github.com/${author}.png`}
-          className="comment-user-profile-pic"
-          role="presentation"
-          alt=""
-        />{" "}
-        <span className="comment-user-handle">
-          <a
-            href={`https://github.com/${author}`}
-            title={`${author}'s profile`}
-          >
-            {author}
-          </a>
-        </span>
-      </span>
-      <span className="timestamp">
-        {inFlight && <Spinner size={12} className="in-flight-spinner" />}
-        {new Date(created).toLocaleDateString()}
-      </span>
-    </footer>
-  </article>
-);
+interface DiscussionCommentState {
+  fullHeight: boolean;
+}
+
+class CommentItem extends React.Component<
+  DiscussionComment,
+  DiscussionCommentState
+> {
+  public state: DiscussionCommentState = {
+    fullHeight: false
+  };
+
+  private TEXT_OVERSIZE_LIMIT = 140;
+
+  public render() {
+    const { text, author, created, inFlight } = this.props;
+    const displayText = this.state.fullHeight
+      ? text
+      : truncate(text, {
+          length: this.TEXT_OVERSIZE_LIMIT,
+          separator: ".,:? +"
+        });
+
+    return (
+      <article
+        className={classnames("discussion-comment", {
+          "in-flight": inFlight,
+          "full-height": this.state.fullHeight
+        })}
+      >
+        <section className="comment-body">
+          <div className="comment-body-text">{displayText}</div>
+          {text.length > this.TEXT_OVERSIZE_LIMIT && (
+            <div className="comment-body-show-more">
+              <a onClick={this.toggleFullHeight} role="button">
+                {this.state.fullHeight ? "Show less" : "Read more"}
+              </a>
+            </div>
+          )}
+        </section>
+        <footer className="comment-meta">
+          <span className="comment-user">
+            <img
+              src={`https://github.com/${author}.png`}
+              className="comment-user-profile-pic"
+              role="presentation"
+              alt=""
+            />{" "}
+            <span className="comment-user-handle">{author}</span>
+          </span>
+          <span className="timestamp">
+            {inFlight && <Spinner size={12} className="in-flight-spinner" />}
+            {new Date(created).toLocaleDateString()}
+          </span>
+        </footer>
+      </article>
+    );
+  }
+
+  private toggleFullHeight: React.MouseEventHandler<HTMLAnchorElement> = e => {
+    this.setState({ fullHeight: !this.state.fullHeight });
+  };
+}
 
 interface CommentsWellProps {
   comments: DiscussionComment[] | undefined;
@@ -82,7 +112,7 @@ class CommentsWell extends React.PureComponent<CommentsWellProps> {
       return (
         <div className="comments-well">
           {comments.map((comment, i) => (
-            <DiscussionComment key={i} {...comment} />
+            <CommentItem key={i} {...comment} />
           ))}
           <div className="comments-well-end" ref={this.commentWellEnd} />
         </div>
