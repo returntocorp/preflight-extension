@@ -19,7 +19,14 @@ const DiscussionComment: React.SFC<DiscussionComment> = ({
           role="presentation"
           alt=""
         />{" "}
-        <span className="comment-user-handle">{author}</span>
+        <span className="comment-user-handle">
+          <a
+            href={`https://github.com/${author}`}
+            title={`${author}'s profile`}
+          >
+            {author}
+          </a>
+        </span>
       </span>
       <span className="timestamp">
         {new Date(created).toLocaleDateString()}

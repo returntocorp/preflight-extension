@@ -1,9 +1,43 @@
 .twist .comment-twist {
 }
 
+.comments-well .discussion-comment {
+  padding: 1ex;
+  border: 1px solid #ddd;
+  border-bottom: none;
+}
+
+.comments-well .discussion-comment:last-child {
+  border-bottom: 1px solid #ddd;
+}
+
+.discussion-comment section.comment-body {
+  padding: 0;
+  margin-bottom: 1ex;
+}
+
+.discussion-comment .comment-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+}
+
+.discussion-comment .comment-meta .comment-user {
+  display: flex;
+  align-items: center;
+}
+
+.comment-meta .comment-user-handle a {
+  font-weight: 600;
+  color: rgb(36, 41, 46);
+}
+
 .discussion-comment .comment-user-profile-pic {
-  width: 32px;
-  height: 32px;
+  background-color: #aaa;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  margin-right: 1em;
+  margin-right: 1ex;
 }
