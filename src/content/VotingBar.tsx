@@ -234,13 +234,13 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     const sampleVoters =
       this.state.response != null
         ? (this.state.response.sampleVoters[voteType] || []).filter(
-            voter => !voter.startsWith("anonymous-")
+            voter => !voter.startsWith("anonymous")
           )
         : undefined;
     const anonymousVoteCount =
       this.state.response != null
         ? (this.state.response.sampleVoters[voteType] || []).filter(voter =>
-            voter.startsWith("anonymous-")
+            voter.startsWith("anonymous")
           ).length
         : undefined;
     const voteCount =
