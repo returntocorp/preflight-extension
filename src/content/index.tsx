@@ -8,8 +8,8 @@ import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
 import "./ActionBar.css";
-import "./Guide.css";
 import "./index.css";
+import "./Twists.css";
 import VotingBar from "./VotingBar";
 
 interface DiscussionIconProps {
@@ -72,31 +72,31 @@ const ActionBar: React.SFC = ({ children }) => (
   <div className="r2c-action-bar">{children}</div>
 );
 
-interface GuideProps {
+interface TwistsProps {
   isOpen: boolean;
 }
 
-const Guide: React.SFC<GuideProps> = ({ isOpen, children }) => (
+const Twists: React.SFC<TwistsProps> = ({ isOpen, children }) => (
   <CSSTransition
     in={isOpen}
-    classNames="guide-transition"
+    classNames="twists-transition"
     timeout={300}
     mountOnEnter={true}
     unmountOnExit={true}
   >
-    <div className="r2c-guide">{children}</div>
+    <div className="r2c-twists">{children}</div>
   </CSSTransition>
 );
 
 interface ContentHostState {
-  guideTab: string | undefined;
+  twistTab: string | undefined;
   user: string | undefined;
   installationId: string;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = {
-    guideTab: undefined,
+    twistTab: undefined,
     user: undefined,
     installationId: "not-generated"
   };
@@ -109,17 +109,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     return (
       <div className="r2c-host">
         <ActionBar>
-          <a
-            className="r2c-action-button"
-            title="R2C Homepage"
-            href="https://returntocorp.com"
-          >
-            {R2C_LOGO}
-          </a>
           {!isRepositoryPrivate() && (
             <DiscussionAction
-              onActionClick={this.openGuide("discussion")}
-              selected={this.state.guideTab === "discussion"}
+              onActionClick={this.openTwist("discussion")}
+              selected={this.state.twistTab === "discussion"}
             />
           )}
           {!isRepositoryPrivate() && (
@@ -130,12 +123,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           )}
         </ActionBar>
 
-        <Guide isOpen={this.state.guideTab != null}>
+        <Twists isOpen={this.state.twistTab != null}>
           <Discussion
             user={this.state.user}
             installationId={this.state.installationId}
           />
-        </Guide>
+        </Twists>
       </div>
     );
   }
@@ -146,13 +139,13 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     this.setState({ user, installationId });
   };
 
-  private openGuide = (
+  private openTwist = (
     page: string
   ): React.MouseEventHandler<HTMLElement> => e => {
-    if (this.state.guideTab !== page) {
-      this.setState({ guideTab: page });
+    if (this.state.twistTab !== page) {
+      this.setState({ twistTab: page });
     } else {
-      this.setState({ guideTab: undefined });
+      this.setState({ twistTab: undefined });
     }
   };
 }

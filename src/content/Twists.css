@@ -1,18 +1,18 @@
-.r2c-guide {
+.r2c-twists {
   position: relative;
   z-index: 200;
   width: 250px;
 }
 
-.r2c-guide.guide-transition-enter {
-  animation: 300ms guide-in both cubic-bezier(0.215, 0.61, 0.355, 1);
+.r2c-twists.twists-transition-enter {
+  animation: 300ms twists-in both cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.r2c-guide.guide-transition-exit {
-  animation: 300ms guide-out both cubic-bezier(0.215, 0.61, 0.355, 1);
+.r2c-twists.twists-transition-exit {
+  animation: 300ms twists-out both cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.r2c-guide .twist {
+.r2c-twists .twist {
   background-color: #fff;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.3);
   padding: 10px;
@@ -24,7 +24,7 @@
   font-weight: 600;
 }
 
-@keyframes guide-in {
+@keyframes twists-in {
   0% {
     margin-right: -250px;
   }
@@ -34,7 +34,7 @@
   }
 }
 
-@keyframes guide-out {
+@keyframes twists-out {
   0% {
     margin-right: 0px;
   }
