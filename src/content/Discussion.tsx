@@ -157,11 +157,12 @@ export default class Discussion extends React.Component<
       comments:
         this.state.comments != null
           ? [...this.state.comments, inFlightComment]
-          : [inFlightComment]
+          : [inFlightComment],
+      inputText: ""
     });
     submitComment(body).then(({ comments, recorded }) => {
       if (recorded) {
-        this.setState({ comments, inputText: "" });
+        this.setState({ comments });
       } else {
         this.setState({ submitFailed: true });
       }
