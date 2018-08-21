@@ -3,7 +3,7 @@
 
 .comment-twist .comments-well {
   margin-top: 1ex;
-  max-height: 400px;
+  height: 340px;
   overflow: auto;
 }
 
