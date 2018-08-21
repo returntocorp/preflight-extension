@@ -55,23 +55,47 @@ interface CommentsWellProps {
   comments: DiscussionComment[] | undefined;
 }
 
-const CommentsWell: React.SFC<CommentsWellProps> = ({ comments }) => {
-  if (comments == null || comments.length === 0) {
-    return (
-      <div className="comments-well comments-well-empty">
-        Be the first to comment
-      </div>
-    );
-  } else {
-    return (
-      <div className="comments-well">
-        {comments.map((comment, i) => (
-          <DiscussionComment key={i} {...comment} />
-        ))}
-      </div>
-    );
+class CommentsWell extends React.PureComponent<CommentsWellProps> {
+  private commentWellEnd = React.createRef<HTMLDivElement>();
+
+  constructor(props: CommentsWellProps) {
+    super(props);
   }
-};
+
+  public componentDidMount() {
+    this.scrollToEnd();
+  }
+
+  public componentDidUpdate() {
+    this.scrollToEnd();
+  }
+
+  public render() {
+    const { comments } = this.props;
+    if (comments == null || comments.length === 0) {
+      return (
+        <div className="comments-well comments-well-empty">
+          Be the first to comment
+        </div>
+      );
+    } else {
+      return (
+        <div className="comments-well">
+          {comments.map((comment, i) => (
+            <DiscussionComment key={i} {...comment} />
+          ))}
+          <div className="comments-well-end" ref={this.commentWellEnd} />
+        </div>
+      );
+    }
+  }
+
+  private scrollToEnd = () => {
+    if (this.commentWellEnd.current != null) {
+      this.commentWellEnd.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+}
 
 type DiscussionProps = TwistProps;
 
