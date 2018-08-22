@@ -6,24 +6,6 @@
   font-size: 12px;
 }
 
-.user-meta .user-author {
-  display: flex;
-  align-items: center;
-}
-
-.user-meta .user-author-handle a {
-  font-weight: 600;
-  color: rgb(36, 41, 46);
-}
-
-.user-author-profile-pic {
-  background-color: #aaa;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-right: 1ex;
-}
-
 .user-meta .timestamp {
   display: flex;
   align-items: center;

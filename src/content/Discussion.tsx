@@ -59,7 +59,7 @@ class CommentItem extends React.Component<
           )}
         </section>
         <UserMetadataFooter
-          author={author}
+          user={author}
           timestamp={created}
           className="comment-meta"
           loading={inFlight}

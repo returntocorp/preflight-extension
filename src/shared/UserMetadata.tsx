@@ -1,4 +1,5 @@
 import { Spinner } from "@blueprintjs/core";
+import ProfileBadge from "@r2c/extension/shared/ProfileBadge";
 import * as classnames from "classnames";
 import * as React from "react";
 import "./UserMetadata.css";
@@ -9,7 +10,7 @@ const Timeago = require("react-timeago").default;
 
 export interface UserMetadataFooterProps {
   className?: string;
-  author: string;
+  user?: string;
   timestamp?: string;
   hideProfilePicture?: boolean;
   loading?: boolean;
@@ -17,27 +18,15 @@ export interface UserMetadataFooterProps {
 
 export const UserMetadataFooter: React.SFC<UserMetadataFooterProps> = ({
   className,
-  author,
+  user,
   timestamp,
   hideProfilePicture,
   loading
 }) => (
   <footer className={classnames("user-meta", className)}>
-    <span className="user-author">
-      {hideProfilePicture ? null : (
-        <img
-          src={
-            author.startsWith("anonymous")
-              ? undefined
-              : `https://github.com/${author}.png`
-          }
-          className="user-author-profile-pic"
-          role="presentation"
-          alt=""
-        />
-      )}{" "}
-      <span className="user-author-handle">{author}</span>
-    </span>
+    {user != null && (
+      <ProfileBadge user={user} hideProfilePicture={hideProfilePicture} />
+    )}
     {loading && <Spinner size={12} className="in-flight-spinner" />}
     {timestamp != null && (
       <span className="timestamp">
