@@ -22,6 +22,8 @@
 
   position: relative;
   z-index: 100;
+
+  transition: background-color 0.1s, fill 0.1s, box-shadow 0.3s;
 }
 
 .r2c-action-button.selected {

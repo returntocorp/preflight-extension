@@ -33,7 +33,7 @@ class DiscussionAction extends React.Component<DiscussionActionButtonProps> {
   public render() {
     return (
       <a
-        className={classnames("r2c-action-button", {
+        className={classnames("r2c-action-button", "discussion-action-button", {
           selected: this.props.selected
         })}
         title="See discussions"

@@ -84,10 +84,6 @@
   animation: vote-succeeded-count both cubic-bezier(0.215, 0.61, 0.355, 1) 0.3s;
 }
 
-.secarta-vote-button-link {
-  transition: background-color 0.3s, fill 0.3s, box-shadow 0.3s;
-}
-
 .secarta-vote-button-link:active {
   box-shadow: inset 0px 0px 20px rgba(255, 255, 255, 0.5);
 }
