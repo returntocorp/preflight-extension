@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- You can now share your opinions on a repository by adding a comment
+- You can now cancel your vote by clicking on the selected vote button again
 - Show profile pictures next to voter counts
 
 ### Changed
-
-- You can now cancel your vote by clicking on the selected vote button again
 
 ### Fixed
 
