@@ -83,10 +83,7 @@ const ActivitiesList: React.SFC<ActivitiesListProps> = ({ activities }) => (
 
 const FirehoseFetching: React.SFC = () => (
   <div className="firehose-fetching">
-    <NonIdealState
-      icon={<Spinner size={Spinner.SIZE_SMALL} />}
-      title="Drinking from the firehose..."
-    />
+    <NonIdealState icon={<Spinner />} title="Drinking from the firehose..." />
   </div>
 );
 

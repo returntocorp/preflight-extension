@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- You can now see what other people are voting and commenting on by clicking on the extension's icon in your browser's nav bar
+- You can now see what other people are voting and commenting on via the Guide by clicking on the extension's icon in your browser's nav bar. The Guide currently features:
+  - Firehose: an unfiltered stream showing how others are voting and commenting
+  - Top 10: a list of top and controversial projects throughout GitHub
 - You can now share your opinions on a repository by adding a comment
 - You can now cancel your vote by clicking on the selected vote button again
 - Show profile pictures next to voter counts

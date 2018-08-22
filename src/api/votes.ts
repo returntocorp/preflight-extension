@@ -18,6 +18,30 @@ export interface VotePostBody {
   user: string | null;
 }
 
+export interface ControversialVoteStatistics {
+  gitUrl: string;
+  down: number;
+  up: number;
+}
+
+export interface VoteCountStatistics {
+  gitUrl: string;
+  numVotes: number;
+}
+
+interface RecentVoteEvent {
+  gitUrl: string;
+  timestamp: string;
+  user: string;
+  vote: string;
+}
+
+export interface VoteOverviewResponse {
+  mostControversial: ControversialVoteStatistics[];
+  mostVoted: VoteCountStatistics[];
+  recent: RecentVoteEvent[];
+}
+
 function buildVotingUrl({
   source,
   medium,
@@ -33,6 +57,10 @@ function buildVotingUrl({
   return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
 }
 
+function buildVoteOverviewUrl() {
+  return `https://api.secarta.io/v1/vote/overview`;
+}
+
 export async function getVotes(): Promise<VoteResponse> {
   const votesUrl = buildVotingUrl(getAnalyticsParams());
 
@@ -46,4 +74,10 @@ export async function submitVote(body: VotePostBody): Promise<VoteResponse> {
     method: "POST",
     body: JSON.stringify(body)
   });
+}
+
+export async function getVoteOverview(): Promise<VoteOverviewResponse> {
+  const voteOverviewUrl = buildVoteOverviewUrl();
+
+  return fetchJson<VoteOverviewResponse>(voteOverviewUrl);
 }
