@@ -6,19 +6,6 @@ export function getExtensionVersion(): string | undefined {
   return undefined;
 }
 
-export function extractSlugFromCurrentUrl(): {
-  domain: string;
-  org: string;
-  repo: string;
-  pathname: string;
-  rest: string;
-} {
-  const { hostname: domain, pathname } = document.location;
-  const [org, repo, ...rest] = pathname.slice(1).split("/");
-
-  return { domain, org, repo, pathname, rest: rest.join("/") };
-}
-
 function byteToHex(byte: number) {
   return `0${byte.toString(16)}`.slice(-2);
 }
@@ -65,6 +52,38 @@ export function userOrInstallationId(
   installationId: string
 ): string {
   return user || `anonymous-${installationId}`;
+}
+
+function parseSlugFromUrl(
+  url: string
+): {
+  domain: string;
+  org: string;
+  repo: string;
+  pathname: string;
+  rest: string;
+} {
+  const parsed = new URL(url);
+  const { hostname: domain, pathname } = parsed;
+  const [org, repo, ...rest] = pathname.slice(1).split("/");
+
+  return { domain, org, repo, pathname, rest: rest.join("/") };
+}
+
+export function extractSlugFromCurrentUrl(): {
+  domain: string;
+  org: string;
+  repo: string;
+  pathname: string;
+  rest: string;
+} {
+  return parseSlugFromUrl(document.URL);
+}
+
+export function getSlugFromUrl(url: string): string {
+  const { org, repo } = parseSlugFromUrl(url);
+
+  return `${org}/${repo}`;
 }
 
 export function isRepositoryPrivate() {

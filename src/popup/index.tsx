@@ -23,9 +23,14 @@ class Guide extends React.Component<{}, GuideState> {
           onChange={this.handleTabChange}
           selectedTabId={this.state.selectedTabId}
           animate={true}
+          className="r2c-guide-tabs"
         >
+          <Tab
+            id="extension"
+            title={<div className="r2c-tab">{R2CLogo}</div>}
+            panel={<ExtensionTab />}
+          />
           <Tab id="firehose" title="Firehose" panel={<FirehoseTab />} />
-          <Tab id="extension" title={R2CLogo} panel={<ExtensionTab />} />
         </Tabs>
       </div>
     );
