@@ -1,6 +1,9 @@
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
-import { fetchOrCreateExtensionUniqueId } from "@r2c/extension/utils";
+import {
+  fetchOrCreateExtensionUniqueId,
+  isRepositoryPrivate
+} from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -113,11 +116,13 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           >
             {R2C_LOGO}
           </a>
-          <DiscussionAction
-            onActionClick={this.openGuide("discussion")}
-            selected={this.state.guideTab === "discussion"}
-          />
-          <VotingBar />
+          {!isRepositoryPrivate() && (
+            <DiscussionAction
+              onActionClick={this.openGuide("discussion")}
+              selected={this.state.guideTab === "discussion"}
+            />
+          )}
+          {!isRepositoryPrivate() && <VotingBar />}
         </ActionBar>
 
         <Guide isOpen={this.state.guideTab != null}>

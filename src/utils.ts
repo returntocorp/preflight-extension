@@ -66,3 +66,7 @@ export function userOrInstallationId(
 ): string {
   return user || `anonymous-${installationId}`;
 }
+
+export function isRepositoryPrivate() {
+  return document.querySelector("h1.private") != null;
+}

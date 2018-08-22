@@ -1,5 +1,5 @@
 import { Position, Tooltip } from "@blueprintjs/core";
-import { getExtensionVersion } from "@r2c/extension/utils";
+import { getExtensionVersion, isRepositoryPrivate } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -141,10 +141,6 @@ interface VoteCounts {
   [key: string]: number;
 }
 
-function isRepositoryPrivate() {
-  return document.querySelector("h1.private") != null;
-}
-
 function getAnalyticsParams(): {
   source: string;
   medium: string;
@@ -196,9 +192,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   }
 
   public render() {
-    return (
-      <>{!isRepositoryPrivate() && ["up", "down"].map(this.renderVoteButton)}</>
-    );
+    return <>{["up", "down"].map(this.renderVoteButton)}</>;
   }
 
   private renderVoteButton = (voteType: string) => {
