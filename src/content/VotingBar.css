@@ -1,8 +1,8 @@
 #r2c-voting-container {
   display: flex;
   flex-direction: column;
-
-  background-color: #ddd;
+  position: relative;
+  background-color: #fff;
 }
 
 .secarta-vote-button,
@@ -17,6 +17,7 @@
 
   color: #fff;
   text-decoration: none;
+  z-index: 200;
 }
 
 .secarta-vote-button .vote-icon {
@@ -32,8 +33,16 @@
 .secarta-vote-button .vote-count-container {
   position: absolute;
   left: -20px;
+  z-index: 100;
+}
+
+.secarta-vote-button .vote-count {
+  padding: 8px 4px;
   text-decoration: none;
   cursor: help;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .r2c-button {
@@ -143,6 +152,15 @@
   fill: #fff;
 }
 
+.vote-count-popover .bp3-popover-content {
+  background-color: #fff;
+  color: #10161a;
+}
+
+.vote-count-popover .bp3-popover-arrow-fill {
+  fill: #fff;
+}
+
 .sample-votes-container .sample-vote-header {
   font-size: 18px;
   margin-bottom: 10px;
@@ -150,6 +168,21 @@
 
 .sample-votes-container ul {
   list-style: none;
+}
+
+.sample-votes .voter {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.sample-votes .voter .voter-profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 15px;
 }
 
 @keyframes vote-succeeded-icon {

@@ -1,4 +1,5 @@
 import { Position, Tooltip } from "@blueprintjs/core";
+import { getExtensionVersion } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
@@ -74,17 +75,29 @@ interface ExtensionStorage {
   SECARTA_EXTENSION_INSTALLATION_ID?: string;
 }
 
-async function getOrCreateExtensionUniqueId() {
-  return new Promise((resolve, reject) => {
+async function fetchOrCreateExtensionUniqueId(): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     browser.storage.local.get(
       "SECARTA_EXTENSION_INSTALLATION_ID",
       (res: ExtensionStorage) => {
         if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
           resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
         } else {
-          const arr = new Uint8Array(20 / 2);
-          window.crypto.getRandomValues(arr);
-          const installationId = [].map.call(arr, byteToHex).join("");
+          const randomBytes = new Uint8Array(20 / 2);
+          window.crypto.getRandomValues(randomBytes);
+          if (randomBytes.every(elem => elem === 0)) {
+            // Edge crypto.getRandomValues returns all 0s
+            // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11795162/
+            // Fall back to less cryptographically random method (PRNG strength doesn't really matter)
+            randomBytes.forEach(
+              // tslint:disable-next-line:insecure-random
+              (elem, index) => (randomBytes[index] = Math.random() * 255)
+            );
+          }
+
+          const installationId: string = [].map
+            .call(randomBytes, byteToHex)
+            .join("");
           browser.storage.local.set({
             SECARTA_EXTENSION_INSTALLATION_ID: installationId
           });
@@ -95,16 +108,14 @@ async function getOrCreateExtensionUniqueId() {
   });
 }
 
-async function extractCurrentUserFromPage(): Promise<string> {
+async function extractCurrentUserFromPage(): Promise<string | undefined> {
   const { domain } = extractSlugFromCurrentUrl();
-  const extensionUniqueId = await getOrCreateExtensionUniqueId();
-  const anonUserId = `anonymous-${extensionUniqueId}`;
 
   if (domain.includes("github.com")) {
     const userLoginMetaTags = document.getElementsByName("user-login");
 
     if (userLoginMetaTags.length === 0) {
-      return anonUserId;
+      return undefined;
     }
 
     const user = userLoginMetaTags[0].getAttribute("content");
@@ -112,10 +123,10 @@ async function extractCurrentUserFromPage(): Promise<string> {
     if (user != null && user !== "") {
       return user;
     } else {
-      return anonUserId;
+      return undefined;
     }
   } else {
-    return anonUserId;
+    return undefined;
   }
 }
 
@@ -134,8 +145,14 @@ function buildVotingUrl({
   return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
 }
 
-function buildExtensionHeaders(user: string | undefined) {
-  return user != null ? { "X-Secarta-GitHub-User": user } : undefined;
+function buildExtensionHeaders(
+  user: string | undefined,
+  installationId: string
+) {
+  return {
+    "X-Secarta-GitHub-User": user || "anonymous",
+    "X-R2C-Extension-Installation-Id": installationId
+  };
 }
 
 interface VoteCounts {
@@ -153,7 +170,7 @@ function getAnalyticsParams(): {
 } {
   return {
     source: document.location.toString(),
-    medium: "extension",
+    medium: `extension@${getExtensionVersion()}`,
     content: "voting-updown-vertical"
   };
 }
@@ -162,12 +179,13 @@ type SampleVoters = { [K in keyof VoteCounts]: string[] };
 
 interface VoteResponse {
   votes: VoteCounts;
-  currentVote: string | undefined;
+  currentVote: string | null;
   sampleVoters: SampleVoters;
 }
 
 interface VotingBarState {
-  currentUser: string;
+  currentUser: string | undefined;
+  installationId: string;
   response: VoteResponse | undefined;
   voting: boolean;
   voteSuccess: boolean;
@@ -179,7 +197,8 @@ interface VotingBarState {
 
 export default class VotingBar extends React.Component<{}, VotingBarState> {
   public state: VotingBarState = {
-    currentUser: "",
+    currentUser: undefined,
+    installationId: "not-generated",
     response: undefined,
     voting: false,
     voteSuccess: false,
@@ -211,17 +230,17 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
 
   private renderVoteButton = (voteType: string) => {
     const { org, repo } = extractSlugFromCurrentUrl();
-    const user = this.state.currentUser;
+    const { currentUser, installationId } = this.state;
     const sampleVoters =
       this.state.response != null
         ? (this.state.response.sampleVoters[voteType] || []).filter(
-            voter => !voter.startsWith("anonymous-")
+            voter => !voter.startsWith("anonymous")
           )
         : undefined;
     const anonymousVoteCount =
       this.state.response != null
         ? (this.state.response.sampleVoters[voteType] || []).filter(voter =>
-            voter.startsWith("anonymous-")
+            voter.startsWith("anonymous")
           ).length
         : undefined;
     const voteCount =
@@ -253,7 +272,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
               className={classnames("secarta-vote-button-link")}
               title={`Vote ${voteType} on ${org}/${repo}`}
               role="button"
-              onClick={this.submitVote(voteType, user)}
+              onClick={this.toggleVote(voteType, currentUser, installationId)}
             >
               <div className="vote-icon">
                 {R2C_VOTING_ICONS[voteType]}
@@ -265,10 +284,12 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
             <Tooltip
               className="vote-count-container"
               position={Position.LEFT}
+              popoverClassName="vote-count-popover"
               content={
                 this.state.response != null &&
                 sampleVoters != null &&
-                voteCount != null ? (
+                voteCount != null &&
+                voteCount > 0 ? (
                   <div className="sample-votes-container">
                     <div className="sample-vote-header">
                       <span className="sample-vote-header-text">
@@ -278,22 +299,37 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
                     <ul className="sample-votes">
                       {sampleVoters.map(voter => (
                         <li key={voter} className="voter">
-                          {voter}
+                          <img
+                            src={`https://github.com/${voter}.png`}
+                            alt="" // Empty for presentation
+                            role="presentation"
+                            className="voter-profile-picture"
+                          />
+                          <span className="voter-name">{voter}</span>
                         </li>
                       ))}
                     </ul>
-                    {anonymousVoteCount != null && anonymousVoteCount > 0 ? (
-                      <span className="anonymous-voters">
-                        {anonymousVoteCount} anonymous votes{" "}
-                      </span>
-                    ) : (
-                      " "
-                    )}
-                    {voteCount - sampleVoters.length > 0 ? (
-                      <span className="more-voters">
-                        and {voteCount - sampleVoters.length} other voters
-                      </span>
-                    ) : null}
+                    {voteCount - sampleVoters.length > 0 &&
+                      sampleVoters.length > 0 && (
+                        <span className="more-voters">
+                          + {voteCount - sampleVoters.length} more{" "}
+                        </span>
+                      )}
+                    {voteCount - sampleVoters.length > 0 &&
+                      sampleVoters.length === 0 && (
+                        <span className="more-voters">
+                          {voteCount - sampleVoters.length}
+                          {voteCount - sampleVoters.length > 1
+                            ? " voters "
+                            : " voter "}
+                        </span>
+                      )}
+                    {anonymousVoteCount != null &&
+                      anonymousVoteCount > 0 && (
+                        <span className="anonymous-voters">
+                          ({anonymousVoteCount} anonymous)
+                        </span>
+                      )}
                   </div>
                 ) : (
                   undefined
@@ -320,9 +356,10 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       const votesUrl = buildVotingUrl(getAnalyticsParams());
-      const currentUser = await extractCurrentUserFromPage();
+      const installationId = await fetchOrCreateExtensionUniqueId();
+      const user = await extractCurrentUserFromPage();
       const response = await fetch(votesUrl, {
-        headers: buildExtensionHeaders(currentUser)
+        headers: buildExtensionHeaders(user, installationId)
       });
 
       if (response.ok) {
@@ -335,18 +372,36 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
   };
 
   private updateCurrentUser = async () => {
+    const installationId = await fetchOrCreateExtensionUniqueId();
     const currentUser = await extractCurrentUserFromPage();
-    this.setState({ currentUser });
+    this.setState({ currentUser, installationId });
   };
 
-  private submitVote = (vote: string, user: string) => (
-    e: React.MouseEvent<HTMLAnchorElement>
-  ) => {
+  private toggleVote = (
+    vote: string,
+    user: string | undefined,
+    installationId: string
+  ) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (
+      this.state.response != null &&
+      this.state.response.currentVote === vote
+    ) {
+      this.submitVote(null, user, installationId)(e);
+    } else {
+      this.submitVote(vote, user, installationId)(e);
+    }
+  };
+
+  private submitVote = (
+    vote: string | null,
+    user: string | undefined,
+    installationId: string
+  ) => async (e: React.MouseEvent<HTMLAnchorElement>) => {
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       const body = {
         vote,
-        user
+        user: user || `anonymous-${installationId}`
       };
 
       this.setState({
@@ -360,7 +415,7 @@ export default class VotingBar extends React.Component<{}, VotingBarState> {
         voteFailed: false
       });
 
-      const headers = buildExtensionHeaders(user);
+      const headers = buildExtensionHeaders(user, installationId);
       fetch(buildVotingUrl(getAnalyticsParams()), {
         method: "POST",
         body: JSON.stringify(body),
