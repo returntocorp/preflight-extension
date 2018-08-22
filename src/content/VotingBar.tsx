@@ -1,6 +1,7 @@
 import { Position, Tooltip } from "@blueprintjs/core";
 import { getVotes, submitVote, VoteResponse } from "@r2c/extension/api/votes";
 import {
+  buildGithubProfilePicUrl,
   extractSlugFromCurrentUrl,
   isRepositoryPrivate,
   userOrInstallationId
@@ -152,7 +153,7 @@ export default class VotingBar extends React.Component<
                       {sampleVoters.map(voter => (
                         <li key={voter} className="voter">
                           <img
-                            src={`https://github.com/${voter}.png`}
+                            src={buildGithubProfilePicUrl(voter)}
                             alt="" // Empty for presentation
                             role="presentation"
                             className="voter-profile-picture"

@@ -89,3 +89,7 @@ export function getSlugFromUrl(url: string): string {
 export function isRepositoryPrivate() {
   return document.querySelector("h1.private") != null;
 }
+
+export function buildGithubProfilePicUrl(user: string): string {
+  return `https://github.com/${user}.png`;
+}

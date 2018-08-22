@@ -1,3 +1,4 @@
+import { buildGithubProfilePicUrl } from "@r2c/extension/utils";
 import * as React from "react";
 import "./ProfileBadge.css";
 
@@ -16,7 +17,7 @@ const ProfileBadge: React.SFC<ProfileBadgeProps> = ({
         src={
           user.startsWith("anonymous")
             ? undefined
-            : `https://github.com/${user}.png`
+            : buildGithubProfilePicUrl(user)
         }
         className="user-profile-pic"
         role="presentation"
