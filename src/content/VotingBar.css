@@ -53,20 +53,30 @@
   cursor: not-allowed;
 }
 
-.secarta-vote-button.vote-success-enter svg {
-  animation: vote-succeeded-icon both 1.5s 0s
+.secarta-vote-button.vote-up.vote-success-enter svg {
+  animation: vote-up-succeeded-icon both 1.5s 0s
+    cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.secarta-vote-button.vote-down.vote-success-enter svg {
+  animation: vote-down-succeeded-icon both 1.5s 0s
     cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .secarta-vote-button.vote-failed svg {
-  animation: vote-succeeded-icon both 1.5s 0s
-    cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation: vote-failed-icon both 1.5s 0s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.secarta-vote-button.vote-success-enter .voted-text,
+.secarta-vote-button.vote-up.vote-success-enter .voted-text {
+  position: absolute;
+  animation: vote-up-succeeded-text both cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-duration: 1.5s;
+}
+
+.secarta-vote-button.vote-down.vote-success-enter .voted-text,
 .secarta-vote-button.vote-failed .voted-text {
   position: absolute;
-  animation: vote-succeeded-text both cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation: vote-down-succeeded-text both cubic-bezier(0.645, 0.045, 0.355, 1);
   animation-duration: 1.5s;
 }
 
@@ -163,7 +173,7 @@
   margin-right: 15px;
 }
 
-@keyframes vote-succeeded-icon {
+@keyframes vote-up-succeeded-icon {
   0% {
     transform: translateY(0);
   }
@@ -174,6 +184,24 @@
 
   50.01% {
     transform: translateY(100px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes vote-down-succeeded-icon {
+  0% {
+    transform: translateY(0);
+  }
+
+  49.99% {
+    transform: translateY(100px);
+  }
+
+  50.01% {
+    transform: translateY(-100px);
   }
 
   100% {
@@ -195,7 +223,7 @@
   }
 }
 
-@keyframes vote-succeeded-text {
+@keyframes vote-up-succeeded-text {
   0% {
     transform: translateY(100px);
   }
@@ -210,6 +238,24 @@
 
   100% {
     transform: translateY(-48px);
+  }
+}
+
+@keyframes vote-down-succeeded-text {
+  0% {
+    transform: translateY(-100px);
+  }
+
+  30% {
+    transform: translateY(0px);
+  }
+
+  60% {
+    transform: translateY(0px);
+  }
+
+  100% {
+    transform: translateY(48px);
   }
 }
 
