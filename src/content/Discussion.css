@@ -28,37 +28,6 @@
   margin-bottom: 1ex;
 }
 
-.discussion-comment .comment-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 12px;
-}
-
-.discussion-comment .comment-meta .comment-user {
-  display: flex;
-  align-items: center;
-}
-
-.comment-meta .comment-user-handle a {
-  font-weight: 600;
-  color: rgb(36, 41, 46);
-}
-
-.discussion-comment .comment-user-profile-pic {
-  background-color: #aaa;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-right: 1ex;
-}
-
-.discussion-comment .timestamp {
-  display: flex;
-  align-items: center;
-}
-
 .discussion-comment .in-flight-spinner {
   margin-right: 1ex;
 }

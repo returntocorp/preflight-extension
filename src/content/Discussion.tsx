@@ -1,10 +1,11 @@
-import { Button, InputGroup, NonIdealState, Spinner } from "@blueprintjs/core";
+import { Button, InputGroup, NonIdealState } from "@blueprintjs/core";
 import {
   CommentPostBody,
   DiscussionComment,
   getComments,
   submitComment
 } from "@r2c/extension/api/comments";
+import { UserMetadataFooter } from "@r2c/extension/shared/UserMetadata";
 import { userOrInstallationId } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { truncate } from "lodash";
@@ -57,21 +58,12 @@ class CommentItem extends React.Component<
             </div>
           )}
         </section>
-        <footer className="comment-meta">
-          <span className="comment-user">
-            <img
-              src={`https://github.com/${author}.png`}
-              className="comment-user-profile-pic"
-              role="presentation"
-              alt=""
-            />{" "}
-            <span className="comment-user-handle">{author}</span>
-          </span>
-          <span className="timestamp">
-            {inFlight && <Spinner size={12} className="in-flight-spinner" />}
-            {new Date(created).toLocaleDateString()}
-          </span>
-        </footer>
+        <UserMetadataFooter
+          author={author}
+          timestamp={created}
+          className="comment-meta"
+          loading={inFlight}
+        />
       </article>
     );
   }
