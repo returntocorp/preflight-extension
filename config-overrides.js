@@ -13,7 +13,10 @@ module.exports = function override(config, env) {
   config.entry = {
     // Cut out the middle item in the entry array (the hot reloading script)
     // so we can use webpack dev server with the popup :D
-    main: [...defaultEntryArray.slice(0, 1), ...defaultEntryArray.slice(2)],
+    main: [
+      ...defaultEntryArray.slice(0, 1),
+      defaultEntryArray[defaultEntryArray.length - 1]
+    ],
     content: [...defaultEntryArray.slice(0, 1), resolvedContentPath]
   };
   console.log(config.entry);
