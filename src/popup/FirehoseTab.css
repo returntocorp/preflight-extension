@@ -2,12 +2,30 @@
   margin-bottom: 1ex;
   padding-bottom: 1ex;
   border-bottom: 1px solid #ddd;
+
+  display: flex;
+  flex-direction: row;
 }
 
-.firehose-activity .activity-body {
+.firehose-activity .activity-contents {
   font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.firehose-activity .activity-profile-pic {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex: 0 0 auto;
 }
 
 .firehose-activity .activity-meta {
   margin-top: 2px;
+}
+
+.firehose-activity .activity-body .activity-body-author {
+  font-weight: 600;
 }

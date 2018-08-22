@@ -1,4 +1,4 @@
-import { buildGithubProfilePicUrl } from "@r2c/extension/utils";
+import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import * as React from "react";
 import "./ProfileBadge.css";
 
@@ -12,18 +12,7 @@ const ProfileBadge: React.SFC<ProfileBadgeProps> = ({
   hideProfilePicture
 }) => (
   <span className="user-profile">
-    {hideProfilePicture ? null : (
-      <img
-        src={
-          user.startsWith("anonymous")
-            ? undefined
-            : buildGithubProfilePicUrl(user)
-        }
-        className="user-profile-pic"
-        role="presentation"
-        alt=""
-      />
-    )}{" "}
+    {hideProfilePicture ? null : <ProfilePicture user={user} />}{" "}
     <span className="user-profile-handle">{user}</span>
   </span>
 );

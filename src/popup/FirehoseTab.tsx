@@ -1,5 +1,6 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
 import { FirehoseActivity, getFirehose } from "@r2c/extension/api/firehose";
+import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import { UserMetadataFooter } from "@r2c/extension/shared/UserMetadata";
 import { getSlugFromUrl } from "@r2c/extension/utils";
 import { truncate } from "lodash";
@@ -53,16 +54,16 @@ const CommentActivityBody: React.SFC<FirehoseActivity> = ({
 
 const ActivityItem: React.SFC<FirehoseActivity> = activity => (
   <article className="firehose-activity">
-    <section className="activity-body">
+    <ProfilePicture user={activity.author} className="activity-profile-pic" />
+    <section className="activity-contents">
       {activity.action === "vote" && <VoteActivityBody {...activity} />}
       {activity.action === "mention" && <MentionActivityBody {...activity} />}
       {activity.action === "comment" && <CommentActivityBody {...activity} />}
+      <UserMetadataFooter
+        timestamp={activity.timestamp}
+        className="activity-meta"
+      />
     </section>
-    <UserMetadataFooter
-      author={activity.author}
-      timestamp={activity.timestamp}
-      className="activity-meta"
-    />
   </article>
 );
 
