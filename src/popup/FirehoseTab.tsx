@@ -16,7 +16,9 @@ const VoteActivityBody: React.SFC<FirehoseActivity> = ({
     <span className="activity-body-author">{author}</span> voted{" "}
     <span className="activity-body-value">{actionValue}</span> on{" "}
     <span className="activity-body-giturl">
-      <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+      <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+        {getSlugFromUrl(gitUrl)}
+      </a>
     </span>
   </span>
 );
@@ -30,7 +32,9 @@ const MentionActivityBody: React.SFC<FirehoseActivity> = ({
     <span className="activity-body-author">{author}</span> mentioned{" "}
     <span className="activity-body-value">{actionValue}</span> on{" "}
     <span className="activity-body-giturl">
-      <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+      <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+        {getSlugFromUrl(gitUrl)}
+      </a>
     </span>
   </span>
 );
@@ -43,7 +47,9 @@ const CommentActivityBody: React.SFC<FirehoseActivity> = ({
   <span className="activity-body comment-activity-body">
     <span className="activity-body-author">{author}</span> commented on{" "}
     <span className="activity-body-giturl">
-      <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+      <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+        {getSlugFromUrl(gitUrl)}
+      </a>
     </span>
     :{" "}
     <span className="activity-body-value">

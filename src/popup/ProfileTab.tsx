@@ -47,7 +47,9 @@ const MentionItem: React.SFC<CommentMention> = ({
     <section className="popular-contents">
       <span className="popular-author">{author}</span> mentioned you on{" "}
       <span className="popular-giturl">
-        <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+        <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+          {getSlugFromUrl(gitUrl)}
+        </a>
       </span>
       : <br />
       <span className="popular-mention-text">

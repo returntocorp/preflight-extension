@@ -16,7 +16,9 @@ const ControversialRepoEntry: React.SFC<ControversialVoteStatistics> = ({
 }) => (
   <article className="top10-controversial-repo">
     <div className="controversial-giturl">
-      <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+      <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+        {getSlugFromUrl(gitUrl)}
+      </a>
     </div>
     <div className="controversial-votes">
       <div className="controversial-vote-up">+{up}</div>
@@ -31,7 +33,9 @@ const VotedRepoEntry: React.SFC<VoteCountStatistics> = ({
 }) => (
   <article className="top10-popular-repo">
     <div className="popular-giturl">
-      <a href={gitUrl}>{getSlugFromUrl(gitUrl)}</a>
+      <a href={gitUrl} target="_blank" rel="noreferrer noopener">
+        {getSlugFromUrl(gitUrl)}
+      </a>
     </div>
     <div className="popular-vote-count">{numVotes} votes</div>
   </article>
