@@ -7,18 +7,25 @@ module.exports = function override(config, env) {
 
   // Add entry for content-script
   const defaultEntryArray = config.entry;
-  const defaultEntryHotReload = defaultEntryArray.slice(
-    0,
-    defaultEntryArray.length - 1
-  );
   const resolvedContentPath = defaultEntryArray[
     defaultEntryArray.length - 1
   ].replace("index.tsx", "content.tsx");
   config.entry = {
-    main: defaultEntryArray,
-    content: [...defaultEntryHotReload, resolvedContentPath]
+    // Cut out the middle item in the entry array (the hot reloading script)
+    // so we can use webpack dev server with the popup :D
+    main: [
+      ...defaultEntryArray.slice(0, 1),
+      defaultEntryArray[defaultEntryArray.length - 1]
+    ],
+    content: [...defaultEntryArray.slice(0, 1), resolvedContentPath]
   };
   console.log(config.entry);
+
+  config.devServer = {
+    ...config.devServer,
+    hot: false,
+    inline: false
+  };
 
   config.output.path = path.join(__dirname, buildPath);
   config.output.filename = "static/js/[name].bundle.js";

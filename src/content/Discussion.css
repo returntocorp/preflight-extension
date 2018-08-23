@@ -1,0 +1,38 @@
+.discussion-action-button:hover {
+  background-color: #0a9bda;
+  fill: #fff;
+}
+
+.twist .comment-twist {
+}
+
+.comment-twist .comments-well {
+  margin-top: 1ex;
+  height: 340px;
+  overflow: auto;
+}
+
+.comments-well .discussion-comment {
+  padding-right: 1em;
+  padding-bottom: 1ex;
+  margin-bottom: 1ex;
+  border-bottom: 1px solid #ddd;
+}
+
+.comments-well .discussion-comment.in-flight {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.comments-well .discussion-comment:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.discussion-comment section.comment-body {
+  padding: 0;
+  margin-bottom: 1ex;
+}
+
+.discussion-comment .in-flight-spinner {
+  margin-right: 1ex;
+}

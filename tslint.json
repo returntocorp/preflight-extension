@@ -28,7 +28,8 @@
     "strict-boolean-expressions": false,
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "no-submodule-imports": false,
-    "max-func-body-length": false
+    "max-func-body-length": false,
+    "prefer-type-cast": false
   },
   "linterOptions": {
     "exclude": [

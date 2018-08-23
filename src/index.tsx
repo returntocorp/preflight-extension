@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import App from "./popup/App";
+import Guide from "./popup";
 
-ReactDOM.render(<App />, document.getElementById(
+ReactDOM.render(<Guide />, document.getElementById(
   "r2c-popup-root"
 ) as HTMLElement);

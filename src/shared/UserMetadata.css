@@ -1,0 +1,12 @@
+.user-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+}
+
+.user-meta .timestamp {
+  display: flex;
+  align-items: center;
+}

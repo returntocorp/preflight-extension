@@ -1,0 +1,20 @@
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile .user-profile-handle a {
+  font-weight: 600;
+  color: rgb(36, 41, 46);
+}
+
+.user-profile-pic {
+  background-color: #aaa;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.user-profile .user-profile-pic {
+  margin-right: 1ex;
+}
