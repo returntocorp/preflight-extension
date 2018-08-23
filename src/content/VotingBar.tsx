@@ -11,24 +11,6 @@ import * as React from "react";
 import { CSSTransition } from "react-transition-group";
 import "./VotingBar.css";
 
-// tslint:disable:no-any
-type WindowBrowserShim = any;
-// tslint:enable:no-any
-
-declare global {
-  interface Window {
-    browser: WindowBrowserShim;
-    chrome: WindowBrowserShim;
-  }
-
-  var browser: WindowBrowserShim;
-}
-
-if (window.browser == null) {
-  // TODO: replace with https://github.com/mozilla/webextension-polyfill and https://github.com/DefinitelyTyped/DefinitelyTyped/pull/21749
-  /* chrome are jerks */ window.browser = window.chrome;
-}
-
 interface ActionBarProps {
   user: string | undefined;
   installationId: string;
