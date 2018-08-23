@@ -49,7 +49,7 @@ export function buildExtensionHeaders(
   installationId: string
 ) {
   return {
-    "X-Secarta-GitHub-User": user || "anonymous",
+    "X-Secarta-GitHub-User": user || `anonymous-${installationId}`,
     "X-R2C-Extension-Installation-Id": installationId,
     "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
