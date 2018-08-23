@@ -1,7 +1,8 @@
 import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
-  getExtensionVersion
+  getExtensionVersion,
+  setGitHubUser
 } from "@r2c/extension/utils";
 
 export async function extractCurrentUserFromPage(): Promise<
@@ -19,7 +20,7 @@ export async function extractCurrentUserFromPage(): Promise<
     const user = userLoginMetaTags[0].getAttribute("content");
 
     if (user != null && user !== "") {
-      browser.storage.local.set({ MOST_RECENT_GITHUB_USER: user });
+      setGitHubUser(user);
       console.log("Stored user in browser local extension storage");
 
       return user;

@@ -5,6 +5,7 @@ import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
 import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
 import ProfileTab from "@r2c/extension/popup/ProfileTab";
 import Top10Tab from "@r2c/extension/popup/Top10Tab";
+import { getGitHubUserFromStorage } from "@r2c/extension/utils";
 import * as React from "react";
 import "./index.css";
 
@@ -54,18 +55,11 @@ class Guide extends React.Component<{}, GuideState> {
   }
 
   private fetchCurrentUser = async () => {
-    browser.storage.local.get(
-      "MOST_RECENT_GITHUB_USER",
-      ({
-        MOST_RECENT_GITHUB_USER
-      }: {
-        MOST_RECENT_GITHUB_USER: string | undefined;
-      }) => {
-        if (MOST_RECENT_GITHUB_USER != null) {
-          this.setState({ currentUser: MOST_RECENT_GITHUB_USER });
-        }
-      }
-    );
+    const currentUser = await getGitHubUserFromStorage();
+
+    if (currentUser != null) {
+      this.setState({ currentUser });
+    }
   };
 
   private handleTabChange = (newTabId: TabId, prevTabId: TabId) => {
