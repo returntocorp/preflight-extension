@@ -50,7 +50,8 @@ export function buildExtensionHeaders(
 ) {
   return {
     "X-Secarta-GitHub-User": user || "anonymous",
-    "X-R2C-Extension-Installation-Id": installationId
+    "X-R2C-Extension-Installation-Id": installationId,
+    "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
 }
 
