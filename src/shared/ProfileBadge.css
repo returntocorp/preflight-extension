@@ -13,5 +13,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
+}
+
+.user-profile .user-profile-pic {
   margin-right: 1ex;
 }

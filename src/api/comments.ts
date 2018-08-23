@@ -18,6 +18,17 @@ interface CommentResponse {
   gitUrl: string;
 }
 
+export interface CommentMentionsResponse {
+  mentions: CommentMention[];
+}
+
+export interface CommentMention {
+  author: string;
+  gitUrl: string;
+  text: string;
+  timestamp: string;
+}
+
 type CommentPostResponse = CommentResponse & PostResponse;
 
 export interface CommentPostBody {
@@ -31,6 +42,10 @@ function buildCommentsUri(): string {
   return `https://api.secarta.io/v1/comment/${domain}/${org}/${repo}`;
 }
 
+function buildCommentMentionUri(user: string): string {
+  return `https://api.secarta.io/v1/comment/mention/${user}`;
+}
+
 export async function getComments(): Promise<CommentResponse> {
   return fetchJson<CommentResponse>(buildCommentsUri());
 }
@@ -42,4 +57,10 @@ export async function submitComment(
     method: "POST",
     body: JSON.stringify(body)
   });
+}
+
+export async function getCommentMentions(
+  user: string
+): Promise<CommentMentionsResponse> {
+  return fetchJson<CommentMentionsResponse>(buildCommentMentionUri(user));
 }
