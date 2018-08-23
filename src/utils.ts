@@ -1,3 +1,20 @@
+// tslint:disable:no-any
+type WindowBrowserShim = any;
+// tslint:enable:no-any
+
+declare global {
+  interface Window {
+    browser: WindowBrowserShim;
+    chrome: WindowBrowserShim;
+  }
+
+  var browser: WindowBrowserShim;
+}
+
+if (window.browser == null && window.chrome != null) {
+  window.browser = window.chrome;
+}
+
 export function getExtensionVersion(): string | undefined {
   if (browser != null && browser.runtime != null) {
     return browser.runtime.getManifest().version;
@@ -92,4 +109,25 @@ export function isRepositoryPrivate() {
 
 export function buildGithubProfilePicUrl(user: string): string {
   return `https://github.com/${user}.png`;
+}
+
+const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";
+
+export function setGitHubUser(user: string) {
+  browser.storage.local.set({ [MOST_RECENT_GITHUB_USER]: user });
+}
+
+export async function getGitHubUserFromStorage(): Promise<string | undefined> {
+  return new Promise<string | undefined>((resolve, reject) =>
+    browser.storage.local.get(
+      MOST_RECENT_GITHUB_USER,
+      ({
+        MOST_RECENT_GITHUB_USER: user
+      }: {
+        MOST_RECENT_GITHUB_USER: string | undefined;
+      }) => {
+        resolve(user);
+      }
+    )
+  );
 }
