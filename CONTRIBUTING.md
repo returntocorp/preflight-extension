@@ -8,6 +8,9 @@
 
 For both dev server and a built extension, you can load the extension out of the `build/` folder. In Firefox, point to the `manifest.json` in the build folder; in Chrome and Edge, point to the build folder itself. After rebuilding or hot-reloading, you might have to reload the page or reload the extension.
 
+## Local testing
+Make sure to login to Chrome browser with a non-r2c login. Then, load the extension by finding the `build` directory from step 2 above.
+
 ## Publish to Chrome Web Store
 
 To publish to the Chrome Web Store, tag a new release off of `master`. Releases must be chronologically increasing and follow the [semver](https://semver.org/) format.
