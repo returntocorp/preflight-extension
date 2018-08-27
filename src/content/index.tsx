@@ -21,7 +21,7 @@ interface DiscussionIconProps {
 const DiscussionIcon: React.SFC<DiscussionIconProps> = ({ count }) => {
   if (count != null && count > 1) {
     return (
-      <svg width="24" height="24" fill-rule="evenodd" clip-rule="evenodd">
+      <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
         <path d="M24 20h-3v4l-5.333-4h-7.667v-4h2v2h6.333l2.667 2v-2h3v-8.001h-2v-2h4v12.001zm-6-6h-9.667l-5.333 4v-4h-3v-14.001h18v14.001z" />
       </svg>
     );
