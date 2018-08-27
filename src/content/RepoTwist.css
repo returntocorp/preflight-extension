@@ -1,0 +1,38 @@
+.repo-twist .twist-body {
+  margin-top: 5px;
+  border-top: 3px solid #182026;
+  padding-top: 5px;
+}
+
+.repo-twist .nutrition-inline,
+.repo-twist .nutrition-section {
+  padding-bottom: 5px;
+  border-bottom: 1px solid hsl(206, 23%, 12%);
+  margin-bottom: 5px;
+}
+
+.repo-twist .nutrition-inline,
+.repo-twist .nutrition-permission {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.repo-twist .nutrition-score {
+  border-bottom-width: 3px;
+}
+
+.repo-twist .nutrition-title {
+  font-weight: 600;
+}
+
+.repo-twist .nutrition-permission {
+  margin-left: 15px;
+}
+
+.nutrition-permission .permission-found {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+}
