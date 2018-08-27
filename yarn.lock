@@ -5735,6 +5735,10 @@ react-error-overlay@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-4.0.0.tgz#d198408a85b4070937a98667f500c832f86bd5d4"
 
+react-fetch-component@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-fetch-component/-/react-fetch-component-6.0.3.tgz#b17a4eb59e413acbb07de7c54af8ab75f9c720a5"
+
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
