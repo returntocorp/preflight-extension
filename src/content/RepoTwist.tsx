@@ -6,7 +6,6 @@ import {
   NonIdealState,
   Spinner
 } from "@blueprintjs/core";
-import Fetch from "@lediur/react-fetch-component";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
@@ -21,6 +20,7 @@ import {
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import * as React from "react";
+import Fetch from "react-fetch-component";
 import "./RepoTwist.css";
 
 interface RepoTwistProps {
