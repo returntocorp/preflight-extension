@@ -15,24 +15,12 @@ import "./ActionBar.css";
 import "./index.css";
 import VotingBar from "./VotingBar";
 
-interface DiscussionIconProps {
-  count: number | undefined;
-}
-
-const DiscussionIcon: React.SFC<DiscussionIconProps> = ({ count }) => {
-  if (count != null && count > 0) {
-    return (
-      <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
-        <path d="M24 20h-3v4l-5.333-4h-7.667v-4h2v2h6.333l2.667 2v-2h3v-8.001h-2v-2h4v12.001zm-6-6h-9.667l-5.333 4v-4h-3v-14.001h18v14.001z" />
-      </svg>
-    );
-  } else {
-    return (
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <path d="M22 3v13h-11.643l-4.357 3.105v-3.105h-4v-13h20zm2-2h-24v16.981h4v5.019l7-5.019h13v-16.981z" />
-      </svg>
-    );
-  }
+const DiscussionIcon: React.SFC = () => {
+  return (
+    <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
+      <path d="M24 20h-3v4l-5.333-4h-7.667v-4h2v2h6.333l2.667 2v-2h3v-8.001h-2v-2h4v12.001zm-6-6h-9.667l-5.333 4v-4h-3v-14.001h18v14.001z" />
+    </svg>
+  );
 };
 
 const RepoIcon: React.SFC = () => {
@@ -48,15 +36,25 @@ interface ActionButtonProps {
   selected: boolean;
 }
 
-interface DiscussionActionButtonAdditionalProps {
+interface DiscussionActionButtonState {
   commentCount: number | undefined;
 }
 
-type DiscussionActionButtonProps = ActionButtonProps &
-  DiscussionActionButtonAdditionalProps;
+type DiscussionActionButtonProps = ActionButtonProps;
 type RepoActionButtonProps = ActionButtonProps;
 
-class DiscussionAction extends React.Component<DiscussionActionButtonProps> {
+class DiscussionAction extends React.Component<
+  DiscussionActionButtonProps,
+  DiscussionActionButtonState
+> {
+  public state: DiscussionActionButtonState = {
+    commentCount: undefined
+  };
+
+  public componentDidMount = () => {
+    this.updateCommentCount();
+  };
+
   public render() {
     return (
       <a
@@ -67,13 +65,22 @@ class DiscussionAction extends React.Component<DiscussionActionButtonProps> {
         role="button"
         onClick={this.handleActionClick}
       >
-        <DiscussionIcon count={this.props.commentCount} />
+        <DiscussionIcon />
       </a>
     );
   }
 
   private handleActionClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
     this.props.onActionClick(e);
+  };
+
+  private updateCommentCount = () => {
+    getComments().then(
+      response => {
+        this.setState({ commentCount: response.comments.length });
+      },
+      () => console.error("Unable to load comments.")
+    );
   };
 }
 
@@ -107,7 +114,6 @@ interface ContentHostState {
   user: string | undefined;
   repoSlug: { domain: string; org: string; repo: string } | undefined;
   installationId: string;
-  commentCount: number | undefined;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
@@ -115,14 +121,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     twistTab: undefined,
     user: undefined,
     repoSlug: undefined,
-    installationId: "not-generated",
-    commentCount: undefined
+    installationId: "not-generated"
   };
 
   public componentDidMount() {
     this.updateCurrentUser();
     this.updateCurrentRepo();
-    this.updateCommentCount();
   }
 
   public render() {
@@ -139,7 +143,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             <DiscussionAction
               onActionClick={this.openTwist("discussion")}
               selected={this.state.twistTab === "discussion"}
-              commentCount={this.state.commentCount}
             />
           )}
           {!isRepositoryPrivate() && (
@@ -182,15 +185,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     const { domain, org, repo } = extractSlugFromCurrentUrl();
 
     this.setState({ repoSlug: { domain, org, repo } });
-  };
-
-  private updateCommentCount = () => {
-    getComments().then(
-      response => {
-        this.setState({ commentCount: response.comments.length });
-      },
-      () => console.error("Unable to load comments.")
-    );
   };
 
   private openTwist = (
