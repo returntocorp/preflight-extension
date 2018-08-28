@@ -176,14 +176,14 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                           minimal={true}
                           onClick={l(
                             "copy-package-button-click",
-                            {
-                              packageManager: this.state.packageManager,
-                              name: entry.name
-                            },
                             this.handleCopy(
                               this.state.packageManager,
                               entry.name
-                            )
+                            ),
+                            {
+                              packageManager: this.state.packageManager,
+                              name: entry.name
+                            }
                           )}
                         />
                       }
@@ -201,11 +201,11 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                         active={this.state.packageManager === "npm"}
                         onClick={l(
                           "choose-package-manager",
+                          this.handleRegistryChange("npm"),
                           {
                             oldPackageManager: this.state.packageManager,
                             newChoice: "npm"
-                          },
-                          this.handleRegistryChange("npm")
+                          }
                         )}
                       >
                         NPM
@@ -214,11 +214,11 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                         active={this.state.packageManager === "yarn"}
                         onClick={l(
                           "choose-package-manager",
+                          this.handleRegistryChange("yarn"),
                           {
                             oldPackageManager: this.state.packageManager,
                             newChoice: "yarn"
-                          },
-                          this.handleRegistryChange("yarn")
+                          }
                         )}
                       >
                         Yarn

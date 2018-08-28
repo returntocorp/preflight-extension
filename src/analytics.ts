@@ -8,8 +8,8 @@ type LoggingProperties = {};
 // tslint:disable-next-line:function-name
 export const l = (
   name: string,
-  properties?: LoggingProperties,
-  handler?: React.EventHandler<EventHandlerTodo>
+  handler?: React.EventHandler<EventHandlerTodo>,
+  properties?: LoggingProperties
 ): typeof handler => e => {
   logEvent(name, properties);
 
