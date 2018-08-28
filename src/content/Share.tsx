@@ -6,6 +6,8 @@ import * as React from "react";
 import { UserProps } from "@r2c/extension/shared/User";
 
 type ShareSectionProps = UserProps & {
+  rtcLink: string;
+  shortDesc: string;
   onTweetClick: React.MouseEventHandler<HTMLElement>;
   onLinkClick: React.MouseEventHandler<HTMLElement>;
   onEmailClick: React.MouseEventHandler<HTMLElement>;
@@ -59,6 +61,8 @@ export class ShareSection extends React.Component<
   };
 
   public render() {
+    const { rtcLink, shortDesc } = this.props;
+
     return (
       <div className={classnames("twist", "share-twist")}>
         <header className="twist-header">
@@ -68,30 +72,49 @@ export class ShareSection extends React.Component<
           <h3> My findings to share!</h3>
         </div>
         <a
-          className={classnames("r2c-action-button")}
-          title="Tweet"
+          className={classnames("r2c-action-button", "share-action")}
+          title="TweetButton"
           role="button"
           onClick={this.props.onTweetClick}
+          rel="noopener noreferrer"
+          target="_blank"
+          href={`https://twitter.com/intent/tweet?text=${shortDesc}&url=${rtcLink}&via=returntocorp`}
         >
-          <TweetIcon hovered={false} />
+          <div className="tweet-icon">
+            <TweetIcon hovered={false} />
+          </div>
         </a>
         <a
-          className={classnames("r2c-action-button")}
+          className={classnames("r2c-action-button", "email-action")}
           title="Email"
+          data-sharemenu-action="email"
+          data-sharemenu-track="email"
+          href={`mailto:?subject=${shortDesc}&body=${rtcLink}`}
           role="button"
           onClick={this.props.onEmailClick}
         >
           <EmailIcon hovered={false} />
         </a>
         <a
-          className={classnames("r2c-action-button")}
-          title="Link"
+          className={classnames("r2c-action-button", "link-action")}
+          data-sharemenu-action="link"
+          title="LinkButton"
           role="button"
-          onClick={this.props.onLinkClick}
+          onClick={this.onCopyLinkClick}
         >
           <LinkIcon hovered={false} />
         </a>
       </div>
     );
   }
+
+  private onCopyLinkClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
+    const el = document.createElement("textarea");
+    el.value = this.props.rtcLink;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    this.props.onLinkClick(e);
+    document.body.removeChild(el);
+  };
 }

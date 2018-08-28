@@ -244,6 +244,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
         </Twists>
         <Twists isOpen={this.state.twistTab === "share"}>
           <ShareSection
+            rtcLink="ret2.co"
+            shortDesc="MyTestStuff"
             onTweetClick={this.onShareActionClick("tweet")}
             onEmailClick={this.onShareActionClick("email")}
             onLinkClick={this.onShareActionClick("tweet")}
@@ -280,6 +282,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   private onShareActionClick = (
     buttonTitle: ShareActionType
   ): React.MouseEventHandler<HTMLElement> => e => {
+    // TODO: log this
     console.log(buttonTitle);
   };
 }
