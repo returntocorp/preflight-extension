@@ -111,6 +111,17 @@ export function buildGithubProfilePicUrl(user: string): string {
   return `https://github.com/${user}.png`;
 }
 
+export async function fetchFromStorage(
+  key: string
+): Promise<string | undefined> {
+  return new Promise<string | undefined>(resolve =>
+    browser.storage.local.get(
+      key,
+      (results: { [k: string]: string | undefined }) => resolve(results[key])
+    )
+  );
+}
+
 const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";
 
 export function setGitHubUser(user: string) {
@@ -118,16 +129,17 @@ export function setGitHubUser(user: string) {
 }
 
 export async function getGitHubUserFromStorage(): Promise<string | undefined> {
-  return new Promise<string | undefined>((resolve, reject) =>
-    browser.storage.local.get(
-      MOST_RECENT_GITHUB_USER,
-      ({
-        MOST_RECENT_GITHUB_USER: user
-      }: {
-        MOST_RECENT_GITHUB_USER: string | undefined;
-      }) => {
-        resolve(user);
-      }
-    )
-  );
+  return fetchFromStorage(MOST_RECENT_GITHUB_USER);
+}
+
+const PREFERRED_PACKAGE_MANAGER = "PREFERRED_PACKAGE_MANAGER";
+
+export function setPreferredPackageManager(packageManager: string) {
+  browser.storage.local.set({ [PREFERRED_PACKAGE_MANAGER]: packageManager });
+}
+
+export async function getPreferredPackageManager(): Promise<
+  string | undefined
+> {
+  return fetchFromStorage(PREFERRED_PACKAGE_MANAGER);
 }
