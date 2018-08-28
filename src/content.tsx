@@ -14,5 +14,5 @@ if (document.getElementById("r2c-popup-root") == null) {
 
   ReactDOM.render(<ContentHost />, document.getElementById(
     "r2c-extension-root"
-  ));
+  ) as HTMLElement);
 }
