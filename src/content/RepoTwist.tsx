@@ -55,7 +55,7 @@ const RepoScoreSection: React.SFC = () => (
   <Fetch<ScoreResponse> url={scoreRepoUrl()}>
     {({ loading, data, error, response }) => (
       <section className="nutrition-score nutrition-inline">
-        <header className="nutrition-title">Score</header>
+        <header className="nutrition-title">Score (WIP)</header>
         {loading && (
           <span className="nutrition-inline-value loading">Loading...</span>
         )}
@@ -140,7 +140,11 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                 {data.packages.slice(0, 1).map((entry, i) => (
                   <div key={i} className="nutrition-package">
                     <header className="package-header">
-                      <span className="package-name">{entry.name}</span>
+                      <span className="package-name">
+                        <a href={this.buildPackageLink(entry.name)}>
+                          {entry.name}
+                        </a>
+                      </span>
                       {entry.endorsers && (
                         <div className="package-endorsers">
                           {entry.endorsers.slice(0, 3).map(endorser => (
@@ -277,6 +281,9 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
         return cmds.npm;
     }
   };
+
+  private buildPackageLink = (name: string): string =>
+    `https://npmjs.com/package/${name}`;
 }
 
 export default class RepoTwist extends React.Component<RepoTwistProps> {
