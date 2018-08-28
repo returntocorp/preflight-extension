@@ -2,9 +2,10 @@
   width: 100px;
 }
 
-.share-twist .share-action {
+.share-twist .share-actions {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .r2c-twist .twist .share-twist .tweet-icon {
