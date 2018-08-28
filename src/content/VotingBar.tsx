@@ -1,4 +1,5 @@
 import { Position, Tooltip } from "@blueprintjs/core";
+import { l } from "@r2c/extension/analytics";
 import { getVotes, submitVote, VoteResponse } from "@r2c/extension/api/votes";
 import {
   buildGithubProfilePicUrl,
@@ -120,6 +121,7 @@ export default class VotingBar extends React.Component<
               className="action-count-container"
               position={Position.LEFT}
               popoverClassName="vote-count-popover"
+              onOpened={l(`vote-${voteType}-count-hover`)}
               content={
                 this.state.response != null &&
                 sampleVoters != null &&

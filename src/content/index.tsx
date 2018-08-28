@@ -1,3 +1,4 @@
+import { l } from "@r2c/extension/analytics";
 import { getComments } from "@r2c/extension/api/comments";
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
@@ -73,7 +74,7 @@ class DiscussionAction extends React.Component<
           )}
           title="See discussions"
           role="button"
-          onClick={this.handleActionClick}
+          onClick={l("discussion-action-button-click", this.handleActionClick)}
         >
           <DiscussionIcon />
         </a>
@@ -104,7 +105,7 @@ class RepoAction extends React.Component<RepoActionButtonProps> {
         })}
         title="Repo info"
         role="button"
-        onClick={this.handleActionClick}
+        onClick={l("repo-action-button-click", this.handleActionClick)}
       >
         <RepoIcon />
       </a>

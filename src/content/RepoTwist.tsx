@@ -142,7 +142,12 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                   <div key={i} className="nutrition-package">
                     <header className="package-header">
                       <span className="package-name">
-                        <a href={this.buildPackageLink(entry.name)}>
+                        <a
+                          href={this.buildPackageLink(entry.name)}
+                          onClick={l("npm-package-link-click", undefined, {
+                            packageName: entry.name
+                          })}
+                        >
                           {entry.name}
                         </a>
                       </span>
