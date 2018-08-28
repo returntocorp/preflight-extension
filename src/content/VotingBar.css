@@ -8,19 +8,9 @@
   fill: white;
 }
 
-.secarta-vote-button .vote-count-container {
-  position: absolute;
-  left: -20px;
-  z-index: 100;
-}
-
-.secarta-vote-button .vote-count {
-  padding: 8px 4px;
+.vote-count {
   text-decoration: none;
   cursor: help;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .r2c-action-button {
@@ -41,10 +31,6 @@
 
 .r2c-action-button.button-private-repository svg {
   margin-right: 10px;
-}
-
-.r2c-action-button svg {
-  height: 30px;
 }
 
 .secarta-vote-button.vote-success-enter,

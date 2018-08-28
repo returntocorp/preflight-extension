@@ -30,3 +30,27 @@
   position: relative;
   z-index: 300;
 }
+
+.action-count {
+  padding: 8px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+}
+
+.action-count-container {
+  position: absolute;
+  left: -20px;
+  z-index: 100;
+}
+
+.comment-count {
+  color: #0a9bda;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
