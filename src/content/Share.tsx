@@ -69,7 +69,8 @@ export class ShareSection extends React.Component<
           <h1 className="twist-title">Share R2C Findings</h1>
         </header>
         <div className="twist-body">
-          <h3> My findings to share!</h3>
+          {this.props.shortDesc}
+          {this.props.rtcLink}
         </div>
         <a
           className={classnames("r2c-action-button", "share-action")}
