@@ -72,39 +72,41 @@ export class ShareSection extends React.Component<
           {this.props.shortDesc}
           {this.props.rtcLink}
         </div>
-        <a
-          className={classnames("r2c-action-button", "share-action")}
-          title="TweetButton"
-          role="button"
-          onClick={this.props.onTweetClick}
-          rel="noopener noreferrer"
-          target="_blank"
-          href={`https://twitter.com/intent/tweet?text=${shortDesc}&url=${rtcLink}&via=returntocorp`}
-        >
-          <div className="tweet-icon">
-            <TweetIcon hovered={false} />
-          </div>
-        </a>
-        <a
-          className={classnames("r2c-action-button", "email-action")}
-          title="Email"
-          data-sharemenu-action="email"
-          data-sharemenu-track="email"
-          href={`mailto:?subject=${shortDesc}&body=${rtcLink}`}
-          role="button"
-          onClick={this.props.onEmailClick}
-        >
-          <EmailIcon hovered={false} />
-        </a>
-        <a
-          className={classnames("r2c-action-button", "link-action")}
-          data-sharemenu-action="link"
-          title="LinkButton"
-          role="button"
-          onClick={this.onCopyLinkClick}
-        >
-          <LinkIcon hovered={false} />
-        </a>
+        <div className="share-actions">
+          <a
+            className={classnames("r2c-action-button")}
+            title="TweetButton"
+            role="button"
+            onClick={this.props.onTweetClick}
+            rel="noopener noreferrer"
+            target="_blank"
+            href={`https://twitter.com/intent/tweet?text=${shortDesc}&url=${rtcLink}&via=returntocorp`}
+          >
+            <div className="tweet-icon">
+              <TweetIcon hovered={false} />
+            </div>
+          </a>
+          <a
+            className={classnames("r2c-action-button")}
+            title="Email"
+            data-sharemenu-action="email"
+            data-sharemenu-track="email"
+            href={`mailto:?subject=${shortDesc}&body=${rtcLink}`}
+            role="button"
+            onClick={this.props.onEmailClick}
+          >
+            <EmailIcon hovered={false} />
+          </a>
+          <a
+            className={classnames("r2c-action-button")}
+            data-sharemenu-action="link"
+            title="LinkButton"
+            role="button"
+            onClick={this.onCopyLinkClick}
+          >
+            <LinkIcon hovered={false} />
+          </a>
+        </div>
       </div>
     );
   }
