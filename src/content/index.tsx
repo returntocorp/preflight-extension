@@ -13,7 +13,7 @@ import {
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
 import { CSSTransition } from "react-transition-group";
-import ShareSection from "./Share";
+import { ShareActionType, ShareSection } from "./Share";
 import VotingBar from "./VotingBar";
 
 interface DiscussionIconProps {
@@ -156,6 +156,9 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
         </Twists>
         <Twists isOpen={this.state.twistTab === "share"}>
           <ShareSection
+            onTweetClick={this.onShareActionClick("tweet")}
+            onEmailClick={this.onShareActionClick("email")}
+            onLinkClick={this.onShareActionClick("tweet")}
             user={this.state.user}
             installationId={this.state.installationId}
           />
@@ -178,5 +181,11 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     } else {
       this.setState({ twistTab: undefined });
     }
+  };
+
+  private onShareActionClick = (
+    buttonTitle: ShareActionType
+  ): React.MouseEventHandler<HTMLElement> => e => {
+    console.log(buttonTitle);
   };
 }
