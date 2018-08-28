@@ -57,16 +57,27 @@ class DiscussionAction extends React.Component<
 
   public render() {
     return (
-      <a
-        className={classnames("r2c-action-button", "discussion-action-button", {
-          selected: this.props.selected
-        })}
-        title="See discussions"
-        role="button"
-        onClick={this.handleActionClick}
-      >
-        <DiscussionIcon />
-      </a>
+      <div className="action-button">
+        <span className="action-count-container">
+          <div className={classnames("action-count", "comment-count")}>
+            {this.state.commentCount ? this.state.commentCount : 0}
+          </div>
+        </span>
+        <a
+          className={classnames(
+            "r2c-action-button",
+            "discussion-action-button",
+            {
+              selected: this.props.selected
+            }
+          )}
+          title="See discussions"
+          role="button"
+          onClick={this.handleActionClick}
+        >
+          <DiscussionIcon />
+        </a>
+      </div>
     );
   }
 

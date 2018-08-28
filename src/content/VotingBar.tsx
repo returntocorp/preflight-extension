@@ -117,7 +117,7 @@ export default class VotingBar extends React.Component<
               </div>
             </a>
             <Tooltip
-              className="vote-count-container"
+              className="action-count-container"
               position={Position.LEFT}
               popoverClassName="vote-count-popover"
               content={
@@ -171,7 +171,7 @@ export default class VotingBar extends React.Component<
                 )
               }
             >
-              <div className="vote-count">
+              <div className={classnames("vote-count", "action-count")}>
                 {this.state.response != null
                   ? this.state.response.votes[voteType]
                   : "?"}
