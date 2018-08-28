@@ -157,7 +157,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
         <Twists isOpen={this.state.twistTab === "share"}>
           <ShareSection
             rtcLink="ret2.co"
-            shortDesc="MyTestStuff"
+            shortDesc="My findings to share!"
             onTweetClick={this.onShareActionClick("tweet")}
             onEmailClick={this.onShareActionClick("email")}
             onLinkClick={this.onShareActionClick("tweet")}

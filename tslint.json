@@ -6,6 +6,7 @@
     "tslint-config-prettier"
   ],
   "rules": {
+    "react-a11y-anchors": false,
     "missing-jsdoc": false,
     "no-implicit-dependencies": false,
     "no-default-export": false,
