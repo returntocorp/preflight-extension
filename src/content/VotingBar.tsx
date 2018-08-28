@@ -1,5 +1,6 @@
 import { Position, Tooltip } from "@blueprintjs/core";
 import { getVotes, submitVote, VoteResponse } from "@r2c/extension/api/votes";
+import { UserProps } from "@r2c/extension/shared/User";
 import {
   buildGithubProfilePicUrl,
   extractSlugFromCurrentUrl,
@@ -10,11 +11,6 @@ import * as classnames from "classnames";
 import * as React from "react";
 import { CSSTransition } from "react-transition-group";
 import "./VotingBar.css";
-
-interface ActionBarProps {
-  user: string | undefined;
-  installationId: string;
-}
 
 const R2C_VOTING_ICONS = {
   up: (
@@ -29,7 +25,7 @@ const R2C_VOTING_ICONS = {
   )
 };
 
-type VotingBarProps = ActionBarProps;
+type VotingBarProps = UserProps;
 
 interface VotingBarState {
   response: VoteResponse | undefined;
