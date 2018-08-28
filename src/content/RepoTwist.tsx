@@ -6,6 +6,7 @@ import {
   NonIdealState,
   Spinner
 } from "@blueprintjs/core";
+import { l } from "@r2c/extension/analytics";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
@@ -173,12 +174,20 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                         <Button
                           icon={<Copy />}
                           minimal={true}
-                          onClick={this.handleCopy(
-                            this.state.packageManager,
-                            entry.name
+                          onClick={l(
+                            "copy-package-button-click",
+                            {
+                              packageManager: this.state.packageManager,
+                              name: entry.name
+                            },
+                            this.handleCopy(
+                              this.state.packageManager,
+                              entry.name
+                            )
                           )}
                         />
                       }
+                      onClick={l("copy-package-input-click")}
                       className={classnames(Classes.FILL, "package-npm-field")}
                       inputRef={this.setPackageFieldRef(
                         this.state.packageManager,
@@ -190,13 +199,27 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                     <ButtonGroup className={Classes.FILL}>
                       <Button
                         active={this.state.packageManager === "npm"}
-                        onClick={this.handleRegistryChange("npm")}
+                        onClick={l(
+                          "choose-package-manager",
+                          {
+                            oldPackageManager: this.state.packageManager,
+                            newChoice: "npm"
+                          },
+                          this.handleRegistryChange("npm")
+                        )}
                       >
                         NPM
                       </Button>
                       <Button
                         active={this.state.packageManager === "yarn"}
-                        onClick={this.handleRegistryChange("yarn")}
+                        onClick={l(
+                          "choose-package-manager",
+                          {
+                            oldPackageManager: this.state.packageManager,
+                            newChoice: "yarn"
+                          },
+                          this.handleRegistryChange("yarn")
+                        )}
                       >
                         Yarn
                       </Button>
