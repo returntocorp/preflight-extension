@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Permissions or capabilities that we've detected in the project. You can use this list to understand what the project does, and whether or not the project has permissions or capabilities that you expect it to have.
   - If the project is published to NPM, we show the most-used published package and the command to easily install the package.
 - Added a comment count next to the comment bubbles
+- Instrumented various extension interactions with remote analytics so we can better understand how people use the extension and develop our future product experiments. We did not instrument any part of the native GitHub user interface and do not collect any sensitive information. See [our stance on privacy](./PRIVACY.md) for more info.
 
 ### Changed
 
