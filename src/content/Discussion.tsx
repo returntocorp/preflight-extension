@@ -1,3 +1,8 @@
+import "./Discussion.css";
+
+import * as classnames from "classnames";
+import * as React from "react";
+
 import { Button, InputGroup, NonIdealState } from "@blueprintjs/core";
 import {
   CommentPostBody,
@@ -5,18 +10,11 @@ import {
   getComments,
   submitComment
 } from "@r2c/extension/api/comments";
+
+import { UserProps } from "@r2c/extension/shared/User";
 import { UserMetadataFooter } from "@r2c/extension/shared/UserMetadata";
 import { userOrInstallationId } from "@r2c/extension/utils";
-import * as classnames from "classnames";
 import { truncate } from "lodash";
-import * as React from "react";
-import "./Discussion.css";
-
-// TODO: Move this to separate file
-interface TwistProps {
-  user: string | undefined;
-  installationId: string;
-}
 
 interface DiscussionCommentState {
   fullHeight: boolean;
@@ -126,7 +124,7 @@ class CommentsWell extends React.PureComponent<CommentsWellProps> {
   };
 }
 
-type DiscussionProps = TwistProps;
+type DiscussionProps = UserProps;
 
 interface CommentsState {
   comments: DiscussionComment[] | undefined;
