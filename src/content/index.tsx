@@ -1,3 +1,4 @@
+import { getComments } from "@r2c/extension/api/comments";
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
 import RepoTwist from "@r2c/extension/content/RepoTwist";
@@ -19,7 +20,7 @@ interface DiscussionIconProps {
 }
 
 const DiscussionIcon: React.SFC<DiscussionIconProps> = ({ count }) => {
-  if (count != null && count > 1) {
+  if (count != null && count > 0) {
     return (
       <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
         <path d="M24 20h-3v4l-5.333-4h-7.667v-4h2v2h6.333l2.667 2v-2h3v-8.001h-2v-2h4v12.001zm-6-6h-9.667l-5.333 4v-4h-3v-14.001h18v14.001z" />
@@ -47,7 +48,12 @@ interface ActionButtonProps {
   selected: boolean;
 }
 
-type DiscussionActionButtonProps = ActionButtonProps;
+interface DiscussionActionButtonAdditionalProps {
+  commentCount: number | undefined;
+}
+
+type DiscussionActionButtonProps = ActionButtonProps &
+  DiscussionActionButtonAdditionalProps;
 type RepoActionButtonProps = ActionButtonProps;
 
 class DiscussionAction extends React.Component<DiscussionActionButtonProps> {
@@ -61,7 +67,7 @@ class DiscussionAction extends React.Component<DiscussionActionButtonProps> {
         role="button"
         onClick={this.handleActionClick}
       >
-        <DiscussionIcon count={undefined} />
+        <DiscussionIcon count={this.props.commentCount} />
       </a>
     );
   }
@@ -101,6 +107,7 @@ interface ContentHostState {
   user: string | undefined;
   repoSlug: { domain: string; org: string; repo: string } | undefined;
   installationId: string;
+  commentCount: number | undefined;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
@@ -108,12 +115,14 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     twistTab: undefined,
     user: undefined,
     repoSlug: undefined,
-    installationId: "not-generated"
+    installationId: "not-generated",
+    commentCount: undefined
   };
 
   public componentDidMount() {
     this.updateCurrentUser();
     this.updateCurrentRepo();
+    this.updateCommentCount();
   }
 
   public render() {
@@ -130,6 +139,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             <DiscussionAction
               onActionClick={this.openTwist("discussion")}
               selected={this.state.twistTab === "discussion"}
+              commentCount={this.state.commentCount}
             />
           )}
           {!isRepositoryPrivate() && (
@@ -172,6 +182,15 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     const { domain, org, repo } = extractSlugFromCurrentUrl();
 
     this.setState({ repoSlug: { domain, org, repo } });
+  };
+
+  private updateCommentCount = () => {
+    getComments().then(
+      response => {
+        this.setState({ commentCount: response.comments.length });
+      },
+      () => console.error("Unable to load comments.")
+    );
   };
 
   private openTwist = (
