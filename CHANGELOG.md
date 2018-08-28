@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Added repository information to the extension, including:
+  - A work-in-progress score that sums up the properties of the project. Higher scores imply a higher quality project.
+  - Permissions or capabilities that we've detected in the project. You can use this list to understand what the project does, and whether or not the project has permissions or capabilities that you expect it to have.
+  - If the project is published to NPM, we show the most-used published package and the command to easily install the package.
+- Added a comment count next to the comment bubbles
+
 ### Changed
 
-- Added a comment count next to the comment bubbles
 - Changed the comment bubbles from single bubble to double bubble for aesthetics
 
 ## [1.4.0] - 2018-08-22
