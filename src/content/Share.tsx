@@ -1,8 +1,11 @@
 import "./Share.css";
 
+import { InputGroup } from "@blueprintjs/core";
 import * as classnames from "classnames";
+import * as copy from "copy-to-clipboard";
 import * as React from "react";
 
+import { CopyButton } from "@r2c/extension/shared/CopyButton";
 import { UserProps } from "@r2c/extension/shared/User";
 
 type ShareSectionProps = UserProps & {
@@ -56,6 +59,14 @@ export class ShareSection extends React.Component<
           <h1 className="twist-title">Share R2C!</h1>
         </header>
         <div className="twist-body">{this.props.shortDesc}</div>
+        <div>
+          <InputGroup
+            type="text"
+            value={this.props.rtcLink}
+            rightElement={<CopyButton onClick={this.onCopyLinkClick} />}
+            readOnly={true}
+          />
+        </div>
         <div className="share-actions">
           <a
             className={classnames("r2c-action-button")}
@@ -82,13 +93,8 @@ export class ShareSection extends React.Component<
     );
   }
 
-  private onCopyLinkClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
-    const el = document.createElement("textarea");
-    el.value = this.props.rtcLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
+  private onCopyLinkClick: React.MouseEventHandler<HTMLElement> = e => {
+    copy(this.props.rtcLink);
     this.props.onLinkClick(e);
-    document.body.removeChild(el);
   };
 }
