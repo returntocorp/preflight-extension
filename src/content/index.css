@@ -16,6 +16,10 @@
   align-items: flex-start;
 }
 
+#r2c-extension-root .bp3-input {
+  background-color: #fff !important;
+}
+
 @keyframes extension-in {
   0% {
     right: -144px;

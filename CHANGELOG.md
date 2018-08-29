@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.5.1] - 2018-08-28
+
+### Fixed
+
+- Fixed an issue where custom GitHub styling could cause icons to be difficult to see (thanks @jamesross3!)
+
 ## [1.5.0] - 2018-08-28
 
 ### Added
