@@ -1,3 +1,6 @@
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb) [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb)
+
+
 # R2C Beta - Browser Extension(s)
 
 Welcome! This extension generally augments GitHub and related websites with R2C data. It contains a number of product experiments and isn't stable - we're regularly trying new things, listening to your feedback, and working to provide you value as you code. Please expect it to change regularly 🎉
