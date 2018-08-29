@@ -43,7 +43,6 @@ export class ShareSection extends React.Component<
   ShareSectionState
 > {
   public state: ShareSectionState = {
-    clickedTweet: false,
     clickedEmail: false,
     clickedLink: false
   };
@@ -54,12 +53,9 @@ export class ShareSection extends React.Component<
     return (
       <div className={classnames("twist", "share-twist")}>
         <header className="twist-header">
-          <h1 className="twist-title">Share R2C Findings</h1>
+          <h1 className="twist-title">Share R2C!</h1>
         </header>
-        <div className="twist-body">
-          {this.props.shortDesc}
-          {this.props.rtcLink}
-        </div>
+        <div className="twist-body">{this.props.shortDesc}</div>
         <div className="share-actions">
           <a
             className={classnames("r2c-action-button")}

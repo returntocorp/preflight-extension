@@ -222,10 +222,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             id="share"
             panel={
               <ShareSection
-                rtcLink="ret2.co"
-                shortDesc="My findings to share!"
+                rtcLink="https://tinyurl.com/r2c-beta"
+                shortDesc={
+                  "Hope you enjoy using the extension. Share our extension with your friends using below!"
+                }
                 onEmailClick={this.onShareActionClick("email")}
-                onLinkClick={this.onShareActionClick("tweet")}
+                onLinkClick={this.onShareActionClick("link")}
                 user={this.state.user}
                 installationId={this.state.installationId}
               />
