@@ -14,6 +14,7 @@ import * as classnames from "classnames";
 import * as React from "react";
 import "./ActionBar.css";
 import "./index.css";
+import { ShareActionType, ShareSection } from "./Share";
 import VotingBar from "./VotingBar";
 
 const DiscussionIcon: React.SFC = () => {
@@ -32,23 +33,7 @@ const RepoIcon: React.SFC = () => {
   );
 };
 
-import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
-import Discussion from "@r2c/extension/content/Discussion";
-import { CSSTransition } from "react-transition-group";
-import { ShareActionType, ShareSection } from "./Share";
-import VotingBar from "./VotingBar";
-
-interface DiscussionIconProps {
-  count: number | undefined;
-}
-
-const DiscussionIcon: React.SFC<DiscussionIconProps> = ({ count }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M22 3v13h-11.643l-4.357 3.105v-3.105h-4v-13h20zm2-2h-24v16.981h4v5.019l7-5.019h13v-16.981z" />
-  </svg>
-);
-
-const ShareIcon: React.SFC<ShareIconProps> = ({ enabled }) => (
+const ShareIcon: React.SFC = () => (
   <svg width="24" height="24" viewBox="0 0 24 24">
     <path d="M5 7c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm11.122 12.065c-.073.301-.122.611-.122.935 0 2.209 1.791 4 4 4s4-1.791 4-4-1.791-4-4-4c-1.165 0-2.204.506-2.935 1.301l-5.488-2.927c-.23.636-.549 1.229-.943 1.764l5.488 2.927zm7.878-15.065c0-2.209-1.791-4-4-4s-4 1.791-4 4c0 .324.049.634.122.935l-5.488 2.927c.395.535.713 1.127.943 1.764l5.488-2.927c.731.795 1.77 1.301 2.935 1.301 2.209 0 4-1.791 4-4z" />
   </svg>
@@ -152,7 +137,7 @@ class ShareAction extends React.Component<ShareButtonProps> {
         role="button"
         onClick={this.handleActionClick}
       >
-        <ShareIcon enabled={true} />
+        <ShareIcon />
       </a>
     );
   }
@@ -233,16 +218,19 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             id="repo"
             panel={<RepoTwist repoSlug={this.state.repoSlug} />}
           />
-        </Twists>
-        <Twists isOpen={this.state.twistTab === "share"}>
-          <ShareSection
-            rtcLink="ret2.co"
-            shortDesc="My findings to share!"
-            onTweetClick={this.onShareActionClick("tweet")}
-            onEmailClick={this.onShareActionClick("email")}
-            onLinkClick={this.onShareActionClick("tweet")}
-            user={this.state.user}
-            installationId={this.state.installationId}
+          <Twist
+            id="share"
+            panel={
+              <ShareSection
+                rtcLink="ret2.co"
+                shortDesc="My findings to share!"
+                onTweetClick={this.onShareActionClick("tweet")}
+                onEmailClick={this.onShareActionClick("email")}
+                onLinkClick={this.onShareActionClick("tweet")}
+                user={this.state.user}
+                installationId={this.state.installationId}
+              />
+            }
           />
         </Twists>
       </div>

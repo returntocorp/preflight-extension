@@ -108,9 +108,7 @@ class CommentsWell extends React.PureComponent<CommentsWellProps> {
     } else {
       return (
         <div className="comments-well">
-          {comments.map((comment, i) => (
-            <CommentItem key={i} {...comment} />
-          ))}
+          {comments.map((comment, i) => <CommentItem key={i} {...comment} />)}
           <div className="comments-well-end" ref={this.commentWellEnd} />
         </div>
       );
