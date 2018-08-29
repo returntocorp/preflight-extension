@@ -224,7 +224,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               <ShareSection
                 rtcLink="ret2.co"
                 shortDesc="My findings to share!"
-                onTweetClick={this.onShareActionClick("tweet")}
                 onEmailClick={this.onShareActionClick("email")}
                 onLinkClick={this.onShareActionClick("tweet")}
                 user={this.state.user}
