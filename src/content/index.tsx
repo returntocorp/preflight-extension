@@ -10,7 +10,6 @@ import {
   fetchOrCreateExtensionUniqueId,
   isRepositoryPrivate
 } from "@r2c/extension/utils";
-<<<<<<< HEAD
 import * as classnames from "classnames";
 import * as React from "react";
 import "./ActionBar.css";
@@ -217,7 +216,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           )}
         </ActionBar>
 
-<<<<<<< HEAD
         <Twists
           isOpen={this.state.twistTab != null}
           selectedTwistId={this.state.twistTab}
@@ -234,12 +232,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           <Twist
             id="repo"
             panel={<RepoTwist repoSlug={this.state.repoSlug} />}
-=======
-        <Twists isOpen={this.state.twistTab === "discussion"}>
-          <Discussion
-            user={this.state.user}
-            installationId={this.state.installationId}
->>>>>>> initial share button
           />
         </Twists>
         <Twists isOpen={this.state.twistTab === "share"}>
