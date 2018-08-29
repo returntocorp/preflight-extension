@@ -8,6 +8,12 @@
   justify-content: center;
 }
 
+.share-twist .twist-body {
+  margin-top: 1ex;
+  height: 100px;
+  overflow: auto;
+}
+
 .r2c-twist .twist .share-twist .tweet-icon {
   display: hidden;
 }
