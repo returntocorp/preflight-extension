@@ -1,50 +1,26 @@
 import "./Share.css";
 
-<<<<<<< HEAD
 import { InputGroup } from "@blueprintjs/core";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import * as React from "react";
 
 import { CopyButton } from "@r2c/extension/shared/CopyButton";
-=======
-import * as classnames from "classnames";
-import * as React from "react";
-
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
 import { UserProps } from "@r2c/extension/shared/User";
 
 type ShareSectionProps = UserProps & {
   rtcLink: string;
   shortDesc: string;
-<<<<<<< HEAD
   onLinkClick: React.MouseEventHandler<HTMLElement>;
   onEmailClick: React.MouseEventHandler<HTMLElement>;
 };
 export type ShareActionType = "link" | "email";
 
 interface ShareSectionState {
-=======
-  onTweetClick: React.MouseEventHandler<HTMLElement>;
-  onLinkClick: React.MouseEventHandler<HTMLElement>;
-  onEmailClick: React.MouseEventHandler<HTMLElement>;
-};
-export type ShareActionType = "tweet" | "link" | "email";
-
-interface ShareSectionState {
-  clickedTweet: boolean;
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
   clickedEmail: boolean;
   clickedLink: boolean;
 }
 
-<<<<<<< HEAD
-=======
-interface TweetIconProps {
-  hovered: boolean;
-}
-
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
 interface EmailIconProps {
   hovered: boolean;
 }
@@ -53,15 +29,6 @@ interface LinkIconProps {
   hovered: boolean;
 }
 
-<<<<<<< HEAD
-=======
-const TweetIcon: React.SFC<TweetIconProps> = ({ hovered }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M0 0v24h24v-24h-24zm18.862 9.237c.208 4.617-3.235 9.765-9.33 9.765-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098 1.021.069 1.482-.056-1.579-.317-2.668-1.739-2.633-3.26.442.246.949.394 1.486.411-1.461-.977-1.875-2.907-1.016-4.383 1.619 1.986 4.038 3.293 6.766 3.43-.479-2.053 1.079-4.03 3.198-4.03.944 0 1.797.398 2.396 1.037.748-.147 1.451-.42 2.085-.796-.245.767-.766 1.41-1.443 1.816.664-.08 1.297-.256 1.885-.517-.44.656-.997 1.234-1.638 1.697z" />
-  </svg>
-);
-
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
 const EmailIcon: React.SFC<EmailIconProps> = ({ hovered }) => (
   <svg width="24" height="24" viewBox="0 0 24 24">
     <path d="M12 12.713l-11.985-9.713h23.97l-11.985 9.713zm0 2.574l-12-9.725v15.438h24v-15.438l-12 9.725z" />
@@ -79,10 +46,6 @@ export class ShareSection extends React.Component<
   ShareSectionState
 > {
   public state: ShareSectionState = {
-<<<<<<< HEAD
-=======
-    clickedTweet: false,
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
     clickedEmail: false,
     clickedLink: false
   };
@@ -93,7 +56,6 @@ export class ShareSection extends React.Component<
     return (
       <div className={classnames("twist", "share-twist")}>
         <header className="twist-header">
-<<<<<<< HEAD
           <h1 className="twist-title">Share R2C!</h1>
         </header>
         <div className="twist-body">{this.props.shortDesc}</div>
@@ -104,33 +66,10 @@ export class ShareSection extends React.Component<
             rightElement={<CopyButton onClick={this.onCopyLinkClick} />}
             readOnly={true}
           />
-=======
-          <h1 className="twist-title">Share R2C Findings</h1>
-        </header>
-        <div className="twist-body">
-          {this.props.shortDesc}
-          {this.props.rtcLink}
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
         </div>
         <div className="share-actions">
           <a
             className={classnames("r2c-action-button")}
-<<<<<<< HEAD
-=======
-            title="TweetButton"
-            role="button"
-            onClick={this.props.onTweetClick}
-            rel="noopener noreferrer"
-            target="_blank"
-            href={`https://twitter.com/intent/tweet?text=${shortDesc}&url=${rtcLink}&via=returntocorp`}
-          >
-            <div className="tweet-icon">
-              <TweetIcon hovered={false} />
-            </div>
-          </a>
-          <a
-            className={classnames("r2c-action-button")}
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
             title="Email"
             data-sharemenu-action="email"
             data-sharemenu-track="email"
@@ -154,19 +93,8 @@ export class ShareSection extends React.Component<
     );
   }
 
-<<<<<<< HEAD
   private onCopyLinkClick: React.MouseEventHandler<HTMLElement> = e => {
     copy(this.props.rtcLink);
     this.props.onLinkClick(e);
-=======
-  private onCopyLinkClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
-    const el = document.createElement("textarea");
-    el.value = this.props.rtcLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    this.props.onLinkClick(e);
-    document.body.removeChild(el);
->>>>>>> 2d18835212486380ee5110da899498681f5e431a
   };
 }
