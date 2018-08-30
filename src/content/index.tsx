@@ -226,8 +226,14 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 shortDesc={
                   "Hope you enjoy using the extension. Share our extension with your friends using below!"
                 }
-                onEmailClick={this.onShareActionClick("email")}
-                onLinkClick={this.onShareActionClick("link")}
+                onEmailClick={l(
+                  "share-link-click-email",
+                  this.onShareActionClick("email")
+                )}
+                onLinkClick={l(
+                  "share-link-click-copy",
+                  this.onShareActionClick("link")
+                )}
                 user={this.state.user}
                 installationId={this.state.installationId}
               />
@@ -263,8 +269,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   private onShareActionClick = (
     buttonTitle: ShareActionType
   ): React.MouseEventHandler<HTMLElement> => e => {
-    l("share-link-click", undefined, {
-      linkButton: buttonTitle
-    });
+    console.log("Logging share link aciton!");
   };
 }

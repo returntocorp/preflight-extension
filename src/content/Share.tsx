@@ -11,8 +11,8 @@ import { UserProps } from "@r2c/extension/shared/User";
 type ShareSectionProps = UserProps & {
   rtcLink: string;
   shortDesc: string;
-  onLinkClick: React.MouseEventHandler<HTMLElement>;
-  onEmailClick: React.MouseEventHandler<HTMLElement>;
+  onLinkClick: React.MouseEventHandler<HTMLElement> | undefined;
+  onEmailClick: React.MouseEventHandler<HTMLElement> | undefined;
 };
 export type ShareActionType = "link" | "email";
 
@@ -75,7 +75,7 @@ export class ShareSection extends React.Component<
             data-sharemenu-track="email"
             href={`mailto:?subject=${shortDesc}&body=${rtcLink}`}
             role="button"
-            onClick={this.props.onEmailClick}
+            onClick={this.onEmailLinkClick}
           >
             <EmailIcon hovered={false} />
           </a>
@@ -93,8 +93,18 @@ export class ShareSection extends React.Component<
     );
   }
 
+  private onEmailLinkClick: React.MouseEventHandler<HTMLElement> = e => {
+    const { onEmailClick } = this.props;
+    if (onEmailClick) {
+      onEmailClick(e);
+    }
+  };
+
   private onCopyLinkClick: React.MouseEventHandler<HTMLElement> = e => {
+    const { onLinkClick } = this.props;
     copy(this.props.rtcLink);
-    this.props.onLinkClick(e);
+    if (onLinkClick) {
+      onLinkClick(e);
+    }
   };
 }
