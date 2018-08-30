@@ -135,7 +135,7 @@ class ShareAction extends React.Component<ShareButtonProps> {
         })}
         title="Share"
         role="button"
-        onClick={this.handleActionClick}
+        onClick={l("share-action-button-click", this.handleActionClick)}
       >
         <ShareIcon />
       </a>
@@ -263,7 +263,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   private onShareActionClick = (
     buttonTitle: ShareActionType
   ): React.MouseEventHandler<HTMLElement> => e => {
-    // TODO: log this
-    console.log(buttonTitle);
+    l("share-link-click", undefined, {
+      linkButton: buttonTitle
+    });
   };
 }
