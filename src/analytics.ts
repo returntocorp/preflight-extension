@@ -23,7 +23,7 @@ function logEvent(name: string, properties?: LoggingProperties) {
     name,
     properties
   };
-  console.log("sending data for logging:", body);
+
   fetchJson(`https://api.secarta.io/logger`, {
     method: "POST",
     body: JSON.stringify(body)
