@@ -14,6 +14,7 @@ import * as classnames from "classnames";
 import * as React from "react";
 import "./ActionBar.css";
 import "./index.css";
+import { ShareActionType, ShareSection } from "./Share";
 import VotingBar from "./VotingBar";
 
 const DiscussionIcon: React.SFC = () => {
@@ -31,6 +32,12 @@ const RepoIcon: React.SFC = () => {
     </svg>
   );
 };
+
+const ShareIcon: React.SFC = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24">
+    <path d="M5 7c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm11.122 12.065c-.073.301-.122.611-.122.935 0 2.209 1.791 4 4 4s4-1.791 4-4-1.791-4-4-4c-1.165 0-2.204.506-2.935 1.301l-5.488-2.927c-.23.636-.549 1.229-.943 1.764l5.488 2.927zm7.878-15.065c0-2.209-1.791-4-4-4s-4 1.791-4 4c0 .324.049.634.122.935l-5.488 2.927c.395.535.713 1.127.943 1.764l5.488-2.927c.731.795 1.77 1.301 2.935 1.301 2.209 0 4-1.791 4-4z" />
+  </svg>
+);
 
 interface ActionButtonProps {
   onActionClick: React.MouseEventHandler<HTMLElement>;
@@ -117,6 +124,29 @@ class RepoAction extends React.Component<RepoActionButtonProps> {
   };
 }
 
+type ShareButtonProps = ActionButtonProps;
+
+class ShareAction extends React.Component<ShareButtonProps> {
+  public render() {
+    return (
+      <a
+        className={classnames("r2c-action-button", "share-action-button", {
+          selected: this.props.selected
+        })}
+        title="Share"
+        role="button"
+        onClick={l("share-action-button-click", this.handleActionClick)}
+      >
+        <ShareIcon />
+      </a>
+    );
+  }
+
+  private handleActionClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
+    this.props.onActionClick(e);
+  };
+}
+
 const ActionBar: React.SFC = ({ children }) => (
   <div className="r2c-action-bar">{children}</div>
 );
@@ -158,6 +188,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             />
           )}
           {!isRepositoryPrivate() && (
+            <ShareAction
+              onActionClick={this.openTwist("share")}
+              selected={this.state.twistTab === "share"}
+            />
+          )}
+          {!isRepositoryPrivate() && (
             <VotingBar
               user={this.state.user}
               installationId={this.state.installationId}
@@ -181,6 +217,27 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           <Twist
             id="repo"
             panel={<RepoTwist repoSlug={this.state.repoSlug} />}
+          />
+          <Twist
+            id="share"
+            panel={
+              <ShareSection
+                rtcLink="https://tinyurl.com/r2c-beta"
+                shortDesc={
+                  "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
+                }
+                onEmailClick={l(
+                  "share-link-click-email",
+                  this.onShareActionClick("email")
+                )}
+                onLinkClick={l(
+                  "share-link-click-copy",
+                  this.onShareActionClick("link")
+                )}
+                user={this.state.user}
+                installationId={this.state.installationId}
+              />
+            }
           />
         </Twists>
       </div>
@@ -207,5 +264,11 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     } else {
       this.setState({ twistTab: undefined });
     }
+  };
+
+  private onShareActionClick = (
+    buttonTitle: ShareActionType
+  ): React.MouseEventHandler<HTMLElement> => e => {
+    console.log("Logging share link action!");
   };
 }

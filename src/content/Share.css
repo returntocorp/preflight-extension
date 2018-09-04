@@ -1,0 +1,18 @@
+.share-twist .share-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.share-twist .twist-body {
+  margin-top: 1ex;
+  height: 100px;
+  overflow: auto;
+}
+
+.share-action-button:hover,
+.link-button:hover,
+.email-button:hover {
+  background-color: #0a9bda;
+  fill: #fff;
+}

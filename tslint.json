@@ -6,6 +6,7 @@
     "tslint-config-prettier"
   ],
   "rules": {
+    "react-a11y-anchors": false,
     "missing-jsdoc": false,
     "no-implicit-dependencies": false,
     "no-default-export": false,
@@ -29,6 +30,7 @@
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "no-submodule-imports": false,
     "max-func-body-length": false,
+    "max-classes-per-file": [true, 5],
     "prefer-type-cast": false
   },
   "linterOptions": {

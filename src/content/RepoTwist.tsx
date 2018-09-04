@@ -13,6 +13,7 @@ import {
   permissionsUrl
 } from "@r2c/extension/api/permissions";
 import { scoreRepoUrl, ScoreResponse } from "@r2c/extension/api/score";
+import CopyButton from "@r2c/extension/shared/CopyButton";
 import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import {
   getPreferredPackageManager,
@@ -37,19 +38,6 @@ const RepoNoData: React.SFC = () => (
     }
     title="Couldn't get repo data"
   />
-);
-
-const Copy: React.SFC = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fillRule="evenodd"
-    clipRule="evenodd"
-    className="copy-button"
-  >
-    <path d="M20 24h-20v-22h3c1.229 0 2.18-1.084 3-2h8c.82.916 1.771 2 3 2h3v9h-2v-7h-4l-2 2h-3.898l-2.102-2h-4v18h16v-5h2v7zm-10-4h-6v-1h6v1zm0-2h-6v-1h6v1zm6-5h8v2h-8v3l-5-4 5-4v3zm-6 3h-6v-1h6v1zm0-2h-6v-1h6v1zm0-2h-6v-1h6v1zm0-2h-6v-1h6v1zm-1-7c0 .552.448 1 1 1s1-.448 1-1-.448-1-1-1-1 .448-1 1z" />
-  </svg>
 );
 
 const RepoScoreSection: React.SFC = () => (
@@ -176,9 +164,7 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                         entry.name
                       )}
                       rightElement={
-                        <Button
-                          icon={<Copy />}
-                          minimal={true}
+                        <CopyButton
                           onClick={l(
                             "copy-package-button-click",
                             this.handleCopy(
