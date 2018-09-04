@@ -188,15 +188,15 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             />
           )}
           {!isRepositoryPrivate() && (
-            <VotingBar
-              user={this.state.user}
-              installationId={this.state.installationId}
-            />
-          )}
-          {!isRepositoryPrivate() && (
             <ShareAction
               onActionClick={this.openTwist("share")}
               selected={this.state.twistTab === "share"}
+            />
+          )}
+          {!isRepositoryPrivate() && (
+            <VotingBar
+              user={this.state.user}
+              installationId={this.state.installationId}
             />
           )}
         </ActionBar>
@@ -269,6 +269,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   private onShareActionClick = (
     buttonTitle: ShareActionType
   ): React.MouseEventHandler<HTMLElement> => e => {
-    console.log("Logging share link aciton!");
+    console.log("Logging share link action!");
   };
 }

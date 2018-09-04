@@ -1,8 +1,3 @@
-import "./Discussion.css";
-
-import * as classnames from "classnames";
-import * as React from "react";
-
 import { Button, InputGroup, NonIdealState } from "@blueprintjs/core";
 import {
   CommentPostBody,
@@ -11,10 +6,14 @@ import {
   submitComment
 } from "@r2c/extension/api/comments";
 
-import { UserProps } from "@r2c/extension/shared/User";
+import UserProps from "@r2c/extension/shared/User";
 import { UserMetadataFooter } from "@r2c/extension/shared/UserMetadata";
 import { userOrInstallationId } from "@r2c/extension/utils";
+import * as classnames from "classnames";
 import { truncate } from "lodash";
+import * as React from "react";
+
+import "./Discussion.css";
 
 interface DiscussionCommentState {
   fullHeight: boolean;
@@ -108,7 +107,9 @@ class CommentsWell extends React.PureComponent<CommentsWellProps> {
     } else {
       return (
         <div className="comments-well">
-          {comments.map((comment, i) => <CommentItem key={i} {...comment} />)}
+          {comments.map((comment, i) => (
+            <CommentItem key={i} {...comment} />
+          ))}
           <div className="comments-well-end" ref={this.commentWellEnd} />
         </div>
       );

@@ -19,6 +19,8 @@ const Copy: React.SFC = () => (
   </svg>
 );
 
-export const CopyButton: React.SFC<CopyButtonProps> = ({ onClick }) => (
+const CopyButton: React.SFC<CopyButtonProps> = ({ onClick }) => (
   <Button icon={<Copy />} minimal={true} onClick={onClick} />
 );
+
+export default CopyButton;

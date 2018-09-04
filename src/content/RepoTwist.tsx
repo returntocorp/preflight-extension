@@ -13,7 +13,7 @@ import {
   permissionsUrl
 } from "@r2c/extension/api/permissions";
 import { scoreRepoUrl, ScoreResponse } from "@r2c/extension/api/score";
-import { CopyButton } from "@r2c/extension/shared/CopyButton";
+import CopyButton from "@r2c/extension/shared/CopyButton";
 import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import {
   getPreferredPackageManager,
@@ -141,15 +141,13 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
                       </span>
                       {entry.endorsers && (
                         <div className="package-endorsers">
-                          {entry.endorsers
-                            .slice(0, 3)
-                            .map(endorser => (
-                              <ProfilePicture
-                                key={endorser}
-                                user={endorser}
-                                className="package-endorser"
-                              />
-                            ))}
+                          {entry.endorsers.slice(0, 3).map(endorser => (
+                            <ProfilePicture
+                              key={endorser}
+                              user={endorser}
+                              className="package-endorser"
+                            />
+                          ))}
                           {entry.endorsers.length > 3 && (
                             <span className="package-endorsers-more">
                               +{entry.endorsers.length - 3}

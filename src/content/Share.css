@@ -1,7 +1,3 @@
-.r2c-twist .twist .share-twist {
-  width: 100px;
-}
-
 .share-twist .share-actions {
   display: flex;
   flex-direction: row;
@@ -14,6 +10,9 @@
   overflow: auto;
 }
 
-.r2c-twist .twist .share-twist .tweet-icon {
-  display: hidden;
+.share-action-button:hover,
+.link-button:hover,
+.email-button:hover {
+  background-color: #0a9bda;
+  fill: #fff;
 }

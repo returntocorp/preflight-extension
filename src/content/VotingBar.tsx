@@ -1,7 +1,7 @@
 import { Position, Tooltip } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { getVotes, submitVote, VoteResponse } from "@r2c/extension/api/votes";
-import { UserProps } from "@r2c/extension/shared/User";
+import UserProps from "@r2c/extension/shared/User";
 import {
   buildGithubProfilePicUrl,
   extractSlugFromCurrentUrl,
