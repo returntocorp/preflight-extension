@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.5.2] - 2018-09-04
+
+- Added sharing functionality with the following options.
+  - copy to clipboard
+  - click to start an email
+  - added logging for social interactions
+
 ## [1.5.1] - 2018-08-28
 
 ### Fixed
