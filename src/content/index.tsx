@@ -224,7 +224,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               <ShareSection
                 rtcLink="https://tinyurl.com/r2c-beta"
                 shortDesc={
-                  "Hope you enjoy using the extension. Share our extension with your friends using below!"
+                  "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
                 }
                 onEmailClick={l(
                   "share-link-click-email",
