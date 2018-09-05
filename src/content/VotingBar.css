@@ -13,12 +13,6 @@
   cursor: help;
 }
 
-.r2c-action-button {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  fill: #0a9bda;
-}
-
 .r2c-action-button.button-private-repository {
   width: inherit;
   padding: 15px;

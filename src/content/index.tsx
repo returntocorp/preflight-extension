@@ -2,6 +2,8 @@ import { l } from "@r2c/extension/analytics";
 import { getComments } from "@r2c/extension/api/comments";
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import Discussion from "@r2c/extension/content/Discussion";
+import FindingsTwist from "@r2c/extension/content/FindingsTwist";
+import Selectrix from "@r2c/extension/content/github/Selectrix";
 import RepoTwist from "@r2c/extension/content/RepoTwist";
 import Twist from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
@@ -39,6 +41,12 @@ const ShareIcon: React.SFC = () => (
   </svg>
 );
 
+const FindingsIcon: React.SFC = () => (
+  <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
+    <path d="M19 14.586l3.586-3.586 1.414 1.414-3.586 3.586 3.586 3.586-1.414 1.414-3.586-3.586-3.586 3.586-1.414-1.414 3.586-3.586-3.586-3.586 1.414-1.414 3.586 3.586zm-7 6.414h-12v-2h12v2zm0-4.024h-12v-2h12v2zm0-3.976h-12v-2h12v2zm12-4h-24v-2h24v2zm0-4h-24v-2h24v2z" />
+  </svg>
+);
+
 interface ActionButtonProps {
   onActionClick: React.MouseEventHandler<HTMLElement>;
   selected: boolean;
@@ -50,6 +58,7 @@ interface DiscussionActionButtonState {
 
 type DiscussionActionButtonProps = ActionButtonProps;
 type RepoActionButtonProps = ActionButtonProps;
+type FindingsActionButtonProps = ActionButtonProps;
 
 class DiscussionAction extends React.Component<
   DiscussionActionButtonProps,
@@ -147,6 +156,27 @@ class ShareAction extends React.Component<ShareButtonProps> {
   };
 }
 
+class FindingsAction extends React.Component<FindingsActionButtonProps> {
+  public render() {
+    return (
+      <a
+        className={classnames("r2c-action-button", "findings-action-button", {
+          selected: this.props.selected
+        })}
+        title="Findings"
+        role="button"
+        onClick={l("findings-action-button-click", this.handleActionClick)}
+      >
+        <FindingsIcon />
+      </a>
+    );
+  }
+
+  private handleActionClick: React.MouseEventHandler<HTMLAnchorElement> = e => {
+    this.props.onActionClick(e);
+  };
+}
+
 const ActionBar: React.SFC = ({ children }) => (
   <div className="r2c-action-bar">{children}</div>
 );
@@ -179,6 +209,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             <RepoAction
               onActionClick={this.openTwist("repo")}
               selected={this.state.twistTab === "repo"}
+            />
+          )}
+          {!isRepositoryPrivate() && (
+            <FindingsAction
+              onActionClick={this.openTwist("findings")}
+              selected={this.state.twistTab === "findings"}
             />
           )}
           {!isRepositoryPrivate() && (
@@ -217,6 +253,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
           <Twist
             id="repo"
             panel={<RepoTwist repoSlug={this.state.repoSlug} />}
+          />
+          <Twist
+            id="findings"
+            panel={<FindingsTwist repoSlug={this.state.repoSlug} />}
           />
           <Twist
             id="share"
