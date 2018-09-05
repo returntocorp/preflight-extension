@@ -17,7 +17,7 @@ Make sure to login to Chrome browser with a non-r2c login. Then, load the extens
 - Make sure `CHANGELOG.md` is up to date with your changes. Add `added`, `changed`, `fixed` headings as necessary.
 - Add a heading between `## Unreleased` and the latest changes with the new version and current date (e.g. `## [1.5.0] - 2018-09-18`). Follow semver.
 - Commit your changes and merge to `master`.
-- [Create a new release]((https://github.com/returntocorp/secarta-extension/releases/new)) off of `master` with the same version verbatim (e.g. `1.5.0` with no `v`). Title the release `VERSION - DESCRIPTION` (e.g. `1.5.0 - Electric boogaloo`) and copy-paste the whole version section from the changelog, including all headers.
+- [Create a new release](https://github.com/returntocorp/secarta-extension/releases/new) off of `master` with the same version verbatim (e.g. `1.5.0` with no `v`). Title the release `VERSION - DESCRIPTION` (e.g. `1.5.0 - Electric boogaloo`) and copy-paste the whole version section from the changelog, including all headers.
 
 ### Chrome Extension Store
 
@@ -61,7 +61,7 @@ Publishing to the Mozilla Add-ons repository is a manual process right now.
 - Copy the release notes from the change log verbatim into the `Release notes` box.
 - Write the following note to the reviewer:
 
-  ```
+  ```md
   Source code is available at:
 
   https://github.com/returntocorp/secarta-extension
