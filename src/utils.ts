@@ -71,15 +71,15 @@ export function userOrInstallationId(
   return user || `anonymous-${installationId}`;
 }
 
-function parseSlugFromUrl(
-  url: string
-): {
+export interface ExtractedRepoSlug {
   domain: string;
   org: string;
   repo: string;
   pathname: string;
   rest: string;
-} {
+}
+
+function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const parsed = new URL(url);
   const { hostname: domain, pathname } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");
@@ -87,13 +87,7 @@ function parseSlugFromUrl(
   return { domain, org, repo, pathname, rest: rest.join("/") };
 }
 
-export function extractSlugFromCurrentUrl(): {
-  domain: string;
-  org: string;
-  repo: string;
-  pathname: string;
-  rest: string;
-} {
+export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {
   return parseSlugFromUrl(document.URL);
 }
 
@@ -142,4 +136,34 @@ export async function getPreferredPackageManager(): Promise<
   string | undefined
 > {
   return fetchFromStorage(PREFERRED_PACKAGE_MANAGER);
+}
+
+export function nullableMin(
+  a: number | null | undefined,
+  b: number | null | undefined
+): number | null {
+  if (a == null) {
+    return b != null ? b : null;
+  }
+
+  if (b == null) {
+    return a;
+  }
+
+  return Math.min(a, b);
+}
+
+export function nullableMax(
+  a: number | null | undefined,
+  b: number | null | undefined
+): number | null {
+  if (a == null) {
+    return b != null ? b : null;
+  }
+
+  if (b == null) {
+    return a;
+  }
+
+  return Math.max(a, b);
 }

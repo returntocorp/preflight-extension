@@ -4,7 +4,8 @@ import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
 import Discussion from "@r2c/extension/content/Discussion";
 import FindingsTwist from "@r2c/extension/content/FindingsTwist";
-import FindingBlobInjector from "@r2c/extension/content/github/FindingBlobInjector";
+import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
+import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoTwist from "@r2c/extension/content/RepoTwist";
 import Twist from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
@@ -186,25 +187,27 @@ const ActionBar: React.SFC = ({ children }) => (
 interface ContentHostState {
   twistTab: string | undefined;
   user: string | undefined;
-  repoSlug: { domain: string; org: string; repo: string } | undefined;
   installationId: string;
 }
 
-export default class ContentHost extends React.Component<{}, ContentHostState> {
+export default class ContentHost extends React.PureComponent<
+  {},
+  ContentHostState
+> {
   public state: ContentHostState = {
     twistTab: undefined,
     user: undefined,
-    repoSlug: undefined,
     installationId: "not-generated"
   };
 
   public componentDidMount() {
     this.updateCurrentUser();
-    this.updateCurrentRepo();
   }
 
   public render() {
-    const { repoSlug, twistTab, user, installationId } = this.state;
+    const { twistTab, user, installationId } = this.state;
+
+    const repoSlug = extractSlugFromCurrentUrl();
 
     return (
       <>
@@ -250,7 +253,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               }) => (
                 <>
                   {findingsData != null && (
-                    <FindingBlobInjector findings={findingsData.findings} />
+                    <>
+                      <BlobFindingsInjector findings={findingsData.findings} />
+                      <TreeFindingsInjector findings={findingsData.findings} />
+                    </>
                   )}
 
                   <Twists isOpen={twistTab != null} selectedTwistId={twistTab}>
@@ -314,12 +320,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     const installationId = await fetchOrCreateExtensionUniqueId();
     const user = await extractCurrentUserFromPage();
     this.setState({ user, installationId });
-  };
-
-  private updateCurrentRepo = () => {
-    const { domain, org, repo } = extractSlugFromCurrentUrl();
-
-    this.setState({ repoSlug: { domain, org, repo } });
   };
 
   private openTwist = (
