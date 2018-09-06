@@ -1,13 +1,13 @@
 import { FindingEntry } from "@r2c/extension/api/findings";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
 import * as React from "react";
-import "./FindingBlobInjector.css";
+import "./BlobFindingsInjector.css";
 
-interface FindingsBlobInjectProps {
+interface BlobFindingsInjectorProps {
   findings: FindingEntry[];
 }
 
-interface BlobFindingsHighlighterProps extends FindingsBlobInjectProps {
+interface BlobFindingsHighlighterProps extends BlobFindingsInjectorProps {
   filePath: string;
   commitHash: string;
 }
@@ -145,8 +145,8 @@ class BlobFindingsHighlighter extends React.PureComponent<
   // };
 }
 
-export default class FindingBlobInjector extends React.Component<
-  FindingsBlobInjectProps
+export default class BlobFindingsInjector extends React.Component<
+  BlobFindingsInjectorProps
 > {
   public render() {
     return (

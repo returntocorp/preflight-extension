@@ -255,7 +255,10 @@ export default class ContentHost extends React.PureComponent<
                   {findingsData != null && (
                     <>
                       <BlobFindingsInjector findings={findingsData.findings} />
-                      <TreeFindingsInjector findings={findingsData.findings} />
+                      <TreeFindingsInjector
+                        findings={findingsData.findings}
+                        repoSlug={repoSlug}
+                      />
                     </>
                   )}
 
