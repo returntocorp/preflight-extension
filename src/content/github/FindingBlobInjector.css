@@ -1,0 +1,12 @@
+.blob-num {
+  transition: background-color 0.3s;
+}
+
+.blob-num.r2c-finding-start {
+  background-color: rgb(209, 57, 19);
+  color: white;
+}
+
+.blob-num.r2c-finding-start:hover {
+  color: white;
+}

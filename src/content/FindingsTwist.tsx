@@ -1,7 +1,6 @@
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import { FindingsResponse } from "@r2c/extension/api/findings";
 import * as classnames from "classnames";
 import * as React from "react";
-import Fetch from "react-fetch-component";
 import "./FindingsTwist.css";
 
 interface RepoSlug {
@@ -12,6 +11,9 @@ interface RepoSlug {
 
 interface FindingsTwistProps {
   repoSlug: RepoSlug | undefined;
+  loading: boolean | null;
+  error: Error | undefined;
+  data: FindingsResponse | undefined;
 }
 
 function buildFindingFileLink(
@@ -29,55 +31,52 @@ function buildFindingFileLink(
   }${endLine != null ? `-L${endLine}` : ""}`;
 }
 
-const FindingsList: React.SFC<FindingsTwistProps> = ({ repoSlug }) => {
+const FindingsList: React.SFC<FindingsTwistProps> = ({
+  repoSlug,
+  loading,
+  error,
+  data
+}) => {
   if (repoSlug != null) {
     return (
-      <Fetch<FindingsResponse>
-        url={findingsUrl(repoSlug.domain, repoSlug.org, repoSlug.repo)}
-      >
-        {({ loading, error, data }) => (
+      <>
+        {loading && <section className="findings loading">Loading...</section>}
+        {error && (
+          <section className="findings error">Couldn't load findings</section>
+        )}
+        {data && (
           <>
-            {loading && (
-              <section className="findings loading">Loading...</section>
-            )}
-            {error && (
-              <section className="findings error">
-                Couldn't load findings
-              </section>
-            )}
-            {data && (
-              <section className="findings">
-                {data.findings.map((finding, i) => (
-                  <article className="finding" key={i}>
-                    <header className="finding-header">
-                      <h2 className="finding-checkid">{finding.checkId}</h2>
-                      <span className="finding-full-path">
-                        <a
-                          href={buildFindingFileLink(
-                            repoSlug,
-                            finding.commitHash,
-                            finding.fileName,
-                            finding.startLine
-                          )}
-                        >
-                          <span className="finding-path-filename">
-                            {finding.fileName}
+            <section className="findings">
+              {data.findings.map((finding, i) => (
+                <article className="finding" key={i}>
+                  <header className="finding-header">
+                    <h2 className="finding-checkid">{finding.checkId}</h2>
+                    <span className="finding-full-path">
+                      <a
+                        href={buildFindingFileLink(
+                          repoSlug,
+                          finding.commitHash,
+                          finding.fileName,
+                          finding.startLine
+                        )}
+                      >
+                        <span className="finding-path-filename">
+                          {finding.fileName}
+                        </span>
+                        {finding.startLine != null && (
+                          <span className="finding-line-number">
+                            :{finding.startLine}
                           </span>
-                          {finding.startLine != null && (
-                            <span className="finding-line-number">
-                              :{finding.startLine}
-                            </span>
-                          )}
-                        </a>
-                      </span>
-                    </header>
-                  </article>
-                ))}
-              </section>
-            )}
+                        )}
+                      </a>
+                    </span>
+                  </header>
+                </article>
+              ))}
+            </section>
           </>
         )}
-      </Fetch>
+      </>
     );
   } else {
     return null;
@@ -86,13 +85,20 @@ const FindingsList: React.SFC<FindingsTwistProps> = ({ repoSlug }) => {
 
 export default class FindingsTwist extends React.Component<FindingsTwistProps> {
   public render() {
+    const { repoSlug, loading, error, data } = this.props;
+
     return (
       <div className={classnames("twist", "findings-twist")}>
         <header className="twist-header">
           <h1 className="twist-title">Findings</h1>
         </header>
         <div className="twist-body">
-          <FindingsList repoSlug={this.props.repoSlug} />
+          <FindingsList
+            repoSlug={repoSlug}
+            loading={loading}
+            error={error}
+            data={data}
+          />
         </div>
       </div>
     );
