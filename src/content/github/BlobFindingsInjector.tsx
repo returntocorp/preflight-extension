@@ -156,21 +156,6 @@ class BlobFindingsHighlighter extends React.PureComponent<
       <BlobFindingHighlight key={i} findings={groupedByStartLine[startLine]} />
     ));
   }
-
-  // private computePackOrder = (findings: FindingEntry[]): number[] => {
-  //   const packing: number[] = [];
-
-  //   findings.forEach((finding, findingIndex) => {
-  //     if (finding.startLine == null) {
-  //       return;
-  //     }
-
-  //     // _.range is non-inclusive, so end must be at least 1 higher than start
-  //     const endLine = finding.endLine || finding.startLine + 1;
-
-  //     range(finding.startLine, endLine).forEach(line => {});
-  //   });
-  // };
 }
 
 export default class BlobFindingsInjector extends React.Component<
@@ -219,14 +204,3 @@ function buildCodeElemIdForBlobLine(line: number): string {
 function buildLineNoElemIdForBlobLine(line: number): string {
   return `#L${line}`;
 }
-
-// let rrColorIndex = 0;
-// const roundRobinColors = [
-//   // taken from https://blueprintjs.com/docs/#core/colors
-//   "#D13913" // vermillion3
-// ];
-
-// function getNextColor(): string {
-//   // tslint:disable-next-line:no-increment-decrement
-//   return roundRobinColors[rrColorIndex++ % roundRobinColors.length];
-// }
