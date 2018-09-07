@@ -41,7 +41,7 @@ class TreeFindingHighlight extends React.PureComponent<
 
     const destination = pathElem.parentElement;
     const existingElem = destination.querySelector(
-      ".r2c-tree-finding-highlight-marker"
+      ".r2c-tree-finding-highlight-wrapper"
     );
 
     if (existingElem != null) {
@@ -55,6 +55,7 @@ class TreeFindingHighlight extends React.PureComponent<
 
     return ReactDOM.createPortal(
       <Popover
+        className="r2c-tree-finding-highlight-wrapper"
         content={
           <FindingsGroupedList
             findings={findings}

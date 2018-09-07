@@ -47,7 +47,7 @@ class BlobFindingHighlight extends React.PureComponent<
 
     const destination = findingSpan.startGutterElem;
     const existingElem = destination.querySelector(
-      ".r2c-blob-finding-highlight-marker"
+      ".r2c-blob-finding-highlight-wrapper"
     );
 
     if (existingElem != null) {
@@ -58,6 +58,7 @@ class BlobFindingHighlight extends React.PureComponent<
 
     return ReactDOM.createPortal(
       <Popover
+        className="r2c-blob-finding-highlight-wrapper"
         content={
           <FindingsGroupedList
             findings={findings}
