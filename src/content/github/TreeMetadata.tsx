@@ -20,8 +20,6 @@ export default class TreeMetadata extends React.Component<
     commitHash: undefined
   };
 
-  private retryAttempts = 0;
-
   public componentDidMount() {
     this.extractTreeMetadata();
   }
@@ -45,14 +43,6 @@ export default class TreeMetadata extends React.Component<
       commitNode != null ? commitNode.getAttribute("href") : null;
     const commitHash =
       commitLink != null ? last(commitLink.split("/")) || undefined : undefined;
-
-    // FIXME do this better
-    if (commitHash == null && this.retryAttempts < 3) {
-      setTimeout(() => {
-        this.retryAttempts += 1;
-        this.extractTreeMetadata();
-      }, 1000);
-    }
 
     if (rest.startsWith("tree")) {
       const pathName = rest.split("/");

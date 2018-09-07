@@ -2,6 +2,7 @@ import { Popover, Position } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
+import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import TreeMetadata from "@r2c/extension/content/github/TreeMetadata";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
@@ -121,15 +122,25 @@ export default class TreeFindingsInjector extends React.Component<
 > {
   public render() {
     return (
-      <TreeMetadata>
-        {({ currentPath }) => (
-          <TreeFindingsHighlighter
-            currentPath={currentPath}
-            findings={this.props.findings}
-            repoSlug={this.props.repoSlug}
-          />
+      <DomElementLoadedWatcher
+        querySelector={["table.files", ".commit-tease-sha"]}
+      >
+        {({ done }) => (
+          <>
+            {done && (
+              <TreeMetadata>
+                {({ currentPath }) => (
+                  <TreeFindingsHighlighter
+                    currentPath={currentPath}
+                    findings={this.props.findings}
+                    repoSlug={this.props.repoSlug}
+                  />
+                )}
+              </TreeMetadata>
+            )}
+          </>
         )}
-      </TreeMetadata>
+      </DomElementLoadedWatcher>
     );
   }
 }

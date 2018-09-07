@@ -23,8 +23,6 @@ export default class BlobMetadata extends React.Component<
     commitHash: undefined
   };
 
-  private retryAttempts = 0;
-
   public componentDidMount() {
     this.extractBlobMetadata();
   }
@@ -67,11 +65,6 @@ export default class BlobMetadata extends React.Component<
         commitLink != null
           ? last(commitLink.split("/")) || undefined
           : undefined;
-
-      if (commitHash == null && this.retryAttempts < 3) {
-        this.retryAttempts += 1;
-        setTimeout(this.extractCommitHash, this.retryAttempts * 1000);
-      }
 
       this.updateCommitHash(commitHash);
     } else {

@@ -3,6 +3,7 @@ import { l } from "@r2c/extension/analytics";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
+import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import { groupBy } from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -163,15 +164,28 @@ export default class BlobFindingsInjector extends React.Component<
 > {
   public render() {
     return (
-      <BlobMetadata>
-        {({ filePath, commitHash }) => (
-          <BlobFindingsHighlighter
-            filePath={filePath}
-            commitHash={commitHash}
-            findings={this.props.findings}
-          />
+      <DomElementLoadedWatcher
+        querySelector={[
+          ".file .blob-wrapper .js-file-line-container",
+          ".commit-tease-sha"
+        ]}
+      >
+        {({ done }) => (
+          <>
+            {done && (
+              <BlobMetadata>
+                {({ filePath, commitHash }) => (
+                  <BlobFindingsHighlighter
+                    filePath={filePath}
+                    commitHash={commitHash}
+                    findings={this.props.findings}
+                  />
+                )}
+              </BlobMetadata>
+            )}
+          </>
         )}
-      </BlobMetadata>
+      </DomElementLoadedWatcher>
     );
   }
 }
@@ -186,7 +200,11 @@ function getFindingSize(finding: FindingEntry): number {
   }
 }
 
-function compareFindingSizes(a: FindingEntry, b: FindingEntry, desc?: boolean): number {
+function compareFindingSizes(
+  a: FindingEntry,
+  b: FindingEntry,
+  desc?: boolean
+): number {
   const aSize = getFindingSize(a);
   const bSize = getFindingSize(b);
 
