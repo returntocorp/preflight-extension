@@ -10,6 +10,10 @@ import RepoTwist from "@r2c/extension/content/RepoTwist";
 import Twist from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
 import {
+  ExtensionState,
+  getExtensionState
+} from "@r2c/extension/shared/ExtensionState";
+import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
   isRepositoryPrivate
@@ -188,6 +192,7 @@ interface ContentHostState {
   twistTab: string | undefined;
   user: string | undefined;
   installationId: string;
+  extensionState: ExtensionState | undefined;
 }
 
 export default class ContentHost extends React.PureComponent<
@@ -197,15 +202,18 @@ export default class ContentHost extends React.PureComponent<
   public state: ContentHostState = {
     twistTab: undefined,
     user: undefined,
-    installationId: "not-generated"
+    installationId: "not-generated",
+    extensionState: undefined,
   };
 
-  public componentDidMount() {
+
+  public async componentDidMount() {
     this.updateCurrentUser();
+    this.setState({ extensionState: await getExtensionState() });
   }
 
   public render() {
-    const { twistTab, user, installationId } = this.state;
+    const { twistTab, user, installationId, extensionState } = this.state;
 
     const repoSlug = extractSlugFromCurrentUrl();
 
@@ -219,7 +227,9 @@ export default class ContentHost extends React.PureComponent<
                 selected={twistTab === "repo"}
               />
             )}
-            {!isRepositoryPrivate() && (
+            {extensionState != null &&
+              extensionState.experiments.recon &&
+              !isRepositoryPrivate() && (
               <FindingsAction
                 onActionClick={this.openTwist("findings")}
                 selected={twistTab === "findings"}
@@ -252,7 +262,9 @@ export default class ContentHost extends React.PureComponent<
                 error: findingsError
               }) => (
                 <>
-                  {findingsData != null && (
+                  {extensionState != null &&
+                    extensionState.experiments.recon &&
+                    findingsData != null && (
                     <>
                       <BlobFindingsInjector findings={findingsData.findings} />
                       <TreeFindingsInjector
@@ -276,6 +288,8 @@ export default class ContentHost extends React.PureComponent<
                       id="repo"
                       panel={<RepoTwist repoSlug={repoSlug} />}
                     />
+                    {extensionState != null &&
+                      extensionState.experiments.recon && (
                     <Twist
                       id="findings"
                       panel={
@@ -287,6 +301,7 @@ export default class ContentHost extends React.PureComponent<
                         />
                       }
                     />
+                      )}
                     <Twist
                       id="share"
                       panel={

@@ -5,6 +5,11 @@ import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
 import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
 import ProfileTab from "@r2c/extension/popup/ProfileTab";
 import Top10Tab from "@r2c/extension/popup/Top10Tab";
+import {
+  ExtensionState,
+  getExtensionState,
+  toggleExtensionExperiment
+} from "@r2c/extension/shared/ExtensionState";
 import { getGitHubUserFromStorage } from "@r2c/extension/utils";
 import * as React from "react";
 import "./index.css";
@@ -12,16 +17,20 @@ import "./index.css";
 interface GuideState {
   selectedTabId: TabId;
   currentUser: string | undefined;
+  extensionState: ExtensionState | undefined;
 }
 
 class Guide extends React.Component<{}, GuideState> {
   public state: GuideState = {
     selectedTabId: "firehose",
-    currentUser: undefined
+    currentUser: undefined,
+    extensionState: undefined
   };
 
-  public componentDidMount() {
+  public async componentDidMount() {
     this.fetchCurrentUser();
+
+    this.setState({ extensionState: await getExtensionState() });
   }
 
   public render() {
@@ -37,7 +46,12 @@ class Guide extends React.Component<{}, GuideState> {
           <Tab
             id="extension"
             title={<div className="r2c-tab">{R2CLogo}</div>}
-            panel={<ExtensionTab />}
+            panel={
+              <ExtensionTab
+                extensionState={this.state.extensionState}
+                onToggleExperiment={this.handleToggleExtensionExperiment}
+              />
+            }
           />
           <Tab id="firehose" title="Firehose" panel={<FirehoseTab />} />
           <Tab id="top10" title="Top 10" panel={<Top10Tab />} />
@@ -53,6 +67,19 @@ class Guide extends React.Component<{}, GuideState> {
       </div>
     );
   }
+
+  private handleToggleExtensionExperiment = (experimentName: string) => (
+    e: React.FormEvent<HTMLInputElement>
+  ) => {
+    if (this.state.extensionState != null) {
+      this.setState({
+        extensionState: toggleExtensionExperiment(
+          this.state.extensionState,
+          experimentName
+        )
+      });
+    }
+  };
 
   private fetchCurrentUser = async () => {
     const currentUser = await getGitHubUserFromStorage();

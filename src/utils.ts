@@ -105,7 +105,7 @@ export function buildGithubProfilePicUrl(user: string): string {
   return `https://github.com/${user}.png`;
 }
 
-export async function fetchFromStorage(
+export async function fetchStringFromStorage(
   key: string
 ): Promise<string | undefined> {
   return new Promise<string | undefined>(resolve =>
@@ -116,6 +116,18 @@ export async function fetchFromStorage(
   );
 }
 
+export async function fetchFromStorage<T>(key: string): Promise<T | undefined> {
+  return new Promise<T | undefined>(resolve =>
+    browser.storage.local.get(key, (results: { [k: string]: T | undefined }) =>
+      resolve(results[key])
+    )
+  );
+}
+
+export function updateStorage<T>(key: string, value: T) {
+  browser.storage.local.set({ [key]: value });
+}
+
 const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";
 
 export function setGitHubUser(user: string) {
@@ -123,7 +135,7 @@ export function setGitHubUser(user: string) {
 }
 
 export async function getGitHubUserFromStorage(): Promise<string | undefined> {
-  return fetchFromStorage(MOST_RECENT_GITHUB_USER);
+  return fetchStringFromStorage(MOST_RECENT_GITHUB_USER);
 }
 
 const PREFERRED_PACKAGE_MANAGER = "PREFERRED_PACKAGE_MANAGER";
@@ -135,7 +147,7 @@ export function setPreferredPackageManager(packageManager: string) {
 export async function getPreferredPackageManager(): Promise<
   string | undefined
 > {
-  return fetchFromStorage(PREFERRED_PACKAGE_MANAGER);
+  return fetchStringFromStorage(PREFERRED_PACKAGE_MANAGER);
 }
 
 export function nullableMin(
