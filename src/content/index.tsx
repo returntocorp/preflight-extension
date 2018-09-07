@@ -205,7 +205,7 @@ export default class ContentHost extends React.PureComponent<
     user: undefined,
     installationId: "not-generated",
     extensionState: undefined,
-    currentUrl: window.location.href
+    currentUrl: window.location.href.replace(window.location.hash, "")
   };
 
   private navigationMutationObserver: MutationObserver | null = null;
@@ -360,8 +360,12 @@ export default class ContentHost extends React.PureComponent<
   }
 
   private handleNavigationChange: MutationCallback = mutations => {
-    if (window.location.href !== this.state.currentUrl) {
-      this.setState({ currentUrl: window.location.href });
+    const locationWithoutHash = window.location.href.replace(
+      window.location.hash,
+      ""
+    );
+    if (locationWithoutHash !== this.state.currentUrl) {
+      this.setState({ currentUrl: locationWithoutHash });
     }
   };
 
