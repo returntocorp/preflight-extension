@@ -17,7 +17,8 @@
     "noUnusedLocals": true,
     "paths": {
       "@r2c/extension/*": ["src/*"]
-    }
+    },
+    "downlevelIteration": true
   },
   "exclude": [
     "node_modules",
