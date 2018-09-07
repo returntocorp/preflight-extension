@@ -1,34 +1,14 @@
 import { FindingsResponse } from "@r2c/extension/api/findings";
+import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import "./FindingsTwist.css";
 
-interface RepoSlug {
-  domain: string;
-  org: string;
-  repo: string;
-}
-
 interface FindingsTwistProps {
-  repoSlug: RepoSlug | undefined;
+  repoSlug: ExtractedRepoSlug | undefined;
   loading: boolean | null;
   error: Error | undefined;
   data: FindingsResponse | undefined;
-}
-
-function buildFindingFileLink(
-  repoSlug: RepoSlug,
-  commitHash: string | null,
-  fileName: string,
-  startLine: number | null,
-  endLine?: number
-): string {
-  // TODO Retrieve default branch
-  return `https://${repoSlug.domain}/${repoSlug.org}/${
-    repoSlug.repo
-  }/blob/${commitHash || "master"}/${fileName}${
-    startLine != null ? `#L${startLine}` : ""
-  }${endLine != null ? `-L${endLine}` : ""}`;
 }
 
 const FindingsList: React.SFC<FindingsTwistProps> = ({

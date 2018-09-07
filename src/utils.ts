@@ -167,3 +167,18 @@ export function nullableMax(
 
   return Math.max(a, b);
 }
+
+export function buildFindingFileLink(
+  repoSlug: ExtractedRepoSlug,
+  commitHash: string | null,
+  fileName: string,
+  startLine: number | null,
+  endLine?: number
+): string {
+  // TODO Retrieve default branch
+  return `https://${repoSlug.domain}/${repoSlug.org}/${
+    repoSlug.repo
+  }/blob/${commitHash || "master"}/${fileName}${
+    startLine != null ? `#L${startLine}` : ""
+  }${endLine != null ? `-L${endLine}` : ""}`;
+}

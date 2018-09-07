@@ -2,11 +2,41 @@
   transition: background-color 0.3s;
 }
 
-.blob-num.r2c-finding-start {
-  background-color: rgb(209, 57, 19);
-  color: white;
+.blob-num.r2c-blob-finding-highlight {
+  position: relative;
 }
 
-.blob-num.r2c-finding-start:hover {
-  color: white;
+.blob-num.r2c-blob-finding-highlight .r2c-blob-finding-highlight-hitbox {
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.blob-num .r2c-blob-finding-highlight-hitbox:hover .finding-highlight-marker {
+  background-color: hsl(12, 83%, 55%);
+}
+
+.blob-num .r2c-blob-finding-highlight-hitbox:active .finding-highlight-marker {
+  background-color: hsl(12, 83%, 35%);
+  box-shadow: inset 0 1px 0 rgba(27, 31, 35, 0.12);
+}
+
+.blob-num.r2c-blob-finding-highlight .finding-highlight-marker {
+  background-color: rgba(209, 57, 19);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+
+.r2c-blob-findings-grouped-list {
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

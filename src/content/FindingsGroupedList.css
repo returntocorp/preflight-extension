@@ -1,0 +1,15 @@
+.findings-grouped-list .findings-group header {
+  padding: 0.15em 10px;
+  font-family: monospace;
+  background-color: rgb(246, 248, 250);
+  border-bottom: 1px solid rgb(209, 213, 218);
+}
+
+.finding-entry {
+  padding: 0.15em 10px;
+  border-bottom: 1px solid rgb(223, 226, 229);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

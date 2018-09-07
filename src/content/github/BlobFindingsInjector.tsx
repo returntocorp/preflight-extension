@@ -1,6 +1,10 @@
+import { Popover, Position } from "@blueprintjs/core";
 import { FindingEntry } from "@r2c/extension/api/findings";
+import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
+import { groupBy } from "lodash";
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import "./BlobFindingsInjector.css";
 
 interface BlobFindingsInjectorProps {
@@ -9,11 +13,11 @@ interface BlobFindingsInjectorProps {
 
 interface BlobFindingsHighlighterProps extends BlobFindingsInjectorProps {
   filePath: string;
-  commitHash: string;
+  commitHash: string | null;
 }
 
 interface BlobFindingDetailsProps {
-  finding: FindingEntry;
+  findings: FindingEntry[];
 }
 
 interface FindingSpan {
@@ -29,38 +33,53 @@ interface FindingSpan {
   endCodeElem: Element;
 }
 
-// const BlobFindingDetails: React.SFC<BlobFindingDetailsProps> = ({
-//   finding
-// }) => (
-//   <article className="blob-finding-details">
-//     <header>
-//       <h1>{finding.analyzerName}</h1>
-//       <h2>
-//         {finding.fileName}:{finding.startLine}
-//         {finding.endLine != null ? `-${finding.endLine}` : ""}
-//       </h2>
-//     </header>
-//   </article>
-// );
-
 class BlobFindingHighlight extends React.PureComponent<
   BlobFindingDetailsProps
 > {
   public render() {
-    const findingSpan = this.computeFindingSpan();
+    const { findings } = this.props;
 
-    if (findingSpan == null) {
+    const findingSpan = this.computeFindingSpan(findings[0]);
+
+    if (findingSpan == null || findingSpan.startGutterElem == null) {
       return null;
     }
 
-    findingSpan.startGutterElem.classList.add("r2c-finding-start");
+    const destination = findingSpan.startGutterElem;
+    const existingElem = destination.querySelector(
+      ".r2c-blob-finding-highlight-marker"
+    );
 
-    return null;
+    if (existingElem != null) {
+      existingElem.remove();
+    }
+
+    destination.classList.add("r2c-blob-finding-highlight");
+
+    return ReactDOM.createPortal(
+      <Popover
+        content={
+          <FindingsGroupedList
+            findings={findings}
+            className="r2c-blob-findings-grouped-list"
+          />
+        }
+        position={Position.LEFT_TOP}
+        minimal={true}
+        modifiers={{
+          preventOverflow: { boundariesElement: "viewport" },
+          offset: { offset: "0px 40px" }
+        }}
+      >
+        <div className="r2c-blob-finding-highlight-hitbox">
+          <div className="finding-highlight-marker" />
+        </div>
+      </Popover>,
+      destination
+    );
   }
 
-  private computeFindingSpan = (): FindingSpan | null => {
-    const { finding } = this.props;
-
+  private computeFindingSpan = (finding: FindingEntry): FindingSpan | null => {
     if (finding.startLine == null) {
       return null;
     }
@@ -119,13 +138,16 @@ class BlobFindingsHighlighter extends React.PureComponent<
     );
 
     if (sortedByBlobSize.length === 0) {
-      console.warn("No findings found");
-
       return null;
     }
 
-    return sortedByBlobSize.map((finding, i) => (
-      <BlobFindingHighlight key={i} finding={finding} />
+    const groupedByStartLine = groupBy(
+      sortedByBlobSize,
+      finding => finding.startLine
+    );
+
+    return Object.keys(groupedByStartLine).map((startLine, i) => (
+      <BlobFindingHighlight key={i} findings={groupedByStartLine[startLine]} />
     ));
   }
 
@@ -152,13 +174,11 @@ export default class BlobFindingsInjector extends React.Component<
     return (
       <BlobMetadata>
         {({ filePath, commitHash }) => (
-          <>
-            <BlobFindingsHighlighter
-              filePath={filePath}
-              commitHash={commitHash}
-              findings={this.props.findings}
-            />
-          </>
+          <BlobFindingsHighlighter
+            filePath={filePath}
+            commitHash={commitHash}
+            findings={this.props.findings}
+          />
         )}
       </BlobMetadata>
     );
