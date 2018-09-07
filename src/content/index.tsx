@@ -193,6 +193,7 @@ interface ContentHostState {
   user: string | undefined;
   installationId: string;
   extensionState: ExtensionState | undefined;
+  currentUrl: string;
 }
 
 export default class ContentHost extends React.PureComponent<
@@ -204,11 +205,14 @@ export default class ContentHost extends React.PureComponent<
     user: undefined,
     installationId: "not-generated",
     extensionState: undefined,
+    currentUrl: window.location.href
   };
 
+  private navigationMutationObserver: MutationObserver | null = null;
 
   public async componentDidMount() {
     this.updateCurrentUser();
+    this.watchNavigationChange();
     this.setState({ extensionState: await getExtensionState() });
   }
 
@@ -230,11 +234,11 @@ export default class ContentHost extends React.PureComponent<
             {extensionState != null &&
               extensionState.experiments.recon &&
               !isRepositoryPrivate() && (
-              <FindingsAction
-                onActionClick={this.openTwist("findings")}
-                selected={twistTab === "findings"}
-              />
-            )}
+                <FindingsAction
+                  onActionClick={this.openTwist("findings")}
+                  selected={twistTab === "findings"}
+                />
+              )}
             {!isRepositoryPrivate() && (
               <DiscussionAction
                 onActionClick={this.openTwist("discussion")}
@@ -265,14 +269,18 @@ export default class ContentHost extends React.PureComponent<
                   {extensionState != null &&
                     extensionState.experiments.recon &&
                     findingsData != null && (
-                    <>
-                      <BlobFindingsInjector findings={findingsData.findings} />
-                      <TreeFindingsInjector
-                        findings={findingsData.findings}
-                        repoSlug={repoSlug}
-                      />
-                    </>
-                  )}
+                      <>
+                        <BlobFindingsInjector
+                          key={`BlobFindingsInjector ${this.state.currentUrl}`}
+                          findings={findingsData.findings}
+                        />
+                        <TreeFindingsInjector
+                          key={`TreeFindingsInjector ${this.state.currentUrl}`}
+                          findings={findingsData.findings}
+                          repoSlug={repoSlug}
+                        />
+                      </>
+                    )}
 
                   <Twists isOpen={twistTab != null} selectedTwistId={twistTab}>
                     <Twist
@@ -290,17 +298,17 @@ export default class ContentHost extends React.PureComponent<
                     />
                     {extensionState != null &&
                       extensionState.experiments.recon && (
-                    <Twist
-                      id="findings"
-                      panel={
-                        <FindingsTwist
-                          repoSlug={repoSlug}
-                          loading={findingsLoading}
-                          error={findingsError}
-                          data={findingsData}
+                        <Twist
+                          id="findings"
+                          panel={
+                            <FindingsTwist
+                              repoSlug={repoSlug}
+                              loading={findingsLoading}
+                              error={findingsError}
+                              data={findingsData}
+                            />
+                          }
                         />
-                      }
-                    />
                       )}
                     <Twist
                       id="share"
@@ -333,6 +341,29 @@ export default class ContentHost extends React.PureComponent<
       </>
     );
   }
+
+  private watchNavigationChange() {
+    this.navigationMutationObserver = new MutationObserver(
+      this.handleNavigationChange
+    );
+
+    const main = document.querySelector(".application-main");
+
+    if (main != null) {
+      this.navigationMutationObserver.observe(main, {
+        attributes: true,
+        subtree: true
+      });
+    } else {
+      console.warn("Unable to register mutation observer!");
+    }
+  }
+
+  private handleNavigationChange: MutationCallback = mutations => {
+    if (window.location.href !== this.state.currentUrl) {
+      this.setState({ currentUrl: window.location.href });
+    }
+  };
 
   private updateCurrentUser = async () => {
     const installationId = await fetchOrCreateExtensionUniqueId();
