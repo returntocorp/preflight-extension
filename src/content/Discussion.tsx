@@ -5,14 +5,12 @@ import {
   getComments,
   submitComment
 } from "@r2c/extension/api/comments";
-
 import UserProps from "@r2c/extension/shared/User";
 import { UserMetadataFooter } from "@r2c/extension/shared/UserMetadata";
 import { userOrInstallationId } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { truncate } from "lodash";
 import * as React from "react";
-
 import "./Discussion.css";
 
 interface DiscussionCommentState {
@@ -194,8 +192,6 @@ export default class Discussion extends React.Component<
   };
 
   private handleSubmitComment: React.FormEventHandler<HTMLElement> = e => {
-    console.log("Submitting comment");
-
     const body = {
       user: userOrInstallationId(this.props.user, this.props.installationId),
       text: this.state.inputText.trim()

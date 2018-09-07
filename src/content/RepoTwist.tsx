@@ -252,8 +252,6 @@ class RepoPackageSection extends React.Component<{}, RepoPackageSectionState> {
     const key = this.buildPackageFieldRefKey(registry, packageName);
     const toCopy = this.packageFieldRef[key];
 
-    console.log(this.packageFieldRef);
-
     if (toCopy != null) {
       toCopy.focus();
       toCopy.setSelectionRange(0, toCopy.value.length);
