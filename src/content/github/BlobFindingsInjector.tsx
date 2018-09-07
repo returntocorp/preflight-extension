@@ -201,7 +201,7 @@ function getFindingSize(finding: FindingEntry): number {
   }
 }
 
-function compareFindingSizes(a: FindingEntry, b: FindingEntry, desc?: boolean) {
+function compareFindingSizes(a: FindingEntry, b: FindingEntry, desc?: boolean): number {
   const aSize = getFindingSize(a);
   const bSize = getFindingSize(b);
 

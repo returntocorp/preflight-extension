@@ -25,10 +25,6 @@ interface TreeFindingHighlightProps {
 class TreeFindingHighlight extends React.PureComponent<
   TreeFindingHighlightProps
 > {
-  public componentWillUnmount() {
-    // console.log("Unmounting TreeFindingHighlight:", this.props.path);
-  }
-
   public render() {
     const { findings, path } = this.props;
 
@@ -49,8 +45,6 @@ class TreeFindingHighlight extends React.PureComponent<
       // HACK: GitHub uses pjax for navigation, which can save a snapshot of the DOM before
       // React has a chance to unmount the portal. If we find a previous portal, let's get rid
       // of it before mounting a new one.
-      // console.log("Remove existing elements");
-
       existingElem.remove();
     }
 
@@ -84,10 +78,6 @@ class TreeFindingHighlight extends React.PureComponent<
 class TreeFindingsHighlighter extends React.PureComponent<
   TreeFindingsHighlighterProps
 > {
-  public componentWillUnmount() {
-    // console.log("Unmounting TreeFindingsHighlighter");
-  }
-
   public render() {
     const { currentPath, findings } = this.props;
 
@@ -129,10 +119,6 @@ class TreeFindingsHighlighter extends React.PureComponent<
 export default class TreeFindingsInjector extends React.Component<
   TreeFindingsInjectorProps
 > {
-  public componentWillUnmount() {
-    // console.log("Unmounting TreeFindingsInjector");
-  }
-
   public render() {
     return (
       <TreeMetadata>

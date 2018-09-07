@@ -23,25 +23,17 @@ export default class TreeMetadata extends React.Component<
   private retryAttempts = 0;
 
   public componentDidMount() {
-    // console.log("Mounting TreeMetadata");
     this.extractTreeMetadata();
   }
 
   public componentDidUpdate() {
-    // console.log("Updating TreeMetadata");
     this.extractTreeMetadata();
   }
 
   public render() {
-    // console.log("Rendering TreeMetadata...");
-
     if (this.state.currentPath != null && this.state.commitHash != null) {
-      // console.log("Data found, will render");
-
       return this.props.children(this.state as TreeMetadataState);
     }
-
-    // console.log("Data missing, skip render");
 
     return null;
   }
