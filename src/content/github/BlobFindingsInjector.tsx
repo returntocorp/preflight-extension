@@ -71,7 +71,7 @@ class BlobFindingHighlight extends React.PureComponent<
         minimal={true}
         modifiers={{
           preventOverflow: { boundariesElement: "viewport" },
-          offset: { offset: "0px 40px" }
+          offset: { offset: "0px,40px" }
         }}
         onOpened={l("blob-finding-highlight-click", undefined, {
           path: findings[0].fileName,

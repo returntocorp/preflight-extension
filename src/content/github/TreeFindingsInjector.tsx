@@ -62,7 +62,7 @@ class TreeFindingHighlight extends React.PureComponent<
         minimal={true}
         modifiers={{
           preventOverflow: { boundariesElement: "viewport" },
-          offset: { offset: "0px 40px" }
+          offset: { offset: "0px,40px" }
         }}
         onOpened={l("tree-finding-highlight-click", undefined, { path })}
       >
