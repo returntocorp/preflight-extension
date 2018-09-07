@@ -47,6 +47,10 @@ export default class DomElementLoadedWatcher extends React.Component<
     }
   }
 
+  public componentWillUnmount() {
+    this.stopQueryPoll();
+  }
+
   public render() {
     return this.props.children(this.state);
   }
