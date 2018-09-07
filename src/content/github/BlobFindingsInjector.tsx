@@ -1,4 +1,5 @@
 import { Popover, Position } from "@blueprintjs/core";
+import { l } from "@r2c/extension/analytics";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
@@ -71,6 +72,10 @@ class BlobFindingHighlight extends React.PureComponent<
           preventOverflow: { boundariesElement: "viewport" },
           offset: { offset: "0px 40px" }
         }}
+        onOpened={l("blob-finding-highlight-click", undefined, {
+          path: findings[0].fileName,
+          startLine: findings[0].startLine
+        })}
       >
         <div className="r2c-blob-finding-highlight-hitbox">
           <div className="finding-highlight-marker" />

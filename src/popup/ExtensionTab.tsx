@@ -1,4 +1,5 @@
 import { FormGroup, Switch } from "@blueprintjs/core";
+import { l } from "@r2c/extension/analytics";
 import { ExtensionState } from "@r2c/extension/shared/ExtensionState";
 import * as React from "react";
 import "./ExtensionTab.css";
@@ -34,7 +35,10 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           <Switch
             label="Recon mode: when looking at code with known issues, we'll highlight files and line numbers where these issues occur"
             checked={experiments.recon}
-            onChange={this.props.onToggleExperiment("recon")}
+            onChange={l(
+              "experiment-recon-toggle",
+              this.props.onToggleExperiment("recon")
+            )}
           />
         </FormGroup>
       </div>

@@ -1,4 +1,5 @@
 import { Popover, Position } from "@blueprintjs/core";
+import { l } from "@r2c/extension/analytics";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import TreeMetadata from "@r2c/extension/content/github/TreeMetadata";
@@ -68,6 +69,7 @@ class TreeFindingHighlight extends React.PureComponent<
           preventOverflow: { boundariesElement: "viewport" },
           offset: { offset: "0px 40px" }
         }}
+        onOpened={l("tree-finding-highlight-click", undefined, { path })}
       >
         <span className="r2c-tree-finding-highlight-marker">
           <span className="r2c-tree-finding-count">{findings.length}</span>{" "}
