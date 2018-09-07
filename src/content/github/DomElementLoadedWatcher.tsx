@@ -70,7 +70,6 @@ export default class DomElementLoadedWatcher extends React.Component<
   private pollForQuerySelector = () => {
     this.retries += 1;
     if (this.retries > this.DEFAULT_RETRIES) {
-      console.warn("Retry threshold met", this.state);
       this.setState({
         timedOut: true,
         waiting: false,
