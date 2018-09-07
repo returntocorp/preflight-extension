@@ -24,20 +24,12 @@ export default class TreeMetadata extends React.Component<
 
   public componentDidMount() {
     // console.log("Mounting TreeMetadata");
-
-    setTimeout(() => {
-      // console.log("Extract TreeMetadata from mount");
-      this.extractTreeMetadata();
-    }, 1000);
+    this.extractTreeMetadata();
   }
 
   public componentDidUpdate() {
     // console.log("Updating TreeMetadata");
-
-    setTimeout(() => {
-      // console.log("Extract TreeMetadata from update");
-      this.extractTreeMetadata();
-    }, 1000);
+    this.extractTreeMetadata();
   }
 
   public render() {
