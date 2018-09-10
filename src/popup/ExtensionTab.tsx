@@ -31,9 +31,18 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
         <FormGroup
           label="Experiments"
           helperText="Try out some of our freshest ideas. You may need to refresh the page after toggling these experiments."
+          className="extension-experiments-cp"
         >
           <Switch
-            label="Recon mode: when looking at code with known issues, we'll highlight files and line numbers where these issues occur"
+            labelElement={
+              <div className="experiment-label">
+                <div className="experiment-label-title">Recon mode</div>
+                <div className="experiment-label-description">
+                  When looking at code with known issues, we'll highlight the
+                  files and line numbers where these issues occur.
+                </div>
+              </div>
+            }
             checked={experiments.recon}
             onChange={l(
               "experiment-recon-toggle",
