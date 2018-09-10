@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.7.1] - 2018-09-10
+
 ### Fixed
 
 - Changed icon to be visible on dark-themed browser toolbars
+- Made recon mode GitHub integration more robust - now it should work more consistently with all browsers and on flakier networks.
 
 ## [1.7.0] - 2018-09-06
 
