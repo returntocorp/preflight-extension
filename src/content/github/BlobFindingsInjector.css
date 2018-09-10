@@ -25,7 +25,7 @@
 }
 
 .blob-num.r2c-blob-finding-highlight .finding-highlight-marker {
-  background-color: rgba(209, 57, 19);
+  background-color: rgb(209, 57, 19);
   width: 10px;
   height: 10px;
   border-radius: 50%;
