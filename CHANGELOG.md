@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.7.1] - 2018-09-10
+
+### Changed
+
+- Filter our recon findings to substantially reduce noisy issues shown to users.
+
 ## [1.7.0] - 2018-09-10
 
 ### Added

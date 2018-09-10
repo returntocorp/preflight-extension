@@ -1,5 +1,5 @@
 export function findingsUrl(domain: string, org: string, repo: string) {
-  return `https://api.secarta.io/v1/raw/finding/${domain}/${org}/${repo}`;
+  return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
 }
 
 export function postFindingsUrl(domain: string, org: string, repo: string) {
