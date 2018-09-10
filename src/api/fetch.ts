@@ -21,7 +21,6 @@ export async function extractCurrentUserFromPage(): Promise<
 
     if (user != null && user !== "") {
       setGitHubUser(user);
-      console.log("Stored user in browser local extension storage");
 
       return user;
     } else {

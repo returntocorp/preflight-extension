@@ -71,15 +71,15 @@ export function userOrInstallationId(
   return user || `anonymous-${installationId}`;
 }
 
-function parseSlugFromUrl(
-  url: string
-): {
+export interface ExtractedRepoSlug {
   domain: string;
   org: string;
   repo: string;
   pathname: string;
   rest: string;
-} {
+}
+
+function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const parsed = new URL(url);
   const { hostname: domain, pathname } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");
@@ -87,13 +87,7 @@ function parseSlugFromUrl(
   return { domain, org, repo, pathname, rest: rest.join("/") };
 }
 
-export function extractSlugFromCurrentUrl(): {
-  domain: string;
-  org: string;
-  repo: string;
-  pathname: string;
-  rest: string;
-} {
+export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {
   return parseSlugFromUrl(document.URL);
 }
 
@@ -111,7 +105,7 @@ export function buildGithubProfilePicUrl(user: string): string {
   return `https://github.com/${user}.png`;
 }
 
-export async function fetchFromStorage(
+export async function fetchStringFromStorage(
   key: string
 ): Promise<string | undefined> {
   return new Promise<string | undefined>(resolve =>
@@ -122,6 +116,18 @@ export async function fetchFromStorage(
   );
 }
 
+export async function fetchFromStorage<T>(key: string): Promise<T | undefined> {
+  return new Promise<T | undefined>(resolve =>
+    browser.storage.local.get(key, (results: { [k: string]: T | undefined }) =>
+      resolve(results[key])
+    )
+  );
+}
+
+export function updateStorage<T>(key: string, value: T) {
+  browser.storage.local.set({ [key]: value });
+}
+
 const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";
 
 export function setGitHubUser(user: string) {
@@ -129,7 +135,7 @@ export function setGitHubUser(user: string) {
 }
 
 export async function getGitHubUserFromStorage(): Promise<string | undefined> {
-  return fetchFromStorage(MOST_RECENT_GITHUB_USER);
+  return fetchStringFromStorage(MOST_RECENT_GITHUB_USER);
 }
 
 const PREFERRED_PACKAGE_MANAGER = "PREFERRED_PACKAGE_MANAGER";
@@ -141,5 +147,50 @@ export function setPreferredPackageManager(packageManager: string) {
 export async function getPreferredPackageManager(): Promise<
   string | undefined
 > {
-  return fetchFromStorage(PREFERRED_PACKAGE_MANAGER);
+  return fetchStringFromStorage(PREFERRED_PACKAGE_MANAGER);
+}
+
+export function nullableMin(
+  a: number | null | undefined,
+  b: number | null | undefined
+): number | null {
+  if (a == null) {
+    return b != null ? b : null;
+  }
+
+  if (b == null) {
+    return a;
+  }
+
+  return Math.min(a, b);
+}
+
+export function nullableMax(
+  a: number | null | undefined,
+  b: number | null | undefined
+): number | null {
+  if (a == null) {
+    return b != null ? b : null;
+  }
+
+  if (b == null) {
+    return a;
+  }
+
+  return Math.max(a, b);
+}
+
+export function buildFindingFileLink(
+  repoSlug: ExtractedRepoSlug,
+  commitHash: string | null,
+  fileName: string,
+  startLine: number | null,
+  endLine?: number
+): string {
+  // TODO Retrieve default branch
+  return `https://${repoSlug.domain}/${repoSlug.org}/${
+    repoSlug.repo
+  }/blob/${commitHash || "master"}/${fileName}${
+    startLine != null ? `#L${startLine}` : ""
+  }${endLine != null ? `-L${endLine}` : ""}`;
 }

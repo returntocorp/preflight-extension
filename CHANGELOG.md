@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.7.0] - 2018-09-10
+
+### Added
+
+- New experiment: Recon mode
+  - When looking at code with known issues, we'll highlight files and line numbers where these issues occur
+- Added an experiment panel in the extension: click the R2C extension icon in the top right corner and then the icon in the tab bar
+
+### Fixed
+
+- Changed icon to be visible on dark-themed browser toolbars
+- Made recon mode GitHub integration more robust - now it should work more consistently with all browsers and on flakier networks.
+
 ## [1.6.0] - 2018-09-04
 
 ### Added
