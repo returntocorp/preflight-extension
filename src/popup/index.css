@@ -25,6 +25,10 @@ body.r2c-extension-popup {
   height: 1em;
 }
 
+.r2c-guide .r2c-tab svg path {
+  fill: #0a9bda;
+}
+
 .r2c-guide-tabs .bp3-tab-panel {
   margin-top: 8px;
 }
