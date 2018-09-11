@@ -48,23 +48,26 @@ const RepoScoreSection: React.SFC = () => (
 const RepoSuperstarsSection: React.SFC = () => (
   <Fetch<SuperstarsResponse> url={superstarsUrl()}>
     {({ loading, data, error, response }) => (
-      <section className="nutrition-superstars nutrition-inline">
+      <section className="nutrition-superstars nutrition-section">
         <header className="nutrition-title">Superstars</header>
         {loading && (
-          <span className="nutrition-inline-value loading">Loading...</span>
+          <span className="nutrition-section-value loading">Loading...</span>
         )}
         {data && (
-          <div>
-            <span className="nutrition-inline-value">{data.count}</span>
-            <span className="nutrition-inline-value">
-              including:{" "}
+          <div className="nutrition-section-value">
+            <span className="nutrition-section-value">
+              <b>{data.count} </b>
+            </span>
+            <span className="nutrition-section-value">
+              including:
+              <br />
               {data.examples.map(login => (
                 <a href={`https://github.com/${login}`}> {login} </a>
               ))}
             </span>
           </div>
         )}
-        {error && <span className="nutrition-inline-value error">N/A</span>}
+        {error && <span className="nutrition-section-value error">N/A</span>}
       </section>
     )}
   </Fetch>
