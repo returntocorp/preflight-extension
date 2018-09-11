@@ -1,8 +1,9 @@
-import { Button, Icon, Intent } from "@blueprintjs/core";
+import { Button, ButtonGroup, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
+import { R2CLogo } from "@r2c/extension/icons";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./RepoHeadsUp.css";
@@ -97,7 +98,7 @@ class ExceptionalHeadsUp extends React.PureComponent {
         </header>
         <div className="repo-headsup-body">
           <div className="repo-headsup-icon">
-            <Icon icon={WARNING_SIGN} iconSize={40} />
+            <Icon icon={WARNING_SIGN} iconSize={24} />
           </div>
           <div className="repo-headsup-message">
             <h2>There's a known vulnerability in this package</h2>
@@ -110,7 +111,7 @@ class ExceptionalHeadsUp extends React.PureComponent {
             <div className="repo-headsup-message-actions">
               <Button intent={Intent.WARNING}>Show vulnerability info</Button>
               <Button minimal={true}>
-                Show me the pre-flight checklist anyways
+                Show me the preflight checks anyways
               </Button>
             </div>
           </div>
@@ -120,7 +121,32 @@ class ExceptionalHeadsUp extends React.PureComponent {
   }
 }
 
-class RepoHeadsUp extends React.PureComponent {
+class UnsupportedHeadsUp extends React.PureComponent {
+  public render() {
+    return (
+      <div className="r2c-repo-headsup unsupported-headsup">
+        <h1>Preflight checks coming soon for this language 🛫</h1>
+      </div>
+    );
+  }
+}
+
+type HeadsUpStates =
+  | "normal"
+  | "loading"
+  | "unsupported"
+  | "error"
+  | "exceptional";
+
+interface RepoHeadsUpState {
+  debugSelected: HeadsUpStates;
+}
+
+class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
+  public state: RepoHeadsUpState = {
+    debugSelected: "normal"
+  };
+
   public render() {
     const navigation = document.querySelector(".repository-lang-stats-graph");
     const existingElem = document.querySelector(".r2c-repo-headsup-container");
@@ -139,24 +165,66 @@ class RepoHeadsUp extends React.PureComponent {
 
     return ReactDOM.createPortal(
       <>
-        <ExceptionalHeadsUp />
-        <div className="r2c-repo-headsup checklist-headsup">
-          <header>
-            <h1>Preflight checks</h1>
-          </header>
-          <div className="repo-headsup-body">
-            <div className="repo-headsup-checklist">
-              <PreflightChecklist />
-            </div>
-            <div className="repo-headsup-actions">
-              <RepoPackageSection />
+        <ButtonGroup minimal={true}>
+          <Button
+            active={this.state.debugSelected === "normal"}
+            onClick={this.toggleSelected("normal")}
+          >
+            Normal
+          </Button>
+          <Button
+            active={this.state.debugSelected === "loading"}
+            onClick={this.toggleSelected("loading")}
+          >
+            Loading
+          </Button>
+          <Button
+            active={this.state.debugSelected === "unsupported"}
+            onClick={this.toggleSelected("unsupported")}
+          >
+            Unsupported
+          </Button>
+          <Button
+            active={this.state.debugSelected === "error"}
+            onClick={this.toggleSelected("error")}
+          >
+            Error
+          </Button>
+          <Button
+            active={this.state.debugSelected === "exceptional"}
+            onClick={this.toggleSelected("exceptional")}
+          >
+            Exceptional
+          </Button>
+        </ButtonGroup>
+        {this.state.debugSelected === "exceptional" && <ExceptionalHeadsUp />}
+        {this.state.debugSelected === "unsupported" && <UnsupportedHeadsUp />}
+        {this.state.debugSelected === "normal" && (
+          <div className="r2c-repo-headsup checklist-headsup">
+            <header>
+              <h1>Preflight checks</h1>
+              <R2CLogo />
+            </header>
+            <div className="repo-headsup-body">
+              <div className="repo-headsup-checklist">
+                <PreflightChecklist />
+              </div>
+              <div className="repo-headsup-actions">
+                <RepoPackageSection />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </>,
       injected
     );
   }
+
+  private toggleSelected = (selected: HeadsUpStates) => (
+    e: React.MouseEvent<HTMLElement>
+  ) => {
+    this.setState({ debugSelected: selected });
+  };
 }
 
 export default class RepoHeadsUpInjector extends React.PureComponent {

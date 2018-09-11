@@ -1,5 +1,4 @@
 .r2c-repo-headsup {
-  height: 240px;
   border: 1px solid #dfe2e5;
   border-radius: 3px;
   margin-top: 10px;
@@ -11,10 +10,25 @@
 
 .r2c-repo-headsup header {
   margin-bottom: 1em;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.r2c-repo-headsup header h1 {
+.r2c-repo-headsup h1 {
   font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.r2c-repo-headsup header svg.r2c-logo {
+  height: 1.5em;
+  width: auto;
+}
+
+.r2c-repo-headsup header .r2c-logo-path {
+  fill: #0a9bda;
 }
 
 .r2c-repo-headsup.checklist-headsup .repo-headsup-body {
@@ -26,11 +40,6 @@
   grid-template-rows: auto;
   grid-template-areas: "checklist actions";
   align-items: stretch;
-}
-
-.r2c-repo-headsup.exceptional-headsup .repo-headsup-body {
-  display: flex;
-  flex-direction: row;
 }
 
 .repo-headsup-body .repo-headsup-checklist {
@@ -65,13 +74,21 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
 }
 
 .exceptional-headsup h2 {
-  line-height: 36px;
+  line-height: 24px;
   margin-bottom: 1ex;
+}
+
+.r2c-repo-headsup.exceptional-headsup .repo-headsup-body {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2em;
 }
 
 .exceptional-headsup .repo-headsup-icon {
   flex: 0 0 40px;
   margin-right: 1em;
+  display: flex;
+  justify-content: center;
 }
 
 .repo-headsup-message-icons {
