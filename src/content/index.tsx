@@ -5,6 +5,7 @@ import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
 import Discussion from "@r2c/extension/content/Discussion";
 import FindingsTwist from "@r2c/extension/content/FindingsTwist";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
+import RepoHeadsUpInjector from "@r2c/extension/content/github/RepoHeadsUp";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoTwist from "@r2c/extension/content/RepoTwist";
 import Twist from "@r2c/extension/content/Twist";
@@ -224,6 +225,9 @@ export default class ContentHost extends React.PureComponent<
     return (
       <>
         <div className="r2c-host">
+          {extensionState != null &&
+            extensionState.experiments.preflight && <RepoHeadsUpInjector />}
+
           <ActionBar>
             {!isRepositoryPrivate() && (
               <RepoAction

@@ -4,12 +4,13 @@ import {
   updateStorage
 } from "@r2c/extension/utils";
 
-export interface ExperimentManifest {
-  [experimentName: string]: boolean;
-}
+export type ExperimentName = "recon" | "preflight";
 
-const DEFAULT_EXPERIMENTS = {
-  recon: false
+export type ExperimentManifest = { [E in ExperimentName]: boolean };
+
+const DEFAULT_EXPERIMENTS: ExperimentManifest = {
+  recon: false,
+  preflight: false
 };
 
 export interface ExtensionState {
@@ -44,7 +45,7 @@ export function toggleExtensionExperiment(
   extensionState: ExtensionState,
   experimentName: string
 ): ExtensionState {
-  if (extensionState.experiments[experimentName] == null) {
+  if (!DEFAULT_EXPERIMENTS.hasOwnProperty(experimentName)) {
     // do nothing
     return extensionState;
   }

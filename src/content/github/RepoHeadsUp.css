@@ -1,0 +1,54 @@
+.r2c-repo-headsup {
+  height: 240px;
+  border: 1px solid #dfe2e5;
+  border-radius: 3px;
+  margin-top: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.r2c-repo-headsup header {
+  margin-bottom: 1em;
+}
+
+.r2c-repo-headsup header h1 {
+  font-size: 18px;
+}
+
+.r2c-repo-headsup .repo-headsup-body {
+  flex: 1 1 auto;
+
+  display: grid;
+  grid-template-columns: [checklist-start] auto [checklist-end actions-start] 30% [actions-end];
+  grid-column-gap: 20px;
+  grid-template-rows: auto;
+  grid-template-areas: "checklist actions";
+  align-items: stretch;
+}
+
+.repo-headsup-body .repo-headsup-checklist {
+  grid-area: checklist;
+}
+
+.repo-headsup-body .repo-headsup-actions {
+  grid-area: actions;
+  border-left: 1px solid rgba(16, 22, 26, 0.1);
+  padding-left: 9px;
+  margin-left: -10px;
+}
+
+ul.preflight-checklist {
+  list-style: none;
+}
+
+ul.preflight-checklist .preflight-checklist-item {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1ex;
+}
+
+ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
+  margin-right: 1em;
+}
