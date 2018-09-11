@@ -97,7 +97,7 @@ class ExceptionalHeadsUp extends React.PureComponent {
         </header>
         <div className="repo-headsup-body">
           <div className="repo-headsup-icon">
-            <Icon icon={WARNING_SIGN} intent={Intent.WARNING} />
+            <Icon icon={WARNING_SIGN} />
           </div>
           <div className="repo-headsup-message">
             <h2>There's a known vulnerability in this package</h2>
@@ -131,8 +131,9 @@ class RepoHeadsUp extends React.PureComponent {
     injected.classList.add("r2c-repo-headsup-container");
     navigation.after(injected);
 
-    if (true) {
-      return ReactDOM.createPortal(
+    return ReactDOM.createPortal(
+      <>
+        <ExceptionalHeadsUp />
         <div className="r2c-repo-headsup">
           <header>
             <h1>Preflight checks</h1>
@@ -145,12 +146,10 @@ class RepoHeadsUp extends React.PureComponent {
               <RepoPackageSection />
             </div>
           </div>
-        </div>,
-        injected
-      );
-    } else {
-      return ReactDOM.createPortal(<ExceptionalHeadsUp />, injected);
-    }
+        </div>
+      </>,
+      injected
+    );
   }
 }
 
