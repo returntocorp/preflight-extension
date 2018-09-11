@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Icon, Intent } from "@blueprintjs/core";
+import { Button, ButtonGroup, Icon, Intent, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
@@ -121,11 +121,68 @@ class ExceptionalHeadsUp extends React.PureComponent {
   }
 }
 
-class UnsupportedHeadsUp extends React.PureComponent {
+interface UnsupportedMessageState {
+  closed: boolean;
+}
+
+class UnsupportedHeadsUp extends React.PureComponent<
+  {},
+  UnsupportedMessageState
+> {
+  public state: UnsupportedMessageState = {
+    closed: false
+  };
+
   public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
     return (
       <div className="r2c-repo-headsup unsupported-headsup">
-        <h1>Preflight checks coming soon for this language 🛫</h1>
+        <div className="unsupported-message">
+          <span className="unsupported-message-text">
+            Preflight coming soon for this language 🛫
+          </span>
+          <Button
+            icon={IconNames.SMALL_CROSS}
+            minimal={true}
+            onClick={this.closeMessage}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
+    this.setState({ closed: true });
+  };
+}
+
+class LoadingHeadsUp extends React.PureComponent {
+  public state: UnsupportedMessageState = {
+    closed: false
+  };
+
+  public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
+    return (
+      <div className="r2c-repo-headsup loading-headsup">
+        <div className="loading-message">
+          <Spinner
+            size={Spinner.SIZE_SMALL}
+            className="loading-headsup-spinner"
+          />
+          <span className="loading-message-text">Contacting tower...</span>
+        </div>
+      </div>
+    );
+  }
+}
+
       </div>
     );
   }
@@ -199,6 +256,7 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
         </ButtonGroup>
         {this.state.debugSelected === "exceptional" && <ExceptionalHeadsUp />}
         {this.state.debugSelected === "unsupported" && <UnsupportedHeadsUp />}
+        {this.state.debugSelected === "loading" && <LoadingHeadsUp />}
         {this.state.debugSelected === "normal" && (
           <div className="r2c-repo-headsup checklist-headsup">
             <header>

@@ -13,7 +13,6 @@
 
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 }
 
 .r2c-repo-headsup h1 {
@@ -25,6 +24,7 @@
 .r2c-repo-headsup header svg.r2c-logo {
   height: 1.5em;
   width: auto;
+  margin-right: 1em;
 }
 
 .r2c-repo-headsup header .r2c-logo-path {
@@ -70,7 +70,7 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
 .exceptional-headsup {
   border-color: rgba(104, 80, 21, 0.3);
   background-color: rgb(255, 246, 214);
-  color: rgba(104, 80, 21);
+  color: rgb(104, 80, 21);
 }
 
 .exceptional-headsup h2 {
@@ -95,4 +95,21 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.unsupported-headsup .unsupported-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loading-headsup .loading-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.loading-headsup .loading-headsup-spinner {
+  margin-right: 1em;
 }
