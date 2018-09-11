@@ -1,4 +1,4 @@
-import { Icon, Intent } from "@blueprintjs/core";
+import { Button, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
@@ -97,7 +97,7 @@ class ExceptionalHeadsUp extends React.PureComponent {
         </header>
         <div className="repo-headsup-body">
           <div className="repo-headsup-icon">
-            <Icon icon={WARNING_SIGN} />
+            <Icon icon={WARNING_SIGN} iconSize={40} />
           </div>
           <div className="repo-headsup-message">
             <h2>There's a known vulnerability in this package</h2>
@@ -107,6 +107,12 @@ class ExceptionalHeadsUp extends React.PureComponent {
               maximus dolor, sit amet pharetra enim felis in odio. In hac
               habitasse platea dictumst.
             </p>
+            <div className="repo-headsup-message-actions">
+              <Button intent={Intent.WARNING}>Show vulnerability info</Button>
+              <Button minimal={true}>
+                Show me the pre-flight checklist anyways
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +140,7 @@ class RepoHeadsUp extends React.PureComponent {
     return ReactDOM.createPortal(
       <>
         <ExceptionalHeadsUp />
-        <div className="r2c-repo-headsup">
+        <div className="r2c-repo-headsup checklist-headsup">
           <header>
             <h1>Preflight checks</h1>
           </header>

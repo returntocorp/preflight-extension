@@ -17,7 +17,7 @@
   font-size: 18px;
 }
 
-.r2c-repo-headsup .repo-headsup-body {
+.r2c-repo-headsup.checklist-headsup .repo-headsup-body {
   flex: 1 1 auto;
 
   display: grid;
@@ -26,6 +26,11 @@
   grid-template-rows: auto;
   grid-template-areas: "checklist actions";
   align-items: stretch;
+}
+
+.r2c-repo-headsup.exceptional-headsup .repo-headsup-body {
+  display: flex;
+  flex-direction: row;
 }
 
 .repo-headsup-body .repo-headsup-checklist {
@@ -51,4 +56,26 @@ ul.preflight-checklist .preflight-checklist-item {
 
 ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
   margin-right: 1em;
+}
+
+.exceptional-headsup {
+  border-color: rgba(104, 80, 21, 0.3);
+  background-color: rgb(255, 246, 214);
+  color: rgba(104, 80, 21);
+}
+
+.exceptional-headsup h2 {
+  line-height: 36px;
+  margin-bottom: 1ex;
+}
+
+.exceptional-headsup .repo-headsup-icon {
+  flex: 0 0 40px;
+  margin-right: 1em;
+}
+
+.repo-headsup-message-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
