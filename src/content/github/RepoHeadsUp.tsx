@@ -1,6 +1,6 @@
 
-import { Button, ButtonGroup, Icon, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
-import { IconName, IconNames } from "@blueprintjs/icons";
+import { Button, ButtonGroup, Icon, IIconProps, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
+import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import { PackageEntry, PackageResponse, packageUrl, ScriptEntry } from "@r2c/extension/api/package";
 import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
@@ -37,37 +37,25 @@ class LoadingHeadsUp extends React.PureComponent {
   }
 }
 
-type ChecklistItemStates =
-  | "danger"
-  | "ok"
-  | "warn"
-  | "neutral";
+type ChecklistItemState = "danger" | "ok" | "warn" | "neutral";
 
-interface PreflightItemIconProps {
-  itemState: ChecklistItemStates;
+function renderIconForState(state: ChecklistItemState) {
+  const iconProps = getIconPropsForState(state);
+  
+  return <Icon {...iconProps} />
 }
 
-const PreflightItemIcon: React.SFC<PreflightItemIconProps> = (props) => {
-  const intent: Intent = {
-    "danger": Intent.DANGER,
-    "warn": Intent.WARNING,
-    "neutral": Intent.NONE,
-    "ok": Intent.SUCCESS
-  }[props.itemState];
-
-  const icon: IconName = {
-    "danger": IconNames.CROSS as IconName,
-    "warn": IconNames.WARNING_SIGN as IconName,
-    "neutral": IconNames.MINUS as IconName,
-    "ok": IconNames.TICK as IconName
-  }[props.itemState];
-
-  return (
-  <Icon
-    className="preflight-checklist-icon"
-    intent={intent}
-    icon={icon}
-  />)
+function getIconPropsForState(state: ChecklistItemState): IIconProps {
+  switch (state) {
+    case "danger":
+      return { intent: Intent.DANGER, icon: IconNames.CROSS };
+    case "warn":
+      return { intent: Intent.WARNING, icon: IconNames.SYMBOL_TRIANGLE_UP };
+    case "ok":
+      return { intent: Intent.SUCCESS, icon: IconNames.TICK };
+    default:
+      return { icon: IconNames.MINUS }
+  }
 }
 
 const PreflightPermissionsItem: React.SFC = () => (
@@ -75,7 +63,7 @@ const PreflightPermissionsItem: React.SFC = () => (
   {({ loading, data, error, response }) => {
     const permissionKeys = data && Object.keys(data.permissions);
     const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
-    const itemState: ChecklistItemStates = numPermissions > 0 ? "warn" : "ok";
+    const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
 
     return (
       <li className="preflight-checklist-item">
@@ -86,7 +74,7 @@ const PreflightPermissionsItem: React.SFC = () => (
         )}
         {permissionKeys && 
           <>
-            <PreflightItemIcon itemState={itemState} />
+            {renderIconForState(itemState)}
             <span className="preflight-checklist-title">            
               { numPermissions > 0 ? `Permissions detected: ${permissionKeys.join(',')}` : "No special permissions"}
             </span>
@@ -103,11 +91,11 @@ interface PreflightScriptsItemProps {
 }
 
 const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
-    const itemState: ChecklistItemStates = props.scripts.length > 0 ? "warn" : "ok";
+    const itemState: ChecklistItemState = props.scripts.length > 0 ? "warn" : "ok";
 
     return (
       <li className="preflight-checklist-item"> 
-        <PreflightItemIcon itemState={itemState} />
+        {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
           { props.scripts.length > 0 ? `${props.scripts.length} npm scripts detected` : "no npm scripts" }
         </span>
@@ -119,11 +107,11 @@ interface PreflightRankItemProps {
 }
 
 const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
-    const itemState: ChecklistItemStates = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= 500 ? "warn" : "ok" : "neutral";
+    const itemState: ChecklistItemState = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= 500 ? "warn" : "ok" : "neutral";
 
     return (
       <li className="preflight-checklist-item"> 
-        <PreflightItemIcon itemState={itemState} />
+        {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
           {props.pkg && 
             `NPM rank: ${props.pkg.rank_description || ""} ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
@@ -138,11 +126,11 @@ interface PreflightActivityItemProps {
 
 const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => {
     const { archived, is_active, latest_commit_date } = props.activity;
-    const itemState: ChecklistItemStates = archived === "true" ? "danger" : is_active === "true" ? "ok" : "warn"
+    const itemState: ChecklistItemState = archived === "true" ? "danger" : is_active === "true" ? "ok" : "warn"
 
     return (
       <li className="preflight-checklist-item"> 
-        <PreflightItemIcon itemState={itemState} />
+        {renderIconForState(itemState)}
         <span className="preflight-checklist-title">            
           { archived === "true" ? "archived" : is_active === "true" ? `updated recently (${latest_commit_date})` : `not updated since ${latest_commit_date}`}
         </span>
