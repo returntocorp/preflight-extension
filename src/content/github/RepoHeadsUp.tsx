@@ -192,47 +192,7 @@ class PreflightChecklist extends React.PureComponent {
                   <PreflightPermissionsItem />
                   <PreflightActivityItem activity={data.repo.activity} />
                   <PreflightScriptsItem scripts={data.pkg.npmScripts}/>
-                  <PreflightRankItem pkg={data.pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]}/>
-                  <li className="preflight-checklist-item">
-                    <Icon
-                      className="preflight-checklist-icon"
-                      intent={Intent.SUCCESS}
-                      icon={IconNames.TICK}
-                    />
-                    <span className="preflight-checklist-title">
-                      Top 10 popular package
-                    </span>
-                  </li>
-                  <li className="preflight-checklist-item">
-                    <Icon
-                      className="preflight-checklist-icon"
-                      intent={Intent.SUCCESS}
-                      icon={IconNames.TICK}
-                    />
-                    <span className="preflight-checklist-title">
-                      Used by 8 major orgs
-                    </span>
-                  </li>
-                  <li className="preflight-checklist-item">
-                    <Icon
-                      className="preflight-checklist-icon"
-                      intent={Intent.SUCCESS}
-                      icon={IconNames.TICK}
-                    />
-                    <span className="preflight-checklist-title">
-                      Reproducible package
-                    </span>
-                  </li>
-                  <li className="preflight-checklist-item">
-                    <Icon
-                      className="preflight-checklist-icon"
-                      intent={Intent.SUCCESS}
-                      icon={IconNames.TICK}
-                    />
-                    <span className="preflight-checklist-title">
-                      No known vulnerabilities
-                    </span>
-                  </li>      
+                  <PreflightRankItem pkg={data.pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]}/> 
                 </ul>
               </section>
             }
