@@ -2,6 +2,7 @@
 import { Button, ButtonGroup, Icon, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
 import { IconName, IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
+import { PackageEntry, PackageResponse, packageUrl, ScriptEntry } from "@r2c/extension/api/package";
 import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
@@ -97,6 +98,40 @@ const PreflightPermissionsItem: React.SFC = () => (
   </Fetch >
 )
 
+interface PreflightScriptsItemProps {
+  scripts: ScriptEntry[];
+}
+
+const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
+    const itemState: ChecklistItemStates = props.scripts.length > 0 ? "warn" : "ok";
+
+    return (
+      <li className="preflight-checklist-item"> 
+        <PreflightItemIcon itemState={itemState} />
+        <span className="preflight-checklist-title">
+          { props.scripts.length > 0 ? `${props.scripts.length} npm scripts detected` : "no npm scripts" }
+        </span>
+      </li>)
+}
+
+interface PreflightRankItemProps {
+  pkg: PackageEntry | undefined;
+}
+
+const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
+    const itemState: ChecklistItemStates = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= 500 ? "warn" : "ok" : "neutral";
+
+    return (
+      <li className="preflight-checklist-item"> 
+        <PreflightItemIcon itemState={itemState} />
+        <span className="preflight-checklist-title">
+          {props.pkg && 
+            `NPM rank: ${props.pkg.rank_description || ""} ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
+          }
+        </span>
+      </li>)
+}
+
 interface PreflightActivityItemProps {
   activity: Activity
 }
@@ -114,65 +149,95 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => 
       </li>)
 }
 
-class PreflightChecklist extends React.PureComponent {
+interface PreflightChecklistFetchProps {
+  children(response: PreflightChecklistFetchResponse): React.ReactNode;
+}
+
+interface PreflightChecklistFetchResponse {
+  loading: boolean | null;
+  error: Error | undefined;
+  data: { repo: RepoResponse; pkg: PackageResponse } | undefined;
+}
+
+class PreflightChecklistFetch extends React.PureComponent<PreflightChecklistFetchProps> {
   public render() {
     return (
       <Fetch<RepoResponse> url={repoUrl()}>
-      {({ loading, data, error, response }) => {
-        return (
-        <>
-          {loading && <LoadingHeadsUp /> }
-          {data && 
-            <section className="preflight-checklist-container">
-              <ul className="preflight-checklist">
-                <PreflightPermissionsItem />
-                <PreflightActivityItem activity={data.activity} />
-                <li className="preflight-checklist-item">
-                  <Icon
-                    className="preflight-checklist-icon"
-                    intent={Intent.SUCCESS}
-                    icon={IconNames.TICK}
-                  />
-                  <span className="preflight-checklist-title">
-                    Top 10 popular package
-                  </span>
-                </li>
-                <li className="preflight-checklist-item">
-                  <Icon
-                    className="preflight-checklist-icon"
-                    intent={Intent.SUCCESS}
-                    icon={IconNames.TICK}
-                  />
-                  <span className="preflight-checklist-title">
-                    Used by 8 major orgs
-                  </span>
-                </li>
-                <li className="preflight-checklist-item">
-                  <Icon
-                    className="preflight-checklist-icon"
-                    intent={Intent.SUCCESS}
-                    icon={IconNames.TICK}
-                  />
-                  <span className="preflight-checklist-title">
-                    Reproducible package
-                  </span>
-                </li>
-                <li className="preflight-checklist-item">
-                  <Icon
-                    className="preflight-checklist-icon"
-                    intent={Intent.SUCCESS}
-                    icon={IconNames.TICK}
-                  />
-                  <span className="preflight-checklist-title">
-                    No known vulnerabilities
-                  </span>
-                </li>      
-              </ul>
-            </section>
-          }
-        </>)}
+      {(repoResponse) => 
+          <Fetch<PackageResponse> url={packageUrl()}>
+          {(packageResponse) => {
+            const loading = repoResponse.loading || packageResponse.loading;
+            const error = repoResponse.error || packageResponse.error;
+            const data = repoResponse.data != null && packageResponse.data != null ? { repo: repoResponse.data, pkg: packageResponse.data } : undefined;
+            
+            return this.props.children({ loading, error, data })
+          }}
+          </Fetch>
       }
-      </Fetch>
+      </Fetch>    
+    )
+  }
+}
+
+class PreflightChecklist extends React.PureComponent {
+  public render() {
+    return (
+      <PreflightChecklistFetch>
+        {({ loading, error, data }) => (
+          <>
+            {loading && <LoadingHeadsUp /> }
+            {data &&
+              <section className="preflight-checklist-container">
+                <ul className="preflight-checklist">
+                  <PreflightPermissionsItem />
+                  <PreflightActivityItem activity={data.repo.activity} />
+                  <PreflightScriptsItem scripts={data.pkg.npmScripts}/>
+                  <PreflightRankItem pkg={data.pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]}/>
+                  <li className="preflight-checklist-item">
+                    <Icon
+                      className="preflight-checklist-icon"
+                      intent={Intent.SUCCESS}
+                      icon={IconNames.TICK}
+                    />
+                    <span className="preflight-checklist-title">
+                      Top 10 popular package
+                    </span>
+                  </li>
+                  <li className="preflight-checklist-item">
+                    <Icon
+                      className="preflight-checklist-icon"
+                      intent={Intent.SUCCESS}
+                      icon={IconNames.TICK}
+                    />
+                    <span className="preflight-checklist-title">
+                      Used by 8 major orgs
+                    </span>
+                  </li>
+                  <li className="preflight-checklist-item">
+                    <Icon
+                      className="preflight-checklist-icon"
+                      intent={Intent.SUCCESS}
+                      icon={IconNames.TICK}
+                    />
+                    <span className="preflight-checklist-title">
+                      Reproducible package
+                    </span>
+                  </li>
+                  <li className="preflight-checklist-item">
+                    <Icon
+                      className="preflight-checklist-icon"
+                      intent={Intent.SUCCESS}
+                      icon={IconNames.TICK}
+                    />
+                    <span className="preflight-checklist-title">
+                      No known vulnerabilities
+                    </span>
+                  </li>      
+                </ul>
+              </section>
+            }
+          </>)}
+          </PreflightChecklistFetch>
     )
   }
 }
