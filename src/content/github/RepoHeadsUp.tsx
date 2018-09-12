@@ -1,87 +1,109 @@
-import { Icon, Intent } from "@blueprintjs/core";
+import { Icon, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
+import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import Fetch from "react-fetch-component";
 import "./RepoHeadsUp.css";
+
+const PreflightPermissionsItem: React.SFC = () => (
+  <Fetch<PermissionsResponse> url={permissionsUrl()}>
+  {({ loading, data, error, response }) => {
+    const permissionKeys = data && Object.keys(data.permissions);
+    const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+
+    return (
+      <li className="preflight-checklist-item">
+        {loading && (
+          <div className="nutrition-section-value loading">
+            <NonIdealState icon={<Spinner />} title="Loading..." />
+          </div>
+        )}
+        {data && 
+          <Icon
+            className="preflight-checklist-icon"
+            intent={numPermissions > 0 ? Intent.WARNING : Intent.SUCCESS}
+            icon={numPermissions > 0 ? IconNames.WARNING_SIGN : IconNames.TICK}
+          />
+        }
+        <span className="preflight-checklist-title">            
+          { numPermissions > 0 ? `${numPermissions} ${ numPermissions > 1 ? "permissions" : "permission"} detected` : "No special permissions"}
+        </span>
+      </li>)
+    }
+  }
+  </Fetch >
+)
 
 class PreflightChecklist extends React.PureComponent {
   public render() {
     return (
       <section className="preflight-checklist-container">
         <ul className="preflight-checklist">
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              Updated in the last month
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              Top 10 popular package
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              Endorsed by 100+ Superstars
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              Used by 8 major orgs
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              Reproducible package
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              No known vulnerabilities
-            </span>
-          </li>
-          <li className="preflight-checklist-item">
-            <Icon
-              className="preflight-checklist-icon"
-              intent={Intent.SUCCESS}
-              icon={IconNames.TICK}
-            />
-            <span className="preflight-checklist-title">
-              No special permissions
-            </span>
-          </li>
+            <PreflightPermissionsItem />
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                Top 10 popular package
+              </span>
+            </li>
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                Endorsed by 100+ Superstars
+              </span>
+            </li>
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                Used by 8 major orgs
+              </span>
+            </li>
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                Reproducible package
+              </span>
+            </li>
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                No known vulnerabilities
+              </span>
+            </li>
+            <li className="preflight-checklist-item">
+              <Icon
+                className="preflight-checklist-icon"
+                intent={Intent.SUCCESS}
+                icon={IconNames.TICK}
+              />
+              <span className="preflight-checklist-title">
+                No special permissions
+              </span>
+            </li>          
         </ul>
       </section>
     );
