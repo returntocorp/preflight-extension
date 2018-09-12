@@ -235,10 +235,6 @@ class NormalHeadsUp extends React.PureComponent {
   public render() {
     return (
       <div className="r2c-repo-headsup checklist-headsup">
-        <header>
-          <R2CLogo />
-          <h1>Preflight</h1>
-        </header>
         <div className="repo-headsup-body">
           <div className="repo-headsup-checklist">
             <PreflightChecklist />
@@ -247,6 +243,26 @@ class NormalHeadsUp extends React.PureComponent {
             <RepoPackageSection />
           </div>
         </div>
+        <footer>
+          <div className="preflight-legend">
+            <span className="legend-check legend-entry">
+              <Icon icon={IconNames.SMALL_TICK} intent={Intent.SUCCESS} /> Good
+            </span>
+            <span className="legend-warn legend-entry">
+              <Icon
+                icon={IconNames.SYMBOL_TRIANGLE_UP}
+                intent={Intent.WARNING}
+              />{" "}
+              Careful
+            </span>
+            <span className="legend-missing legend-entry">
+              <Icon icon={IconNames.MINUS} /> N/A
+            </span>
+          </div>
+          <div className="preflight-logo">
+            preflight <R2CLogo />
+          </div>
+        </footer>
       </div>
     );
   }
@@ -285,7 +301,7 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
     navigation.after(injected);
 
     return ReactDOM.createPortal(
-      <>
+      <div className="preflight-container">
         <ButtonGroup minimal={true}>
           <Button
             active={this.state.debugSelected === "normal"}
@@ -323,7 +339,7 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
         {this.state.debugSelected === "loading" && <LoadingHeadsUp />}
         {this.state.debugSelected === "error" && <ErrorHeadsUp />}
         {this.state.debugSelected === "normal" && <NormalHeadsUp />}
-      </>,
+      </div>,
       injected
     );
   }

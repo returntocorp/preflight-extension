@@ -21,16 +21,6 @@
   align-items: center;
 }
 
-.r2c-repo-headsup header svg.r2c-logo {
-  height: 1.5em;
-  width: auto;
-  margin-right: 1em;
-}
-
-.r2c-repo-headsup header .r2c-logo-path {
-  fill: #0a9bda;
-}
-
 .r2c-repo-headsup.checklist-headsup .repo-headsup-body {
   flex: 1 1 auto;
 
@@ -114,4 +104,53 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
 .loading-headsup .loading-headsup-spinner,
 .error-headsup .error-icon {
   margin-right: 1em;
+}
+
+.r2c-repo-headsup footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 10px -10px -10px -10px;
+  padding: 10px;
+  border-top: 1px solid rgba(16, 22, 26, 0.1);
+
+  background-color: rgba(16, 22, 26, 0.03);
+}
+
+.preflight-legend {
+  display: flex;
+  flex-direction: row;
+}
+
+.preflight-legend .legend-entry {
+  margin-right: 1em;
+  display: flex;
+  align-items: center;
+
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.8);
+}
+
+.preflight-legend .legend-entry svg {
+  height: 1em;
+}
+
+.preflight-logo {
+  font-weight: 600;
+  color: #0a9bda;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.preflight-logo svg.r2c-logo {
+  height: 1em;
+  width: auto;
+  margin-left: 1em;
+}
+
+.preflight-logo .r2c-logo-path {
+  fill: #0a9bda;
 }
