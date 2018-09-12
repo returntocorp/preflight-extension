@@ -104,12 +104,14 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
   align-items: center;
 }
 
-.loading-headsup .loading-message {
+.loading-headsup .loading-message,
+.error-headsup .error-message {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.loading-headsup .loading-headsup-spinner {
+.loading-headsup .loading-headsup-spinner,
+.error-headsup .error-icon {
   margin-right: 1em;
 }

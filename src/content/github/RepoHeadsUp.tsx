@@ -183,6 +183,47 @@ class LoadingHeadsUp extends React.PureComponent {
   }
 }
 
+class ErrorHeadsUp extends React.PureComponent {
+  public state: UnsupportedMessageState = {
+    closed: false
+  };
+
+  public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
+    return (
+      <div className="r2c-repo-headsup error-headsup">
+        <div className="error-message">
+          <Icon
+            icon={IconNames.WARNING_SIGN}
+            className="error-icon"
+            intent={Intent.DANGER}
+          />
+          <span className="error-message-text">Couldn't load Preflight</span>
+        </div>
+      </div>
+    );
+  }
+}
+
+class NormalHeadsUp extends React.PureComponent {
+  public render() {
+    return (
+      <div className="r2c-repo-headsup checklist-headsup">
+        <header>
+          <R2CLogo />
+          <h1>Preflight</h1>
+        </header>
+        <div className="repo-headsup-body">
+          <div className="repo-headsup-checklist">
+            <PreflightChecklist />
+          </div>
+          <div className="repo-headsup-actions">
+            <RepoPackageSection />
+          </div>
+        </div>
       </div>
     );
   }
@@ -257,22 +298,8 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
         {this.state.debugSelected === "exceptional" && <ExceptionalHeadsUp />}
         {this.state.debugSelected === "unsupported" && <UnsupportedHeadsUp />}
         {this.state.debugSelected === "loading" && <LoadingHeadsUp />}
-        {this.state.debugSelected === "normal" && (
-          <div className="r2c-repo-headsup checklist-headsup">
-            <header>
-              <h1>Preflight checks</h1>
-              <R2CLogo />
-            </header>
-            <div className="repo-headsup-body">
-              <div className="repo-headsup-checklist">
-                <PreflightChecklist />
-              </div>
-              <div className="repo-headsup-actions">
-                <RepoPackageSection />
-              </div>
-            </div>
-          </div>
-        )}
+        {this.state.debugSelected === "error" && <ErrorHeadsUp />}
+        {this.state.debugSelected === "normal" && <NormalHeadsUp />}
       </>,
       injected
     );
