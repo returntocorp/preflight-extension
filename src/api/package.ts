@@ -10,9 +10,17 @@ export interface PackageEntry {
   endorsers: string[];
   name: string;
   registry: string;
+  package_rank: number;
+  rank_description: string;
+}
+
+export interface ScriptEntry {
+  script: string;
+  kind: string;
 }
 
 export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
+  npmScripts: ScriptEntry[];
 }

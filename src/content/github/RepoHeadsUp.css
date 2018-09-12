@@ -57,6 +57,10 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
   margin-right: 1em;
 }
 
+ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
+  margin-left: 0.5em;
+}
+
 .exceptional-headsup {
   border-color: rgba(104, 80, 21, 0.3);
   background-color: rgb(255, 246, 214);

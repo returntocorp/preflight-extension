@@ -1,8 +1,10 @@
 
-import { Button, ButtonGroup, Icon, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
+import { Button, ButtonGroup, Icon, IIconProps, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
+import { PackageEntry, PackageResponse, packageUrl, ScriptEntry } from "@r2c/extension/api/package";
 import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
+import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
@@ -11,11 +13,57 @@ import * as ReactDOM from "react-dom";
 import Fetch from "react-fetch-component";
 import "./RepoHeadsUp.css";
 
+class LoadingHeadsUp extends React.PureComponent {
+  public state: UnsupportedMessageState = {
+    closed: false
+  };
+
+  public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
+    return (
+      <div className="r2c-repo-headsup loading-headsup">
+        <div className="loading-message">
+          <Spinner
+            size={Spinner.SIZE_SMALL}
+            className="loading-headsup-spinner"
+          />
+          <span className="loading-message-text">Contacting tower...</span>
+        </div>
+      </div>
+    );
+  }
+}
+
+type ChecklistItemState = "danger" | "ok" | "warn" | "neutral";
+
+function renderIconForState(state: ChecklistItemState) {
+  const iconProps = getIconPropsForState(state);
+  
+  return <Icon {...iconProps} />
+}
+
+function getIconPropsForState(state: ChecklistItemState): IIconProps {
+  switch (state) {
+    case "danger":
+      return { intent: Intent.DANGER, icon: IconNames.CROSS };
+    case "warn":
+      return { intent: Intent.WARNING, icon: IconNames.SYMBOL_TRIANGLE_UP };
+    case "ok":
+      return { intent: Intent.SUCCESS, icon: IconNames.TICK };
+    default:
+      return { icon: IconNames.MINUS }
+  }
+}
+
 const PreflightPermissionsItem: React.SFC = () => (
   <Fetch<PermissionsResponse> url={permissionsUrl()}>
   {({ loading, data, error, response }) => {
     const permissionKeys = data && Object.keys(data.permissions);
     const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+    const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
 
     return (
       <li className="preflight-checklist-item">
@@ -24,91 +72,121 @@ const PreflightPermissionsItem: React.SFC = () => (
             <NonIdealState icon={<Spinner />} title="Loading..." />
           </div>
         )}
-        {data && 
-          <Icon
-            className="preflight-checklist-icon"
-            intent={numPermissions > 0 ? Intent.WARNING : Intent.SUCCESS}
-            icon={numPermissions > 0 ? IconNames.WARNING_SIGN : IconNames.TICK}
-          />
+        {permissionKeys && 
+          <>
+            {renderIconForState(itemState)}
+            <span className="preflight-checklist-title">            
+              { numPermissions > 0 ? `Permissions detected: ${permissionKeys.join(',')}` : "No special permissions"}
+            </span>
+          </>
         }
-        <span className="preflight-checklist-title">            
-          { numPermissions > 0 ? `${numPermissions} ${ numPermissions > 1 ? "permissions" : "permission"} detected` : "No special permissions"}
-        </span>
       </li>)
     }
   }
   </Fetch >
 )
 
+interface PreflightScriptsItemProps {
+  scripts: ScriptEntry[];
+}
+
+const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
+    const itemState: ChecklistItemState = props.scripts.length > 0 ? "warn" : "ok";
+
+    return (
+      <li className="preflight-checklist-item"> 
+        {renderIconForState(itemState)}
+        <span className="preflight-checklist-title">
+          { props.scripts.length > 0 ? `${props.scripts.length} npm install hooks detected` : "no npm install hooks" }
+        </span>
+      </li>)
+}
+
+interface PreflightRankItemProps {
+  pkg: PackageEntry | undefined;
+}
+
+const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
+    const itemState: ChecklistItemState = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= 500 ? "warn" : "ok" : "neutral";
+
+    return (
+      <li className="preflight-checklist-item"> 
+        {renderIconForState(itemState)}
+        <span className="preflight-checklist-title">
+          {props.pkg && 
+            `${props.pkg.rank_description || "NPM rank"}: ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
+          }
+        </span>
+      </li>)
+}
+
+interface PreflightActivityItemProps {
+  activity: Activity
+}
+
+const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => {
+    const { archived, is_active, latest_commit_date } = props.activity;
+    const itemState: ChecklistItemState = archived === "true" ? "danger" : is_active === "true" ? "ok" : "warn"
+
+    return (
+      <li className="preflight-checklist-item"> 
+        {renderIconForState(itemState)}
+        <span className="preflight-checklist-title">            
+          { archived === "true" ? "archived" : is_active === "true" ? `updated recently (${latest_commit_date})` : `not updated since ${latest_commit_date}`}
+        </span>
+      </li>)
+}
+
+interface PreflightChecklistFetchProps {
+  children(response: PreflightChecklistFetchResponse): React.ReactNode;
+}
+
+interface PreflightChecklistFetchResponse {
+  loading: boolean | null;
+  error: Error | undefined;
+  data: { repo: RepoResponse; pkg: PackageResponse } | undefined;
+}
+
+class PreflightChecklistFetch extends React.PureComponent<PreflightChecklistFetchProps> {
+  public render() {
+    return (
+      <Fetch<RepoResponse> url={repoUrl()}>
+      {(repoResponse) => 
+          <Fetch<PackageResponse> url={packageUrl()}>
+          {(packageResponse) => {
+            const loading = repoResponse.loading || packageResponse.loading;
+            const error = repoResponse.error || packageResponse.error;
+            const data = repoResponse.data != null && packageResponse.data != null ? { repo: repoResponse.data, pkg: packageResponse.data } : undefined;
+            
+            return this.props.children({ loading, error, data })
+          }}
+          </Fetch>
+      }
+      </Fetch>    
+    )
+  }
+}
+
 class PreflightChecklist extends React.PureComponent {
   public render() {
     return (
-      <section className="preflight-checklist-container">
-        <ul className="preflight-checklist">
-            <PreflightPermissionsItem />
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Top 10 popular package
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Endorsed by 100+ Superstars
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Used by 8 major orgs
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Reproducible package
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                No known vulnerabilities
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                No special permissions
-              </span>
-            </li>          
-        </ul>
-      </section>
-    );
+      <PreflightChecklistFetch>
+        {({ loading, error, data }) => (
+          <>
+            {loading && <LoadingHeadsUp /> }
+            {data &&
+              <section className="preflight-checklist-container">
+                <ul className="preflight-checklist">
+                  <PreflightPermissionsItem />
+                  <PreflightActivityItem activity={data.repo.activity} />
+                  <PreflightScriptsItem scripts={data.pkg.npmScripts}/>
+                  <PreflightRankItem pkg={data.pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]}/> 
+                </ul>
+              </section>
+            }
+          </>)}
+          </PreflightChecklistFetch>
+    )
   }
 }
 
@@ -180,30 +258,6 @@ class UnsupportedHeadsUp extends React.PureComponent<
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
     this.setState({ closed: true });
   };
-}
-
-class LoadingHeadsUp extends React.PureComponent {
-  public state: UnsupportedMessageState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup loading-headsup">
-        <div className="loading-message">
-          <Spinner
-            size={Spinner.SIZE_SMALL}
-            className="loading-headsup-spinner"
-          />
-          <span className="loading-message-text">Contacting tower...</span>
-        </div>
-      </div>
-    );
-  }
 }
 
 class ErrorHeadsUp extends React.PureComponent {
