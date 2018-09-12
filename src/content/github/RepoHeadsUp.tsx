@@ -1,8 +1,9 @@
 
 import { Button, ButtonGroup, Icon, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
-import { IconNames } from "@blueprintjs/icons";
+import { IconName, IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
+import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
@@ -11,11 +12,69 @@ import * as ReactDOM from "react-dom";
 import Fetch from "react-fetch-component";
 import "./RepoHeadsUp.css";
 
+class LoadingHeadsUp extends React.PureComponent {
+  public state: UnsupportedMessageState = {
+    closed: false
+  };
+
+  public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
+    return (
+      <div className="r2c-repo-headsup loading-headsup">
+        <div className="loading-message">
+          <Spinner
+            size={Spinner.SIZE_SMALL}
+            className="loading-headsup-spinner"
+          />
+          <span className="loading-message-text">Contacting tower...</span>
+        </div>
+      </div>
+    );
+  }
+}
+
+type ChecklistItemStates =
+  | "danger"
+  | "ok"
+  | "warn"
+  | "neutral";
+
+interface PreflightItemIconProps {
+  itemState: ChecklistItemStates;
+}
+
+const PreflightItemIcon: React.SFC<PreflightItemIconProps> = (props) => {
+  const intent: Intent = {
+    "danger": Intent.DANGER,
+    "warn": Intent.WARNING,
+    "neutral": Intent.NONE,
+    "ok": Intent.SUCCESS
+  }[props.itemState];
+
+  const icon: IconName = {
+    "danger": IconNames.CROSS as IconName,
+    "warn": IconNames.WARNING_SIGN as IconName,
+    "neutral": IconNames.MINUS as IconName,
+    "ok": IconNames.TICK as IconName
+  }[props.itemState];
+
+  return (
+  <Icon
+    className="preflight-checklist-icon"
+    intent={intent}
+    icon={icon}
+  />)
+}
+
 const PreflightPermissionsItem: React.SFC = () => (
   <Fetch<PermissionsResponse> url={permissionsUrl()}>
   {({ loading, data, error, response }) => {
     const permissionKeys = data && Object.keys(data.permissions);
     const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+    const itemState: ChecklistItemStates = numPermissions > 0 ? "warn" : "ok";
 
     return (
       <li className="preflight-checklist-item">
@@ -24,101 +83,97 @@ const PreflightPermissionsItem: React.SFC = () => (
             <NonIdealState icon={<Spinner />} title="Loading..." />
           </div>
         )}
-        {data && 
-          <Icon
-            className="preflight-checklist-icon"
-            intent={numPermissions > 0 ? Intent.WARNING : Intent.SUCCESS}
-            icon={numPermissions > 0 ? IconNames.WARNING_SIGN : IconNames.TICK}
-          />
+        {permissionKeys && 
+          <>
+            <PreflightItemIcon itemState={itemState} />
+            <span className="preflight-checklist-title">            
+              { numPermissions > 0 ? `Permissions detected: ${permissionKeys.join(',')}` : "No special permissions"}
+            </span>
+          </>
         }
-        <span className="preflight-checklist-title">            
-          { numPermissions > 0 ? `${numPermissions} ${ numPermissions > 1 ? "permissions" : "permission"} detected` : "No special permissions"}
-        </span>
       </li>)
     }
   }
   </Fetch >
 )
 
-const PreflightSuperstarsItem: React.SFC = () => (
-  <Fetch<PermissionsResponse> url={permissionsUrl()}>
-  {({ loading, data, error, response }) => {
-    const permissionKeys = data && Object.keys(data.permissions);
-    const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+interface PreflightActivityItemProps {
+  activity: Activity
+}
+
+const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => {
+    const { archived, is_active, latest_commit_date } = props.activity;
+    const itemState: ChecklistItemStates = archived === "true" ? "danger" : is_active === "true" ? "ok" : "warn"
 
     return (
-      <li className="preflight-checklist-item">
-        {loading && (
-          <div className="nutrition-section-value loading">
-            <NonIdealState icon={<Spinner />} title="Loading..." />
-          </div>
-        )}
-        {data && 
-          <Icon
-            className="preflight-checklist-icon"
-            intent={numPermissions > 0 ? Intent.WARNING : Intent.SUCCESS}
-            icon={numPermissions > 0 ? IconNames.WARNING_SIGN : IconNames.TICK}
-          />
-        }
+      <li className="preflight-checklist-item"> 
+        <PreflightItemIcon itemState={itemState} />
         <span className="preflight-checklist-title">            
-          { numPermissions > 0 ? `${numPermissions} ${ numPermissions > 1 ? "permissions" : "permission"} detected` : "No special permissions"}
+          { archived === "true" ? "archived" : is_active === "true" ? `updated recently (${latest_commit_date})` : `not updated since ${latest_commit_date}`}
         </span>
       </li>)
-    }
-  }
-  </Fetch >
-)
+}
 
 class PreflightChecklist extends React.PureComponent {
   public render() {
     return (
-      <section className="preflight-checklist-container">
-        <ul className="preflight-checklist">
-            <PreflightPermissionsItem />
-            <PreflightSuperstarsItem />
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Top 10 popular package
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Used by 8 major orgs
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Reproducible package
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                No known vulnerabilities
-              </span>
-            </li>      
-        </ul>
-      </section>
-    );
+      <Fetch<RepoResponse> url={repoUrl()}>
+      {({ loading, data, error, response }) => {
+        return (
+        <>
+          {loading && <LoadingHeadsUp /> }
+          {data && 
+            <section className="preflight-checklist-container">
+              <ul className="preflight-checklist">
+                <PreflightPermissionsItem />
+                <PreflightActivityItem activity={data.activity} />
+                <li className="preflight-checklist-item">
+                  <Icon
+                    className="preflight-checklist-icon"
+                    intent={Intent.SUCCESS}
+                    icon={IconNames.TICK}
+                  />
+                  <span className="preflight-checklist-title">
+                    Top 10 popular package
+                  </span>
+                </li>
+                <li className="preflight-checklist-item">
+                  <Icon
+                    className="preflight-checklist-icon"
+                    intent={Intent.SUCCESS}
+                    icon={IconNames.TICK}
+                  />
+                  <span className="preflight-checklist-title">
+                    Used by 8 major orgs
+                  </span>
+                </li>
+                <li className="preflight-checklist-item">
+                  <Icon
+                    className="preflight-checklist-icon"
+                    intent={Intent.SUCCESS}
+                    icon={IconNames.TICK}
+                  />
+                  <span className="preflight-checklist-title">
+                    Reproducible package
+                  </span>
+                </li>
+                <li className="preflight-checklist-item">
+                  <Icon
+                    className="preflight-checklist-icon"
+                    intent={Intent.SUCCESS}
+                    icon={IconNames.TICK}
+                  />
+                  <span className="preflight-checklist-title">
+                    No known vulnerabilities
+                  </span>
+                </li>      
+              </ul>
+            </section>
+          }
+        </>)}
+      }
+      </Fetch>
+    )
   }
 }
 
@@ -190,30 +245,6 @@ class UnsupportedHeadsUp extends React.PureComponent<
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
     this.setState({ closed: true });
   };
-}
-
-class LoadingHeadsUp extends React.PureComponent {
-  public state: UnsupportedMessageState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup loading-headsup">
-        <div className="loading-message">
-          <Spinner
-            size={Spinner.SIZE_SMALL}
-            className="loading-headsup-spinner"
-          />
-          <span className="loading-message-text">Contacting tower...</span>
-        </div>
-      </div>
-    );
-  }
 }
 
 class ErrorHeadsUp extends React.PureComponent {
