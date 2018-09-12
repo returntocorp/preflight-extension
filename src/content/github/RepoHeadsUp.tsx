@@ -97,7 +97,7 @@ const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
       <li className="preflight-checklist-item"> 
         {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
-          { props.scripts.length > 0 ? `${props.scripts.length} npm scripts detected` : "no npm scripts" }
+          { props.scripts.length > 0 ? `${props.scripts.length} npm install hooks detected` : "no npm install hooks" }
         </span>
       </li>)
 }
