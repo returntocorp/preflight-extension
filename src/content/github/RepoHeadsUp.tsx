@@ -114,7 +114,7 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
         {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
           {props.pkg && 
-            `NPM rank: ${props.pkg.rank_description || ""} ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
+            `${props.pkg.rank_description || "NPM rank"}: ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
           }
         </span>
       </li>)
