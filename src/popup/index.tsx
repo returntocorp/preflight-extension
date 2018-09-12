@@ -45,7 +45,11 @@ class Guide extends React.Component<{}, GuideState> {
         >
           <Tab
             id="extension"
-            title={<div className="r2c-tab">{R2CLogo}</div>}
+            title={
+              <div className="r2c-tab">
+                <R2CLogo />
+              </div>
+            }
             panel={
               <ExtensionTab
                 extensionState={this.state.extensionState}

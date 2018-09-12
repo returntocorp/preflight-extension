@@ -1,5 +1,4 @@
 .r2c-repo-headsup {
-  height: 240px;
   border: 1px solid #dfe2e5;
   border-radius: 3px;
   margin-top: 10px;
@@ -11,13 +10,28 @@
 
 .r2c-repo-headsup header {
   margin-bottom: 1em;
+
+  display: flex;
+  flex-direction: row;
 }
 
-.r2c-repo-headsup header h1 {
+.r2c-repo-headsup h1 {
   font-size: 18px;
+  display: flex;
+  align-items: center;
 }
 
-.r2c-repo-headsup .repo-headsup-body {
+.r2c-repo-headsup header svg.r2c-logo {
+  height: 1.5em;
+  width: auto;
+  margin-right: 1em;
+}
+
+.r2c-repo-headsup header .r2c-logo-path {
+  fill: #0a9bda;
+}
+
+.r2c-repo-headsup.checklist-headsup .repo-headsup-body {
   flex: 1 1 auto;
 
   display: grid;
@@ -50,5 +64,54 @@ ul.preflight-checklist .preflight-checklist-item {
 }
 
 ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {
+  margin-right: 1em;
+}
+
+.exceptional-headsup {
+  border-color: rgba(104, 80, 21, 0.3);
+  background-color: rgb(255, 246, 214);
+  color: rgb(104, 80, 21);
+}
+
+.exceptional-headsup h2 {
+  line-height: 24px;
+  margin-bottom: 1ex;
+}
+
+.r2c-repo-headsup.exceptional-headsup .repo-headsup-body {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2em;
+}
+
+.exceptional-headsup .repo-headsup-icon {
+  flex: 0 0 40px;
+  margin-right: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.repo-headsup-message-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.unsupported-headsup .unsupported-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loading-headsup .loading-message,
+.error-headsup .error-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.loading-headsup .loading-headsup-spinner,
+.error-headsup .error-icon {
   margin-right: 1em;
 }
