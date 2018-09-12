@@ -40,12 +40,42 @@ const PreflightPermissionsItem: React.SFC = () => (
   </Fetch >
 )
 
+const PreflightSuperstarsItem: React.SFC = () => (
+  <Fetch<PermissionsResponse> url={permissionsUrl()}>
+  {({ loading, data, error, response }) => {
+    const permissionKeys = data && Object.keys(data.permissions);
+    const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+
+    return (
+      <li className="preflight-checklist-item">
+        {loading && (
+          <div className="nutrition-section-value loading">
+            <NonIdealState icon={<Spinner />} title="Loading..." />
+          </div>
+        )}
+        {data && 
+          <Icon
+            className="preflight-checklist-icon"
+            intent={numPermissions > 0 ? Intent.WARNING : Intent.SUCCESS}
+            icon={numPermissions > 0 ? IconNames.WARNING_SIGN : IconNames.TICK}
+          />
+        }
+        <span className="preflight-checklist-title">            
+          { numPermissions > 0 ? `${numPermissions} ${ numPermissions > 1 ? "permissions" : "permission"} detected` : "No special permissions"}
+        </span>
+      </li>)
+    }
+  }
+  </Fetch >
+)
+
 class PreflightChecklist extends React.PureComponent {
   public render() {
     return (
       <section className="preflight-checklist-container">
         <ul className="preflight-checklist">
             <PreflightPermissionsItem />
+            <PreflightSuperstarsItem />
             <li className="preflight-checklist-item">
               <Icon
                 className="preflight-checklist-icon"
@@ -54,16 +84,6 @@ class PreflightChecklist extends React.PureComponent {
               />
               <span className="preflight-checklist-title">
                 Top 10 popular package
-              </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                Endorsed by 100+ Superstars
               </span>
             </li>
             <li className="preflight-checklist-item">
@@ -95,17 +115,7 @@ class PreflightChecklist extends React.PureComponent {
               <span className="preflight-checklist-title">
                 No known vulnerabilities
               </span>
-            </li>
-            <li className="preflight-checklist-item">
-              <Icon
-                className="preflight-checklist-icon"
-                intent={Intent.SUCCESS}
-                icon={IconNames.TICK}
-              />
-              <span className="preflight-checklist-title">
-                No special permissions
-              </span>
-            </li>          
+            </li>      
         </ul>
       </section>
     );
