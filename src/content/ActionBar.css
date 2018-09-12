@@ -1,10 +1,18 @@
-.r2c-action-bar {
+.r2c-actionbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.r2c-actionbar .actionbar-actions {
   display: flex;
   flex-direction: column;
-  position: relative;
   background-color: #fff;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.3);
-  flex: 0 0 auto;
 }
 
 .secarta-vote-button,
@@ -37,9 +45,23 @@
   fill: #fff;
 }
 
-.r2c-action-button.selected {
+.r2c-action-button.action-button-selected {
   position: relative;
   z-index: 300;
+  border-left: 3px solid #0a9bda;
+}
+
+.r2c-action-button.action-button-selected .action-button-link {
+  margin-left: -3px;
+}
+
+.r2c-action-button .action-button-link {
+  height: 48px;
+  width: 48px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .action-count {

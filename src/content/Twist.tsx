@@ -9,11 +9,17 @@ export type TwistElement = React.ReactElement<
 
 interface TwistProps {
   id: TwistId;
+  title: string;
+  icon: React.ReactNode;
   panel?: JSX.Element;
+  count?: number;
   className?: string;
+  tooltipContent?: JSX.Element;
 }
 
 const Twist: React.SFC<TwistProps> = ({ className, panel }) => {
+  // Not used
+
   return (
     <div className={classnames("r2c-twist-panel", className)}>{panel}</div>
   );
