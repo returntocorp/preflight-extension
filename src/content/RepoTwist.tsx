@@ -1,24 +1,12 @@
-import {
-  Button,
-  ButtonGroup,
-  Classes,
-  InputGroup,
-  NonIdealState,
-  Spinner
-} from "@blueprintjs/core";
+import { Button, ButtonGroup, Classes, InputGroup, NonIdealState, Spinner } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
-import {
-  PermissionsResponse,
-  permissionsUrl
-} from "@r2c/extension/api/permissions";
+import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
 import { scoreRepoUrl, ScoreResponse } from "@r2c/extension/api/score";
+import { SuperstarsResponse, superstarsUrl } from "@r2c/extension/api/superstars";
 import CopyButton from "@r2c/extension/shared/CopyButton";
 import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
-import {
-  getPreferredPackageManager,
-  setPreferredPackageManager
-} from "@r2c/extension/utils";
+import { getPreferredPackageManager, setPreferredPackageManager } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import * as React from "react";
@@ -52,6 +40,34 @@ const RepoScoreSection: React.SFC = () => (
           <span className="nutrition-inline-value">{data.metascore.score}</span>
         )}
         {error && <span className="nutrition-inline-value error">N/A</span>}
+      </section>
+    )}
+  </Fetch>
+);
+
+const RepoSuperstarsSection: React.SFC = () => (
+  <Fetch<SuperstarsResponse> url={superstarsUrl()}>
+    {({ loading, data, error, response }) => (
+      <section className="nutrition-superstars nutrition-section">
+        <header className="nutrition-title">Superstars</header>
+        {loading && (
+          <span className="nutrition-section-value loading">Loading...</span>
+        )}
+        {data && (
+          <div className="nutrition-section-value">
+            <span className="nutrition-section-value">
+              <b>{data.count} </b>
+            </span>
+            <span className="nutrition-section-value">
+              including:
+              <br />
+              {data.examples.map(login => (
+                <a href={`https://github.com/${login}`}> {login} </a>
+              ))}
+            </span>
+          </div>
+        )}
+        {error && <span className="nutrition-section-value error">N/A</span>}
       </section>
     )}
   </Fetch>
@@ -317,6 +333,7 @@ export default class RepoTwist extends React.Component<RepoTwistProps> {
               <RepoScoreSection />
               <RepoPermissionsSection />
               <RepoPackageSection />
+              <RepoSuperstarsSection />
             </div>
           </>
         )}
