@@ -163,7 +163,10 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
 
   const description =
     props.pkg &&
-    props.pkg.rank_description.toLocaleLowerCase().replace("000", "k");
+    props.pkg.rank_description
+      .toLocaleLowerCase()
+      .replace("10000", "10k")
+      .replace("000", "k");
 
   return (
     <li className="preflight-checklist-item">
