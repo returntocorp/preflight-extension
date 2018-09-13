@@ -4,13 +4,14 @@ import {
   updateStorage
 } from "@r2c/extension/utils";
 
-export type ExperimentName = "recon" | "preflight";
+export type ExperimentName = "recon" | "preflight" | "preflightTwist";
 
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
   recon: false,
-  preflight: false
+  preflight: false,
+  preflightTwist: false
 };
 
 export interface ExtensionState {

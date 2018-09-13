@@ -17,6 +17,7 @@ import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
+import PreflightTwist from "@r2c/extension/content/PreflightTwist";
 import { ShareActionType, ShareSection } from "@r2c/extension/content/Share";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
@@ -42,6 +43,12 @@ const DiscussionIcon: React.SFC = () => {
     </svg>
   );
 };
+
+const PreflightIcon: React.SFC = () => (
+  <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
+    <path d="M20 18v2h-20v-2h20zm-19.989-6.426l2.624-1.5 4.765 1.815s9.197-5.519 11.773-7.038c2.226-1.312 4.268-.853 4.647-.216.448.753.131 2.366-2.576 4.09-2.166 1.38-9.233 5.855-9.233 5.855-4.969 2.708-7.565.657-7.565.657l-4.435-3.663zm5.587-6.621l-2.598 1.5 6.252 3.173 5.388-3.227-9.042-1.446z" />
+  </svg>
+);
 
 // const RepoIcon: React.SFC = () => {
 //   return (
@@ -142,6 +149,15 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 selectedTwistId={twistTab}
                 onTwistChange={this.handleTwistChange}
               >
+                {extensionState != null &&
+                  extensionState.experiments.preflightTwist && (
+                    <Twist
+                      id="preflight"
+                      title="Preflight"
+                      icon={<PreflightIcon />}
+                      panel={<PreflightTwist />}
+                    />
+                  )}
                 <Twist
                   id="discussion"
                   title="Comments"
