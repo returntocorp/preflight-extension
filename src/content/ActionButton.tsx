@@ -25,6 +25,10 @@ interface ActionButtonProps {
   onClick(id: TwistId, event: React.MouseEvent<HTMLElement>): void;
 }
 
+export type ActionButtonElement = React.ReactElement<
+  ActionButtonProps & { children: React.ReactNode }
+>;
+
 export default class ActionButton extends React.PureComponent<
   ActionButtonProps
 > {

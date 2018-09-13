@@ -1,5 +1,7 @@
 import { Utils } from "@blueprintjs/core";
-import ActionButton from "@r2c/extension/content/ActionButton";
+import ActionButton, {
+  ActionButtonElement
+} from "@r2c/extension/content/ActionButton";
 import Twist, { TwistElement, TwistId } from "@r2c/extension/content/Twist";
 import * as classnames from "classnames";
 import * as React from "react";
@@ -18,7 +20,7 @@ export default class Twists extends React.PureComponent<TwistsProps> {
 
     const twistChildren = this.getTwistChildren();
 
-    const actions = twistChildren.map(this.renderTwistAction);
+    const actions = this.renderActions();
 
     const twistToRender = twistChildren
       .filter(twist => twist.props.id === selectedTwistId)
@@ -27,36 +29,20 @@ export default class Twists extends React.PureComponent<TwistsProps> {
     return (
       <div className="r2c-actionbar">
         <div className="actionbar-actions">{actions}</div>
-        <CSSTransition
-          in={isOpen}
-          classNames="twists-transition"
-          timeout={300}
-          mountOnEnter={true}
-          unmountOnExit={true}
-        >
-          <div className="twist-container">{twistToRender}</div>
-        </CSSTransition>
+        {twistToRender != null && (
+          <CSSTransition
+            in={isOpen}
+            classNames="twists-transition"
+            timeout={300}
+            mountOnEnter={true}
+            unmountOnExit={true}
+          >
+            <div className="twist-container">{twistToRender}</div>
+          </CSSTransition>
+        )}
       </div>
     );
   }
-
-  private renderTwistAction = (twist: TwistElement) => {
-    const { id, title, icon, count, tooltipContent } = twist.props;
-    const { selectedTwistId } = this.props;
-
-    return (
-      <ActionButton
-        id={id}
-        title={title}
-        key={id}
-        icon={icon}
-        count={count}
-        selected={selectedTwistId === id}
-        tooltipContent={tooltipContent}
-        onClick={this.handleTwistChange}
-      />
-    );
-  };
 
   private renderTwist = (twist: TwistElement) => {
     const { className, panel, id } = twist.props;
@@ -81,6 +67,35 @@ export default class Twists extends React.PureComponent<TwistsProps> {
     return React.Children.toArray(props.children).filter(child =>
       Utils.isElementOfType(child, Twist)
     ) as TwistElement[];
+  };
+
+  private renderActions = (
+    props: TwistsProps & { children?: React.ReactNode } = this.props
+  ): ActionButtonElement[] => {
+    const children = React.Children.toArray(props.children).filter(
+      child =>
+        Utils.isElementOfType(child, Twist) ||
+        Utils.isElementOfType(child, ActionButton)
+    ) as (TwistElement | ActionButtonElement)[];
+
+    return children.map(child => {
+      if (Utils.isElementOfType(child, ActionButton)) {
+        return child;
+      } else {
+        return (
+          <ActionButton
+            id={child.props.id}
+            title={child.props.title}
+            key={child.props.id}
+            icon={child.props.icon}
+            count={child.props.count}
+            selected={this.props.selectedTwistId === child.props.id}
+            tooltipContent={child.props.tooltipContent}
+            onClick={this.handleTwistChange}
+          />
+        );
+      }
+    });
   };
 
   private handleTwistChange = (

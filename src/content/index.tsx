@@ -1,11 +1,15 @@
+import { Intent } from "@blueprintjs/core";
+import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
 import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import { submitVote } from "@r2c/extension/api/votes";
+import ActionButton from "@r2c/extension/content/ActionButton";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/github/RepoHeadsUp";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
-import RepoTwist from "@r2c/extension/content/RepoTwist";
+import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
 import {
@@ -15,7 +19,8 @@ import {
 import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
-  isRepositoryPrivate
+  isRepositoryPrivate,
+  userOrInstallationId
 } from "@r2c/extension/utils";
 import * as React from "react";
 import Fetch from "react-fetch-component";
@@ -31,13 +36,19 @@ const DiscussionIcon: React.SFC = () => {
   );
 };
 
-const RepoIcon: React.SFC = () => {
-  return (
-    <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
-      <path d="M23.548 10.931l-10.479-10.478c-.302-.302-.698-.453-1.093-.453-.396 0-.791.151-1.093.453l-2.176 2.176 2.76 2.76c.642-.216 1.377-.071 1.889.44.513.515.658 1.256.435 1.9l2.66 2.66c.644-.222 1.387-.078 1.901.437.718.718.718 1.881 0 2.6-.719.719-1.883.719-2.602 0-.54-.541-.674-1.334-.4-2l-2.481-2.481v6.529c.175.087.34.202.487.348.717.717.717 1.881 0 2.601-.719.718-1.884.718-2.601 0-.719-.72-.719-1.884 0-2.601.177-.178.383-.312.602-.402v-6.589c-.219-.089-.425-.223-.602-.401-.544-.544-.676-1.343-.396-2.011l-2.721-2.721-7.185 7.185c-.302.302-.453.697-.453 1.093 0 .395.151.791.453 1.093l10.479 10.478c.302.302.697.452 1.092.452.396 0 .791-.15 1.093-.452l10.431-10.428c.302-.303.452-.699.452-1.094 0-.396-.15-.791-.452-1.093" />
-    </svg>
-  );
-};
+// const RepoIcon: React.SFC = () => {
+//   return (
+//     <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
+//       <path d="M23.548 10.931l-10.479-10.478c-.302-.302-.698-.453-1.093-.453-.396 0-.791.151-1.093.453l-2.176 2.176 2.76 2.76c.642-.216 1.377-.071 1.889.44.513.515.658 1.256.435 1.9l2.66 2.66c.644-.222 1.387-.078 1.901.437.718.718.718 1.881 0 2.6-.719.719-1.883.719-2.602 0-.54-.541-.674-1.334-.4-2l-2.481-2.481v6.529c.175.087.34.202.487.348.717.717.717 1.881 0 2.601-.719.718-1.884.718-2.601 0-.719-.72-.719-1.884 0-2.601.177-.178.383-.312.602-.402v-6.589c-.219-.089-.425-.223-.602-.401-.544-.544-.676-1.343-.396-2.011l-2.721-2.721-7.185 7.185c-.302.302-.453.697-.453 1.093 0 .395.151.791.453 1.093l10.479 10.478c.302.302.697.452 1.092.452.396 0 .791-.15 1.093-.452l10.431-10.428c.302-.303.452-.699.452-1.094 0-.396-.15-.791-.452-1.093" />
+//     </svg>
+//   );
+// };
+
+const ReportIcon: React.SFC = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24">
+    <path d="M4 24h-2v-24h2v24zm6.161-23c-1.8 0-3.436 1.017-4.161 1.638v11.362c2.447-3.692 5.281-2.538 7.526-1.909 4.435 1.244 6.686-1.535 8.474-4.78-6.427 2.666-5.895-6.311-11.839-6.311z" />
+  </svg>
+);
 
 const ShareIcon: React.SFC = () => (
   <svg width="24" height="24" viewBox="0 0 24 24">
@@ -121,16 +132,16 @@ export default class ContentHost extends React.PureComponent<
             onTwistChange={this.handleTwistChange}
           >
             <Twist
-              id="repo"
-              title="Project info"
-              icon={<RepoIcon />}
-              panel={<RepoTwist repoSlug={repoSlug} />}
-            />
-            <Twist
               id="discussion"
               title="Comments"
               icon={<DiscussionIcon />}
               panel={<Discussion user={user} installationId={installationId} />}
+            />
+            <ActionButton
+              id="flag"
+              title="Flag an issue with this project"
+              icon={<ReportIcon />}
+              onClick={this.handleReportProject}
             />
             <Twist
               id="share"
@@ -209,5 +220,36 @@ export default class ContentHost extends React.PureComponent<
     buttonTitle: ShareActionType
   ): React.MouseEventHandler<HTMLElement> => e => {
     console.log("Logging share link action!");
+  };
+
+  private handleReportProject = (
+    id: TwistId,
+    e: React.MouseEvent<HTMLElement>
+  ) =>
+    l(
+      "flag-project-button-click",
+      this.submitVote("down", this.state.user, this.state.installationId)
+    );
+
+  private submitVote = (
+    vote: string | null,
+    user: string | undefined,
+    installationId: string
+  ) => async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const isRepoPrivate = isRepositoryPrivate();
+    if (!isRepoPrivate) {
+      const body = {
+        vote,
+        user: userOrInstallationId(user, installationId)
+      };
+
+      submitVote(body);
+      MainToaster.show({
+        icon: IconNames.FLAG,
+        intent: Intent.SUCCESS,
+        message:
+          "Flagged this project for review. Thanks!\n\nYou can also leave a comment with your opinion."
+      });
+    }
   };
 }
