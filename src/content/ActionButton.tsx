@@ -4,6 +4,7 @@ import { l } from "@r2c/extension/analytics";
 import { TwistId } from "@r2c/extension/content/Twist";
 import * as classnames from "classnames";
 import * as React from "react";
+import "./ActionButton.css";
 
 interface ActionButtonCountProps {
   count: number | undefined;

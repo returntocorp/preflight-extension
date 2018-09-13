@@ -17,6 +17,7 @@ import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
+import { ShareActionType, ShareSection } from "@r2c/extension/content/Share";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
@@ -32,9 +33,7 @@ import {
 } from "@r2c/extension/utils";
 import * as React from "react";
 import Fetch, { FetchUpdateOptions } from "react-fetch-component";
-import "./ActionBar.css";
 import "./index.css";
-import { ShareActionType, ShareSection } from "./Share";
 
 const DiscussionIcon: React.SFC = () => {
   return (

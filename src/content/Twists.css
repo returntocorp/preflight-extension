@@ -1,3 +1,20 @@
+.r2c-actionbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.r2c-actionbar .actionbar-actions {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
 .r2c-actionbar .twist-container {
   position: relative;
   z-index: 200;
