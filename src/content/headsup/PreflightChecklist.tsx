@@ -163,10 +163,7 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
 
   const description =
     props.pkg &&
-    props.pkg.rank_description
-      .toLocaleLowerCase()
-      .replace("10000", "10k")
-      .replace("1000", "1k");
+    props.pkg.rank_description.toLocaleLowerCase().replace("000", "k");
 
   return (
     <li className="preflight-checklist-item">
@@ -187,9 +184,9 @@ interface PreflightActivityItemProps {
 const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
   const { archived, latestCommitDate } = props.activity;
   const date = Date.parse(latestCommitDate);
-  const timeago = date - Date.now();
+  const timeago = Date.now() - date;
   const itemState: ChecklistItemState =
-    archived || timeago / 1000 / 3600 / 24 / 30 > 3 ? "warn" : "ok";
+    archived || timeago / 1000 / 3600 / 24 / 30 > 6 ? "warn" : "ok";
 
   if (archived !== undefined && latestCommitDate !== undefined) {
     return (
