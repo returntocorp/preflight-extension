@@ -98,8 +98,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       return null;
     }
 
-    console.log("render", user, installationId);
-
     return (
       <>
         <div id="r2c-inline-injector-portal" />
