@@ -147,7 +147,7 @@ export default class RepoPackageSection extends React.Component<
                 ))}
                 {data.packages.length > 1 && (
                   <div className="nutrition-package-more">
-                    and {data.packages.length - 1} more
+                    and {data.packages.length - 1} more package
                   </div>
                 )}
               </div>
