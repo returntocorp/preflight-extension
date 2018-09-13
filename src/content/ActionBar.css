@@ -40,6 +40,25 @@
   fill: #0a8dc7;
 }
 
+.r2c-action-button.bp3-intent-danger {
+  fill: #db3737;
+}
+
+.r2c-action-button.bp3-intent-danger:hover {
+  background-color: #db3737;
+  fill: #fff;
+}
+
+.r2c-action-button.bp3-intent-danger.action-button-selected {
+  background-color: #db3737;
+  border: none;
+  fill: #fff;
+}
+
+.r2c-action-button.bp3-intent-danger .action-count {
+  color: #db3737;
+}
+
 .r2c-action-button:hover {
   background-color: #0a9bda;
   fill: #fff;
@@ -78,7 +97,7 @@
   z-index: 100;
 }
 
-.comment-count {
+.action-count {
   color: #0a9bda;
 }
 

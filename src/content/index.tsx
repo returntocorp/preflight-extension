@@ -1,9 +1,17 @@
 import { Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
-import { extractCurrentUserFromPage } from "@r2c/extension/api/fetch";
+import {
+  buildExtensionHeaders,
+  extractCurrentUserFromPage,
+  getAnalyticsParams
+} from "@r2c/extension/api/fetch";
 import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
-import { submitVote } from "@r2c/extension/api/votes";
+import {
+  buildVotingUrl,
+  DEPRECATED_submitVote,
+  VoteResponse
+} from "@r2c/extension/api/votes";
 import ActionButton from "@r2c/extension/content/ActionButton";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
@@ -23,7 +31,7 @@ import {
   userOrInstallationId
 } from "@r2c/extension/utils";
 import * as React from "react";
-import Fetch from "react-fetch-component";
+import Fetch, { FetchUpdateOptions } from "react-fetch-component";
 import "./ActionBar.css";
 import "./index.css";
 import { ShareActionType, ShareSection } from "./Share";
@@ -64,10 +72,7 @@ interface ContentHostState {
   currentUrl: string;
 }
 
-export default class ContentHost extends React.PureComponent<
-  {},
-  ContentHostState
-> {
+export default class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = {
     twistTab: undefined,
     user: undefined,
@@ -89,9 +94,11 @@ export default class ContentHost extends React.PureComponent<
 
     const repoSlug = extractSlugFromCurrentUrl();
 
-    if (isRepositoryPrivate()) {
+    if (isRepositoryPrivate() || installationId === "not-generated") {
       return null;
     }
+
+    console.log("render", user, installationId);
 
     return (
       <>
@@ -126,47 +133,63 @@ export default class ContentHost extends React.PureComponent<
               }
             </Fetch>
           )}
-          <Twists
-            isOpen={twistTab != null}
-            selectedTwistId={twistTab}
-            onTwistChange={this.handleTwistChange}
+
+          {/* TODO cleanup headers */}
+          <Fetch<VoteResponse>
+            url={buildVotingUrl(getAnalyticsParams())}
+            options={{ headers: buildExtensionHeaders(user, installationId) }}
           >
-            <Twist
-              id="discussion"
-              title="Comments"
-              icon={<DiscussionIcon />}
-              panel={<Discussion user={user} installationId={installationId} />}
-            />
-            <ActionButton
-              id="flag"
-              title="Flag an issue with this project"
-              icon={<ReportIcon />}
-              onClick={this.handleReportProject}
-            />
-            <Twist
-              id="share"
-              title="Share the extension"
-              icon={<ShareIcon />}
-              panel={
-                <ShareSection
-                  rtcLink="https://tinyurl.com/r2c-beta"
-                  shortDesc={
-                    "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
+            {({ data: voteData, fetch: voteFetch }) => (
+              <Twists
+                isOpen={twistTab != null}
+                selectedTwistId={twistTab}
+                onTwistChange={this.handleTwistChange}
+              >
+                <Twist
+                  id="discussion"
+                  title="Comments"
+                  icon={<DiscussionIcon />}
+                  panel={
+                    <Discussion user={user} installationId={installationId} />
                   }
-                  onEmailClick={l(
-                    "share-link-click-email",
-                    this.onShareActionClick("email")
-                  )}
-                  onLinkClick={l(
-                    "share-link-click-copy",
-                    this.onShareActionClick("link")
-                  )}
-                  user={user}
-                  installationId={installationId}
                 />
-              }
-            />
-          </Twists>
+                <ActionButton
+                  id="flag"
+                  title="Flag an issue with this project"
+                  icon={<ReportIcon />}
+                  selected={
+                    voteData != null ? voteData.currentVote === "down" : false
+                  }
+                  count={voteData != null ? voteData.votes.down : undefined}
+                  intent={Intent.DANGER}
+                  onClick={this.handleReportProject(voteFetch, voteData)}
+                />
+                <Twist
+                  id="share"
+                  title="Share the extension"
+                  icon={<ShareIcon />}
+                  panel={
+                    <ShareSection
+                      rtcLink="https://tinyurl.com/r2c-beta"
+                      shortDesc={
+                        "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
+                      }
+                      onEmailClick={l(
+                        "share-link-click-email",
+                        this.onShareActionClick("email")
+                      )}
+                      onLinkClick={l(
+                        "share-link-click-copy",
+                        this.onShareActionClick("link")
+                      )}
+                      user={user}
+                      installationId={installationId}
+                    />
+                  }
+                />
+              </Twists>
+            )}
+          </Fetch>
         </div>
       </>
     );
@@ -223,19 +246,55 @@ export default class ContentHost extends React.PureComponent<
   };
 
   private handleReportProject = (
-    id: TwistId,
-    e: React.MouseEvent<HTMLElement>
-  ) =>
-    l(
-      "flag-project-button-click",
-      this.submitVote("down", this.state.user, this.state.installationId)
-    );
+    voteFetch: (
+      url: string,
+      options?: RequestInit,
+      updateOptions?: Partial<FetchUpdateOptions>
+    ) => void,
+    voteData: VoteResponse | undefined
+  ) => (id: TwistId, e: React.MouseEvent<HTMLElement>) => {
+    if (voteData != null) {
+      const newVote = voteData.currentVote == null ? "down" : null;
+
+      l("flag-project-button-click", undefined, {
+        currentVote: voteData.currentVote,
+        newVote
+      });
+
+      this.submitVote(newVote, this.state.user, this.state.installationId)(
+        e
+      ).then(() => {
+        if (newVote != null) {
+          MainToaster.show({
+            icon: IconNames.FLAG,
+            intent: Intent.SUCCESS,
+            message:
+              "Flagged this project for review. Thanks!\n\nYou can also leave a comment with your opinion."
+          });
+        } else {
+          MainToaster.show({
+            icon: IconNames.FLASH,
+            intent: Intent.SUCCESS,
+            message: "Canceled your report for this project. Have a great day."
+          });
+        }
+
+        // TODO cleanup
+        voteFetch(buildVotingUrl(getAnalyticsParams()), {
+          headers: buildExtensionHeaders(
+            this.state.user,
+            this.state.installationId
+          )
+        });
+      });
+    }
+  };
 
   private submitVote = (
     vote: string | null,
     user: string | undefined,
     installationId: string
-  ) => async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  ) => async (e: React.MouseEvent<HTMLElement>) => {
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       const body = {
@@ -243,13 +302,9 @@ export default class ContentHost extends React.PureComponent<
         user: userOrInstallationId(user, installationId)
       };
 
-      submitVote(body);
-      MainToaster.show({
-        icon: IconNames.FLAG,
-        intent: Intent.SUCCESS,
-        message:
-          "Flagged this project for review. Thanks!\n\nYou can also leave a comment with your opinion."
-      });
+      return DEPRECATED_submitVote(body);
     }
+
+    return;
   };
 }

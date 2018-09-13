@@ -1,3 +1,3 @@
-import { Toaster } from "@blueprintjs/core";
+import { Position, Toaster } from "@blueprintjs/core";
 
-export const MainToaster = Toaster.create();
+export const MainToaster = Toaster.create({ position: Position.TOP_RIGHT });
