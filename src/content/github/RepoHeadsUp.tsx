@@ -5,6 +5,7 @@ import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
 import { PackageEntry, PackageResponse, packageUrl, ScriptEntry } from "@r2c/extension/api/package";
 import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
+import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
@@ -57,6 +58,32 @@ function getIconPropsForState(state: ChecklistItemState): IIconProps {
       return { icon: IconNames.MINUS }
   }
 }
+
+const PreflightVulnsItem: React.SFC = () => (
+  <Fetch<VulnsResponse> url={vulnsUrl()}>
+  {({ loading, data, error, response }) => {
+    const itemState: ChecklistItemState = data && data.vuln.length > 0 ? "warn" : "ok";
+
+    return (
+      <li className="preflight-checklist-item">
+        {loading && (
+          <div className="nutrition-section-value loading">
+            <NonIdealState icon={<Spinner />} title="Loading..." />
+          </div>
+        )}
+        {data && 
+          <>
+            {renderIconForState(itemState)}
+            <span className="preflight-checklist-title">            
+              { data.vuln.length > 0 ? `Historical vulnerabilities: ${data.vuln.length}` : "No historical vulnerabilities"}
+            </span>
+          </>
+        }
+      </li>)
+    }
+  }
+  </Fetch >
+)
 
 const PreflightPermissionsItem: React.SFC = () => (
   <Fetch<PermissionsResponse> url={permissionsUrl()}>
@@ -181,6 +208,7 @@ class PreflightChecklist extends React.PureComponent {
                   <PreflightActivityItem activity={data.repo.activity} />
                   <PreflightScriptsItem scripts={data.pkg.npmScripts}/>
                   <PreflightRankItem pkg={data.pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]}/> 
+                  <PreflightVulnsItem />
                 </ul>
               </section>
             }
