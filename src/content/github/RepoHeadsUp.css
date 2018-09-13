@@ -50,6 +50,7 @@ ul.preflight-checklist {
 ul.preflight-checklist .preflight-checklist-item {
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   margin-bottom: 1ex;
 }
 
