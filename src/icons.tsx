@@ -3,18 +3,20 @@ import * as React from "react";
 
 interface R2CLogoProps {
   className?: string;
+  width?: string;
   fill?: string;
 }
 
 export const R2CLogo: React.SFC<R2CLogoProps> = ({
   className,
+  width,
   fill = "white"
 }) => (
   <svg
-    width="134"
-    height="174"
+    width={width != null ? width : "134"}
+    height={width != null ? undefined : "174"}
     viewBox="0 0 134 174"
-    fill="none"
+    fill="transparent"
     className={classnames("r2c-logo", className)}
   >
     <path
