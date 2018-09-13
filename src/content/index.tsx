@@ -15,8 +15,8 @@ import {
 import ActionButton from "@r2c/extension/content/ActionButton";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
-import RepoHeadsUpInjector from "@r2c/extension/content/github/RepoHeadsUp";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
+import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";

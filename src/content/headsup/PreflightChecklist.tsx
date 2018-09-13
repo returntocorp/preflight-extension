@@ -1,5 +1,4 @@
 import {
-  Button,
   Icon,
   IIconProps,
   Intent,
@@ -7,8 +6,6 @@ import {
   Spinner
 } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
-import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
-import { l } from "@r2c/extension/analytics";
 import {
   PackageEntry,
   PackageResponse,
@@ -21,37 +18,8 @@ import {
 } from "@r2c/extension/api/permissions";
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
-import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
-import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
-import { R2CLogo } from "@r2c/extension/icons";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import Fetch from "react-fetch-component";
-import "./RepoHeadsUp.css";
-
-class LoadingHeadsUp extends React.PureComponent {
-  public state: UnsupportedMessageState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup loading-headsup">
-        <div className="loading-message">
-          <Spinner
-            size={Spinner.SIZE_SMALL}
-            className="loading-headsup-spinner"
-          />
-          <span className="loading-message-text">Contacting tower...</span>
-        </div>
-      </div>
-    );
-  }
-}
 
 type ChecklistItemState = "danger" | "ok" | "warn" | "neutral";
 
@@ -259,13 +227,12 @@ class PreflightChecklistFetch extends React.PureComponent<
   }
 }
 
-class PreflightChecklist extends React.PureComponent {
+export class PreflightChecklist extends React.PureComponent {
   public render() {
     return (
       <PreflightChecklistFetch>
         {({ loading, error, data }) => (
           <>
-            {loading && <LoadingHeadsUp />}
             {data && (
               <section className="preflight-checklist-container">
                 <ul className="preflight-checklist">
@@ -286,223 +253,6 @@ class PreflightChecklist extends React.PureComponent {
           </>
         )}
       </PreflightChecklistFetch>
-    );
-  }
-}
-
-class ExceptionalHeadsUp extends React.PureComponent {
-  public render() {
-    return (
-      <div className="r2c-repo-headsup exceptional-headsup">
-        <header>
-          <h1>Danger, Will Robinson!</h1>
-        </header>
-        <div className="repo-headsup-body">
-          <div className="repo-headsup-icon">
-            <Icon icon={WARNING_SIGN} iconSize={24} />
-          </div>
-          <div className="repo-headsup-message">
-            <h2>There's a known vulnerability in this package</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse pretium, libero eu varius dignissim, lorem turpis
-              maximus dolor, sit amet pharetra enim felis in odio. In hac
-              habitasse platea dictumst.
-            </p>
-            <div className="repo-headsup-message-actions">
-              <Button intent={Intent.WARNING}>Show vulnerability info</Button>
-              <Button minimal={true}>
-                Show me the preflight checks anyways
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-interface UnsupportedMessageState {
-  closed: boolean;
-}
-
-class UnsupportedHeadsUp extends React.PureComponent<
-  {},
-  UnsupportedMessageState
-> {
-  public state: UnsupportedMessageState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup unsupported-headsup">
-        <div className="unsupported-message">
-          <span className="unsupported-message-text">
-            Preflight coming soon for this language 🛫
-          </span>
-          <Button
-            icon={IconNames.SMALL_CROSS}
-            minimal={true}
-            onClick={this.closeMessage}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({ closed: true });
-  };
-}
-
-interface ErrorHeadsUpProps {
-  error: React.ErrorInfo;
-}
-
-class ErrorHeadsUp extends React.PureComponent<ErrorHeadsUpProps> {
-  public state: UnsupportedMessageState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup error-headsup">
-        <div className="error-message">
-          <Icon
-            icon={IconNames.WARNING_SIGN}
-            className="error-icon"
-            intent={Intent.DANGER}
-          />
-          <span className="error-message-text">Couldn't load Preflight</span>
-        </div>
-      </div>
-    );
-  }
-}
-
-interface HeadsupState {
-  closed: boolean;
-}
-
-class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
-  public state: HeadsupState = {
-    closed: false
-  };
-
-  public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
-    return (
-      <div className="r2c-repo-headsup checklist-headsup">
-        <header>
-          <Button
-            icon={IconNames.SMALL_CROSS}
-            minimal={true}
-            onClick={l("preflight-closed", this.closeMessage)}
-          />
-        </header>
-        <div className="repo-headsup-body">
-          <div className="repo-headsup-checklist">
-            <PreflightChecklist />
-          </div>
-          <div className="repo-headsup-actions">
-            <RepoPackageSection />
-          </div>
-        </div>
-        <footer>
-          <div className="preflight-legend">
-            <span className="legend-check legend-entry">
-              <Icon icon={IconNames.SMALL_TICK} intent={Intent.SUCCESS} /> Good
-            </span>
-            <span className="legend-warn legend-entry">
-              <Icon
-                icon={IconNames.SYMBOL_TRIANGLE_UP}
-                intent={Intent.WARNING}
-              />{" "}
-              Careful
-            </span>
-            <span className="legend-missing legend-entry">
-              <Icon icon={IconNames.MINUS} /> N/A
-            </span>
-          </div>
-          <div className="preflight-footer-side">
-            <div className="preflight-logo">
-              preflight <R2CLogo />
-            </div>
-          </div>
-        </footer>
-      </div>
-    );
-  }
-
-  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({ closed: true });
-  };
-}
-
-type HeadsUpStates =
-  | "normal"
-  | "loading"
-  | "unsupported"
-  | "error"
-  | "exceptional";
-
-interface RepoHeadsUpState {
-  error: React.ErrorInfo | undefined;
-}
-
-class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
-  public state: RepoHeadsUpState = {
-    error: undefined
-  };
-
-  public componentDidCatch(error: Error, info: React.ErrorInfo) {
-    this.setState({ error: info });
-  }
-
-  public render() {
-    const navigation = document.querySelector(".repository-lang-stats-graph");
-    const existingElem = document.querySelector(".r2c-repo-headsup-container");
-
-    if (navigation == null) {
-      return null;
-    }
-
-    if (existingElem != null) {
-      existingElem.remove();
-    }
-
-    const injected = document.createElement("div");
-    injected.classList.add("r2c-repo-headsup-container");
-    navigation.after(injected);
-
-    return ReactDOM.createPortal(
-      <div className="preflight-container">
-        {this.state.error != null && <ErrorHeadsUp error={this.state.error} />}
-        {this.state.error == null && <NormalHeadsUp />}
-      </div>,
-      injected
-    );
-  }
-}
-
-export default class RepoHeadsUpInjector extends React.PureComponent {
-  public render() {
-    return (
-      <DomElementLoadedWatcher querySelector=".repository-lang-stats-graph">
-        {({ done }) => done && <RepoHeadsUp />}
-      </DomElementLoadedWatcher>
     );
   }
 }
