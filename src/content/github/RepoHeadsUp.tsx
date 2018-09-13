@@ -91,15 +91,15 @@ interface PreflightScriptsItemProps {
 }
 
 const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
-    const itemState: ChecklistItemState = props.scripts.length > 0 ? "warn" : "ok";
+  const itemState: ChecklistItemState = props.scripts.length > 0 ? "warn" : "ok";
 
-    return (
-      <li className="preflight-checklist-item"> 
-        {renderIconForState(itemState)}
-        <span className="preflight-checklist-title">
-          { props.scripts.length > 0 ? `${props.scripts.length} npm install hooks detected` : "no npm install hooks" }
-        </span>
-      </li>)
+  return (
+    <li className="preflight-checklist-item"> 
+      {renderIconForState(itemState)}
+      <span className="preflight-checklist-title">
+        { props.scripts.length > 0 ? `${props.scripts.length} npm install hooks detected` : "no npm install hooks" }
+      </span>
+    </li>)
 }
 
 interface PreflightRankItemProps {
@@ -107,17 +107,18 @@ interface PreflightRankItemProps {
 }
 
 const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
-    const itemState: ChecklistItemState = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= 500 ? "warn" : "ok" : "neutral";
+  const rankThreshold = 10000;
+  const itemState: ChecklistItemState = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= rankThreshold ? "warn" : "ok" : "neutral";
 
-    return (
-      <li className="preflight-checklist-item"> 
-        {renderIconForState(itemState)}
-        <span className="preflight-checklist-title">
-          {props.pkg && 
-            `${props.pkg.rank_description || "NPM rank"}: ${props.pkg.package_rank ? props.pkg.package_rank >= 500 ? "Not many people use this package" : "Widely used": "Invalid data"}` 
-          }
-        </span>
-      </li>)
+  return (
+    <li className="preflight-checklist-item"> 
+      {renderIconForState(itemState)}
+      <span className="preflight-checklist-title">
+        {props.pkg && 
+          `${props.pkg.rank_description || "NPM rank"}: ${props.pkg.package_rank ? props.pkg.package_rank >= rankThreshold ? "Not many people use this package" : "Widely used": "Invalid data"}` 
+        }
+      </span>
+    </li>)
 }
 
 interface PreflightActivityItemProps {
@@ -125,16 +126,26 @@ interface PreflightActivityItemProps {
 }
 
 const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => {
-    const { archived, is_active, latest_commit_date } = props.activity;
-    const itemState: ChecklistItemState = archived === "true" ? "danger" : is_active === "true" ? "ok" : "warn"
+  const { archived, isActive, latestCommitDate } = props.activity;
+  const itemState: ChecklistItemState = archived ? "danger" : isActive ? "ok" : "warn"
 
+  if (archived !== undefined && isActive !== undefined && latestCommitDate !== undefined) {
     return (
       <li className="preflight-checklist-item"> 
         {renderIconForState(itemState)}
         <span className="preflight-checklist-title">            
-          { archived === "true" ? "archived" : is_active === "true" ? `updated recently (${latest_commit_date})` : `not updated since ${latest_commit_date}`}
+          { archived ? "archived" : isActive ? `updated recently (${latestCommitDate})` : `not updated since ${latestCommitDate}`}
         </span>
       </li>)
+  } else {
+    return (
+      <li className="preflight-checklist-item"> 
+        {renderIconForState("neutral")}
+        <span className="preflight-checklist-title">            
+          { `Repo activity: Invalid data` }
+        </span>
+      </li>)
+  }
 }
 
 interface PreflightChecklistFetchProps {
