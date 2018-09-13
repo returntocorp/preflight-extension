@@ -42,7 +42,7 @@ export interface VoteOverviewResponse {
   recent: RecentVoteEvent[];
 }
 
-function buildVotingUrl({
+export function buildVotingUrl({
   source,
   medium,
   content
@@ -61,13 +61,17 @@ function buildVoteOverviewUrl() {
   return `https://api.secarta.io/v1/vote/overview`;
 }
 
-export async function getVotes(): Promise<VoteResponse> {
+// tslint:disable-next-line:function-name
+export async function DEPRECATED_getVotes(): Promise<VoteResponse> {
   const votesUrl = buildVotingUrl(getAnalyticsParams());
 
   return fetchJson<VoteResponse>(votesUrl);
 }
 
-export async function submitVote(body: VotePostBody): Promise<VoteResponse> {
+// tslint:disable-next-line:function-name
+export async function DEPRECATED_submitVote(
+  body: VotePostBody
+): Promise<VoteResponse> {
   const votesUrl = buildVotingUrl(getAnalyticsParams());
 
   return fetchJson<VoteResponse>(votesUrl, {
@@ -76,7 +80,10 @@ export async function submitVote(body: VotePostBody): Promise<VoteResponse> {
   });
 }
 
-export async function getVoteOverview(): Promise<VoteOverviewResponse> {
+// tslint:disable-next-line:function-name
+export async function DEPRECATED_getVoteOverview(): Promise<
+  VoteOverviewResponse
+> {
   const voteOverviewUrl = buildVoteOverviewUrl();
 
   return fetchJson<VoteOverviewResponse>(voteOverviewUrl);

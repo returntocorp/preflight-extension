@@ -1,6 +1,10 @@
 import { Position, Tooltip } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
-import { getVotes, submitVote, VoteResponse } from "@r2c/extension/api/votes";
+import {
+  DEPRECATED_getVotes,
+  DEPRECATED_submitVote,
+  VoteResponse
+} from "@r2c/extension/api/votes";
 import UserProps from "@r2c/extension/shared/User";
 import {
   buildGithubProfilePicUrl,
@@ -189,7 +193,7 @@ export default class VotingBar extends React.Component<
     const isRepoPrivate = isRepositoryPrivate();
     if (!isRepoPrivate) {
       try {
-        const response = await getVotes();
+        const response = await DEPRECATED_getVotes();
         this.setState({ response });
       } catch (e) {
         this.setState({ fetchFailed: true, fetchError: e });
@@ -235,7 +239,7 @@ export default class VotingBar extends React.Component<
         voteFailed: false
       });
 
-      submitVote(body)
+      DEPRECATED_submitVote(body)
         .then(response => {
           this.setState({ voting: false, voteSuccess: true, response });
         })
