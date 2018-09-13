@@ -23,7 +23,8 @@ export class UnsupportedHeadsUp extends React.PureComponent<
       <div className="r2c-repo-headsup unsupported-headsup">
         <div className="unsupported-message">
           <span className="unsupported-message-text">
-            Preflight coming soon for this project 🛫
+            Preflight only covers JavaScript and TypeScript projects at the
+            moment 🛫 If this project should have Preflight on it, let us know.
           </span>
           <Button
             icon={IconNames.SMALL_CROSS}
