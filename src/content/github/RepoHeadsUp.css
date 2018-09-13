@@ -8,11 +8,12 @@
   flex-direction: column;
 }
 
-.r2c-repo-headsup header {
+.r2c-repo-headsup > header {
   margin-bottom: 1em;
 
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
 }
 
 .r2c-repo-headsup h1 {

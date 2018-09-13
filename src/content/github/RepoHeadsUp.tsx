@@ -1,9 +1,25 @@
-
-import { Button, ButtonGroup, Icon, IIconProps, Intent, NonIdealState, Spinner } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Icon,
+  IIconProps,
+  Intent,
+  NonIdealState,
+  Spinner
+} from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { WARNING_SIGN } from "@blueprintjs/icons/lib/esm/generated/iconNames";
-import { PackageEntry, PackageResponse, packageUrl, ScriptEntry } from "@r2c/extension/api/package";
-import { PermissionsResponse, permissionsUrl } from "@r2c/extension/api/permissions";
+import { l } from "@r2c/extension/analytics";
+import {
+  PackageEntry,
+  PackageResponse,
+  packageUrl,
+  ScriptEntry
+} from "@r2c/extension/api/package";
+import {
+  PermissionsResponse,
+  permissionsUrl
+} from "@r2c/extension/api/permissions";
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
@@ -42,7 +58,7 @@ type ChecklistItemState = "danger" | "ok" | "warn" | "neutral";
 
 function renderIconForState(state: ChecklistItemState) {
   const iconProps = getIconPropsForState(state);
-  
+
   return <Icon {...iconProps} />
 }
 
@@ -61,23 +77,23 @@ function getIconPropsForState(state: ChecklistItemState): IIconProps {
 
 const PreflightVulnsItem: React.SFC = () => (
   <Fetch<VulnsResponse> url={vulnsUrl()}>
-  {({ loading, data, error, response }) => {
+    {({ loading, data, error, response }) => {
     const itemState: ChecklistItemState = data && data.vuln.length > 0 ? "warn" : "ok";
 
-    return (
-      <li className="preflight-checklist-item">
-        {loading && (
-          <div className="nutrition-section-value loading">
-            <NonIdealState icon={<Spinner />} title="Loading..." />
-          </div>
-        )}
+      return (
+        <li className="preflight-checklist-item">
+          {loading && (
+            <div className="nutrition-section-value loading">
+              <NonIdealState icon={<Spinner />} title="Loading..." />
+            </div>
+          )}
         {data && 
-          <>
-            {renderIconForState(itemState)}
-            <span className="preflight-checklist-title">            
+            <>
+              {renderIconForState(itemState)}
+              <span className="preflight-checklist-title">
               { data.vuln.length > 0 ? `Historical vulnerabilities: ${data.vuln.length}` : "No historical vulnerabilities"}
-            </span>
-          </>
+              </span>
+            </>
         }
       </li>)
     }
@@ -87,25 +103,25 @@ const PreflightVulnsItem: React.SFC = () => (
 
 const PreflightPermissionsItem: React.SFC = () => (
   <Fetch<PermissionsResponse> url={permissionsUrl()}>
-  {({ loading, data, error, response }) => {
-    const permissionKeys = data && Object.keys(data.permissions);
-    const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
-    const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
+    {({ loading, data, error, response }) => {
+      const permissionKeys = data && Object.keys(data.permissions);
+      const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
+      const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
 
-    return (
-      <li className="preflight-checklist-item">
-        {loading && (
-          <div className="nutrition-section-value loading">
-            <NonIdealState icon={<Spinner />} title="Loading..." />
-          </div>
-        )}
+      return (
+        <li className="preflight-checklist-item">
+          {loading && (
+            <div className="nutrition-section-value loading">
+              <NonIdealState icon={<Spinner />} title="Loading..." />
+            </div>
+          )}
         {permissionKeys && 
-          <>
-            {renderIconForState(itemState)}
-            <span className="preflight-checklist-title">            
+            <>
+              {renderIconForState(itemState)}
+              <span className="preflight-checklist-title">
               { numPermissions > 0 ? `Permissions detected: ${permissionKeys.join(',')}` : "No special permissions"}
-            </span>
-          </>
+              </span>
+            </>
         }
       </li>)
     }
@@ -121,7 +137,7 @@ const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = (props) => {
   const itemState: ChecklistItemState = props.scripts.length > 0 ? "warn" : "ok";
 
   return (
-    <li className="preflight-checklist-item"> 
+    <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
         { props.scripts.length > 0 ? `${props.scripts.length} npm install hooks detected` : "no npm install hooks" }
@@ -138,10 +154,10 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = (props) => {
   const itemState: ChecklistItemState = (props.pkg && props.pkg.package_rank) ? props.pkg.package_rank >= rankThreshold ? "warn" : "ok" : "neutral";
 
   return (
-    <li className="preflight-checklist-item"> 
+    <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
-        {props.pkg && 
+        {props.pkg &&
           `${props.pkg.rank_description || "NPM rank"}: ${props.pkg.package_rank ? props.pkg.package_rank >= rankThreshold ? "Not many people use this package" : "Widely used": "Invalid data"}` 
         }
       </span>
@@ -158,22 +174,22 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = (props) => 
 
   if (archived !== undefined && isActive !== undefined && latestCommitDate !== undefined) {
     return (
-      <li className="preflight-checklist-item"> 
+      <li className="preflight-checklist-item">
         {renderIconForState(itemState)}
-        <span className="preflight-checklist-title">            
+        <span className="preflight-checklist-title">
           { archived ? "archived" : isActive ? `updated recently (${latestCommitDate})` : `not updated since ${latestCommitDate}`}
         </span>
       </li>)
   } else {
     return (
-      <li className="preflight-checklist-item"> 
+      <li className="preflight-checklist-item">
         {renderIconForState("neutral")}
-        <span className="preflight-checklist-title">            
+        <span className="preflight-checklist-title">
           { `Repo activity: Invalid data` }
         </span>
       </li>)
   }
-}
+  }
 
 interface PreflightChecklistFetchProps {
   children(response: PreflightChecklistFetchResponse): React.ReactNode;
@@ -192,15 +208,15 @@ class PreflightChecklistFetch extends React.PureComponent<PreflightChecklistFetc
       {(repoResponse) => 
           <Fetch<PackageResponse> url={packageUrl()}>
           {(packageResponse) => {
-            const loading = repoResponse.loading || packageResponse.loading;
-            const error = repoResponse.error || packageResponse.error;
+              const loading = repoResponse.loading || packageResponse.loading;
+              const error = repoResponse.error || packageResponse.error;
             const data = repoResponse.data != null && packageResponse.data != null ? { repo: repoResponse.data, pkg: packageResponse.data } : undefined;
-            
+
             return this.props.children({ loading, error, data })
-          }}
+            }}
           </Fetch>
       }
-      </Fetch>    
+      </Fetch>
     )
   }
 }
@@ -224,7 +240,7 @@ class PreflightChecklist extends React.PureComponent {
               </section>
             }
           </>)}
-          </PreflightChecklistFetch>
+      </PreflightChecklistFetch>
     )
   }
 }
@@ -324,10 +340,29 @@ class ErrorHeadsUp extends React.PureComponent {
   }
 }
 
-class NormalHeadsUp extends React.PureComponent {
+interface HeadsupState {
+  closed: boolean;
+}
+
+class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
+  public state: HeadsupState = {
+    closed: false
+  };
+
   public render() {
+    if (this.state.closed) {
+      return null;
+    }
+
     return (
       <div className="r2c-repo-headsup checklist-headsup">
+        <header>
+          <Button
+            icon={IconNames.SMALL_CROSS}
+            minimal={true}
+            onClick={l("preflight-closed", this.closeMessage)}
+          />
+        </header>
         <div className="repo-headsup-body">
           <div className="repo-headsup-checklist">
             <PreflightChecklist />
@@ -359,6 +394,10 @@ class NormalHeadsUp extends React.PureComponent {
       </div>
     );
   }
+
+  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
+    this.setState({ closed: true });
+  };
 }
 
 type HeadsUpStates =
