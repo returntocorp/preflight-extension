@@ -1,6 +1,5 @@
 import {
   Button,
-  ButtonGroup,
   Icon,
   IIconProps,
   Intent,
@@ -361,7 +360,11 @@ class UnsupportedHeadsUp extends React.PureComponent<
   };
 }
 
-class ErrorHeadsUp extends React.PureComponent {
+interface ErrorHeadsUpProps {
+  error: React.ErrorInfo;
+}
+
+class ErrorHeadsUp extends React.PureComponent<ErrorHeadsUpProps> {
   public state: UnsupportedMessageState = {
     closed: false
   };
@@ -433,8 +436,10 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
               <Icon icon={IconNames.MINUS} /> N/A
             </span>
           </div>
-          <div className="preflight-logo">
-            preflight <R2CLogo />
+          <div className="preflight-footer-side">
+            <div className="preflight-logo">
+              preflight <R2CLogo />
+            </div>
           </div>
         </footer>
       </div>
@@ -454,13 +459,17 @@ type HeadsUpStates =
   | "exceptional";
 
 interface RepoHeadsUpState {
-  debugSelected: HeadsUpStates;
+  error: React.ErrorInfo | undefined;
 }
 
 class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
   public state: RepoHeadsUpState = {
-    debugSelected: "normal"
+    error: undefined
   };
+
+  public componentDidCatch(error: Error, info: React.ErrorInfo) {
+    this.setState({ error: info });
+  }
 
   public render() {
     const navigation = document.querySelector(".repository-lang-stats-graph");
@@ -480,53 +489,12 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
 
     return ReactDOM.createPortal(
       <div className="preflight-container">
-        <ButtonGroup minimal={true}>
-          <Button
-            active={this.state.debugSelected === "normal"}
-            onClick={this.toggleSelected("normal")}
-          >
-            Normal
-          </Button>
-          <Button
-            active={this.state.debugSelected === "loading"}
-            onClick={this.toggleSelected("loading")}
-          >
-            Loading
-          </Button>
-          <Button
-            active={this.state.debugSelected === "unsupported"}
-            onClick={this.toggleSelected("unsupported")}
-          >
-            Unsupported
-          </Button>
-          <Button
-            active={this.state.debugSelected === "error"}
-            onClick={this.toggleSelected("error")}
-          >
-            Error
-          </Button>
-          <Button
-            active={this.state.debugSelected === "exceptional"}
-            onClick={this.toggleSelected("exceptional")}
-          >
-            Exceptional
-          </Button>
-        </ButtonGroup>
-        {this.state.debugSelected === "exceptional" && <ExceptionalHeadsUp />}
-        {this.state.debugSelected === "unsupported" && <UnsupportedHeadsUp />}
-        {this.state.debugSelected === "loading" && <LoadingHeadsUp />}
-        {this.state.debugSelected === "error" && <ErrorHeadsUp />}
-        {this.state.debugSelected === "normal" && <NormalHeadsUp />}
+        {this.state.error != null && <ErrorHeadsUp error={this.state.error} />}
+        {this.state.error == null && <NormalHeadsUp />}
       </div>,
       injected
     );
   }
-
-  private toggleSelected = (selected: HeadsUpStates) => (
-    e: React.MouseEvent<HTMLElement>
-  ) => {
-    this.setState({ debugSelected: selected });
-  };
 }
 
 export default class RepoHeadsUpInjector extends React.PureComponent {

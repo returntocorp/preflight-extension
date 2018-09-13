@@ -143,6 +143,12 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   height: 1em;
 }
 
+.preflight-footer-side {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
 .preflight-logo {
   font-weight: 600;
   color: #0a9bda;
