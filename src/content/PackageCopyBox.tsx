@@ -18,6 +18,7 @@ import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import * as React from "react";
 import Fetch from "react-fetch-component";
+import "./PackageCopyBox.css";
 
 type PackageManagerChoice = "npm" | "yarn";
 
