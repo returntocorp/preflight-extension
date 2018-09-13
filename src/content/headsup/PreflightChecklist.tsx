@@ -1,10 +1,4 @@
-import {
-  Icon,
-  IIconProps,
-  Intent,
-  NonIdealState,
-  Spinner
-} from "@blueprintjs/core";
+import { Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import {
   PackageEntry,
@@ -18,6 +12,7 @@ import {
 } from "@r2c/extension/api/permissions";
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
+import * as classnames from "classnames";
 import * as React from "react";
 import Fetch from "react-fetch-component";
 
@@ -49,11 +44,18 @@ const PreflightVulnsItem: React.SFC = () => (
         data && data.vuln.length > 0 ? "warn" : "ok";
 
       return (
-        <li className="preflight-checklist-item">
+        <li
+          className={classnames("preflight-checklist-item", {
+            [Classes.SKELETON]: loading
+          })}
+        >
           {loading && (
-            <div className="nutrition-section-value loading">
-              <NonIdealState icon={<Spinner />} title="Loading..." />
-            </div>
+            <>
+              {renderIconForState("neutral")}
+              <span className="preflight-checklist-title">
+                Loading vulnerabilities...
+              </span>
+            </>
           )}
           {data && (
             <>
@@ -79,11 +81,18 @@ const PreflightPermissionsItem: React.SFC = () => (
       const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
 
       return (
-        <li className="preflight-checklist-item">
+        <li
+          className={classnames("preflight-checklist-item", {
+            [Classes.SKELETON]: loading
+          })}
+        >
           {loading && (
-            <div className="nutrition-section-value loading">
-              <NonIdealState icon={<Spinner />} title="Loading..." />
-            </div>
+            <>
+              {renderIconForState("neutral")}
+              <span className="preflight-checklist-title">
+                Loading permissions...
+              </span>
+            </>
           )}
           {permissionKeys && (
             <>
@@ -200,9 +209,10 @@ interface PreflightChecklistFetchResponse {
   loading: boolean | null;
   error: Error | undefined;
   data: { repo: RepoResponse; pkg: PackageResponse } | undefined;
+  response: { repo: Response; pkg: Response } | undefined;
 }
 
-class PreflightChecklistFetch extends React.PureComponent<
+export class PreflightChecklistFetch extends React.PureComponent<
   PreflightChecklistFetchProps
 > {
   public render() {
@@ -217,8 +227,16 @@ class PreflightChecklistFetch extends React.PureComponent<
                 repoResponse.data != null && packageResponse.data != null
                   ? { repo: repoResponse.data, pkg: packageResponse.data }
                   : undefined;
+              const response =
+                repoResponse.response != null &&
+                packageResponse.response != null
+                  ? {
+                      repo: repoResponse.response,
+                      pkg: packageResponse.response
+                    }
+                  : undefined;
 
-              return this.props.children({ loading, error, data });
+              return this.props.children({ loading, error, data, response });
             }}
           </Fetch>
         )}
@@ -227,32 +245,31 @@ class PreflightChecklistFetch extends React.PureComponent<
   }
 }
 
-export class PreflightChecklist extends React.PureComponent {
+interface PreflightChecklistProps {
+  repo: RepoResponse;
+  pkg: PackageResponse;
+}
+
+export class PreflightChecklist extends React.PureComponent<
+  PreflightChecklistProps
+> {
   public render() {
+    const { repo, pkg } = this.props;
+
     return (
-      <PreflightChecklistFetch>
-        {({ loading, error, data }) => (
-          <>
-            {data && (
-              <section className="preflight-checklist-container">
-                <ul className="preflight-checklist">
-                  <PreflightPermissionsItem />
-                  <PreflightActivityItem activity={data.repo.activity} />
-                  <PreflightScriptsItem scripts={data.pkg.npmScripts} />
-                  <PreflightRankItem
-                    pkg={
-                      data.pkg.packages.sort(
-                        (a, b) => a.package_rank - b.package_rank
-                      )[0]
-                    }
-                  />
-                  <PreflightVulnsItem />
-                </ul>
-              </section>
-            )}
-          </>
-        )}
-      </PreflightChecklistFetch>
+      <section className="preflight-checklist-container">
+        <ul className="preflight-checklist">
+          <PreflightPermissionsItem />
+          <PreflightActivityItem activity={repo.activity} />
+          <PreflightScriptsItem scripts={pkg.npmScripts} />
+          <PreflightRankItem
+            pkg={
+              pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]
+            }
+          />
+          <PreflightVulnsItem />
+        </ul>
+      </section>
     );
   }
 }

@@ -23,7 +23,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
       <div className="r2c-repo-headsup unsupported-headsup">
         <div className="unsupported-message">
           <span className="unsupported-message-text">
-            Preflight coming soon for this language 🛫
+            Preflight coming soon for this project 🛫
           </span>
           <Button
             icon={IconNames.SMALL_CROSS}
@@ -41,7 +41,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 }
 
 interface ErrorHeadsUpProps {
-  error: React.ErrorInfo;
+  error: React.ErrorInfo | Error;
 }
 
 export class ErrorHeadsUp extends React.PureComponent<ErrorHeadsUpProps> {
@@ -63,6 +63,9 @@ export class ErrorHeadsUp extends React.PureComponent<ErrorHeadsUpProps> {
             intent={Intent.DANGER}
           />
           <span className="error-message-text">Couldn't load Preflight</span>
+          <span className="error-message-details">
+            {JSON.stringify(this.props.error)}
+          </span>
         </div>
       </div>
     );

@@ -3,8 +3,7 @@ import {
   ButtonGroup,
   Classes,
   InputGroup,
-  NonIdealState,
-  Spinner
+  NonIdealState
 } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
@@ -48,12 +47,22 @@ export default class RepoPackageSection extends React.Component<
         {({ loading, data, error }) => (
           <section className="nutrition-packages nutrition-section">
             {loading && (
-              <div className="nutrition-section-value loading">
-                <NonIdealState icon={<Spinner />} title="Loading..." />
+              <div
+                className={classnames("nutrition-section-value", {
+                  [Classes.SKELETON]: loading
+                })}
+              >
+                <NonIdealState icon="globe" title="Loading..." />
               </div>
             )}
             {data && (
               <div className="nutrition-section-value">
+                {data.packages.length === 0 && (
+                  <NonIdealState
+                    icon="box"
+                    description="Not published to NPM"
+                  />
+                )}
                 {data.packages.slice(0, 1).map((entry, i) => (
                   <div key={i} className="nutrition-package">
                     <header className="package-header">
