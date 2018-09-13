@@ -12,7 +12,7 @@ export interface RepoResponse {
 }
 
 export interface Activity {
-    archived: string,
-    is_active: string,
-    latest_commit_date: Date
+    archived: boolean,
+    isActive: boolean,
+    latestCommitDate: string
 }
