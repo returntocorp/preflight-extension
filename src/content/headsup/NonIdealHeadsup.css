@@ -1,0 +1,4 @@
+.unsupported-headsup .unsupported-message-text {
+  display: flex;
+  align-items: center;
+}
