@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Lots of behind the scenes engineering changes and improvements.
 
+### Known issues
+
+- Comment counts no longer appear due to a change in how we render buttons. We're looking into ways to remedy this.
+
 ## [1.7.1] - 2018-09-10
 
 ### Changed
