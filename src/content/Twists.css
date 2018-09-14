@@ -18,7 +18,7 @@
 .r2c-actionbar .twist-container {
   position: relative;
   z-index: 200;
-  width: 250px;
+  width: 320px;
 }
 
 .r2c-actionbar .twist-container.twists-transition-enter {
@@ -33,7 +33,8 @@
   background-color: #fff;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.3);
   padding: 10px;
-  height: 420px;
+  height: 80vh;
+  max-height: 720px;
 }
 
 .twist h1 {

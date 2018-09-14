@@ -155,7 +155,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       id="preflight"
                       title="Preflight"
                       icon={<PreflightIcon />}
-                      panel={<PreflightTwist />}
+                      panel={<PreflightTwist repoSlug={repoSlug} />}
                     />
                   )}
                 <Twist
