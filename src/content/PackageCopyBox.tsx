@@ -1,18 +1,9 @@
-import {
-  Button,
-  ButtonGroup,
-  Classes,
-  InputGroup,
-  NonIdealState
-} from "@blueprintjs/core";
+import { Button, ButtonGroup, Classes, InputGroup, NonIdealState } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
 import CopyButton from "@r2c/extension/shared/CopyButton";
 import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
-import {
-  getPreferredPackageManager,
-  setPreferredPackageManager
-} from "@r2c/extension/utils";
+import { getPreferredPackageManager, setPreferredPackageManager } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import * as React from "react";
@@ -156,7 +147,7 @@ export default class RepoPackageSection extends React.Component<
                 ))}
                 {data.packages.length > 1 && (
                   <div className="nutrition-package-more">
-                    and {data.packages.length - 1} more package
+                    and {data.packages.length - 1} more {data.packages.length - 1 === 1 ? 'package' : 'packages'}
                   </div>
                 )}
               </div>
