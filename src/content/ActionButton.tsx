@@ -1,4 +1,4 @@
-import { Intent, Tooltip } from "@blueprintjs/core";
+import { Intent, Position, Tooltip } from "@blueprintjs/core";
 import { intentClass } from "@blueprintjs/core/lib/esm/common/classes";
 import { l } from "@r2c/extension/analytics";
 import { TwistId } from "@r2c/extension/content/Twist";
@@ -56,14 +56,27 @@ export default class ActionButton extends React.PureComponent<
         )}
       >
         <ActionButtonCount count={count} />
-        <a
-          className="action-button-link"
-          title={title}
-          role="button"
-          onClick={l(`${id}-action-button-click`, this.handleActionClick)}
+        <Tooltip
+          content={
+            tooltipContent || (
+              <div className="action-button-tooltip-title">{title}</div>
+            )
+          }
+          position={Position.LEFT}
+          intent={intent}
+          modifiers={
+            count != null ? { offset: { offset: "0,20px" } } : undefined
+          }
         >
-          {icon}
-        </a>
+          <a
+            className="action-button-link"
+            title={title}
+            role="button"
+            onClick={l(`${id}-action-button-click`, this.handleActionClick)}
+          >
+            {icon}
+          </a>
+        </Tooltip>
       </div>
     );
 
