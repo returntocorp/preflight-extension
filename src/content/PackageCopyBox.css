@@ -16,7 +16,8 @@
 }
 
 .nutrition-package .package-npm-field {
-  font-family: monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
   margin-bottom: 5px;
 }
 
