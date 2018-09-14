@@ -1,12 +1,11 @@
 import { fetchFromStorage, updateStorage } from "@r2c/extension/utils";
 
-export type ExperimentName = "recon" | "preflight" | "preflightTwist";
+export type ExperimentName = "recon" | "preflightTwist";
 
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
   recon: false,
-  preflight: false,
   preflightTwist: false
 };
 

@@ -108,8 +108,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       <>
         <div id="r2c-inline-injector-portal" />
         <div className="r2c-host">
-          {extensionState != null &&
-            extensionState.experiments.preflight && <RepoHeadsUpInjector />}
+          <RepoHeadsUpInjector />
           {repoSlug != null && (
             <Fetch<FindingsResponse>
               url={findingsUrl(repoSlug.domain, repoSlug.org, repoSlug.repo)}

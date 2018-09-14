@@ -57,23 +57,6 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           <Switch
             labelElement={
               <div className="experiment-label">
-                <div className="experiment-label-title">
-                  Preflight checklist
-                </div>
-                <div className="experiment-label-description">
-                  Get an up-front summary of the repository
-                </div>
-              </div>
-            }
-            checked={experiments.preflight}
-            onChange={l(
-              "experiment-preflight-toggle",
-              this.props.onToggleExperiment("preflight")
-            )}
-          />
-          <Switch
-            labelElement={
-              <div className="experiment-label">
                 <div className="experiment-label-title">Preflight manifest</div>
                 <div className="experiment-label-description">
                   Show details for preflight checks on the sidebar
