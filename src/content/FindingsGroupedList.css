@@ -1,6 +1,7 @@
 .findings-grouped-list .findings-group header {
   padding: 0.15em 10px;
-  font-family: monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
   background-color: rgb(246, 248, 250);
   border-bottom: 1px solid rgb(209, 213, 218);
 }

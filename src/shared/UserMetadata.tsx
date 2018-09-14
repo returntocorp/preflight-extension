@@ -2,10 +2,10 @@ import { Spinner } from "@blueprintjs/core";
 import ProfileBadge from "@r2c/extension/shared/ProfileBadge";
 import * as classnames from "classnames";
 import * as React from "react";
-import "./UserMetadata.css";
 // tslint:disable:no-var-requires
 // tslint:disable-next-line:no-require-imports
-const Timeago = require("react-timeago").default;
+import Timeago from "react-timeago";
+import "./UserMetadata.css";
 // tslint:enable:no-var-requires
 
 export interface UserMetadataFooterProps {

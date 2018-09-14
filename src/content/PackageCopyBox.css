@@ -1,0 +1,32 @@
+.nutrition-package .package-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 5px;
+}
+
+.nutrition-package .package-header .package-endorsers {
+  display: flex;
+  align-items: center;
+}
+
+.package-endorsers .package-endorser {
+  margin-right: 3px;
+}
+
+.nutrition-package .package-npm-field {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+  margin-bottom: 5px;
+}
+
+.nutrition-packages .package-npm-field .copy-button {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.nutrition-packages .nutrition-package-more {
+  margin-top: 5px;
+}

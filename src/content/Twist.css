@@ -1,0 +1,14 @@
+.twist {
+  display: flex;
+  flex-direction: column;
+}
+
+.twist .twist-header {
+  flex: 0 0 auto;
+}
+
+.twist .twist-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}

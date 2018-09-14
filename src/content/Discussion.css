@@ -1,10 +1,11 @@
-.twist .comment-twist {
-}
-
 .comment-twist .comments-well {
   margin-top: 1ex;
-  height: 340px;
   overflow: auto;
+  flex: 1 1 auto;
+}
+
+.comment-twist .comment-input {
+  flex: 0 0 auto;
 }
 
 .comments-well .discussion-comment {

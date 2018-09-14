@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.8.0] - 2018-09-14
+
+### Added
+
+- New experiment: Preflight checklist
+  - When looking at a supported repository, we'll show:
+    - a list of criteria that you might be interested in when evaluating the project for security and quality
+    - an easy way to install the most used package for the repo you're looking at
+  - Please let us know if you find these criteria useful, or if you have suggestions and feedback on how to make them better.
+- New experiment: Preflight manifest
+  - On a supported repository, we'll start to surface details about Preflight criteria in the sidebar.
+  - This experiment is even earlier than usual, so expect it to evolve substantially over the coming days.
+  - As always, let us know if there's additional info or a particular way to see this info that you'd be interested in.
+
+### Changed
+
+- After chatting with people, we're trying out a "Flag this project for review" in lieu of upvote/downvote buttons.
+
+### Fixed
+
+- Lots of behind the scenes engineering changes and improvements.
+
+### Known issues
+
+- Comment counts no longer appear due to a change in how we render buttons. We're looking into ways to remedy this.
+
 ## [1.7.1] - 2018-09-10
 
 ### Changed

@@ -1,7 +1,7 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
 import {
   ControversialVoteStatistics,
-  getVoteOverview,
+  DEPRECATED_getVoteOverview,
   VoteCountStatistics,
   VoteOverviewResponse
 } from "@r2c/extension/api/votes";
@@ -108,7 +108,7 @@ export default class Top10Tab extends React.Component<{}, Top10State> {
       fetchError: undefined
     });
     try {
-      const response = await getVoteOverview();
+      const response = await DEPRECATED_getVoteOverview();
       this.setState({
         fetching: false,
         fetched: true,

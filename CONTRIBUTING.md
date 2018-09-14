@@ -2,11 +2,12 @@
 
 ## Getting started
 
-1. `yarn`
-1. `yarn start` to start the dev server.
-1. `yarn build` to build the extension fully. Due to Content-Security-Policy, you **must** run `yarn build` when working on the extension popup; otherwise, the popup will be blank.
+1. `yarn` to install dependencies
+1. `yarn start` to start the dev server _OR_ `yarn build` to produce a production build.
 
-For both dev server and a built extension, you can load the extension out of the `build/` folder. In Firefox, point to the `manifest.json` in the build folder; in Chrome and Edge, point to the build folder itself. After rebuilding or hot-reloading, you might have to reload the page or reload the extension.
+You should be able to use `yarn start` for the vast majority of development for both scripts injected into the page and the popup.
+
+For both dev server and a built extension, you can load the extension out of the `build/` folder. In Firefox, point to the `manifest.json` in the build folder; in Chrome and Edge, point to the build folder itself. After rebuilding or hot-reloading, you might have to reload the page or reload the extension (click the reload button, not necessarily remove and reinstall).
 
 ## Local testing
 
@@ -42,6 +43,7 @@ Publishing to the Mozilla Add-ons repository is a manual process right now.
   ```
 
   in the repository directory to amend the version to the tag (e.g. `1.5.0`)
+
 - Zip up the extension directory: `mkdir -p dist && cd build && zip -r ../dist/extension.zip *`
 - Upload the zip file at `dist/extension.zip` to the Add-on Developer Hub using the `Select a file...` button on the Submit a New Version page.
 - You may get a warning message saying that the validation process found issues with `eval` or the like. We'll address that on the next step. Click `Continue`.
