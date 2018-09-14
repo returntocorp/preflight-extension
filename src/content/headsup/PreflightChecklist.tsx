@@ -15,8 +15,9 @@ import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import * as classnames from "classnames";
 import * as React from "react";
 import Fetch from "react-fetch-component";
+import TimeAgo from "react-timeago";
 
-type ChecklistItemState = "danger" | "ok" | "warn" | "neutral";
+type ChecklistItemState = "ok" | "warn" | "neutral";
 
 function renderIconForState(state: ChecklistItemState) {
   const iconProps = getIconPropsForState(state);
@@ -26,8 +27,6 @@ function renderIconForState(state: ChecklistItemState) {
 
 function getIconPropsForState(state: ChecklistItemState): IIconProps {
   switch (state) {
-    case "danger":
-      return { intent: Intent.DANGER, icon: IconNames.CROSS };
     case "warn":
       return { intent: Intent.WARNING, icon: IconNames.SYMBOL_TRIANGLE_UP };
     case "ok":
@@ -62,10 +61,20 @@ const PreflightVulnsItem: React.SFC = () => (
               {renderIconForState(itemState)}
               <span className="preflight-checklist-title">
                 {data.vuln.length > 0
-                  ? `Historical vulnerabilities: ${data.vuln.length}`
-                  : "No historical vulnerabilities"}
+                  ? `Has ${data.vuln.length} historical ${
+                      data.vuln.length > 1 ? "vulnerabilities" : "vulnerability"
+                    }`
+                  : "No known vulnerabilities"}
               </span>
             </>
+          )}
+          {error != null && (
+            <li className="preflight-checklist-item">
+              {renderIconForState("neutral")}
+              <span className="preflight-checklist-title">
+                {`Unable to get vulnerability data`}
+              </span>
+            </li>
           )}
         </li>
       );
@@ -76,7 +85,11 @@ const PreflightVulnsItem: React.SFC = () => (
 const PreflightPermissionsItem: React.SFC = () => (
   <Fetch<PermissionsResponse> url={permissionsUrl()}>
     {({ loading, data, error, response }) => {
-      const permissionKeys = data && Object.keys(data.permissions);
+      const permissionKeys =
+        data &&
+        Object.keys(data.permissions).filter(
+          key => data.permissions[key].found
+        );
       const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
       const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
 
@@ -100,7 +113,7 @@ const PreflightPermissionsItem: React.SFC = () => (
               <span className="preflight-checklist-title">
                 {numPermissions > 0
                   ? `Permissions detected: ${permissionKeys.join(",")}`
-                  : "No special permissions"}
+                  : "No permissions"}
               </span>
             </>
           )}
@@ -115,16 +128,23 @@ interface PreflightScriptsItemProps {
 }
 
 const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = props => {
-  const itemState: ChecklistItemState =
-    props.scripts.length > 0 ? "warn" : "ok";
+  const itemState: ChecklistItemState = props.scripts
+    ? props.scripts.length > 0
+      ? "warn"
+      : "ok"
+    : "neutral";
 
   return (
     <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
-        {props.scripts.length > 0
-          ? `${props.scripts.length} npm install hooks detected`
-          : "no npm install hooks"}
+        {props.scripts != null
+          ? props.scripts.length > 0
+            ? `Has ${props.scripts.length} npm install ${
+                props.scripts.length > 1 ? "hooks" : "hook"
+              }`
+            : "No npm install hooks"
+          : "Unable to load install hook data"}
       </span>
     </li>
   );
@@ -143,18 +163,20 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
         : "ok"
       : "neutral";
 
+  const description =
+    props.pkg &&
+    props.pkg.rank_description
+      .toLocaleLowerCase()
+      .replace("10000", "10k")
+      .replace("000", "k");
+
   return (
     <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
-        {props.pkg &&
-          `${props.pkg.rank_description || "NPM rank"}: ${
-            props.pkg.package_rank
-              ? props.pkg.package_rank >= rankThreshold
-                ? "Not many people use this package"
-                : "Widely used"
-              : "Invalid data"
-          }`}
+        {props.pkg !== null && props.pkg && props.pkg.rank_description
+          ? description
+          : "Unable to load npm popularity"}
       </span>
     </li>
   );
@@ -165,27 +187,19 @@ interface PreflightActivityItemProps {
 }
 
 const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
-  const { archived, isActive, latestCommitDate } = props.activity;
-  const itemState: ChecklistItemState = archived
-    ? "danger"
-    : isActive
-      ? "ok"
-      : "warn";
+  const { archived, latestCommitDate } = props.activity;
+  const date = Date.parse(latestCommitDate);
+  const timeago = Date.now() - date;
+  const itemState: ChecklistItemState =
+    archived || timeago / 1000 / 3600 / 24 / 30 > 6 ? "warn" : "ok";
 
-  if (
-    archived !== undefined &&
-    isActive !== undefined &&
-    latestCommitDate !== undefined
-  ) {
+  if (archived !== undefined && latestCommitDate !== undefined) {
     return (
       <li className="preflight-checklist-item">
         {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
-          {archived
-            ? "archived"
-            : isActive
-              ? `updated recently (${latestCommitDate})`
-              : `not updated since ${latestCommitDate}`}
+          {archived ? "Archived project" : "Latest commit "}{" "}
+          <TimeAgo date={date} />
         </span>
       </li>
     );
@@ -194,7 +208,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
       <li className="preflight-checklist-item">
         {renderIconForState("neutral")}
         <span className="preflight-checklist-title">
-          {`Repo activity: Invalid data`}
+          {`Unable to get activity data`}
         </span>
       </li>
     );
