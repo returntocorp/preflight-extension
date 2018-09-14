@@ -1,8 +1,4 @@
-import {
-  fetchFromStorage,
-  getExtensionVersion,
-  updateStorage
-} from "@r2c/extension/utils";
+import { fetchFromStorage, updateStorage } from "@r2c/extension/utils";
 
 export type ExperimentName = "recon" | "preflight" | "preflightTwist";
 
@@ -15,7 +11,6 @@ const DEFAULT_EXPERIMENTS: ExperimentManifest = {
 };
 
 export interface ExtensionState {
-  version: string;
   experiments: ExperimentManifest;
 }
 
@@ -28,7 +23,6 @@ export async function getExtensionState(): Promise<ExtensionState> {
     return state;
   } else {
     const defaultExtensionState = {
-      version: getExtensionVersion() || "local-development",
       experiments: DEFAULT_EXPERIMENTS
     };
 

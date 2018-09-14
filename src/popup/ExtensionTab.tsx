@@ -4,6 +4,7 @@ import {
   ExperimentName,
   ExtensionState
 } from "@r2c/extension/shared/ExtensionState";
+import { getExtensionVersion } from "@r2c/extension/utils";
 import * as React from "react";
 import "./ExtensionTab.css";
 
@@ -20,7 +21,8 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
       return null;
     }
 
-    const { version, experiments } = this.props.extensionState;
+    const { experiments } = this.props.extensionState;
+    const version = getExtensionVersion();
 
     return (
       <div className="extension-panel r2c-guide-panel">
