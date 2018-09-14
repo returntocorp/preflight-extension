@@ -68,7 +68,7 @@ const PreflightVulnsItem: React.SFC = () => (
               </span>
             </>
           )}
-          {error && (
+          {error != null && (
             <li className="preflight-checklist-item">
               {renderIconForState("neutral")}
               <span className="preflight-checklist-title">
@@ -138,9 +138,11 @@ const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = props => {
     <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
-        {props.scripts
+        {props.scripts != null
           ? props.scripts.length > 0
-            ? `Has ${props.scripts.length} npm install hooks`
+            ? `Has ${props.scripts.length} npm install ${
+                props.scripts.length > 1 ? "hooks" : "hook"
+              }`
             : "No npm install hooks"
           : "Unable to load install hook data"}
       </span>
@@ -172,7 +174,7 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
     <li className="preflight-checklist-item">
       {renderIconForState(itemState)}
       <span className="preflight-checklist-title">
-        {props.pkg && props.pkg.rank_description
+        {props.pkg !== null && props.pkg && props.pkg.rank_description
           ? description
           : "Unable to load npm popularity"}
       </span>
@@ -196,7 +198,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
       <li className="preflight-checklist-item">
         {renderIconForState(itemState)}
         <span className="preflight-checklist-title">
-          {archived ? "this project is archived" : "Latest commit "}{" "}
+          {archived ? "Archived project" : "Latest commit "}{" "}
           <TimeAgo date={date} />
         </span>
       </li>
