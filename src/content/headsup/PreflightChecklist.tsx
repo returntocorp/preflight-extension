@@ -158,7 +158,7 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
   const rankThreshold = 10000;
   const itemState: ChecklistItemState =
     props.pkg && props.pkg.package_rank
-      ? props.pkg.package_rank >= rankThreshold
+      ? props.pkg.package_rank > rankThreshold
         ? "warn"
         : "ok"
       : "neutral";
