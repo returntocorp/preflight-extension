@@ -75,7 +75,7 @@ export default class RepoPackageSection extends React.Component<
             )}
             {data &&
               data.packages.length === 0 && (
-                <NonIdealState icon="box" description="Not published to NPM" />
+                <NonIdealState icon="box" description="Not published to npm" />
               )}
             {data &&
               data.packages.length > 0 && (
