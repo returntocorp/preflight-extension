@@ -1,4 +1,4 @@
-.nutrition-package .package-header {
+.package-copy-box .package-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -6,27 +6,81 @@
   padding-bottom: 5px;
 }
 
-.nutrition-package .package-header .package-endorsers {
+.package-copy-box .package-header .package-endorsers {
   display: flex;
   align-items: center;
+}
+
+.package-copy-box .package-action-description h2 {
+  font-size: 16px;
+}
+
+.package-copy-box .package-action-description p {
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
+}
+
+.package-copy-box header {
+  position: relative;
+}
+
+.package-copy-box header .package-registry-toggle {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  font-size: 12px;
 }
 
 .package-endorsers .package-endorser {
   margin-right: 3px;
 }
 
-.nutrition-package .package-npm-field {
+.package-copy-box .package-npm-field {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
   margin-bottom: 5px;
 }
 
-.nutrition-packages .package-npm-field .copy-button {
+.package-copy-box .package-npm-field .copy-button {
   display: block;
   width: 16px;
   height: 16px;
 }
 
-.nutrition-packages .nutrition-package-more {
+.package-copy-box .package-copy-box-more {
   margin-top: 5px;
+}
+
+.package-select-menu {
+  max-width: 380px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.package-select-dropdown-wrapper,
+.package-select-dropdown-target,
+.package-select-dropdown-target > div {
+  flex: 1 1 auto;
+  display: flex;
+}
+
+.package-select-dropdown-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.package-npm-link-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.bp3-button-group.bp3-fill .bp3-button.package-npm-link {
+  width: 120px;
+  flex: 0 0 120px;
+}
+
+.package-copy-other-actions .bp3-button {
+  font-size: 12px;
 }

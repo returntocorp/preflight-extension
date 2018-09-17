@@ -1,6 +1,5 @@
-import * as React from "react";
-
 import { Button } from "@blueprintjs/core";
+import * as React from "react";
 
 interface CopyButtonProps {
   onClick: React.MouseEventHandler<HTMLElement> | undefined;

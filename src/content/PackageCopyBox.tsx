@@ -1,11 +1,31 @@
-import { Button, ButtonGroup, Classes, InputGroup, NonIdealState } from "@blueprintjs/core";
+import {
+  AnchorButton,
+  Button,
+  ButtonGroup,
+  Classes,
+  InputGroup,
+  Intent,
+  MenuItem,
+  NonIdealState,
+  Position
+} from "@blueprintjs/core";
+import { IconNames } from "@blueprintjs/icons";
+import { ItemRenderer, Select } from "@blueprintjs/select";
 import { l } from "@r2c/extension/analytics";
-import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
+import {
+  PackageEntry,
+  PackageResponse,
+  packageUrl
+} from "@r2c/extension/api/package";
+import { MainToaster } from "@r2c/extension/content/Toaster";
 import CopyButton from "@r2c/extension/shared/CopyButton";
-import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
-import { getPreferredPackageManager, setPreferredPackageManager } from "@r2c/extension/utils";
+import {
+  getPreferredPackageManager,
+  setPreferredPackageManager
+} from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
+import { sortBy } from "lodash";
 import * as React from "react";
 import Fetch from "react-fetch-component";
 import "./PackageCopyBox.css";
@@ -14,7 +34,10 @@ type PackageManagerChoice = "npm" | "yarn";
 
 interface RepoPackageSectionState {
   packageManager: PackageManagerChoice;
+  selectedPackage: PackageEntry | undefined;
 }
+
+const PackageSelect = Select.ofType<PackageEntry>();
 
 export default class RepoPackageSection extends React.Component<
   {},
@@ -23,7 +46,8 @@ export default class RepoPackageSection extends React.Component<
   public DEFAULT_PACKAGE_MANAGER: PackageManagerChoice = "npm";
 
   public state: RepoPackageSectionState = {
-    packageManager: this.DEFAULT_PACKAGE_MANAGER
+    packageManager: this.DEFAULT_PACKAGE_MANAGER,
+    selectedPackage: undefined
   };
 
   private packageFieldRef: { [key: string]: HTMLInputElement | null } = {};
@@ -33,130 +57,182 @@ export default class RepoPackageSection extends React.Component<
   }
 
   public render() {
-    return (
-      <Fetch<PackageResponse> url={packageUrl()}>
-        {({ loading, data, error }) => (
-          <section className="nutrition-packages nutrition-section">
-            {loading && (
-              <div
-                className={classnames("nutrition-section-value", {
-                  [Classes.SKELETON]: loading
-                })}
-              >
-                <NonIdealState icon="globe" title="Loading..." />
-              </div>
-            )}
-            {data && (
-              <div className="nutrition-section-value">
-                {data.packages.length === 0 && (
-                  <NonIdealState
-                    icon="box"
-                    description="Not published to NPM"
-                  />
-                )}
-                {data.packages.slice(0, 1).map((entry, i) => (
-                  <div key={i} className="nutrition-package">
-                    <header className="package-header">
-                      <span className="package-name">
-                        <a
-                          href={this.buildPackageLink(entry.name)}
-                          onClick={l("npm-package-link-click", undefined, {
-                            packageName: entry.name
-                          })}
-                        >
-                          {entry.name}
-                        </a>
-                      </span>
-                      {entry.endorsers && (
-                        <div className="package-endorsers">
-                          {entry.endorsers.slice(0, 3).map(endorser => (
-                            <ProfilePicture
-                              key={endorser}
-                              user={endorser}
-                              className="package-endorser"
-                            />
-                          ))}
-                          {entry.endorsers.length > 3 && (
-                            <span className="package-endorsers-more">
-                              +{entry.endorsers.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </header>
+    const { selectedPackage } = this.state;
 
-                    <InputGroup
-                      type="text"
-                      value={this.buildInstallCommand(
-                        this.state.packageManager,
-                        entry.name
-                      )}
-                      rightElement={
-                        <CopyButton
+    return (
+      <Fetch<PackageResponse>
+        url={packageUrl()}
+        onDataChange={this.handleDataChanged}
+      >
+        {({ loading, data, error }) => (
+          <section className="package-copy-box">
+            {loading && (
+              <NonIdealState
+                icon="globe"
+                title="Loading..."
+                className={classnames({ [Classes.SKELETON]: loading })}
+              />
+            )}
+            {data &&
+              data.packages.length === 0 && (
+                <NonIdealState icon="box" description="Not published to NPM" />
+              )}
+            {data &&
+              data.packages.length > 0 && (
+                <>
+                  <header>
+                    <div className="package-action-description">
+                      <h2>
+                        Install with{" "}
+                        {this.state.packageManager === "npm" ? "npm" : "Yarn"}
+                      </h2>
+                      <p>Use the command line to install this package.</p>
+                    </div>
+                    <div className="package-registry-toggle">
+                      {this.state.packageManager === "npm" ? (
+                        <a
                           onClick={l(
-                            "copy-package-button-click",
-                            this.handleCopy(
-                              this.state.packageManager,
-                              entry.name
-                            ),
+                            "choose-package-manager",
+                            this.handleRegistryChange("yarn"),
                             {
-                              packageManager: this.state.packageManager,
-                              name: entry.name
+                              oldPackageManager: this.state.packageManager,
+                              newChoice: "yarn"
                             }
                           )}
-                        />
-                      }
-                      onClick={l("copy-package-input-click")}
-                      className={classnames(Classes.FILL, "package-npm-field")}
-                      inputRef={this.setPackageFieldRef(
-                        this.state.packageManager,
-                        entry.name
+                          role="button"
+                        >
+                          Use Yarn
+                        </a>
+                      ) : (
+                        <a
+                          onClick={l(
+                            "choose-package-manager",
+                            this.handleRegistryChange("npm"),
+                            {
+                              oldPackageManager: this.state.packageManager,
+                              newChoice: "npm"
+                            }
+                          )}
+                          role="button"
+                        >
+                          Use npm
+                        </a>
                       )}
-                      readOnly={true}
-                    />
-
-                    <ButtonGroup className={Classes.FILL}>
-                      <Button
-                        active={this.state.packageManager === "npm"}
-                        onClick={l(
-                          "choose-package-manager",
-                          this.handleRegistryChange("npm"),
-                          {
-                            oldPackageManager: this.state.packageManager,
-                            newChoice: "npm"
+                    </div>
+                  </header>
+                  <div className="nutrition-section-value">
+                    {selectedPackage && (
+                      <div className="nutrition-package">
+                        <InputGroup
+                          type="text"
+                          value={this.buildInstallCommand(
+                            this.state.packageManager,
+                            selectedPackage.name
+                          )}
+                          rightElement={
+                            <CopyButton
+                              onClick={l(
+                                "copy-package-button-click",
+                                this.handleCopy(
+                                  this.state.packageManager,
+                                  selectedPackage.name
+                                ),
+                                {
+                                  packageManager: this.state.packageManager,
+                                  name: selectedPackage.name
+                                }
+                              )}
+                            />
                           }
-                        )}
+                          onClick={l("copy-package-input-click")}
+                          className={classnames(
+                            Classes.FILL,
+                            "package-npm-field"
+                          )}
+                          inputRef={this.setPackageFieldRef(
+                            this.state.packageManager,
+                            selectedPackage.name
+                          )}
+                          readOnly={true}
+                        />
+                      </div>
+                    )}
+                    <ButtonGroup
+                      className={classnames(
+                        "package-copy-other-actions",
+                        Classes.FILL
+                      )}
+                    >
+                      <PackageSelect
+                        items={data.packages}
+                        itemRenderer={this.renderPackageSelectEntry}
+                        onItemSelect={this.handlePackageSelect}
+                        popoverProps={{
+                          position: Position.BOTTOM_LEFT,
+                          minimal: true,
+                          popoverClassName: "package-select-menu",
+                          className: "package-select-dropdown-wrapper",
+                          targetClassName: "package-select-dropdown-target"
+                        }}
                       >
-                        NPM
-                      </Button>
-                      <Button
-                        active={this.state.packageManager === "yarn"}
-                        onClick={l(
-                          "choose-package-manager",
-                          this.handleRegistryChange("yarn"),
-                          {
-                            oldPackageManager: this.state.packageManager,
-                            newChoice: "yarn"
-                          }
-                        )}
+                        <Button
+                          className="package-select-dropdown-button"
+                          rightIcon={IconNames.CARET_DOWN}
+                          minimal={true}
+                          text="Choose another..."
+                          intent={Intent.PRIMARY}
+                        />
+                      </PackageSelect>
+                      <AnchorButton
+                        className="package-npm-link-button"
+                        minimal={true}
+                        href={
+                          selectedPackage != null
+                            ? this.buildPackageLink(selectedPackage.name)
+                            : undefined
+                        }
+                        disabled={selectedPackage == null}
+                        rightIcon={IconNames.SHARE}
+                        intent={Intent.PRIMARY}
                       >
-                        Yarn
-                      </Button>
+                        See on npm
+                      </AnchorButton>
                     </ButtonGroup>
                   </div>
-                ))}
-                {data.packages.length > 1 && (
-                  <div className="nutrition-package-more">
-                    and {data.packages.length - 1} more {data.packages.length - 1 === 1 ? 'package' : 'packages'}
-                  </div>
-                )}
-              </div>
-            )}
+                </>
+              )}
           </section>
         )}
       </Fetch>
     );
   }
+
+  private renderPackageSelectEntry: ItemRenderer<PackageEntry> = (
+    pkg,
+    { handleClick, modifiers, query }
+  ) => (
+    <MenuItem
+      active={modifiers.active}
+      disabled={modifiers.disabled}
+      label={renderShortRank(pkg.package_rank)}
+      key={`${pkg.registry}/${pkg.name}`}
+      onClick={handleClick}
+      text={pkg.name}
+    />
+  );
+
+  private handlePackageSelect = (pkg: PackageEntry) =>
+    this.setState({ selectedPackage: pkg });
+
+  private handleDataChanged = (data: PackageResponse) => {
+    const sortedPackages = sortBy(data.packages, ["package_rank", "name"]);
+    this.setState({ selectedPackage: sortedPackages[0] });
+
+    return {
+      ...data,
+      packages: sortedPackages
+    };
+  };
 
   private fetchPreferredPackageManager = async () => {
     const packageManager = (await getPreferredPackageManager()) as PackageManagerChoice;
@@ -188,6 +264,11 @@ export default class RepoPackageSection extends React.Component<
   };
 
   private copyToClipboard = (toCopy: string) => {
+    MainToaster.show({
+      message: "Copied to clipboard",
+      icon: IconNames.CLIPBOARD
+    });
+
     return copy(toCopy);
   };
 
@@ -224,4 +305,14 @@ export default class RepoPackageSection extends React.Component<
 
   private buildPackageLink = (name: string): string =>
     `https://npmjs.com/package/${name}`;
+}
+
+export function renderShortRank(rank: number): string {
+  if (rank > 10000) {
+    return ">10k";
+  } else if (rank >= 1000) {
+    return `Top ${(rank / 1000).toLocaleString()}k`;
+  } else {
+    return `Top ${rank.toLocaleString()}`;
+  }
 }
