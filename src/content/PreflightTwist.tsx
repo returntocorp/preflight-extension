@@ -68,25 +68,32 @@ export default class PreflightTwist extends React.PureComponent<
                 {data &&
                   data.permissions != null && (
                     <>
-                      {Object.keys(data.permissions).map(key => (
-                        <div className="permission-entry" key={key}>
-                          <span className="permission-entry-name">
-                            {data.permissions[key].displayName}
-                          </span>
-                          {data.permissions[key].locations.map(location => (
-                            <a
-                              href={buildFindingFileLink(
-                                repoSlug,
-                                data.commitHash,
-                                location.file_name,
-                                location.start_line
+                      {Object.keys(data.permissions).map(
+                        key =>
+                          data.permissions[key].found && (
+                            <div className="permission-entry" key={key}>
+                              <span className="permission-entry-name">
+                                {data.permissions[key].displayName}
+                              </span>
+                              {data.permissions[key].locations.map(
+                                location =>
+                                  location.file_name != null &&
+                                  location.start_line != null && (
+                                    <a
+                                      href={buildFindingFileLink(
+                                        repoSlug,
+                                        data.commitHash,
+                                        location.file_name,
+                                        location.start_line
+                                      )}
+                                    >
+                                      {location.file_name}:{location.start_line}
+                                    </a>
+                                  )
                               )}
-                            >
-                              {location.file_name}:{location.start_line}
-                            </a>
-                          ))}
-                        </div>
-                      ))}
+                            </div>
+                          )
+                      )}
                     </>
                   )}
               </PreflightSection>
