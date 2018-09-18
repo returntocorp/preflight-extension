@@ -107,16 +107,14 @@ export default class PreflightTwist extends React.PureComponent<
                 description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
               >
                 {data && (
-                  <>
-                    <div className="last-committed">
-                      <span className="last-committed-message">
-                        Last committed:{" "}
-                      </span>
-                      <span className="last-committed-date">
-                        {data.activity.latestCommitDate}
-                      </span>
-                    </div>
-                  </>
+                  <div className="last-committed">
+                    <span className="last-committed-message">
+                      Last committed:{" "}
+                    </span>
+                    <span className="last-committed-date">
+                      {data.activity.latestCommitDate}
+                    </span>
+                  </div>
                 )}
               </PreflightSection>
             )}
@@ -128,7 +126,22 @@ export default class PreflightTwist extends React.PureComponent<
                   check="scripts"
                   title="Install hooks"
                   description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
-                />
+                >
+                  {data && (
+                    <div className="install-hook">
+                      {data.npmScripts.map((script, i) => (
+                        <div key={`${script.type}_${i}`} className="hook">
+                          <span className="install-hook-type">
+                            {script.type}
+                          </span>{" "}
+                          <div className="install-hook-script">
+                            <pre>{script.script}</pre>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </PreflightSection>
                 <PreflightSection
                   check="npm-rank"
                   title="npm ranking"
@@ -143,7 +156,14 @@ export default class PreflightTwist extends React.PureComponent<
                 check="vulns"
                 title="Vulnerabilities"
                 description="Current or historical vulnerabilities discovered in this project."
-              />
+              >
+                {data &&
+                  data.vuln.map((vuln, i) => (
+                    <div className="vulns-raw" key={i}>
+                      <pre>{vuln}</pre>
+                    </div>
+                  ))}
+              </PreflightSection>
             )}
           </Fetch>
         </div>
