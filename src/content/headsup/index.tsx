@@ -11,6 +11,7 @@ import {
   PreflightChecklist,
   PreflightChecklistFetch
 } from "@r2c/extension/content/headsup/PreflightChecklist";
+import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
 import * as React from "react";
@@ -57,6 +58,7 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
                   </div>
                   <div className="repo-headsup-actions">
                     <RepoPackageSection />
+                    <UsedBy pkg={data.pkg} />
                   </div>
                 </div>
                 <footer>

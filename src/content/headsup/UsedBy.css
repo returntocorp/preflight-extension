@@ -1,0 +1,14 @@
+.used-by-container header h2 {
+  font-size: 14px;
+}
+
+.used-by-container .used-by-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.used-by-container .used-by-list .used-by-endorser {
+  margin-right: 1ex;
+}
