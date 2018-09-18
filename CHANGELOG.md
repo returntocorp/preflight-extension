@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.8.2] - 2018-09-17
+
+### Changed
+
+- We've reworked the layout and design of the package manager component (now with more GitHub pizzaz)
+
+### Fixed
+
+- The package manager component now displays the most popular package for the project by default, rather than the alphabetically first package
+
 ## [1.8.1] - 2018-09-14
 
 ### Changed
