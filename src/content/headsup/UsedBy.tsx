@@ -10,23 +10,25 @@ interface UsedByProps {
 export default class UsedBy extends React.PureComponent<UsedByProps> {
   public render() {
     const { pkg } = this.props;
+    const endorsers = pkg.packages
+      .map(entry => entry.endorsers)
+      .reduce((prev, cur) => Array.from(new Set([...prev, ...cur])));
 
     return (
       <div className="used-by-container">
-        <header>
-          <h2>All packages used by</h2>
-        </header>
+        {endorsers.length > 0 && (
+          <header>
+            <h2>All packages used by</h2>
+          </header>
+        )}
         <div className="used-by-list">
-          {pkg.packages
-            .map(entry => entry.endorsers)
-            .reduce((prev, cur) => Array.from(new Set([...prev, ...cur])))
-            .map(endorser => (
-              <ProfilePicture
-                key={endorser}
-                user={endorser}
-                className="used-by-endorser"
-              />
-            ))}
+          {endorsers.map(endorser => (
+            <ProfilePicture
+              key={endorser}
+              user={endorser}
+              className="used-by-endorser"
+            />
+          ))}
         </div>
       </div>
     );
