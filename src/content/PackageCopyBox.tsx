@@ -86,7 +86,16 @@ export default class RepoPackageSection extends React.Component<
                         Install with{" "}
                         {this.state.packageManager === "npm" ? "npm" : "Yarn"}
                       </h2>
-                      <p>Use the command line to install this package.</p>
+                      <p>
+                        Save time and{" "}
+                        <a
+                          href="https://blog.npmjs.org/post/163723642530/crossenv-malware-on-the-npm-registry"
+                          title="Information about and example of typosquatting"
+                        >
+                          avoid typos
+                        </a>{" "}
+                        using this command.
+                      </p>
                     </div>
                     <div className="package-registry-toggle">
                       {this.state.packageManager === "npm" ? (
