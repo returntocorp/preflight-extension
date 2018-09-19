@@ -27,6 +27,8 @@ export default class UsedBy extends React.PureComponent<UsedByProps> {
               key={endorser}
               user={endorser}
               className="used-by-endorser"
+              showTooltip={true}
+              linkToUser={true}
             />
           ))}
         </div>
