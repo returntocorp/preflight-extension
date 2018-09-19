@@ -1,6 +1,11 @@
 import { Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import {
+  FindingEntry,
+  FindingsResponse,
+  findingsUrl
+} from "@r2c/extension/api/findings";
+import {
   PackageEntry,
   PackageResponse,
   packageUrl,
@@ -215,15 +220,60 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
   }
 };
 
+interface PreflightFindingsItemProps {
+  findings: FindingEntry[] | undefined;
+}
+
+const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
+  findings
+}) => {
+  if (findings == null) {
+    return (
+      <li className="preflight-checklist-item">
+        {renderIconForState("neutral")}
+        <span className="preflight-checklist-title">
+          Unable to get findings
+        </span>
+      </li>
+    );
+  } else if (findings.length === 0) {
+    return (
+      <li className="preflight-checklist-item">
+        {renderIconForState("ok")}
+        <span className="preflight-checklist-title">No issues to report</span>
+      </li>
+    );
+  } else {
+    return (
+      <li className="preflight-checklist-item">
+        {renderIconForState("warn")}
+        <span className="preflight-checklist-title">
+          {findings.length} {findings.length === 1 ? "issue" : "issues"} in code
+        </span>
+      </li>
+    );
+  }
+};
+
 interface PreflightChecklistFetchProps {
   children(response: PreflightChecklistFetchResponse): React.ReactNode;
 }
 
+interface PreflightChecklistFetchData {
+  repo: RepoResponse;
+  pkg: PackageResponse;
+  findings: FindingsResponse;
+}
+
+type PreflightChecklistFetchDataResponse = {
+  [K in keyof PreflightChecklistFetchData]: Response
+};
+
 interface PreflightChecklistFetchResponse {
   loading: boolean | null;
   error: Error | undefined;
-  data: { repo: RepoResponse; pkg: PackageResponse } | undefined;
-  response: { repo: Response; pkg: Response } | undefined;
+  data: PreflightChecklistFetchData | undefined;
+  response: PreflightChecklistFetchDataResponse | undefined;
 }
 
 export class PreflightChecklistFetch extends React.PureComponent<
@@ -234,24 +284,52 @@ export class PreflightChecklistFetch extends React.PureComponent<
       <Fetch<RepoResponse> url={repoUrl()}>
         {repoResponse => (
           <Fetch<PackageResponse> url={packageUrl()}>
-            {packageResponse => {
-              const loading = repoResponse.loading || packageResponse.loading;
-              const error = repoResponse.error || packageResponse.error;
-              const data =
-                repoResponse.data != null && packageResponse.data != null
-                  ? { repo: repoResponse.data, pkg: packageResponse.data }
-                  : undefined;
-              const response =
-                repoResponse.response != null &&
-                packageResponse.response != null
-                  ? {
-                      repo: repoResponse.response,
-                      pkg: packageResponse.response
-                    }
-                  : undefined;
+            {packageResponse => (
+              <Fetch<FindingsResponse> url={findingsUrl()}>
+                {findingsResponse => {
+                  const loading =
+                    repoResponse.loading ||
+                    packageResponse.loading ||
+                    findingsResponse.loading;
 
-              return this.props.children({ loading, error, data, response });
-            }}
+                  const error =
+                    repoResponse.error ||
+                    packageResponse.error ||
+                    findingsResponse.error;
+
+                  const data =
+                    repoResponse.data != null &&
+                    packageResponse.data != null &&
+                    findingsResponse.data != null
+                      ? {
+                          repo: repoResponse.data,
+                          pkg: packageResponse.data,
+                          findings: findingsResponse.data
+                        }
+                      : undefined;
+
+                  const response =
+                    repoResponse.response != null &&
+                    packageResponse.response != null &&
+                    findingsResponse.response != null
+                      ? {
+                          repo: repoResponse.response,
+                          pkg: packageResponse.response,
+                          findings: findingsResponse.response
+                        }
+                      : undefined;
+
+                  const fetchResponse: PreflightChecklistFetchResponse = {
+                    loading,
+                    error,
+                    data,
+                    response
+                  };
+
+                  return this.props.children(fetchResponse);
+                }}
+              </Fetch>
+            )}
           </Fetch>
         )}
       </Fetch>
@@ -259,16 +337,13 @@ export class PreflightChecklistFetch extends React.PureComponent<
   }
 }
 
-interface PreflightChecklistProps {
-  repo: RepoResponse;
-  pkg: PackageResponse;
-}
+type PreflightChecklistProps = PreflightChecklistFetchData;
 
 export class PreflightChecklist extends React.PureComponent<
   PreflightChecklistProps
 > {
   public render() {
-    const { repo, pkg } = this.props;
+    const { repo, pkg, findings } = this.props;
 
     return (
       <section className="preflight-checklist-container">
@@ -282,6 +357,7 @@ export class PreflightChecklist extends React.PureComponent<
             }
           />
           <PreflightVulnsItem />
+          <PreflightFindingsItem findings={findings.findings} />
         </ul>
       </section>
     );

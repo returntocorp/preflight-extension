@@ -1,6 +1,9 @@
 import { Button, Classes, Spinner, Tag } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import {
+  FindingsResponse,
+  findingsUrlFromSlug
+} from "@r2c/extension/api/findings";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
@@ -198,24 +201,31 @@ export default class PreflightTwist extends React.PureComponent<
               </PreflightSection>
             )}
           </Fetch>
-          <Fetch<FindingsResponse>
-            url={findingsUrl(repoSlug.domain, repoSlug.org, repoSlug.repo)}
-          >
+          <Fetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
             {({ data, loading, error }) => (
               <PreflightSection
                 check="findings"
                 title="Findings"
                 description="Weaknesses or bad practices that we automatically discovered in this project."
-                startOpen={data != null && data.findings.length > 0}
-                count={data != null ? data.findings.length : undefined}
+                startOpen={
+                  data != null &&
+                  data.findings != null &&
+                  data.findings.length > 0
+                }
+                count={
+                  data != null && data.findings != null
+                    ? data.findings.length
+                    : undefined
+                }
                 loading={loading}
               >
-                {data != null && (
-                  <FindingsGroupedList
-                    findings={data.findings}
-                    repoSlug={repoSlug}
-                  />
-                )}
+                {data != null &&
+                  data.findings != null && (
+                    <FindingsGroupedList
+                      findings={data.findings}
+                      repoSlug={repoSlug}
+                    />
+                  )}
               </PreflightSection>
             )}
           </Fetch>

@@ -6,7 +6,10 @@ import {
   extractCurrentUserFromPage,
   getAnalyticsParams
 } from "@r2c/extension/api/fetch";
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import {
+  FindingsResponse,
+  findingsUrlFromSlug
+} from "@r2c/extension/api/findings";
 import {
   buildVotingUrl,
   DEPRECATED_submitVote,
@@ -116,13 +119,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             }`}
           />
           {this.repoSlug != null && (
-            <Fetch<FindingsResponse>
-              url={findingsUrl(
-                this.repoSlug.domain,
-                this.repoSlug.org,
-                this.repoSlug.repo
-              )}
-            >
+            <Fetch<FindingsResponse> url={findingsUrlFromSlug(this.repoSlug)}>
               {({
                 data: findingsData,
                 loading: findingsLoading,
@@ -130,7 +127,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               }) =>
                 extensionState != null &&
                 extensionState.experiments.recon &&
-                findingsData != null && (
+                findingsData != null &&
+                findingsData.findings != null && (
                   <>
                     <BlobFindingsInjector
                       key={`BlobFindingsInjector ${this.state.currentUrl} ${

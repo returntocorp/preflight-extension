@@ -54,7 +54,7 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
                 </header>
                 <div className="repo-headsup-body">
                   <div className="repo-headsup-checklist">
-                    <PreflightChecklist repo={data.repo} pkg={data.pkg} />
+                    <PreflightChecklist {...data} />
                   </div>
                   <div className="repo-headsup-actions">
                     <RepoPackageSection />
