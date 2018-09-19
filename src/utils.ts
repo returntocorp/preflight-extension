@@ -17,7 +17,11 @@ if (window.browser == null && window.chrome != null) {
 
 export function getExtensionVersion(): string | undefined {
   if (browser != null && browser.runtime != null) {
-    return browser.runtime.getManifest().version;
+    const manifest = browser.runtime.getManifest();
+
+    if (manifest != null) {
+      return manifest.version;
+    }
   }
 
   return undefined;
@@ -129,7 +133,11 @@ export function isRepositoryPrivate() {
 }
 
 export function buildGithubProfilePicUrl(user: string): string {
-  return `https://github.com/${user}.png`;
+  return `${buildGithubProfileUrl(user)}.png`;
+}
+
+export function buildGithubProfileUrl(user: string): string {
+  return `https://github.com/${user}`;
 }
 
 export async function fetchStringFromStorage(
