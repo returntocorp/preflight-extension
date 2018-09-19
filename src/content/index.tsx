@@ -125,6 +125,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                     <BlobFindingsInjector
                       key={`BlobFindingsInjector ${this.state.currentUrl}`}
                       findings={findingsData.findings}
+                      repoSlug={repoSlug}
                     />
                     <TreeFindingsInjector
                       key={`TreeFindingsInjector ${this.state.currentUrl}`}

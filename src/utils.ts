@@ -77,6 +77,9 @@ export interface ExtractedRepoSlug {
   repo: string;
   pathname: string;
   rest: string;
+  commitHash: string | undefined;
+  filePath: string | undefined;
+  seemsLikeCommitHash: boolean | undefined;
 }
 
 function parseSlugFromUrl(url: string): ExtractedRepoSlug {
@@ -84,7 +87,31 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const { hostname: domain, pathname } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");
 
-  return { domain, org, repo, pathname, rest: rest.join("/") };
+  if (rest != null && rest.length > 0) {
+    const [commitHash, ...filePath] = rest.slice(1);
+
+    return {
+      domain,
+      org,
+      repo,
+      pathname,
+      rest: rest.join("/"),
+      commitHash,
+      filePath: filePath.join("/"),
+      seemsLikeCommitHash: commitHash.length === 40
+    };
+  } else {
+    return {
+      domain,
+      org,
+      repo,
+      pathname,
+      rest: rest.join("/"),
+      commitHash: undefined,
+      filePath: undefined,
+      seemsLikeCommitHash: undefined
+    };
+  }
 }
 
 export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {

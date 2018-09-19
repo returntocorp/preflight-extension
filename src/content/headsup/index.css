@@ -93,7 +93,8 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   align-items: center;
 }
 
-.unsupported-headsup .unsupported-message {
+.unsupported-headsup .unsupported-message,
+.r2c-repo-headsup .headsup-inline-message {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

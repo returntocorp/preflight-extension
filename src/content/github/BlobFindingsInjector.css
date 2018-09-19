@@ -25,13 +25,28 @@
 }
 
 .blob-num.r2c-blob-finding-highlight .finding-highlight-marker {
-  background-color: rgb(209, 57, 19);
   width: 10px;
   height: 10px;
   border-radius: 50%;
   position: absolute;
   left: 5px;
   top: 5px;
+}
+
+.blob-num.r2c-blob-finding-highlight
+  .finding-highlight-marker.marker-commit-match {
+  background-color: rgb(209, 57, 19);
+}
+
+.blob-num.r2c-blob-finding-highlight
+  .finding-highlight-marker.marker-commit-mismatch {
+  background-color: rgba(209, 57, 19, 0.4);
+  border: 1px dotted rgb(209, 57, 19);
+}
+
+.blob-num.r2c-blob-finding-highlight
+  .finding-highlight-marker.marker-multiple-commits {
+  box-shadow: 3px 3px 0 rgba(209, 57, 19, 0.4);
 }
 
 .r2c-blob-findings-grouped-list {

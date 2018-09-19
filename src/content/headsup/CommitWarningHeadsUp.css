@@ -1,0 +1,6 @@
+.commit-warning-headsup {
+  margin-bottom: 1ex;
+  border-color: rgba(104, 80, 21, 0.3);
+  background-color: rgb(255, 246, 214);
+  color: rgb(104, 80, 21);
+}

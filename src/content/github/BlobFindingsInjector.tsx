@@ -4,6 +4,9 @@ import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
+import CommitWarningHeadsUp from "@r2c/extension/content/headsup/CommitWarningHeadsUp";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
+import * as classnames from "classnames";
 import { groupBy } from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -11,15 +14,19 @@ import "./BlobFindingsInjector.css";
 
 interface BlobFindingsInjectorProps {
   findings: FindingEntry[];
+  repoSlug: ExtractedRepoSlug;
 }
 
 interface BlobFindingsHighlighterProps extends BlobFindingsInjectorProps {
   filePath: string;
   commitHash: string | null;
+  repoSlug: ExtractedRepoSlug;
 }
 
 interface BlobFindingDetailsProps {
   findings: FindingEntry[];
+  repoSlug: ExtractedRepoSlug;
+  currentCommitHash: string | null;
 }
 
 interface FindingSpan {
@@ -39,7 +46,7 @@ class BlobFindingHighlight extends React.PureComponent<
   BlobFindingDetailsProps
 > {
   public render() {
-    const { findings } = this.props;
+    const { findings, repoSlug } = this.props;
 
     const findingSpan = this.computeFindingSpan(findings[0]);
 
@@ -58,6 +65,10 @@ class BlobFindingHighlight extends React.PureComponent<
 
     destination.classList.add("r2c-blob-finding-highlight");
 
+    const findingCommitMatch =
+      repoSlug.commitHash != null &&
+      findings.every(finding => finding.commitHash === repoSlug.commitHash);
+
     return ReactDOM.createPortal(
       <Popover
         className="r2c-blob-finding-highlight-wrapper"
@@ -65,6 +76,7 @@ class BlobFindingHighlight extends React.PureComponent<
           <FindingsGroupedList
             findings={findings}
             className="r2c-blob-findings-grouped-list"
+            repoSlug={repoSlug}
           />
         }
         position={Position.LEFT_TOP}
@@ -79,7 +91,13 @@ class BlobFindingHighlight extends React.PureComponent<
         })}
       >
         <div className="r2c-blob-finding-highlight-hitbox">
-          <div className="finding-highlight-marker" />
+          <div
+            className={classnames("finding-highlight-marker", {
+              "marker-commit-match": findingCommitMatch,
+              "marker-commit-mismatch": !findingCommitMatch,
+              "marker-multiple-commits": findings.length > 1
+            })}
+          />
         </div>
       </Popover>,
       destination
@@ -154,7 +172,12 @@ class BlobFindingsHighlighter extends React.PureComponent<
     );
 
     return Object.keys(groupedByStartLine).map((startLine, i) => (
-      <BlobFindingHighlight key={i} findings={groupedByStartLine[startLine]} />
+      <BlobFindingHighlight
+        key={i}
+        currentCommitHash={this.props.commitHash}
+        findings={groupedByStartLine[startLine]}
+        repoSlug={this.props.repoSlug}
+      />
     ));
   }
 }
@@ -163,6 +186,8 @@ export default class BlobFindingsInjector extends React.Component<
   BlobFindingsInjectorProps
 > {
   public render() {
+    const { repoSlug } = this.props;
+
     return (
       <DomElementLoadedWatcher
         querySelector={[
@@ -175,11 +200,20 @@ export default class BlobFindingsInjector extends React.Component<
             {done && (
               <BlobMetadata>
                 {({ filePath, commitHash }) => (
-                  <BlobFindingsHighlighter
-                    filePath={filePath}
-                    commitHash={commitHash}
-                    findings={this.props.findings}
-                  />
+                  <>
+                    <BlobFindingsHighlighter
+                      filePath={filePath}
+                      commitHash={commitHash}
+                      findings={this.props.findings}
+                      repoSlug={repoSlug}
+                    />
+                    <CommitWarningHeadsUp
+                      repoSlug={repoSlug}
+                      findings={this.props.findings}
+                      currentCommitHash={commitHash}
+                      filePath={filePath}
+                    />
+                  </>
                 )}
               </BlobMetadata>
             )}
