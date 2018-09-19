@@ -35,9 +35,9 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
   public render() {
     return (
       <DOMInjector
-        destinationClassName="file-navigation"
-        injectedClassName="r2c-repo-headsup-container"
-        position="before"
+        destination=".file-navigation"
+        childClassName="r2c-repo-headsup-container"
+        relation="before"
       >
         {this.renderInjected()}
       </DOMInjector>

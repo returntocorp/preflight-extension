@@ -9,8 +9,8 @@ import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { groupBy } from "lodash";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import "./BlobFindingsInjector.css";
+import DOMInjector from "./DomInjector";
 
 interface BlobFindingsInjectorProps {
   findings: FindingEntry[];
@@ -54,53 +54,48 @@ class BlobFindingHighlight extends React.PureComponent<
       return null;
     }
 
-    const destination = findingSpan.startGutterElem;
-    const existingElem = destination.querySelector(
-      ".r2c-blob-finding-highlight-wrapper"
-    );
-
-    if (existingElem != null) {
-      existingElem.remove();
-    }
-
-    destination.classList.add("r2c-blob-finding-highlight");
-
     const findingCommitMatch =
       repoSlug.commitHash != null &&
       findings.every(finding => finding.commitHash === repoSlug.commitHash);
 
-    return ReactDOM.createPortal(
-      <Popover
-        className="r2c-blob-finding-highlight-wrapper"
-        content={
-          <FindingsGroupedList
-            findings={findings}
-            className="r2c-blob-findings-grouped-list"
-            repoSlug={repoSlug}
-          />
-        }
-        position={Position.LEFT_TOP}
-        minimal={true}
-        modifiers={{
-          preventOverflow: { boundariesElement: "viewport" },
-          offset: { offset: "0px,40px" }
-        }}
-        onOpened={l("blob-finding-highlight-click", undefined, {
-          path: findings[0].fileName,
-          startLine: findings[0].startLine
-        })}
+    return (
+      <DOMInjector
+        destination={findingSpan.startGutterElem}
+        childClassName="r2c-blob-finding-highlight-wrapper"
+        injectedClassName="r2c-blob-finding-highlight"
+        relation="direct"
       >
-        <div className="r2c-blob-finding-highlight-hitbox">
-          <div
-            className={classnames("finding-highlight-marker", {
-              "marker-commit-match": findingCommitMatch,
-              "marker-commit-mismatch": !findingCommitMatch,
-              "marker-multiple-commits": findings.length > 1
-            })}
-          />
-        </div>
-      </Popover>,
-      destination
+        <Popover
+          className="r2c-blob-finding-highlight-wrapper"
+          content={
+            <FindingsGroupedList
+              findings={findings}
+              className="r2c-blob-findings-grouped-list"
+              repoSlug={repoSlug}
+            />
+          }
+          position={Position.LEFT_TOP}
+          minimal={true}
+          modifiers={{
+            preventOverflow: { boundariesElement: "viewport" },
+            offset: { offset: "0px,40px" }
+          }}
+          onOpened={l("blob-finding-highlight-click", undefined, {
+            path: findings[0].fileName,
+            startLine: findings[0].startLine
+          })}
+        >
+          <div className="r2c-blob-finding-highlight-hitbox">
+            <div
+              className={classnames("finding-highlight-marker", {
+                "marker-commit-match": findingCommitMatch,
+                "marker-commit-mismatch": !findingCommitMatch,
+                "marker-multiple-commits": findings.length > 1
+              })}
+            />
+          </div>
+        </Popover>
+      </DOMInjector>
     );
   }
 
