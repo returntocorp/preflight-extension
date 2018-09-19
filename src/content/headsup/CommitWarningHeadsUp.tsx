@@ -7,9 +7,11 @@ import {
 } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { ItemRenderer, Select } from "@blueprintjs/select";
+import { l } from "@r2c/extension/analytics";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
+import { groupBy } from "lodash";
 import * as React from "react";
 import "./CommitWarningHeadsUp.css";
 
@@ -20,7 +22,12 @@ interface CommitWarningHeadsUpProps {
   filePath: string;
 }
 
-const CommitSelect = Select.ofType<string>();
+interface CommitFindingGroup {
+  commitHash: string;
+  numFindings: number;
+}
+
+const CommitSelect = Select.ofType<CommitFindingGroup>();
 
 export default class CommitWarningHeadsUp extends React.PureComponent<
   CommitWarningHeadsUpProps
@@ -72,30 +79,38 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
       );
     }
 
-    const commitHashList = Array.from(commitHashes);
+    const commitHashList = groupBy(
+      findings,
+      (finding: FindingEntry) => finding.commitHash
+    );
+    const commitGroups: CommitFindingGroup[] = Object.keys(commitHashList).map(
+      key => ({ commitHash: key, numFindings: commitHashList[key].length })
+    );
 
     return (
       <div className="r2c-repo-headsup commit-warning-headsup">
         <div className="headsup-inline-message">
           <span className="headsup-different-commit">
-            We're also showing you issues that we found in past commits.
+            We're showing issues that we found in past commits, so markers may
+            not be exact. Go to past commits for exact issue locations.
           </span>
-          {commitHashList.length === 1 && (
+          {commitGroups.length === 1 && (
             <AnchorButton
               href={buildFindingFileLink(
                 repoSlug,
-                commitHashList[0],
+                commitGroups[0].commitHash,
                 filePath,
                 null
               )}
               intent={Intent.SUCCESS}
+              onClick={l("commit-warning-action-click")}
             >
               Go to past commit
             </AnchorButton>
           )}
-          {commitHashList.length > 1 && (
+          {commitGroups.length > 1 && (
             <CommitSelect
-              items={commitHashList}
+              items={commitGroups}
               itemRenderer={this.renderCommitHashEntry}
               onItemSelect={this.handleCommitHashSelect}
               popoverProps={{
@@ -105,13 +120,13 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
                 className: "commit-hash-select-dropdown-wrapper",
                 targetClassName: "commit-hash-select-dropdown-target"
               }}
+              filterable={false}
             >
               <Button
                 className="commit-hash-select-dropdown-button"
                 rightIcon={IconNames.CARET_DOWN}
-                minimal={true}
-                text="Choose another..."
-                intent={Intent.PRIMARY}
+                text="Go to past commit..."
+                intent={Intent.SUCCESS}
               />
             </CommitSelect>
           )}
@@ -120,25 +135,27 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
     );
   }
 
-  private renderCommitHashEntry: ItemRenderer<string> = (
-    commitHash,
+  private renderCommitHashEntry: ItemRenderer<CommitFindingGroup> = (
+    group,
     { handleClick, modifiers, query }
   ) => (
     <MenuItem
+      className="commit-hash-entry"
       active={modifiers.active}
       disabled={modifiers.disabled}
-      key={commitHash}
+      label={`${group.numFindings} findings`}
+      key={group.commitHash}
       onClick={handleClick}
-      text={commitHash}
+      text={group.commitHash.slice(0, 8)}
     />
   );
 
-  private handleCommitHashSelect = (commitHash: string) => {
+  private handleCommitHashSelect = (commitHashGroup: CommitFindingGroup) => {
     const { repoSlug, filePath } = this.props;
 
     window.location.href = buildFindingFileLink(
       repoSlug,
-      commitHash,
+      commitHashGroup.commitHash,
       filePath,
       null
     );
