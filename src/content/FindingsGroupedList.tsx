@@ -1,4 +1,6 @@
+import { AnchorButton, Classes } from "@blueprintjs/core";
 import { FindingEntry } from "@r2c/extension/api/findings";
+import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { groupBy, mapValues, sortBy } from "lodash";
 import * as React from "react";
@@ -6,32 +8,61 @@ import "./FindingsGroupedList.css";
 
 interface FindingsGroupedListProps {
   findings: FindingEntry[];
+  repoSlug?: ExtractedRepoSlug;
   className?: string;
 }
 
 interface FindingsGroupProps {
   fileName: string;
   findings: FindingEntry[];
+  repoSlug?: ExtractedRepoSlug;
 }
 
 class FindingsGroup extends React.PureComponent<FindingsGroupProps> {
   public render() {
+    const { repoSlug, fileName } = this.props;
+
     return (
       <section className="findings-group">
-        <header>{this.props.fileName}</header>
+        <header>
+          {repoSlug != null ? (
+            <a href={buildFindingFileLink(repoSlug, null, fileName, null)}>
+              {this.props.fileName}
+            </a>
+          ) : (
+            this.props.fileName
+          )}
+        </header>
         <div className="findings-group-entries">
           {this.props.findings.map((finding, i) => (
-            <div
-              className="finding-entry"
+            <AnchorButton
+              minimal={true}
               key={`${finding.fileName} ${finding.startLine} ${
                 finding.analyzerName
               } ${finding.checkId} ${i}`}
+              className={classnames(
+                { [Classes.DISABLED]: repoSlug == null },
+                Classes.FILL
+              )}
+              href={
+                repoSlug != null
+                  ? buildFindingFileLink(
+                      repoSlug,
+                      finding.commitHash,
+                      fileName,
+                      finding.startLine,
+                      finding.endLine
+                    )
+                  : undefined
+              }
             >
-              <span className="finding-entry-startline">
-                {finding.startLine}
-              </span>
-              <span className="finding-entry-checkid">{finding.checkId}</span>
-            </div>
+              <div className="finding-entry">
+                <span className="finding-entry-startline">
+                  {finding.startLine}
+                </span>
+                <span className="finding-entry-checkid">{finding.checkId}</span>
+              </div>
+            </AnchorButton>
           ))}
         </div>
       </section>
@@ -43,7 +74,7 @@ export default class FindingsGroupedList extends React.PureComponent<
   FindingsGroupedListProps
 > {
   public render() {
-    const { findings } = this.props;
+    const { findings, repoSlug } = this.props;
     const sortedAndGrouped = this.sortAndGroupByFile(findings);
 
     return (
@@ -56,6 +87,7 @@ export default class FindingsGroupedList extends React.PureComponent<
             <FindingsGroup
               key={fileName}
               fileName={fileName}
+              repoSlug={repoSlug}
               findings={sortedAndGrouped[fileName]}
             />
           ))}

@@ -33,8 +33,22 @@
   background-color: #fff;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.3);
   padding: 10px;
-  height: 80vh;
-  max-height: 720px;
+  height: 70vh;
+  max-height: 70vh;
+
+  transition: height 0.3s;
+}
+
+@media screen and (max-height: 700px) {
+  .r2c-actionbar .twist-container .twist {
+    height: 60vh;
+  }
+}
+
+@media screen and (max-height: 500px) {
+  .r2c-actionbar .twist-container .twist {
+    height: 50vh;
+  }
 }
 
 .twist h1 {

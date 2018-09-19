@@ -185,7 +185,7 @@ export function buildFindingFileLink(
   commitHash: string | null,
   fileName: string,
   startLine: number | null,
-  endLine?: number
+  endLine?: number | null
 ): string {
   // TODO Retrieve default branch
   return `https://${repoSlug.domain}/${repoSlug.org}/${
