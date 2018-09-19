@@ -177,7 +177,7 @@ class BlobFindingsHighlighter extends React.PureComponent<
   }
 }
 
-export default class BlobFindingsInjector extends React.Component<
+export default class BlobFindingsInjector extends React.PureComponent<
   BlobFindingsInjectorProps
 > {
   public render() {

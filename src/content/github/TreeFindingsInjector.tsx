@@ -33,7 +33,8 @@ class TreeFindingHighlight extends React.PureComponent<
       <DOMInjector
         destination={`a[title='${path}'].js-navigation-open`}
         childClassName="r2c-tree-finding-highlight-popover"
-        relation="direct"
+        injectedClassName="r2c-tree-finding-highlight"
+        relation="after"
       >
         <Popover
           className="r2c-tree-finding-highlight-popover"
@@ -102,7 +103,7 @@ class TreeFindingsHighlighter extends React.PureComponent<
   }
 }
 
-export default class TreeFindingsInjector extends React.Component<
+export default class TreeFindingsInjector extends React.PureComponent<
   TreeFindingsInjectorProps
 > {
   public render() {

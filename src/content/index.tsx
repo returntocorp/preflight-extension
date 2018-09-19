@@ -76,6 +76,7 @@ interface ContentHostState {
   installationId: string;
   extensionState: ExtensionState | undefined;
   currentUrl: string;
+  navigationNonce: number;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
@@ -84,8 +85,11 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     user: undefined,
     installationId: "not-generated",
     extensionState: undefined,
-    currentUrl: window.location.href.replace(window.location.hash, "")
+    currentUrl: window.location.href.replace(window.location.hash, ""),
+    navigationNonce: 0
   };
+
+  private repoSlug = extractSlugFromCurrentUrl();
 
   private navigationMutationObserver: MutationObserver | null = null;
 
@@ -98,8 +102,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   public render() {
     const { twistTab, user, installationId, extensionState } = this.state;
 
-    const repoSlug = extractSlugFromCurrentUrl();
-
     if (isRepositoryPrivate() || installationId === "not-generated") {
       return null;
     }
@@ -108,10 +110,18 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       <>
         <div id="r2c-inline-injector-portal" />
         <div className="r2c-host">
-          <RepoHeadsUpInjector />
-          {repoSlug != null && (
+          <RepoHeadsUpInjector
+            key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
+              this.state.navigationNonce
+            }`}
+          />
+          {this.repoSlug != null && (
             <Fetch<FindingsResponse>
-              url={findingsUrl(repoSlug.domain, repoSlug.org, repoSlug.repo)}
+              url={findingsUrl(
+                this.repoSlug.domain,
+                this.repoSlug.org,
+                this.repoSlug.repo
+              )}
             >
               {({
                 data: findingsData,
@@ -123,14 +133,18 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 findingsData != null && (
                   <>
                     <BlobFindingsInjector
-                      key={`BlobFindingsInjector ${this.state.currentUrl}`}
+                      key={`BlobFindingsInjector ${this.state.currentUrl} ${
+                        this.state.navigationNonce
+                      }`}
                       findings={findingsData.findings}
-                      repoSlug={repoSlug}
+                      repoSlug={this.repoSlug}
                     />
                     <TreeFindingsInjector
-                      key={`TreeFindingsInjector ${this.state.currentUrl}`}
+                      key={`TreeFindingsInjector ${this.state.currentUrl} ${
+                        this.state.navigationNonce
+                      }`}
                       findings={findingsData.findings}
-                      repoSlug={repoSlug}
+                      repoSlug={this.repoSlug}
                     />
                   </>
                 )
@@ -155,7 +169,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       id="preflight"
                       title="Preflight"
                       icon={<PreflightIcon />}
-                      panel={<PreflightTwist repoSlug={repoSlug} />}
+                      panel={<PreflightTwist repoSlug={this.repoSlug} />}
                     />
                   )}
                 <Twist
@@ -210,26 +224,52 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
 
   private watchNavigationChange() {
     this.navigationMutationObserver = new MutationObserver(
-      this.handleNavigationChange
+      this.handleLoadingMutation
     );
 
-    const main = document.querySelector(".application-main");
+    const main = document.querySelector("#js-pjax-loader-bar");
 
     if (main != null) {
       this.navigationMutationObserver.observe(main, {
         attributes: true,
-        subtree: true
+        attributeFilter: ["class"],
+        attributeOldValue: true
       });
     } else {
       console.warn("Unable to register mutation observer!");
     }
   }
 
-  private handleNavigationChange: MutationCallback = mutations => {
+  private handleLoadingMutation: MutationCallback = mutations => {
+    mutations.forEach(mutation => {
+      switch (mutation.type) {
+        case "attributes":
+          console.log("mutation", mutation);
+          if (mutation.target.nodeType === Node.ELEMENT_NODE) {
+            const mutationElem = mutation.target as Element;
+            if (
+              !mutationElem.classList.contains("is-loading") &&
+              mutation.oldValue != null &&
+              mutation.oldValue.indexOf("is-loading") >= 0
+            ) {
+              console.log("Encountered navigable event");
+              this.handleNavigationChange();
+            }
+          }
+          break;
+        default:
+      }
+    });
+  };
+
+  private handleNavigationChange = () => {
     const locationWithoutHash = window.location.href.replace(
       window.location.hash,
       ""
     );
+
+    this.setState({ navigationNonce: this.state.navigationNonce + 1 });
+
     if (locationWithoutHash !== this.state.currentUrl) {
       this.setState({ currentUrl: locationWithoutHash });
     }

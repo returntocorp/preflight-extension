@@ -40,11 +40,12 @@ export default class DOMInjector extends React.PureComponent<DOMInjectorProps> {
     } = this.props;
 
     const site = this.getElementForDestination(destination);
-    const existingElem = document.querySelector(`.${childClassName}`);
 
-    if (site == null) {
+    if (site == null || site.parentElement == null) {
       return null;
     }
+
+    const existingElem = site.parentElement.querySelector(`.${childClassName}`);
 
     if (existingElem != null) {
       existingElem.remove();
@@ -58,7 +59,7 @@ export default class DOMInjector extends React.PureComponent<DOMInjectorProps> {
       return ReactDOM.createPortal(children, site);
     }
 
-    const injected = document.createElement("div");
+    const injected = document.createElement("span");
     injected.classList.add(childClassName);
 
     switch (relation) {
