@@ -102,7 +102,11 @@ export function isRepositoryPrivate() {
 }
 
 export function buildGithubProfilePicUrl(user: string): string {
-  return `https://github.com/${user}.png`;
+  return `${buildGithubProfileUrl(user)}.png`;
+}
+
+export function buildGithubProfileUrl(user: string): string {
+  return `https://github.com/${user}`;
 }
 
 export async function fetchStringFromStorage(
