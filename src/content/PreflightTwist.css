@@ -35,3 +35,11 @@
   margin-left: -10px;
   margin-right: -10px;
 }
+
+.preflight-section.preflight-vulns .preflight-vulnerability-entry {
+  margin-bottom: 10px;
+}
+
+.preflight-section.preflight-vulns .preflight-vulnerability-entry:last-child {
+  margin-bottom: 0;
+}
