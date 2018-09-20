@@ -9,7 +9,8 @@ import {
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import {
   PreflightChecklist,
-  PreflightChecklistFetch
+  PreflightChecklistFetch,
+  PreflightChecklistItemType
 } from "@r2c/extension/content/headsup/PreflightChecklist";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
@@ -18,11 +19,17 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
 
+interface HeadsUpProps {
+  onChecklistItemClick(
+    itemType: PreflightChecklistItemType
+  ): React.MouseEventHandler<HTMLElement>;
+}
+
 interface HeadsupState {
   closed: boolean;
 }
 
-class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
+class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
   public state: HeadsupState = {
     closed: false
   };
@@ -54,7 +61,10 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
                 </header>
                 <div className="repo-headsup-body">
                   <div className="repo-headsup-checklist">
-                    <PreflightChecklist {...data} />
+                    <PreflightChecklist
+                      {...data}
+                      onChecklistItemClick={this.props.onChecklistItemClick}
+                    />
                   </div>
                   <div className="repo-headsup-actions">
                     <RepoPackageSection />
@@ -104,7 +114,7 @@ interface RepoHeadsUpState {
   error: React.ErrorInfo | undefined;
 }
 
-class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
+class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
   public state: RepoHeadsUpState = {
     error: undefined
   };
@@ -132,18 +142,20 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
     return ReactDOM.createPortal(
       <div className="preflight-container">
         {this.state.error != null && <ErrorHeadsUp error={this.state.error} />}
-        {this.state.error == null && <NormalHeadsUp />}
+        {this.state.error == null && <NormalHeadsUp {...this.props} />}
       </div>,
       injected
     );
   }
 }
 
-export default class RepoHeadsUpInjector extends React.PureComponent {
+export default class RepoHeadsUpInjector extends React.PureComponent<
+  HeadsUpProps
+> {
   public render() {
     return (
       <DomElementLoadedWatcher querySelector=".repository-lang-stats-graph">
-        {({ done }) => done && <RepoHeadsUp />}
+        {({ done }) => done && <RepoHeadsUp {...this.props} />}
       </DomElementLoadedWatcher>
     );
   }

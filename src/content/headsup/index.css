@@ -9,7 +9,7 @@
 }
 
 .r2c-repo-headsup > header {
-  margin-bottom: 1em;
+  margin-bottom: 1ex;
 
   display: flex;
   flex-direction: row;
@@ -52,7 +52,7 @@ ul.preflight-checklist .preflight-checklist-item {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  margin-bottom: 1ex;
+  margin-left: -10px;
 }
 
 ul.preflight-checklist .preflight-checklist-item .preflight-checklist-icon {

@@ -16,23 +16,17 @@ import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import Fetch from "react-fetch-component";
+import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./PreflightTwist.css";
 
-type PreflightCheck =
-  | "permissions"
-  | "findings"
-  | "activity"
-  | "scripts"
-  | "npm-rank"
-  | "vulns";
-
 interface PreflightSectionProps {
-  check: PreflightCheck;
+  check: PreflightChecklistItemType;
   title: string;
   count?: number;
   description?: string;
   loading?: boolean | null;
   startOpen?: boolean;
+  domRef?: React.RefObject<HTMLElement>;
 }
 
 interface PreflightSectionState {
@@ -65,13 +59,15 @@ class PreflightSection extends React.PureComponent<
       count,
       children,
       loading,
-      startOpen
+      startOpen,
+      domRef
     } = this.props;
     const { open } = this.state;
 
     return (
       <section
         className={classnames("preflight-section", `preflight-${check}`)}
+        ref={domRef}
       >
         <Button
           className={classnames("preflight-section-header", Classes.FILL)}
@@ -112,11 +108,31 @@ class PreflightSection extends React.PureComponent<
 
 interface PreflightTwistProps {
   repoSlug: ExtractedRepoSlug;
+  deepLink: PreflightChecklistItemType | undefined;
 }
 
 export default class PreflightTwist extends React.PureComponent<
   PreflightTwistProps
 > {
+  private twistRefs: {
+    [k in PreflightChecklistItemType]: React.RefObject<HTMLElement>
+  } = {
+    activity: React.createRef<HTMLElement>(),
+    findings: React.createRef<HTMLElement>(),
+    permissions: React.createRef<HTMLElement>(),
+    scripts: React.createRef<HTMLElement>(),
+    vulns: React.createRef<HTMLElement>(),
+    rank: React.createRef<HTMLElement>()
+  };
+
+  public componentDidMount() {
+    this.handleDeepLink(this.props.deepLink);
+  }
+
+  public componentDidUpdate() {
+    this.handleDeepLink(this.props.deepLink);
+  }
+
   public render() {
     const { repoSlug } = this.props;
 
@@ -147,6 +163,7 @@ export default class PreflightTwist extends React.PureComponent<
                     : undefined
                 }
                 loading={loading}
+                domRef={this.twistRefs.permissions}
               >
                 {data != null &&
                   data.permissions != null && (
@@ -191,6 +208,7 @@ export default class PreflightTwist extends React.PureComponent<
                 startOpen={data != null && data.vuln.length > 0}
                 count={data != null ? data.vuln.length : undefined}
                 loading={loading}
+                domRef={this.twistRefs.vulns}
               >
                 {data != null &&
                   data.vuln.map((vuln, i) => (
@@ -218,6 +236,7 @@ export default class PreflightTwist extends React.PureComponent<
                     : undefined
                 }
                 loading={loading}
+                domRef={this.twistRefs.findings}
               >
                 {data != null &&
                   data.findings != null && (
@@ -239,6 +258,7 @@ export default class PreflightTwist extends React.PureComponent<
                   startOpen={data != null && data.npmScripts.length > 0}
                   count={data != null ? data.npmScripts.length : undefined}
                   loading={loading}
+                  domRef={this.twistRefs.scripts}
                 >
                   {data && (
                     <div className="install-hook">
@@ -266,6 +286,7 @@ export default class PreflightTwist extends React.PureComponent<
                 description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
                 startOpen={data != null && data.activity != null}
                 loading={loading}
+                domRef={this.twistRefs.activity}
               >
                 {data && (
                   <div className="last-committed">
@@ -284,4 +305,18 @@ export default class PreflightTwist extends React.PureComponent<
       </div>
     );
   }
+
+  private handleDeepLink = (
+    deepLink: PreflightChecklistItemType | undefined
+  ): void => {
+    if (deepLink == null) {
+      return;
+    }
+
+    const twistRef = this.twistRefs[deepLink];
+
+    if (twistRef != null && twistRef.current != null) {
+      twistRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 }

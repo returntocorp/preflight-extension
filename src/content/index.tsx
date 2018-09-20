@@ -37,6 +37,7 @@ import {
 } from "@r2c/extension/utils";
 import * as React from "react";
 import Fetch, { FetchUpdateOptions } from "react-fetch-component";
+import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
 const DiscussionIcon: React.SFC = () => {
@@ -74,12 +75,13 @@ const ShareIcon: React.SFC = () => (
 );
 
 interface ContentHostState {
-  twistTab: string | undefined;
+  twistTab: TwistId | undefined;
   user: string | undefined;
   installationId: string;
   extensionState: ExtensionState | undefined;
   currentUrl: string;
   navigationNonce: number;
+  checklistItem: PreflightChecklistItemType | undefined;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
@@ -89,7 +91,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     installationId: "not-generated",
     extensionState: undefined,
     currentUrl: window.location.href.replace(window.location.hash, ""),
-    navigationNonce: 0
+    navigationNonce: 0,
+    checklistItem: undefined
   };
 
   private repoSlug = extractSlugFromCurrentUrl();
@@ -117,6 +120,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
               this.state.navigationNonce
             }`}
+            onChecklistItemClick={this.handleChecklistItemClick}
           />
           {this.repoSlug != null && (
             <Fetch<FindingsResponse> url={findingsUrlFromSlug(this.repoSlug)}>
@@ -167,7 +171,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       id="preflight"
                       title="Preflight"
                       icon={<PreflightIcon />}
-                      panel={<PreflightTwist repoSlug={this.repoSlug} />}
+                      panel={
+                        <PreflightTwist
+                          repoSlug={this.repoSlug}
+                          deepLink={this.state.checklistItem}
+                        />
+                      }
                     />
                   )}
                 <Twist
@@ -219,6 +228,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       </>
     );
   }
+
+  private handleChecklistItemClick = (itemType: PreflightChecklistItemType) => (
+    e: React.MouseEvent<HTMLElement>
+  ) => {
+    this.setState({ twistTab: "preflight", checklistItem: itemType });
+  };
 
   private watchNavigationChange() {
     this.navigationMutationObserver = new MutationObserver(
@@ -284,9 +299,9 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     e: React.MouseEvent<HTMLInputElement>
   ) => {
     if (this.state.twistTab !== twist) {
-      this.setState({ twistTab: twist });
+      this.setState({ twistTab: twist, checklistItem: undefined });
     } else {
-      this.setState({ twistTab: undefined });
+      this.setState({ twistTab: undefined, checklistItem: undefined });
     }
   };
 
