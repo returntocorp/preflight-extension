@@ -165,7 +165,6 @@ class PreflightSection extends React.PureComponent<
       count,
       children,
       loading,
-      startOpen,
       domRef
     } = this.props;
     const { open } = this.state;
@@ -188,7 +187,7 @@ class PreflightSection extends React.PureComponent<
               count != null && (
                 <Tag
                   className="preflight-section-header-count"
-                  minimal={!startOpen}
+                  minimal={count > 0}
                   round={true}
                 >
                   {count}
@@ -241,7 +240,7 @@ export default class PreflightTwist extends React.PureComponent<
   }
 
   public render() {
-    const { repoSlug } = this.props;
+    const { repoSlug, deepLink } = this.props;
 
     return (
       <div className={classnames("twist", "preflight-twist")}>
@@ -251,62 +250,63 @@ export default class PreflightTwist extends React.PureComponent<
         <div className="twist-scroll-container">
           <div className="twist-body">
             <Fetch<PermissionsResponse> url={permissionsUrl()}>
-              {({ data, loading }) => (
-                <PreflightSection
-                  check="permissions"
-                  title="Permissions"
-                  description="The project's capabilities when it runs. Unexpected capabilities can indicate a security breach or malice."
-                  startOpen={
-                    data != null &&
-                    data.permissions != null &&
-                    Object.keys(data.permissions)
-                      .map(key => data.permissions[key].found)
-                      .some(f => f === true)
-                  }
-                  count={
-                    data != null
-                      ? Object.keys(data.permissions)
-                          .map(key => data.permissions[key].found)
-                          .filter(f => f === true).length
-                      : undefined
-                  }
-                  loading={loading}
-                  domRef={this.twistRefs.permissions}
-                >
-                  {data != null &&
-                    data.permissions != null && (
-                      <>
-                        {Object.keys(data.permissions).map(
-                          key =>
-                            data.permissions[key].found && (
-                              <div className="permission-entry" key={key}>
-                                <span className="permission-entry-name">
-                                  {data.permissions[key].displayName}
-                                </span>
-                                {data.permissions[key].locations.map(
-                                  location =>
-                                    location.file_name != null &&
-                                    location.start_line != null && (
-                                      <a
-                                        href={buildFindingFileLink(
-                                          repoSlug,
-                                          data.commitHash,
-                                          location.file_name,
-                                          location.start_line
-                                        )}
-                                      >
-                                        {location.file_name}:
-                                        {location.start_line}
-                                      </a>
-                                    )
-                                )}
-                              </div>
-                            )
-                        )}
-                      </>
-                    )}
-                </PreflightSection>
-              )}
+              {({ data, loading }) => {
+                const numPermissionsFound =
+                  data != null
+                    ? Object.keys(data.permissions)
+                        .map(key => data.permissions[key].found)
+                        .filter(f => f === true).length
+                    : undefined;
+
+                return (
+                  <PreflightSection
+                    check="permissions"
+                    title="Permissions"
+                    description="The project's capabilities when it runs. Unexpected capabilities can indicate a security breach or malice."
+                    startOpen={
+                      (numPermissionsFound != null &&
+                        numPermissionsFound > 0) ||
+                      deepLink === "permissions"
+                    }
+                    count={numPermissionsFound}
+                    loading={loading}
+                    domRef={this.twistRefs.permissions}
+                  >
+                    {data != null &&
+                      data.permissions != null && (
+                        <>
+                          {Object.keys(data.permissions).map(
+                            key =>
+                              data.permissions[key].found && (
+                                <div className="permission-entry" key={key}>
+                                  <span className="permission-entry-name">
+                                    {data.permissions[key].displayName}
+                                  </span>
+                                  {data.permissions[key].locations.map(
+                                    location =>
+                                      location.file_name != null &&
+                                      location.start_line != null && (
+                                        <a
+                                          href={buildFindingFileLink(
+                                            repoSlug,
+                                            data.commitHash,
+                                            location.file_name,
+                                            location.start_line
+                                          )}
+                                        >
+                                          {location.file_name}:
+                                          {location.start_line}
+                                        </a>
+                                      )
+                                  )}
+                                </div>
+                              )
+                          )}
+                        </>
+                      )}
+                  </PreflightSection>
+                );
+              }}
             </Fetch>
             <Fetch<VulnsResponse> url={vulnsUrl()}>
               {({ data, loading }) => (
@@ -314,7 +314,10 @@ export default class PreflightTwist extends React.PureComponent<
                   check="vulns"
                   title="Vulnerabilities"
                   description="Current or historical vulnerabilities discovered in this project."
-                  startOpen={data != null && data.vuln.length > 0}
+                  startOpen={
+                    (data != null && data.vuln.length > 0) ||
+                    deepLink === "vulns"
+                  }
                   count={data != null ? data.vuln.length : undefined}
                   loading={loading}
                   domRef={this.twistRefs.vulns}
@@ -340,9 +343,10 @@ export default class PreflightTwist extends React.PureComponent<
                   title="Findings"
                   description="Weaknesses or bad practices that we automatically discovered in this project."
                   startOpen={
-                    data != null &&
-                    data.findings != null &&
-                    data.findings.length > 0
+                    (data != null &&
+                      data.findings != null &&
+                      data.findings.length > 0) ||
+                    deepLink === "findings"
                   }
                   count={
                     data != null && data.findings != null
@@ -369,7 +373,10 @@ export default class PreflightTwist extends React.PureComponent<
                     check="scripts"
                     title="Install hooks"
                     description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
-                    startOpen={data != null && data.npmScripts.length > 0}
+                    startOpen={
+                      (data != null && data.npmScripts.length > 0) ||
+                      deepLink === "scripts"
+                    }
                     count={data != null ? data.npmScripts.length : undefined}
                     loading={loading}
                     domRef={this.twistRefs.scripts}
@@ -398,7 +405,10 @@ export default class PreflightTwist extends React.PureComponent<
                   check="activity"
                   title="Commit activity"
                   description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
-                  startOpen={data != null && data.activity != null}
+                  startOpen={
+                    (data != null && data.activity != null) ||
+                    deepLink === "activity"
+                  }
                   loading={loading}
                   domRef={this.twistRefs.activity}
                 >
