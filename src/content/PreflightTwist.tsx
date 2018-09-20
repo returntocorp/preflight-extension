@@ -148,11 +148,7 @@ class PreflightSection extends React.PureComponent<
   };
 
   public componentDidUpdate(prevProps: PreflightSectionProps) {
-    if (
-      this.props.startOpen != null &&
-      this.props.startOpen &&
-      this.state.open == null
-    ) {
+    if (this.props.startOpen != null && this.props.startOpen) {
       this.setState({ open: true });
     }
   }
@@ -359,6 +355,7 @@ export default class PreflightTwist extends React.PureComponent<
                   {data != null &&
                     data.findings != null && (
                       <FindingsGroupedList
+                        commitHash={data.commitHash}
                         findings={data.findings}
                         repoSlug={repoSlug}
                       />
