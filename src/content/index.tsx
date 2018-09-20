@@ -21,7 +21,7 @@ import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInje
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
-import { ShareActionType, ShareSection } from "@r2c/extension/content/Share";
+import { ShareSection } from "@r2c/extension/content/Share";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
@@ -208,14 +208,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       shortDesc={
                         "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
                       }
-                      onEmailClick={l(
-                        "share-link-click-email",
-                        this.onShareActionClick("email")
-                      )}
-                      onLinkClick={l(
-                        "share-link-click-copy",
-                        this.onShareActionClick("link")
-                      )}
+                      onEmailClick={l("share-link-click-email")}
+                      onLinkClick={l("share-link-click-copy")}
                       user={user}
                       installationId={installationId}
                     />
@@ -257,7 +251,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     mutations.forEach(mutation => {
       switch (mutation.type) {
         case "attributes":
-          console.log("mutation", mutation);
           if (mutation.target.nodeType === Node.ELEMENT_NODE) {
             const mutationElem = mutation.target as Element;
             if (
@@ -265,7 +258,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               mutation.oldValue != null &&
               mutation.oldValue.indexOf("is-loading") >= 0
             ) {
-              console.log("Encountered navigable event");
               this.handleNavigationChange();
             }
           }
@@ -303,12 +295,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     } else {
       this.setState({ twistTab: undefined, checklistItem: undefined });
     }
-  };
-
-  private onShareActionClick = (
-    buttonTitle: ShareActionType
-  ): React.MouseEventHandler<HTMLElement> => e => {
-    console.log("Logging share link action!");
   };
 
   private handleReportProject = (
