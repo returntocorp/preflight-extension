@@ -148,7 +148,11 @@ class PreflightSection extends React.PureComponent<
   };
 
   public componentDidUpdate(prevProps: PreflightSectionProps) {
-    if (this.props.startOpen != null && this.props.startOpen) {
+    if (
+      this.props.startOpen != null &&
+      this.props.startOpen &&
+      this.state.open == null
+    ) {
       this.setState({ open: true });
     }
   }
