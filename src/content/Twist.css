@@ -18,6 +18,16 @@
   /* https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox */
   min-height: 0;
 
-  overflow-y: auto;
   overflow-x: hidden;
+  visibility: visible;
+}
+
+.twist .twist-scroll-container {
+  overflow: auto;
+  visibility: hidden;
+  margin-right: -10px;
+}
+
+.twist .twist-scroll-container:hover {
+  visibility: visible;
 }
