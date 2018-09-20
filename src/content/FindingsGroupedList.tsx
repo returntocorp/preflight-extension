@@ -40,10 +40,8 @@ class FindingsGroup extends React.PureComponent<FindingsGroupProps> {
               key={`${finding.fileName} ${finding.startLine} ${
                 finding.analyzerName
               } ${finding.checkId} ${i}`}
-              className={classnames(
-                { [Classes.DISABLED]: repoSlug == null },
-                Classes.FILL
-              )}
+              className={classnames({ [Classes.DISABLED]: repoSlug == null })}
+              fill={true}
               href={
                 repoSlug != null
                   ? buildFindingFileLink(

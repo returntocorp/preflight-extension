@@ -1,4 +1,4 @@
-import { Button, Classes, Spinner, Tag } from "@blueprintjs/core";
+import { Button, Spinner, Tag } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import {
   FindingsResponse,
@@ -176,8 +176,9 @@ class PreflightSection extends React.PureComponent<
         ref={domRef}
       >
         <Button
-          className={classnames("preflight-section-header", Classes.FILL)}
+          className={classnames("preflight-section-header")}
           minimal={true}
+          fill={true}
           onClick={this.toggleCollapse}
           rightIcon={open ? IconNames.CHEVRON_UP : IconNames.CHEVRON_DOWN}
         >

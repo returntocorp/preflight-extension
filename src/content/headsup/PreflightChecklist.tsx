@@ -76,11 +76,11 @@ const PreflightChecklistItem: React.SFC<PreflightChecklistItemProps> = ({
     className={classnames(
       "preflight-checklist-item",
       `${itemType}-checklist-item`,
-      Classes.FILL,
       { [Classes.SKELETON]: loading }
     )}
     onClick={onChecklistItemClick(itemType)}
     minimal={true}
+    fill={true}
   >
     <span className="preflight-checklist-title">{children}</span>
   </Button>
