@@ -34,11 +34,12 @@ interface CommitChooserProps {
   repoSlug: ExtractedRepoSlug;
   filePath: string;
   findings: FindingEntry[];
+  inlineFinding?: boolean;
 }
 
 export class CommitChooser extends React.PureComponent<CommitChooserProps> {
   public render() {
-    const { findings, repoSlug, filePath } = this.props;
+    const { findings, repoSlug, filePath, inlineFinding } = this.props;
 
     const commitHashList = groupBy(
       findings,
@@ -55,7 +56,7 @@ export class CommitChooser extends React.PureComponent<CommitChooserProps> {
             repoSlug,
             commitGroups[0].commitHash,
             filePath,
-            null
+            inlineFinding ? findings[0].startLine : null
           )}
           intent={Intent.SUCCESS}
           onClick={l("commit-warning-action-click")}
@@ -107,13 +108,13 @@ export class CommitChooser extends React.PureComponent<CommitChooserProps> {
   );
 
   private handleCommitHashSelect = (commitHashGroup: CommitFindingGroup) => {
-    const { repoSlug, filePath } = this.props;
+    const { repoSlug, filePath, findings, inlineFinding } = this.props;
 
     window.location.href = buildFindingFileLink(
       repoSlug,
       commitHashGroup.commitHash,
       filePath,
-      null
+      inlineFinding ? findings[0].startLine : null
     );
   };
 }

@@ -26,6 +26,7 @@ const ApproximateFindingNotice: React.SFC<BlobFindingsHighlighterProps> = ({
       repoSlug={repoSlug}
       findings={findings}
       filePath={filePath}
+      inlineFinding={true}
     />
   </div>
 );
