@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.9.1] - 2018-09-20
+
+### Changed
+
+- Enable Recon and Preflight manifest experiments by default
+
 ## [1.9.0] - 2018-09-20
 
 ### Added

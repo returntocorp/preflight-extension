@@ -1,5 +1,4 @@
-import { FormGroup, Switch } from "@blueprintjs/core";
-import { l } from "@r2c/extension/analytics";
+import { FormGroup } from "@blueprintjs/core";
 import {
   ExperimentName,
   ExtensionState
@@ -21,7 +20,6 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
       return null;
     }
 
-    const { experiments } = this.props.extensionState;
     const version = getExtensionVersion();
 
     return (
@@ -38,37 +36,10 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           helperText="Try out some of our freshest ideas. You may need to refresh the page after toggling these experiments."
           className="extension-experiments-cp"
         >
-          <Switch
-            labelElement={
-              <div className="experiment-label">
-                <div className="experiment-label-title">Recon mode</div>
-                <div className="experiment-label-description">
-                  When looking at code with known issues, we'll highlight the
-                  files and line numbers where these issues occur.
-                </div>
-              </div>
-            }
-            checked={experiments.recon}
-            onChange={l(
-              "experiment-recon-toggle",
-              this.props.onToggleExperiment("recon")
-            )}
-          />
-          <Switch
-            labelElement={
-              <div className="experiment-label">
-                <div className="experiment-label-title">Preflight manifest</div>
-                <div className="experiment-label-description">
-                  Show details for preflight checks on the sidebar
-                </div>
-              </div>
-            }
-            checked={experiments.preflightTwist}
-            onChange={l(
-              "experiment-preflightTwist-toggle",
-              this.props.onToggleExperiment("preflightTwist")
-            )}
-          />
+          <span>
+            You're running the latest and greatest - no optional experiments to
+            try out today.
+          </span>
         </FormGroup>
       </div>
     );

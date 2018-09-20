@@ -106,7 +106,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   }
 
   public render() {
-    const { twistTab, user, installationId, extensionState } = this.state;
+    const { twistTab, user, installationId } = this.state;
 
     if (isRepositoryPrivate() || installationId === "not-generated") {
       return null;
@@ -129,8 +129,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 loading: findingsLoading,
                 error: findingsError
               }) =>
-                extensionState != null &&
-                extensionState.experiments.recon &&
                 findingsData != null &&
                 findingsData.findings != null && (
                   <>
@@ -167,20 +165,17 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 selectedTwistId={twistTab}
                 onTwistChange={this.handleTwistChange}
               >
-                {extensionState != null &&
-                  extensionState.experiments.preflightTwist && (
-                    <Twist
-                      id="preflight"
-                      title="Preflight"
-                      icon={<PreflightIcon />}
-                      panel={
-                        <PreflightTwist
-                          repoSlug={this.repoSlug}
-                          deepLink={this.state.checklistItem}
-                        />
-                      }
+                <Twist
+                  id="preflight"
+                  title="Preflight"
+                  icon={<PreflightIcon />}
+                  panel={
+                    <PreflightTwist
+                      repoSlug={this.repoSlug}
+                      deepLink={this.state.checklistItem}
                     />
-                  )}
+                  }
+                />
                 <Twist
                   id="discussion"
                   title="Comments"
