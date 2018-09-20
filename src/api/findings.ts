@@ -16,6 +16,7 @@ export function postFindingsUrl(domain: string, org: string, repo: string) {
 
 export interface FindingsResponse {
   gitUrl: string;
+  commitHash: string;
   findings: FindingEntry[] | undefined;
 }
 

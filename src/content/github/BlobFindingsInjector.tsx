@@ -33,19 +33,22 @@ const ApproximateFindingNotice: React.SFC<BlobFindingsHighlighterProps> = ({
 
 interface BlobFindingsInjectorProps {
   findings: FindingEntry[];
+  findingCommitHash: string;
   repoSlug: ExtractedRepoSlug;
 }
 
 interface BlobFindingsHighlighterProps extends BlobFindingsInjectorProps {
   filePath: string;
-  commitHash: string | null;
+  findingCommitHash: string;
+  pageCommitHash: string | null;
   repoSlug: ExtractedRepoSlug;
 }
 
 interface BlobFindingDetailsProps {
   findings: FindingEntry[];
   repoSlug: ExtractedRepoSlug;
-  currentCommitHash: string | null;
+  findingCommitHash: string;
+  pageCommitHash: string | null;
 }
 
 interface FindingSpan {
@@ -65,7 +68,7 @@ class BlobFindingHighlight extends React.PureComponent<
   BlobFindingDetailsProps
 > {
   public render() {
-    const { findings, repoSlug } = this.props;
+    const { findings, repoSlug, findingCommitHash } = this.props;
 
     const findingSpan = this.computeFindingSpan(findings[0]);
 
@@ -93,13 +96,15 @@ class BlobFindingHighlight extends React.PureComponent<
             <>
               {!findingCommitMatch && (
                 <ApproximateFindingNotice
+                  findingCommitHash={findingCommitHash}
                   findings={findings}
                   repoSlug={repoSlug}
-                  commitHash={findings[0].commitHash}
+                  pageCommitHash={findingCommitHash}
                   filePath={findings[0].fileName}
                 />
               )}
               <FindingsGroupedList
+                commitHash={findingCommitHash}
                 findings={findings}
                 className="r2c-blob-findings-grouped-list"
                 repoSlug={repoSlug}
@@ -202,7 +207,8 @@ class BlobFindingsHighlighter extends React.PureComponent<
     return Object.keys(groupedByStartLine).map((startLine, i) => (
       <BlobFindingHighlight
         key={i}
-        currentCommitHash={this.props.commitHash}
+        findingCommitHash={this.props.findingCommitHash}
+        pageCommitHash={this.props.pageCommitHash}
         findings={groupedByStartLine[startLine]}
         repoSlug={this.props.repoSlug}
       />
@@ -214,7 +220,7 @@ export default class BlobFindingsInjector extends React.PureComponent<
   BlobFindingsInjectorProps
 > {
   public render() {
-    const { repoSlug } = this.props;
+    const { repoSlug, findingCommitHash } = this.props;
 
     return (
       <DomElementLoadedWatcher
@@ -231,7 +237,8 @@ export default class BlobFindingsInjector extends React.PureComponent<
                   <>
                     <BlobFindingsHighlighter
                       filePath={filePath}
-                      commitHash={commitHash}
+                      findingCommitHash={findingCommitHash}
+                      pageCommitHash={commitHash}
                       findings={this.props.findings}
                       repoSlug={repoSlug}
                     />

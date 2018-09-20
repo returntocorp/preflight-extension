@@ -8,25 +8,29 @@ import "./FindingsGroupedList.css";
 
 interface FindingsGroupedListProps {
   findings: FindingEntry[];
+  commitHash: string;
   repoSlug?: ExtractedRepoSlug;
   className?: string;
 }
 
 interface FindingsGroupProps {
   fileName: string;
+  commitHash: string;
   findings: FindingEntry[];
   repoSlug?: ExtractedRepoSlug;
 }
 
 class FindingsGroup extends React.PureComponent<FindingsGroupProps> {
   public render() {
-    const { repoSlug, fileName } = this.props;
+    const { repoSlug, commitHash, fileName } = this.props;
 
     return (
       <section className="findings-group">
         <header>
           {repoSlug != null ? (
-            <a href={buildFindingFileLink(repoSlug, null, fileName, null)}>
+            <a
+              href={buildFindingFileLink(repoSlug, commitHash, fileName, null)}
+            >
               {this.props.fileName}
             </a>
           ) : (
@@ -72,7 +76,7 @@ export default class FindingsGroupedList extends React.PureComponent<
   FindingsGroupedListProps
 > {
   public render() {
-    const { findings, repoSlug } = this.props;
+    const { findings, repoSlug, commitHash } = this.props;
     const sortedAndGrouped = this.sortAndGroupByFile(findings);
 
     return (
@@ -84,6 +88,7 @@ export default class FindingsGroupedList extends React.PureComponent<
           .map(fileName => (
             <FindingsGroup
               key={fileName}
+              commitHash={commitHash}
               fileName={fileName}
               repoSlug={repoSlug}
               findings={sortedAndGrouped[fileName]}

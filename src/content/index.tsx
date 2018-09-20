@@ -138,6 +138,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       key={`BlobFindingsInjector ${this.state.currentUrl} ${
                         this.state.navigationNonce
                       }`}
+                      findingCommitHash={findingsData.commitHash}
                       findings={findingsData.findings}
                       repoSlug={this.repoSlug}
                     />
@@ -146,6 +147,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                         this.state.navigationNonce
                       }`}
                       findings={findingsData.findings}
+                      commitHash={findingsData.commitHash}
                       repoSlug={this.repoSlug}
                     />
                   </>

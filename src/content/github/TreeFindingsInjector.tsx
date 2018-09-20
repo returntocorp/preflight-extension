@@ -11,6 +11,7 @@ import "./TreeFindingsInjector.css";
 
 interface TreeFindingsInjectorProps {
   findings: FindingEntry[];
+  commitHash: string;
   repoSlug: ExtractedRepoSlug;
 }
 
@@ -20,6 +21,7 @@ interface TreeFindingsHighlighterProps extends TreeFindingsInjectorProps {
 
 interface TreeFindingHighlightProps {
   findings: FindingEntry[];
+  commitHash: string;
   path: string;
 }
 
@@ -27,7 +29,7 @@ class TreeFindingHighlight extends React.PureComponent<
   TreeFindingHighlightProps
 > {
   public render() {
-    const { findings, path } = this.props;
+    const { findings, commitHash, path } = this.props;
 
     return (
       <DOMInjector
@@ -41,6 +43,7 @@ class TreeFindingHighlight extends React.PureComponent<
           content={
             <FindingsGroupedList
               findings={findings}
+              commitHash={commitHash}
               className="r2c-tree-findings-grouped-list"
             />
           }
@@ -66,7 +69,7 @@ class TreeFindingsHighlighter extends React.PureComponent<
   TreeFindingsHighlighterProps
 > {
   public render() {
-    const { currentPath, findings } = this.props;
+    const { currentPath, findings, commitHash } = this.props;
 
     const filtered = findings.filter(finding =>
       finding.fileName.startsWith(currentPath)
@@ -90,6 +93,7 @@ class TreeFindingsHighlighter extends React.PureComponent<
         {[...immediatePathChildren.values()].map(directoryEntry => (
           <TreeFindingHighlight
             key={directoryEntry}
+            commitHash={commitHash}
             findings={filtered.filter(finding =>
               finding.fileName
                 .slice(currentPath.length)
@@ -119,6 +123,7 @@ export default class TreeFindingsInjector extends React.PureComponent<
                   <TreeFindingsHighlighter
                     currentPath={currentPath}
                     findings={this.props.findings}
+                    commitHash={this.props.commitHash}
                     repoSlug={this.props.repoSlug}
                   />
                 )}
