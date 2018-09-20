@@ -27,20 +27,19 @@ export default class Twists extends React.PureComponent<TwistsProps> {
       .map(this.renderTwist);
 
     return (
-      <div className="r2c-actionbar">
-        <div className="actionbar-actions">{actions}</div>
-        {twistToRender != null && (
-          <CSSTransition
-            in={isOpen}
-            classNames="twists-transition"
-            timeout={300}
-            mountOnEnter={true}
-            unmountOnExit={true}
-          >
-            <div className="twist-container">{twistToRender}</div>
-          </CSSTransition>
-        )}
-      </div>
+      <CSSTransition
+        in={isOpen}
+        classNames="actionbar-transition"
+        timeout={300}
+      >
+        <div className="r2c-actionbar">
+          <div className="actionbar-actions">{actions}</div>
+          {isOpen &&
+            twistToRender != null && (
+              <div className="twist-container">{twistToRender}</div>
+            )}
+        </div>
+      </CSSTransition>
     );
   }
 
