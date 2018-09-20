@@ -86,12 +86,17 @@ export interface ExtractedRepoSlug {
   commitHash: string | undefined;
   filePath: string | undefined;
   seemsLikeCommitHash: boolean | undefined;
+  startLineHash: number | null;
+  endLineHash: number | null;
 }
 
 function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const parsed = new URL(url);
-  const { hostname: domain, pathname } = parsed;
+  const { hostname: domain, pathname, hash } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");
+  const parsedHash = parseHash(hash);
+  const startLine = parsedHash != null ? parsedHash[0] : null;
+  const endLine = parsedHash != null ? parsedHash[1] || null : null;
 
   if (rest != null && rest.length > 0) {
     const [commitHash, ...filePath] = rest.slice(1);
@@ -104,7 +109,9 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
       rest: rest.join("/"),
       commitHash,
       filePath: filePath.join("/"),
-      seemsLikeCommitHash: commitHash.length === 40
+      seemsLikeCommitHash: commitHash.length === 40,
+      startLineHash: startLine,
+      endLineHash: endLine
     };
   } else {
     return {
@@ -115,7 +122,9 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
       rest: rest.join("/"),
       commitHash: undefined,
       filePath: undefined,
-      seemsLikeCommitHash: undefined
+      seemsLikeCommitHash: undefined,
+      startLineHash: startLine,
+      endLineHash: endLine
     };
   }
 }
@@ -230,4 +239,26 @@ export function buildFindingFileLink(
   }/blob/${commitHash || "master"}/${fileName}${
     startLine != null ? `#L${startLine}` : ""
   }${endLine != null ? `-L${endLine}` : ""}`;
+}
+
+const HASH_LINENO_MATCH = /^#L([1-9][0-9]*)(?:-L([1-9][0-9]*))?$/;
+
+export function parseHash(hash: string): [number, number?] | null {
+  const matches = hash.match(HASH_LINENO_MATCH);
+  if (matches != null && matches.length > 0) {
+    if (matches.length === 2) {
+      const lineStart = parseInt(matches[1], 10);
+
+      return [lineStart];
+    } else if (matches.length === 3) {
+      const lineStart = parseInt(matches[1], 10);
+      const lineEnd = parseInt(matches[2], 10);
+
+      return [lineStart, lineEnd];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 }

@@ -1,4 +1,4 @@
-import { nullableMax, nullableMin } from "@r2c/extension/utils";
+import { nullableMax, nullableMin, parseHash } from "@r2c/extension/utils";
 import * as React from "react";
 
 type CodeSelectTrigger = "navigation" | "hashchange" | "selectionchanged";
@@ -39,14 +39,12 @@ export default class CodeSelectHook extends React.Component<
     trigger: undefined
   };
 
-  private HASH_LINENO_MATCH = /^#L([1-9][0-9]*)(?:-L([1-9][0-9]*))?$/;
-
   public componentDidMount() {
     // FIXME Gross hack to wait until elements are finished loading before retrieving dom
     setTimeout(() => {
       this.addTextSelectHandler();
       this.addHashChangeHandler();
-      this.parseHash(window.location.hash);
+      this.updateSelectionFromHash(window.location.hash);
     }, 1000);
   }
 
@@ -82,7 +80,7 @@ export default class CodeSelectHook extends React.Component<
   };
 
   private handleHashChange = () => {
-    this.parseHash(window.location.hash);
+    this.updateSelectionFromHash(window.location.hash);
   };
 
   private updateSelection(lineStart: number, lineEnd?: number) {
@@ -101,21 +99,17 @@ export default class CodeSelectHook extends React.Component<
     }
   }
 
-  private parseHash = (hash: string) => {
-    const matches = hash.match(this.HASH_LINENO_MATCH);
-    if (matches != null && matches.length > 0) {
-      if (matches.length === 2) {
-        const lineStart = parseInt(matches[1], 10);
-        this.updateSelection(lineStart);
-      } else if (matches.length === 3) {
-        const lineStart = parseInt(matches[1], 10);
-        const lineEnd = parseInt(matches[2], 10);
-        this.updateSelection(lineStart, lineEnd);
-      } else {
-        this.deselect();
-      }
-    } else {
+  private updateSelectionFromHash = (hash: string): void => {
+    const parsed = parseHash(hash);
+
+    if (parsed == null) {
       this.deselect();
+    } else if (parsed.length === 1) {
+      const [lineStart] = parsed;
+      this.updateSelection(lineStart);
+    } else {
+      const [lineStart, lineEnd] = parsed;
+      this.updateSelection(lineStart, lineEnd);
     }
   };
 

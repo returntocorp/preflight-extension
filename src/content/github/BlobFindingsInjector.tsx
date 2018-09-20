@@ -76,6 +76,9 @@ class BlobFindingHighlight extends React.PureComponent<
       repoSlug.commitHash != null &&
       findings.every(finding => finding.commitHash === repoSlug.commitHash);
 
+    const shouldOpenPopoverByDefault =
+      repoSlug.startLineHash === findings[0].startLine;
+
     return (
       <DOMInjector
         destination={findingSpan.startGutterElem}
@@ -112,6 +115,7 @@ class BlobFindingHighlight extends React.PureComponent<
             path: findings[0].fileName,
             startLine: findings[0].startLine
           })}
+          defaultIsOpen={shouldOpenPopoverByDefault}
         >
           <div className="r2c-blob-finding-highlight-hitbox">
             <div
