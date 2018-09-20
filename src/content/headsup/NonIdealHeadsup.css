@@ -2,3 +2,13 @@
   display: flex;
   align-items: center;
 }
+
+.error-headsup .error-message-details {
+  align-self: flex-end;
+}
+
+.error-headsup .error-message-raw {
+  margin-top: 1em;
+
+  background-color: rgba(16, 22, 26, 0.1);
+}

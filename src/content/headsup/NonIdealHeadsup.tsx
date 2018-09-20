@@ -68,32 +68,50 @@ interface ErrorHeadsUpProps {
   error: React.ErrorInfo | Error;
 }
 
-export class ErrorHeadsUp extends React.PureComponent<ErrorHeadsUpProps> {
-  public state: UnsupportedMessageState = {
-    closed: false
+interface ErrorHeadsUpState {
+  showDetails: boolean;
+}
+
+export class ErrorHeadsUp extends React.PureComponent<
+  ErrorHeadsUpProps,
+  ErrorHeadsUpState
+> {
+  public state: ErrorHeadsUpState = {
+    showDetails: false
   };
 
   public render() {
-    if (this.state.closed) {
-      return null;
-    }
-
     return (
-      <div className="r2c-repo-headsup error-headsup">
+      <div className="r2c-repo-headsup errror-headsup">
         <div className="error-message">
           <Icon
             icon={IconNames.WARNING_SIGN}
             className="error-icon"
             intent={Intent.DANGER}
           />
-          <span className="error-message-text">Couldn't load Preflight</span>
-          <span className="error-message-details">
-            {JSON.stringify(this.props.error)}
-          </span>
+          <div className="error-message-text">Couldn't load Preflight</div>
+          <div className="error-message-details">
+            <Button
+              onClick={this.handleToggleShowDetails}
+              minimal={true}
+              small={true}
+              className="error-message-show-more"
+            >
+              Show {this.state.showDetails ? "less" : "more"}
+            </Button>
+            {this.state.showDetails && (
+              <pre className="error-message-raw">
+                {JSON.stringify(this.props.error)}
+              </pre>
+            )}
+          </div>
         </div>
       </div>
     );
   }
+
+  private handleToggleShowDetails: React.MouseEventHandler<HTMLElement> = e =>
+    this.setState({ showDetails: !this.state.showDetails });
 }
 
 export class LoadingHeadsUp extends React.PureComponent {

@@ -6,7 +6,10 @@ import {
   extractCurrentUserFromPage,
   getAnalyticsParams
 } from "@r2c/extension/api/fetch";
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import {
+  FindingsResponse,
+  findingsUrlFromSlug
+} from "@r2c/extension/api/findings";
 import {
   buildVotingUrl,
   DEPRECATED_submitVote,
@@ -18,7 +21,7 @@ import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInje
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
-import { ShareActionType, ShareSection } from "@r2c/extension/content/Share";
+import { ShareSection } from "@r2c/extension/content/Share";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
@@ -34,6 +37,7 @@ import {
 } from "@r2c/extension/utils";
 import * as React from "react";
 import Fetch, { FetchUpdateOptions } from "react-fetch-component";
+import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
 const DiscussionIcon: React.SFC = () => {
@@ -71,11 +75,13 @@ const ShareIcon: React.SFC = () => (
 );
 
 interface ContentHostState {
-  twistTab: string | undefined;
+  twistTab: TwistId | undefined;
   user: string | undefined;
   installationId: string;
   extensionState: ExtensionState | undefined;
   currentUrl: string;
+  navigationNonce: number;
+  checklistItem: PreflightChecklistItemType | undefined;
 }
 
 export default class ContentHost extends React.Component<{}, ContentHostState> {
@@ -84,8 +90,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     user: undefined,
     installationId: "not-generated",
     extensionState: undefined,
-    currentUrl: window.location.href.replace(window.location.hash, "")
+    currentUrl: window.location.href.replace(window.location.hash, ""),
+    navigationNonce: 0,
+    checklistItem: undefined
   };
+
+  private repoSlug = extractSlugFromCurrentUrl();
 
   private navigationMutationObserver: MutationObserver | null = null;
 
@@ -98,8 +108,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   public render() {
     const { twistTab, user, installationId, extensionState } = this.state;
 
-    const repoSlug = extractSlugFromCurrentUrl();
-
     if (isRepositoryPrivate() || installationId === "not-generated") {
       return null;
     }
@@ -108,11 +116,14 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       <>
         <div id="r2c-inline-injector-portal" />
         <div className="r2c-host">
-          <RepoHeadsUpInjector />
-          {repoSlug != null && (
-            <Fetch<FindingsResponse>
-              url={findingsUrl(repoSlug.domain, repoSlug.org, repoSlug.repo)}
-            >
+          <RepoHeadsUpInjector
+            key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
+              this.state.navigationNonce
+            }`}
+            onChecklistItemClick={this.handleChecklistItemClick}
+          />
+          {this.repoSlug != null && (
+            <Fetch<FindingsResponse> url={findingsUrlFromSlug(this.repoSlug)}>
               {({
                 data: findingsData,
                 loading: findingsLoading,
@@ -120,16 +131,24 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
               }) =>
                 extensionState != null &&
                 extensionState.experiments.recon &&
-                findingsData != null && (
+                findingsData != null &&
+                findingsData.findings != null && (
                   <>
                     <BlobFindingsInjector
-                      key={`BlobFindingsInjector ${this.state.currentUrl}`}
+                      key={`BlobFindingsInjector ${this.state.currentUrl} ${
+                        this.state.navigationNonce
+                      }`}
+                      findingCommitHash={findingsData.commitHash}
                       findings={findingsData.findings}
+                      repoSlug={this.repoSlug}
                     />
                     <TreeFindingsInjector
-                      key={`TreeFindingsInjector ${this.state.currentUrl}`}
+                      key={`TreeFindingsInjector ${this.state.currentUrl} ${
+                        this.state.navigationNonce
+                      }`}
                       findings={findingsData.findings}
-                      repoSlug={repoSlug}
+                      commitHash={findingsData.commitHash}
+                      repoSlug={this.repoSlug}
                     />
                   </>
                 )
@@ -154,7 +173,12 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       id="preflight"
                       title="Preflight"
                       icon={<PreflightIcon />}
-                      panel={<PreflightTwist repoSlug={repoSlug} />}
+                      panel={
+                        <PreflightTwist
+                          repoSlug={this.repoSlug}
+                          deepLink={this.state.checklistItem}
+                        />
+                      }
                     />
                   )}
                 <Twist
@@ -186,14 +210,8 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                       shortDesc={
                         "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
                       }
-                      onEmailClick={l(
-                        "share-link-click-email",
-                        this.onShareActionClick("email")
-                      )}
-                      onLinkClick={l(
-                        "share-link-click-copy",
-                        this.onShareActionClick("link")
-                      )}
+                      onEmailClick={l("share-link-click-email")}
+                      onLinkClick={l("share-link-click-copy")}
                       user={user}
                       installationId={installationId}
                     />
@@ -207,28 +225,58 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     );
   }
 
+  private handleChecklistItemClick = (itemType: PreflightChecklistItemType) => (
+    e: React.MouseEvent<HTMLElement>
+  ) => {
+    this.setState({ twistTab: "preflight", checklistItem: itemType });
+  };
+
   private watchNavigationChange() {
     this.navigationMutationObserver = new MutationObserver(
-      this.handleNavigationChange
+      this.handleLoadingMutation
     );
 
-    const main = document.querySelector(".application-main");
+    const main = document.querySelector("#js-pjax-loader-bar");
 
     if (main != null) {
       this.navigationMutationObserver.observe(main, {
         attributes: true,
-        subtree: true
+        attributeFilter: ["class"],
+        attributeOldValue: true
       });
     } else {
       console.warn("Unable to register mutation observer!");
     }
   }
 
-  private handleNavigationChange: MutationCallback = mutations => {
+  private handleLoadingMutation: MutationCallback = mutations => {
+    mutations.forEach(mutation => {
+      switch (mutation.type) {
+        case "attributes":
+          if (mutation.target.nodeType === Node.ELEMENT_NODE) {
+            const mutationElem = mutation.target as Element;
+            if (
+              !mutationElem.classList.contains("is-loading") &&
+              mutation.oldValue != null &&
+              mutation.oldValue.indexOf("is-loading") >= 0
+            ) {
+              this.handleNavigationChange();
+            }
+          }
+          break;
+        default:
+      }
+    });
+  };
+
+  private handleNavigationChange = () => {
     const locationWithoutHash = window.location.href.replace(
       window.location.hash,
       ""
     );
+
+    this.setState({ navigationNonce: this.state.navigationNonce + 1 });
+
     if (locationWithoutHash !== this.state.currentUrl) {
       this.setState({ currentUrl: locationWithoutHash });
     }
@@ -245,16 +293,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     e: React.MouseEvent<HTMLInputElement>
   ) => {
     if (this.state.twistTab !== twist) {
-      this.setState({ twistTab: twist });
+      this.setState({ twistTab: twist, checklistItem: undefined });
     } else {
-      this.setState({ twistTab: undefined });
+      this.setState({ twistTab: undefined, checklistItem: undefined });
     }
-  };
-
-  private onShareActionClick = (
-    buttonTitle: ShareActionType
-  ): React.MouseEventHandler<HTMLElement> => e => {
-    console.log("Logging share link action!");
   };
 
   private handleReportProject = (

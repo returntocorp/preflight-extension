@@ -1,0 +1,19 @@
+.commit-warning-headsup {
+  margin-bottom: 1ex;
+  border-color: rgba(104, 80, 21, 0.3);
+  background-color: rgb(255, 246, 214);
+  color: rgb(104, 80, 21);
+}
+
+.commit-hash-select-menu .commit-hash-entry .bp3-text-overflow-ellipsis {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+}
+
+.commit-warning-headsup .headsup-different-commit {
+  margin-right: 2em;
+}
+
+.commit-warning-headsup .past-commit-action-button {
+  flex: 0 0 auto;
+}

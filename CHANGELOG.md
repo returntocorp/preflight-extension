@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Code issues we discover are now displayed as a checklist item
+- The Preflight manifest now shows findings, permissions, and vulnerabilities
+- When Recon mode is enabled, we now show a message if we've found historical code issues on a source file you're looking at
+- When the Preflight manifest is enabled, you can now click on a checklist item to jump to that section of the manifest
+
+### Fixed
+
+- Improved reliability of showing Preflight checklist and experimental Recon issue markers on the page
+- Fixed some performance issues with the sidebar
+- Fixed an issue where we'd display permissions in the manifest even if they weren't found in the project
+
 ## [1.8.3] - 2018-09-18
 
 ### Fixed

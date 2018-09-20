@@ -12,8 +12,34 @@
   font-weight: 600;
 }
 
+.preflight-section-header .bp3-button-text {
+  flex: 1 1 auto;
+}
+
+.preflight-section-header-text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .preflight-section .preflight-section-description {
   margin-top: 1ex;
   font-size: 12px;
   color: rgba(16, 22, 26, 0.6);
+}
+
+.preflight-section-header.bp3-fill {
+  display: flex;
+  justify-content: space-between;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.preflight-section.preflight-vulns .preflight-vulnerability-entry {
+  margin-bottom: 10px;
+}
+
+.preflight-section.preflight-vulns .preflight-vulnerability-entry:last-child {
+  margin-bottom: 0;
 }

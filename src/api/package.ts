@@ -16,7 +16,10 @@ export interface PackageEntry {
 
 export interface ScriptEntry {
   script: string;
-  kind: string;
+
+  // Disabling TSlint because the API returns a property called `type`
+  // tslint:disable-next-line:no-reserved-keywords
+  type: string;
 }
 
 export interface PackageResponse {

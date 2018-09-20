@@ -21,41 +21,46 @@ const FindingsList: React.SFC<FindingsTwistProps> = ({
     return (
       <>
         {loading && <section className="findings loading">Loading...</section>}
-        {error && (
-          <section className="findings error">Couldn't load findings</section>
-        )}
-        {data && (
-          <>
-            <section className="findings">
-              {data.findings.map((finding, i) => (
-                <article className="finding" key={i}>
-                  <header className="finding-header">
-                    <h2 className="finding-checkid">{finding.checkId}</h2>
-                    <span className="finding-full-path">
-                      <a
-                        href={buildFindingFileLink(
-                          repoSlug,
-                          finding.commitHash,
-                          finding.fileName,
-                          finding.startLine
-                        )}
-                      >
-                        <span className="finding-path-filename">
-                          {finding.fileName}
-                        </span>
-                        {finding.startLine != null && (
-                          <span className="finding-line-number">
-                            :{finding.startLine}
+        {error ||
+          (data &&
+            data.findings == null && (
+              <section className="findings error">
+                Couldn't load findings
+              </section>
+            ))}
+        {data &&
+          data.findings != null && (
+            <>
+              <section className="findings">
+                {data.findings.map((finding, i) => (
+                  <article className="finding" key={i}>
+                    <header className="finding-header">
+                      <h2 className="finding-checkid">{finding.checkId}</h2>
+                      <span className="finding-full-path">
+                        <a
+                          href={buildFindingFileLink(
+                            repoSlug,
+                            finding.commitHash,
+                            finding.fileName,
+                            finding.startLine
+                          )}
+                        >
+                          <span className="finding-path-filename">
+                            {finding.fileName}
                           </span>
-                        )}
-                      </a>
-                    </span>
-                  </header>
-                </article>
-              ))}
-            </section>
-          </>
-        )}
+                          {finding.startLine != null && (
+                            <span className="finding-line-number">
+                              :{finding.startLine}
+                            </span>
+                          )}
+                        </a>
+                      </span>
+                    </header>
+                  </article>
+                ))}
+              </section>
+            </>
+          )}
       </>
     );
   } else {

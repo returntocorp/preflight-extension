@@ -14,3 +14,13 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.findings-group-entries .bp3-button {
+  padding: 0;
+  border-radius: 0;
+  min-height: inherit;
+}
+
+.findings-group-entries .bp3-button-text {
+  flex: 1 1 auto;
+}

@@ -17,7 +17,11 @@ if (window.browser == null && window.chrome != null) {
 
 export function getExtensionVersion(): string | undefined {
   if (browser != null && browser.runtime != null) {
-    return browser.runtime.getManifest().version;
+    const manifest = browser.runtime.getManifest();
+
+    if (manifest != null) {
+      return manifest.version;
+    }
   }
 
   return undefined;
@@ -25,6 +29,22 @@ export function getExtensionVersion(): string | undefined {
 
 function byteToHex(byte: number) {
   return `0${byte.toString(16)}`.slice(-2);
+}
+
+export function getRandomSha(): string {
+  const randomBytes = new Uint8Array(20 / 2);
+  window.crypto.getRandomValues(randomBytes);
+  if (randomBytes.every(elem => elem === 0)) {
+    // Edge crypto.getRandomValues returns all 0s
+    // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11795162/
+    // Fall back to less cryptographically random method (PRNG strength doesn't really matter)
+    randomBytes.forEach(
+      // tslint:disable-next-line:insecure-random
+      (elem, index) => (randomBytes[index] = Math.random() * 255)
+    );
+  }
+
+  return [].map.call(randomBytes, byteToHex).join("");
 }
 
 interface ExtensionStorage {
@@ -39,21 +59,7 @@ export async function fetchOrCreateExtensionUniqueId(): Promise<string> {
         if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
           resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
         } else {
-          const randomBytes = new Uint8Array(20 / 2);
-          window.crypto.getRandomValues(randomBytes);
-          if (randomBytes.every(elem => elem === 0)) {
-            // Edge crypto.getRandomValues returns all 0s
-            // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11795162/
-            // Fall back to less cryptographically random method (PRNG strength doesn't really matter)
-            randomBytes.forEach(
-              // tslint:disable-next-line:insecure-random
-              (elem, index) => (randomBytes[index] = Math.random() * 255)
-            );
-          }
-
-          const installationId: string = [].map
-            .call(randomBytes, byteToHex)
-            .join("");
+          const installationId: string = getRandomSha();
           browser.storage.local.set({
             SECARTA_EXTENSION_INSTALLATION_ID: installationId
           });
@@ -77,14 +83,50 @@ export interface ExtractedRepoSlug {
   repo: string;
   pathname: string;
   rest: string;
+  commitHash: string | undefined;
+  filePath: string | undefined;
+  seemsLikeCommitHash: boolean | undefined;
+  startLineHash: number | null;
+  endLineHash: number | null;
 }
 
 function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const parsed = new URL(url);
-  const { hostname: domain, pathname } = parsed;
+  const { hostname: domain, pathname, hash } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");
+  const parsedHash = parseHash(hash);
+  const startLine = parsedHash != null ? parsedHash[0] : null;
+  const endLine = parsedHash != null ? parsedHash[1] || null : null;
 
-  return { domain, org, repo, pathname, rest: rest.join("/") };
+  if (rest != null && rest.length > 0) {
+    const [commitHash, ...filePath] = rest.slice(1);
+
+    return {
+      domain,
+      org,
+      repo,
+      pathname,
+      rest: rest.join("/"),
+      commitHash,
+      filePath: filePath.join("/"),
+      seemsLikeCommitHash: commitHash.length === 40,
+      startLineHash: startLine,
+      endLineHash: endLine
+    };
+  } else {
+    return {
+      domain,
+      org,
+      repo,
+      pathname,
+      rest: rest.join("/"),
+      commitHash: undefined,
+      filePath: undefined,
+      seemsLikeCommitHash: undefined,
+      startLineHash: startLine,
+      endLineHash: endLine
+    };
+  }
 }
 
 export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {
@@ -189,7 +231,7 @@ export function buildFindingFileLink(
   commitHash: string | null,
   fileName: string,
   startLine: number | null,
-  endLine?: number
+  endLine?: number | null
 ): string {
   // TODO Retrieve default branch
   return `https://${repoSlug.domain}/${repoSlug.org}/${
@@ -197,4 +239,26 @@ export function buildFindingFileLink(
   }/blob/${commitHash || "master"}/${fileName}${
     startLine != null ? `#L${startLine}` : ""
   }${endLine != null ? `-L${endLine}` : ""}`;
+}
+
+const HASH_LINENO_MATCH = /^#L([1-9][0-9]*)(?:-L([1-9][0-9]*))?$/;
+
+export function parseHash(hash: string): [number, number?] | null {
+  const matches = hash.match(HASH_LINENO_MATCH);
+  if (matches != null && matches.length > 0) {
+    if (matches.length === 2) {
+      const lineStart = parseInt(matches[1], 10);
+
+      return [lineStart];
+    } else if (matches.length === 3) {
+      const lineStart = parseInt(matches[1], 10);
+      const lineEnd = parseInt(matches[2], 10);
+
+      return [lineStart, lineEnd];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 }

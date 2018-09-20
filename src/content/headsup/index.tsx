@@ -2,15 +2,8 @@ import { Button, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
-import {
-  ErrorHeadsUp,
-  LoadingHeadsUp,
-  UnsupportedHeadsUp
-} from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import {
-  PreflightChecklist,
-  PreflightChecklistFetch
-} from "@r2c/extension/content/headsup/PreflightChecklist";
+import { ErrorHeadsUp, LoadingHeadsUp, UnsupportedHeadsUp } from "@r2c/extension/content/headsup/NonIdealHeadsup";
+import { PreflightChecklist, PreflightChecklistFetch, PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
@@ -18,11 +11,17 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./index.css";
 
+interface HeadsUpProps {
+  onChecklistItemClick(
+    itemType: PreflightChecklistItemType
+  ): React.MouseEventHandler<HTMLElement>;
+}
+
 interface HeadsupState {
   closed: boolean;
 }
 
-class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
+class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
   public state: HeadsupState = {
     closed: false
   };
@@ -40,8 +39,8 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
             {response != null &&
               response.repo.status === 404 && <UnsupportedHeadsUp />}
             {error &&
-              response != null &&
-              response.repo.status !== 404 && <ErrorHeadsUp error={error} />}
+              (response == null ||
+              response.repo.status !== 404) && <ErrorHeadsUp error={error} />}
             {data && (
               <div className="r2c-repo-headsup checklist-headsup">
                 <header>
@@ -54,7 +53,10 @@ class NormalHeadsUp extends React.PureComponent<{}, HeadsupState> {
                 </header>
                 <div className="repo-headsup-body">
                   <div className="repo-headsup-checklist">
-                    <PreflightChecklist repo={data.repo} pkg={data.pkg} />
+                    <PreflightChecklist
+                      {...data}
+                      onChecklistItemClick={this.props.onChecklistItemClick}
+                    />
                   </div>
                   <div className="repo-headsup-actions">
                     <RepoPackageSection />
@@ -104,7 +106,7 @@ interface RepoHeadsUpState {
   error: React.ErrorInfo | undefined;
 }
 
-class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
+class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
   public state: RepoHeadsUpState = {
     error: undefined
   };
@@ -132,18 +134,20 @@ class RepoHeadsUp extends React.PureComponent<{}, RepoHeadsUpState> {
     return ReactDOM.createPortal(
       <div className="preflight-container">
         {this.state.error != null && <ErrorHeadsUp error={this.state.error} />}
-        {this.state.error == null && <NormalHeadsUp />}
+        {this.state.error == null && <NormalHeadsUp {...this.props} />}
       </div>,
       injected
     );
   }
 }
 
-export default class RepoHeadsUpInjector extends React.PureComponent {
+export default class RepoHeadsUpInjector extends React.PureComponent<
+  HeadsUpProps
+> {
   public render() {
     return (
       <DomElementLoadedWatcher querySelector=".repository-lang-stats-graph">
-        {({ done }) => done && <RepoHeadsUp />}
+        {({ done }) => done && <RepoHeadsUp {...this.props} />}
       </DomElementLoadedWatcher>
     );
   }

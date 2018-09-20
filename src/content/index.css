@@ -15,10 +15,10 @@
 
 @keyframes extension-in {
   0% {
-    right: -144px;
+    transform: translateX(144px);
   }
 
   100% {
-    right: 0;
+    transform: translateX(0);
   }
 }
