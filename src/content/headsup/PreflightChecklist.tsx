@@ -300,9 +300,7 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
         itemType="findings"
         onChecklistItemClick={onChecklistItemClick}
       >
-        <span className="preflight-checklist-title">
-          Unable to get findings
-        </span>
+        Unable to get findings
       </PreflightChecklistItem>
     );
   } else if (findings.length === 0) {
@@ -312,7 +310,7 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
         itemType="findings"
         onChecklistItemClick={onChecklistItemClick}
       >
-        <span className="preflight-checklist-title">No issues to report</span>
+        No issues to report
       </PreflightChecklistItem>
     );
   } else {
