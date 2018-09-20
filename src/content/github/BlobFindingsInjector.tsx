@@ -4,13 +4,31 @@ import { FindingEntry } from "@r2c/extension/api/findings";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import BlobMetadata from "@r2c/extension/content/github/BlobMetadata";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
-import CommitWarningHeadsUp from "@r2c/extension/content/headsup/CommitWarningHeadsUp";
+import CommitWarningHeadsUp, {
+  CommitChooser
+} from "@r2c/extension/content/headsup/CommitWarningHeadsUp";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { groupBy } from "lodash";
 import * as React from "react";
 import "./BlobFindingsInjector.css";
 import DOMInjector from "./DomInjector";
+
+const ApproximateFindingNotice: React.SFC<BlobFindingsHighlighterProps> = ({
+  repoSlug,
+  findings,
+  filePath
+}) => (
+  <div className="approximate-finding-notice">
+    <header className="notice-title">Issues occurs in past commits</header>
+    <span className="notice-text">Location may be approximate</span>
+    <CommitChooser
+      repoSlug={repoSlug}
+      findings={findings}
+      filePath={filePath}
+    />
+  </div>
+);
 
 interface BlobFindingsInjectorProps {
   findings: FindingEntry[];
@@ -68,11 +86,21 @@ class BlobFindingHighlight extends React.PureComponent<
         <Popover
           className="r2c-blob-finding-highlight-wrapper"
           content={
-            <FindingsGroupedList
-              findings={findings}
-              className="r2c-blob-findings-grouped-list"
-              repoSlug={repoSlug}
-            />
+            <>
+              {!findingCommitMatch && (
+                <ApproximateFindingNotice
+                  findings={findings}
+                  repoSlug={repoSlug}
+                  commitHash={findings[0].commitHash}
+                  filePath={findings[0].fileName}
+                />
+              )}
+              <FindingsGroupedList
+                findings={findings}
+                className="r2c-blob-findings-grouped-list"
+                repoSlug={repoSlug}
+              />
+            </>
           }
           position={Position.LEFT_TOP}
           minimal={true}

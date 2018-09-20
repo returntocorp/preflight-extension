@@ -20,6 +20,7 @@ interface CommitWarningHeadsUpProps {
   findings: FindingEntry[];
   currentCommitHash: string | null;
   filePath: string;
+  debug?: boolean;
 }
 
 interface CommitFindingGroup {
@@ -29,55 +30,15 @@ interface CommitFindingGroup {
 
 const CommitSelect = Select.ofType<CommitFindingGroup>();
 
-export default class CommitWarningHeadsUp extends React.PureComponent<
-  CommitWarningHeadsUpProps
-> {
+interface CommitChooserProps {
+  repoSlug: ExtractedRepoSlug;
+  filePath: string;
+  findings: FindingEntry[];
+}
+
+export class CommitChooser extends React.PureComponent<CommitChooserProps> {
   public render() {
-    return (
-      <DOMInjector
-        destination=".file-navigation"
-        childClassName="r2c-repo-headsup-container"
-        relation="before"
-      >
-        {this.renderInjected()}
-      </DOMInjector>
-    );
-  }
-
-  private renderInjected() {
-    const { repoSlug, filePath, findings } = this.props;
-    const commitHashes = new Set(findings
-      .map(finding => finding.commitHash)
-      .filter(f => f) as string[]);
-
-    if (findings.length === 0) {
-      return (
-        <div className="r2c-repo-headsup commit-warning-headsup">
-          DEBUG: No findings for the current file
-        </div>
-      );
-    }
-
-    if (commitHashes.size === 0) {
-      return (
-        <div className="r2c-repo-headsup commit-warning-headsup">
-          DEBUG: No findings with commit hashes
-        </div>
-      );
-    }
-
-    if (
-      repoSlug.seemsLikeCommitHash &&
-      repoSlug.commitHash != null &&
-      commitHashes.has(repoSlug.commitHash) &&
-      commitHashes.size === 1
-    ) {
-      return (
-        <div className="r2c-repo-headsup commit-warning-headsup">
-          DEBUG: Commit hash matches all known findings
-        </div>
-      );
-    }
+    const { findings, repoSlug, filePath } = this.props;
 
     const commitHashList = groupBy(
       findings,
@@ -87,52 +48,47 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
       key => ({ commitHash: key, numFindings: commitHashList[key].length })
     );
 
-    return (
-      <div className="r2c-repo-headsup commit-warning-headsup">
-        <div className="headsup-inline-message">
-          <span className="headsup-different-commit">
-            We're showing issues that we found in past commits, so markers may
-            not be exact. Go to past commits for exact issue locations.
-          </span>
-          {commitGroups.length === 1 && (
-            <AnchorButton
-              href={buildFindingFileLink(
-                repoSlug,
-                commitGroups[0].commitHash,
-                filePath,
-                null
-              )}
-              intent={Intent.SUCCESS}
-              onClick={l("commit-warning-action-click")}
-            >
-              Go to past commit
-            </AnchorButton>
+    if (commitGroups.length === 1) {
+      return (
+        <AnchorButton
+          href={buildFindingFileLink(
+            repoSlug,
+            commitGroups[0].commitHash,
+            filePath,
+            null
           )}
-          {commitGroups.length > 1 && (
-            <CommitSelect
-              items={commitGroups}
-              itemRenderer={this.renderCommitHashEntry}
-              onItemSelect={this.handleCommitHashSelect}
-              popoverProps={{
-                position: Position.BOTTOM_LEFT,
-                minimal: true,
-                popoverClassName: "commit-hash-select-menu",
-                className: "commit-hash-select-dropdown-wrapper",
-                targetClassName: "commit-hash-select-dropdown-target"
-              }}
-              filterable={false}
-            >
-              <Button
-                className="commit-hash-select-dropdown-button"
-                rightIcon={IconNames.CARET_DOWN}
-                text="Go to past commit..."
-                intent={Intent.SUCCESS}
-              />
-            </CommitSelect>
-          )}
-        </div>
-      </div>
-    );
+          intent={Intent.SUCCESS}
+          onClick={l("commit-warning-action-click")}
+        >
+          Go to past commit
+        </AnchorButton>
+      );
+    } else if (commitGroups.length > 1) {
+      return (
+        <CommitSelect
+          items={commitGroups}
+          itemRenderer={this.renderCommitHashEntry}
+          onItemSelect={this.handleCommitHashSelect}
+          popoverProps={{
+            position: Position.BOTTOM_LEFT,
+            minimal: true,
+            popoverClassName: "commit-hash-select-menu",
+            className: "commit-hash-select-dropdown-wrapper",
+            targetClassName: "commit-hash-select-dropdown-target"
+          }}
+          filterable={false}
+        >
+          <Button
+            className="commit-hash-select-dropdown-button"
+            rightIcon={IconNames.CARET_DOWN}
+            text="Go to past commit..."
+            intent={Intent.SUCCESS}
+          />
+        </CommitSelect>
+      );
+    }
+
+    return null;
   }
 
   private renderCommitHashEntry: ItemRenderer<CommitFindingGroup> = (
@@ -160,4 +116,78 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
       null
     );
   };
+}
+
+export default class CommitWarningHeadsUp extends React.PureComponent<
+  CommitWarningHeadsUpProps
+> {
+  public render() {
+    return (
+      <DOMInjector
+        destination=".file-navigation"
+        childClassName="r2c-repo-headsup-container"
+        relation="before"
+      >
+        {this.renderInjected()}
+      </DOMInjector>
+    );
+  }
+
+  private renderInjected() {
+    const { repoSlug, filePath, findings, debug } = this.props;
+    const commitHashes = new Set(findings
+      .map(finding => finding.commitHash)
+      .filter(f => f) as string[]);
+
+    if (findings.length === 0) {
+      return (
+        debug && (
+          <div className="r2c-repo-headsup commit-warning-headsup">
+            DEBUG: No findings for the current file
+          </div>
+        )
+      );
+    }
+
+    if (commitHashes.size === 0) {
+      return (
+        debug && (
+          <div className="r2c-repo-headsup commit-warning-headsup">
+            DEBUG: No findings with commit hashes
+          </div>
+        )
+      );
+    }
+
+    if (
+      repoSlug.seemsLikeCommitHash &&
+      repoSlug.commitHash != null &&
+      commitHashes.has(repoSlug.commitHash) &&
+      commitHashes.size === 1
+    ) {
+      return (
+        debug && (
+          <div className="r2c-repo-headsup commit-warning-headsup">
+            DEBUG: Commit hash matches all known findings
+          </div>
+        )
+      );
+    }
+
+    return (
+      <div className="r2c-repo-headsup commit-warning-headsup">
+        <div className="headsup-inline-message">
+          <span className="headsup-different-commit">
+            We're showing issues that we found in past commits, so markers may
+            not be exact. Go to past commits for exact issue locations.
+          </span>
+          <CommitChooser
+            filePath={filePath}
+            findings={findings}
+            repoSlug={repoSlug}
+          />
+        </div>
+      </div>
+    );
+  }
 }
