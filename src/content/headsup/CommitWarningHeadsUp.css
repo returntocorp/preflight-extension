@@ -9,3 +9,11 @@
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
 }
+
+.commit-warning-headsup .headsup-different-commit {
+  margin-right: 2em;
+}
+
+.commit-warning-headsup .past-commit-action-button {
+  flex: 0 0 auto;
+}

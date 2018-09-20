@@ -60,6 +60,7 @@ export class CommitChooser extends React.PureComponent<CommitChooserProps> {
           )}
           intent={Intent.SUCCESS}
           onClick={l("commit-warning-action-click")}
+          className="past-commit-action-button"
         >
           Go to past commit
         </AnchorButton>
