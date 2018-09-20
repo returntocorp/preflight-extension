@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.9.0] - 2018-09-20
+
 ### Added
 
 - Code issues we discover are now displayed as a checklist item
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improved reliability of showing Preflight checklist and experimental Recon issue markers on the page
 - Fixed some performance issues with the sidebar
 - Fixed an issue where we'd display permissions in the manifest even if they weren't found in the project
+- Fixed some overly verbose error messages
 
 ## [1.8.3] - 2018-09-18
 
