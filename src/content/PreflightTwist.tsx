@@ -179,16 +179,15 @@ class PreflightSection extends React.PureComponent<
         >
           <span className="preflight-section-header-text">
             <span className="preflight-section-title">{title}</span>
-            {!loading &&
-              count != null && (
-                <Tag
-                  className="preflight-section-header-count"
-                  minimal={count > 0}
-                  round={true}
-                >
-                  {count}
-                </Tag>
-              )}
+            {!loading && (
+              <Tag
+                className="preflight-section-header-count"
+                minimal={count == null || count === 0}
+                round={true}
+              >
+                {count || 0}
+              </Tag>
+            )}
             {loading && <Spinner size={Spinner.SIZE_SMALL} />}
           </span>
         </Button>
