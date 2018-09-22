@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.9.2] - 2018-09-21
+
 ### Changed
 
 - We updated the branding of the extension in the Mozilla and Chrome store to be "Preflight Beta"
