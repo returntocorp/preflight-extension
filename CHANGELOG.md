@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - We updated the branding of the extension in the Mozilla and Chrome store to be "Preflight Beta"
 
+### Fixed
+
+- Fixed [#58](https://github.com/returntocorp/secarta-extension/issues/58): Incorrect vulnerability count on checklist
+
 ## [1.9.1] - 2018-09-20
 
 ### Changed

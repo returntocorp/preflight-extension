@@ -18,6 +18,7 @@ import {
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
 import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
+import { sumBy } from "lodash";
 import * as React from "react";
 import Fetch from "react-fetch-component";
 import * as Markdown from "react-markdown";
@@ -317,7 +318,14 @@ export default class PreflightTwist extends React.PureComponent<
                     (data != null && data.vuln.length > 0) ||
                     deepLink === "vulns"
                   }
-                  count={data != null ? data.vuln.length : undefined}
+                  count={
+                    data != null
+                      ? sumBy(
+                          data.vuln,
+                          packageVulns => packageVulns.vuln.length
+                        )
+                      : undefined
+                  }
                   loading={loading}
                   domRef={this.twistRefs.vulns}
                 >

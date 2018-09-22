@@ -18,6 +18,7 @@ import {
 import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import * as classnames from "classnames";
+import { sumBy } from "lodash";
 import * as React from "react";
 import Fetch from "react-fetch-component";
 import TimeAgo from "react-timeago";
@@ -107,6 +108,11 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
           </PreflightChecklistItem>
         );
       } else if (data != null) {
+        const vulnCount: number = sumBy(
+          data.vuln,
+          packageVulns => packageVulns.vuln.length
+        );
+
         return (
           <PreflightChecklistItem
             onChecklistItemClick={onChecklistItemClick}
@@ -114,8 +120,8 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
             iconState={itemState}
           >
             {data.vuln.length > 0
-              ? `Has ${data.vuln.length} historical ${
-                  data.vuln.length > 1 ? "vulnerabilities" : "vulnerability"
+              ? `Has ${vulnCount} historical ${
+                  vulnCount > 1 ? "vulnerabilities" : "vulnerability"
                 }`
               : "No known vulnerabilities"}
           </PreflightChecklistItem>
