@@ -37,8 +37,8 @@ Publishing to the Mozilla Add-ons repository is a manual process right now.
 - Run:
 
   ```sh
-  jq '.name = "R2C Beta"' build/manifest.json | sponge build/manifest.json
-  jq '.browser_action.default_title = "R2C Beta"' build/manifest.json | sponge build/manifest.json
+  jq '.name = "Preflight Beta"' build/manifest.json | sponge build/manifest.json
+  jq '.browser_action.default_title = "Preflight"' build/manifest.json | sponge build/manifest.json
   jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json | sponge build/manifest.json
   ```
 

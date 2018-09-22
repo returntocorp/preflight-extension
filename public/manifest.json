@@ -1,8 +1,8 @@
 {
-  "name": "R2C Beta - Dev",
+  "name": "Preflight - Dev",
   "author": "",
   "version": "0.0.1",
-  "description": "Write Secure Code.",
+  "description": "Your GitHub copilot.",
   "manifest_version": 2,
   "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
   "background": {
