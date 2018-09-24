@@ -113,7 +113,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       return null;
     }
 
-    if (isGitHubSlug(this.repoSlug)) {
+    if (!isGitHubSlug(this.repoSlug)) {
       return null;
     }
 
