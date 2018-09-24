@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.9.3] - 2018-09-24
+
+### Changed
+
+- We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves.
+- Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
+
 ## [1.9.2] - 2018-09-21
 
 ### Changed
