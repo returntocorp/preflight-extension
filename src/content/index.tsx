@@ -32,6 +32,7 @@ import {
 import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
+  isGitHubSlug,
   isRepositoryPrivate,
   userOrInstallationId
 } from "@r2c/extension/utils";
@@ -109,6 +110,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     const { twistTab, user, installationId } = this.state;
 
     if (isRepositoryPrivate() || installationId === "not-generated") {
+      return null;
+    }
+
+    if (isGitHubSlug(this.repoSlug)) {
       return null;
     }
 

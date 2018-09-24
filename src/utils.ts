@@ -262,3 +262,7 @@ export function parseHash(hash: string): [number, number?] | null {
     return null;
   }
 }
+
+export function isGitHubSlug(repoSlug: ExtractedRepoSlug): boolean {
+  return repoSlug.domain.indexOf("github.com") < 0;
+}
