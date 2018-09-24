@@ -7,7 +7,7 @@
   "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
   "background": {
     "scripts": ["background.js"],
-    "persistent": true
+    "persistent": false
   },
   "applications": {
     "gecko": {
