@@ -31,7 +31,7 @@
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.7",
     "@types/react-transition-group": "^2.0.13",
-    "prettier": "1.14.2",
+    "prettier": "^1.14.2",
     "react-app-rewired": "^1.5.2",
     "tslint-microsoft-contrib": "^5.2.0",
     "typescript": "^3.0.1",
