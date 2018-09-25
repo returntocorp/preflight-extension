@@ -1,4 +1,5 @@
 import { NonIdealState, Spinner } from "@blueprintjs/core";
+import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PermissionsResponse,
   permissionsUrl
@@ -6,7 +7,6 @@ import {
 import { scoreRepoUrl, ScoreResponse } from "@r2c/extension/api/score";
 import * as classnames from "classnames";
 import * as React from "react";
-import Fetch from "react-fetch-component";
 import "./RepoTwist.css";
 
 interface RepoTwistProps {
@@ -25,7 +25,7 @@ const RepoNoData: React.SFC = () => (
 );
 
 const RepoScoreSection: React.SFC = () => (
-  <Fetch<ScoreResponse> url={scoreRepoUrl()}>
+  <ApiFetch<ScoreResponse> url={scoreRepoUrl()}>
     {({ loading, data, error, response }) => (
       <section className="nutrition-score nutrition-inline">
         <header className="nutrition-title">Score (WIP)</header>
@@ -38,11 +38,11 @@ const RepoScoreSection: React.SFC = () => (
         {error && <span className="nutrition-inline-value error">N/A</span>}
       </section>
     )}
-  </Fetch>
+  </ApiFetch>
 );
 
 const RepoPermissionsSection: React.SFC = () => (
-  <Fetch<PermissionsResponse> url={permissionsUrl()}>
+  <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
     {({ loading, data, error, response }) => (
       <section className="nutrition-permissions nutrition-section">
         <header className="nutrition-title">Permissions</header>
@@ -75,7 +75,7 @@ const RepoPermissionsSection: React.SFC = () => (
         )}
       </section>
     )}
-  </Fetch>
+  </ApiFetch>
 );
 
 export default class RepoTwist extends React.Component<RepoTwistProps> {

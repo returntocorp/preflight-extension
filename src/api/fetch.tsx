@@ -31,6 +31,22 @@ export function buildExtensionHeaders(
   };
 }
 
+export class ApiFetch<T> extends React.Component<FetchProps<T>> {
+  public render() {
+    return (
+      <ExtensionContext.Consumer>
+        {({ user, installationId }) => {
+          const options = merge(this.props.options, {
+            headers: buildExtensionHeaders(user, installationId)
+          });
+
+          return <Fetch<T> {...this.props} options={options} />;
+        }}
+      </ExtensionContext.Consumer>
+    );
+  }
+}
+
 export async function fetchJson<T>(
   url: string | Request | undefined,
   init?: RequestInit

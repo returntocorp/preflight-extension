@@ -1,5 +1,6 @@
 import { Button, Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
+import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   FindingEntry,
   FindingsResponse,
@@ -20,7 +21,6 @@ import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
-import Fetch from "react-fetch-component";
 import TimeAgo from "react-timeago";
 
 export type PreflightChecklistItemType =
@@ -91,7 +91,7 @@ type PreflightVulnsItemProps = PreflightChecklistInteractionProps;
 const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
   onChecklistItemClick
 }) => (
-  <Fetch<VulnsResponse> url={vulnsUrl()}>
+  <ApiFetch<VulnsResponse> url={vulnsUrl()}>
     {({ loading, data, error }) => {
       const itemState: ChecklistItemState =
         data && data.vuln.length > 0 ? "warn" : "ok";
@@ -138,14 +138,14 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
         );
       }
     }}
-  </Fetch>
+  </ApiFetch>
 );
 
 type PreflightPermissionsItemProps = PreflightChecklistInteractionProps;
 const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
   onChecklistItemClick
 }) => (
-  <Fetch<PermissionsResponse> url={permissionsUrl()}>
+  <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
     {({ loading, data }) => {
       const permissionKeys =
         data &&
@@ -190,7 +190,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
         );
       }
     }}
-  </Fetch>
+  </ApiFetch>
 );
 
 interface PreflightScriptsItemProps extends PreflightChecklistInteractionProps {
@@ -358,11 +358,11 @@ export class PreflightChecklistFetch extends React.PureComponent<
 > {
   public render() {
     return (
-      <Fetch<RepoResponse> url={repoUrl()}>
+      <ApiFetch<RepoResponse> url={repoUrl()}>
         {repoResponse => (
-          <Fetch<PackageResponse> url={packageUrl()}>
+          <ApiFetch<PackageResponse> url={packageUrl()}>
             {packageResponse => (
-              <Fetch<FindingsResponse> url={findingsUrl()}>
+              <ApiFetch<FindingsResponse> url={findingsUrl()}>
                 {findingsResponse => {
                   const loading =
                     repoResponse.loading ||
@@ -405,11 +405,11 @@ export class PreflightChecklistFetch extends React.PureComponent<
 
                   return this.props.children(fetchResponse);
                 }}
-              </Fetch>
+              </ApiFetch>
             )}
-          </Fetch>
+          </ApiFetch>
         )}
-      </Fetch>
+      </ApiFetch>
     );
   }
 }

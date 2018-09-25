@@ -2,8 +2,8 @@ import { Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import {
+  ApiFetch,
   buildExtensionHeaders,
-  extractCurrentUserFromPage,
   getAnalyticsParams
 } from "@r2c/extension/api/fetch";
 import {
@@ -18,6 +18,7 @@ import {
 import ActionButton from "@r2c/extension/content/ActionButton";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
+import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
@@ -37,7 +38,7 @@ import {
   userOrInstallationId
 } from "@r2c/extension/utils";
 import * as React from "react";
-import Fetch, { FetchUpdateOptions } from "react-fetch-component";
+import { FetchUpdateOptions } from "react-fetch-component";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
@@ -85,16 +86,22 @@ interface ContentHostState {
   checklistItem: PreflightChecklistItemType | undefined;
 }
 
+const DEFAULT_STATE: ContentHostState = {
+  twistTab: undefined,
+  user: undefined,
+  installationId: "not-generated",
+  extensionState: undefined,
+  currentUrl: window.location.href.replace(window.location.hash, ""),
+  navigationNonce: 0,
+  checklistItem: undefined
+};
+
+export const ExtensionContext = React.createContext<ContentHostState>(
+  DEFAULT_STATE
+);
+
 export default class ContentHost extends React.Component<{}, ContentHostState> {
-  public state: ContentHostState = {
-    twistTab: undefined,
-    user: undefined,
-    installationId: "not-generated",
-    extensionState: undefined,
-    currentUrl: window.location.href.replace(window.location.hash, ""),
-    navigationNonce: 0,
-    checklistItem: undefined
-  };
+  public state: ContentHostState = DEFAULT_STATE;
 
   private repoSlug = extractSlugFromCurrentUrl();
 
@@ -122,7 +129,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     }
 
     return (
-      <>
+      <ExtensionContext.Provider value={this.state}>
         <div id="r2c-inline-injector-portal" />
         <div className="r2c-host">
           <RepoHeadsUpInjector
@@ -132,7 +139,9 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             onChecklistItemClick={this.handleChecklistItemClick}
           />
           {this.repoSlug != null && (
-            <Fetch<FindingsResponse> url={findingsUrlFromSlug(this.repoSlug)}>
+            <ApiFetch<FindingsResponse>
+              url={findingsUrlFromSlug(this.repoSlug)}
+            >
               {({
                 data: findingsData,
                 loading: findingsLoading,
@@ -160,14 +169,10 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                   </>
                 )
               }
-            </Fetch>
+            </ApiFetch>
           )}
 
-          {/* TODO cleanup headers */}
-          <Fetch<VoteResponse>
-            url={buildVotingUrl(getAnalyticsParams())}
-            options={{ headers: buildExtensionHeaders(user, installationId) }}
-          >
+          <ApiFetch<VoteResponse> url={buildVotingUrl(getAnalyticsParams())}>
             {({ data: voteData, fetch: voteFetch }) => (
               <Twists
                 isOpen={twistTab != null}
@@ -223,9 +228,9 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 />
               </Twists>
             )}
-          </Fetch>
+          </ApiFetch>
         </div>
-      </>
+      </ExtensionContext.Provider>
     );
   }
 
