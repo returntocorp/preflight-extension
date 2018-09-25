@@ -5,7 +5,11 @@ import {
   FindingsResponse,
   findingsUrlFromSlug
 } from "@r2c/extension/api/findings";
-import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
+import {
+  PackageResponse,
+  packageUrl,
+  ScriptEntry
+} from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
   permissionsUrl
@@ -24,6 +28,7 @@ import * as React from "react";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
+import "./PreflightInstallHook.css";
 import "./PreflightTwist.css";
 import "./PreflightVulnerabilityEntry.css";
 
@@ -124,6 +129,27 @@ class PreflightVulnerabilityEntry extends React.PureComponent<
 
   private handleToggleShowMore: React.MouseEventHandler<HTMLElement> = e =>
     this.setState({ showMore: !this.state.showMore });
+}
+
+interface PreflightInstallHookProps {
+  script: ScriptEntry;
+}
+
+class PreflightInstallHook extends React.PureComponent<
+  PreflightInstallHookProps
+> {
+  public render() {
+    const { script } = this.props;
+
+    return (
+      <article className="install-hook">
+        <header className="install-hook-type">{script.type}</header>
+        <div className="install-hook-script">
+          <pre>{script.script}</pre>
+        </div>
+      </article>
+    );
+  }
 }
 
 interface PreflightSectionProps {
@@ -376,35 +402,29 @@ export default class PreflightTwist extends React.PureComponent<
             </ApiFetch>
             <ApiFetch<PackageResponse> url={packageUrl()}>
               {({ data, loading }) => (
-                <>
-                  <PreflightSection
-                    check="scripts"
-                    title="Install hooks"
-                    description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
-                    startOpen={
-                      (data != null && data.npmScripts.length > 0) ||
-                      deepLink === "scripts"
-                    }
-                    count={data != null ? data.npmScripts.length : undefined}
-                    loading={loading}
-                    domRef={this.twistRefs.scripts}
-                  >
-                    {data && (
-                      <div className="install-hook">
-                        {data.npmScripts.map((script, i) => (
-                          <div key={`${script.type}_${i}`} className="hook">
-                            <span className="install-hook-type">
-                              {script.type}
-                            </span>{" "}
-                            <div className="install-hook-script">
-                              <pre>{script.script}</pre>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </PreflightSection>
-                </>
+                <PreflightSection
+                  check="scripts"
+                  title="Install hooks"
+                  description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
+                  startOpen={
+                    (data != null && data.npmScripts.length > 0) ||
+                    deepLink === "scripts"
+                  }
+                  count={data != null ? data.npmScripts.length : undefined}
+                  loading={loading}
+                  domRef={this.twistRefs.scripts}
+                >
+                  {data && (
+                    <div className="install-hooks">
+                      {data.npmScripts.map((script, i) => (
+                        <PreflightInstallHook
+                          script={script}
+                          key={`${script.type}_${i}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </PreflightSection>
               )}
             </ApiFetch>
             <ApiFetch<RepoResponse> url={repoUrl()}>
