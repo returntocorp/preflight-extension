@@ -22,6 +22,8 @@ export class UnsupportedHeadsUp extends React.PureComponent<
       return null;
     }
 
+    l("preflight-unsupported-repo-load");
+
     return (
       <div className="r2c-repo-headsup unsupported-headsup">
         <div className="unsupported-message">
