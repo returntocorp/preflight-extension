@@ -109,11 +109,15 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   public render() {
     const { twistTab, user, installationId } = this.state;
 
-    if (isRepositoryPrivate() || installationId === "not-generated") {
+    if (isRepositoryPrivate()) {
       return null;
     }
 
     if (!isGitHubSlug(this.repoSlug)) {
+      return null;
+    }
+
+    if (installationId === "not-generated") {
       return null;
     }
 
