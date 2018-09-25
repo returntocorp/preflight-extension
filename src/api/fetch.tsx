@@ -1,35 +1,12 @@
+import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
+import { ExtensionContext } from "@r2c/extension/content/index";
 import {
-  extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
-  getExtensionVersion,
-  setGitHubUser
+  getExtensionVersion
 } from "@r2c/extension/utils";
-
-export async function extractCurrentUserFromPage(): Promise<
-  string | undefined
-> {
-  const { domain } = extractSlugFromCurrentUrl();
-
-  if (domain.includes("github.com")) {
-    const userLoginMetaTags = document.getElementsByName("user-login");
-
-    if (userLoginMetaTags.length === 0) {
-      return undefined;
-    }
-
-    const user = userLoginMetaTags[0].getAttribute("content");
-
-    if (user != null && user !== "") {
-      setGitHubUser(user);
-
-      return user;
-    } else {
-      return undefined;
-    }
-  } else {
-    return undefined;
-  }
-}
+import { merge } from "lodash";
+import * as React from "react";
+import Fetch, { FetchProps } from "react-fetch-component";
 
 export function getAnalyticsParams(): {
   source: string;
@@ -54,10 +31,10 @@ export function buildExtensionHeaders(
   };
 }
 
-export const fetchJson = async <T>(
+export async function fetchJson<T>(
   url: string | Request | undefined,
   init?: RequestInit
-) => {
+) {
   const installationId = await fetchOrCreateExtensionUniqueId();
   const user = await extractCurrentUserFromPage();
 
@@ -71,7 +48,7 @@ export const fetchJson = async <T>(
   } else {
     throw response.statusText;
   }
-};
+}
 
 export interface PostResponse {
   recorded: boolean;
