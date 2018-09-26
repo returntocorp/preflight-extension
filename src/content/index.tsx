@@ -137,6 +137,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     }
 
     return (
+      <div className="r2c-content-host">
         <ExtensionContext.Provider value={this.state}>
           <div id="r2c-inline-injector-portal" />
           <div className="r2c-host">
@@ -239,6 +240,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
             </ApiFetch>
           </div>
         </ExtensionContext.Provider>
+      </div>
     );
   }
 
