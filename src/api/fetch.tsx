@@ -22,11 +22,11 @@ export function getAnalyticsParams(): {
 
 export function buildExtensionHeaders(
   user: string | undefined,
-  installationId: string
+  installationId: string | undefined
 ) {
   return {
     "X-Secarta-GitHub-User": user || `anonymous-${installationId}`,
-    "X-R2C-Extension-Installation-Id": installationId,
+    "X-R2C-Extension-Installation-Id": installationId || "not-generated",
     "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
 }

@@ -266,3 +266,13 @@ export function parseHash(hash: string): [number, number?] | null {
 export function isGitHubSlug(repoSlug: ExtractedRepoSlug): boolean {
   return repoSlug.domain.indexOf("github.com") >= 0;
 }
+
+export function getCurrentUrlWithoutHash(): string {
+  const url = window.location.href;
+
+  if (window.location.hash == null || window.location.hash.length > 0) {
+    return url;
+  } else {
+    return url.replace(window.location.hash, "");
+  }
+}

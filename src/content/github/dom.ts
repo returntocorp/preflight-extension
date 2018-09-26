@@ -8,7 +8,7 @@ export async function extractCurrentUserFromPage(): Promise<
   if (domain.includes("github.com")) {
     const userLoginMetaTags = document.getElementsByName("user-login");
 
-    if (userLoginMetaTags.length === 0) {
+    if (userLoginMetaTags == null || userLoginMetaTags.length === 0) {
       return undefined;
     }
 

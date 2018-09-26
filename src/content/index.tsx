@@ -33,6 +33,7 @@ import {
 import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
+  getCurrentUrlWithoutHash,
   isGitHubSlug,
   isRepositoryPrivate,
   userOrInstallationId
@@ -79,9 +80,9 @@ const ShareIcon: React.SFC = () => (
 interface ContentHostState {
   twistTab: TwistId | undefined;
   user: string | undefined;
-  installationId: string;
+  installationId: string | undefined;
   extensionState: ExtensionState | undefined;
-  currentUrl: string;
+  currentUrl: string | undefined;
   navigationNonce: number;
   checklistItem: PreflightChecklistItemType | undefined;
 }
@@ -89,9 +90,9 @@ interface ContentHostState {
 const DEFAULT_STATE: ContentHostState = {
   twistTab: undefined,
   user: undefined,
-  installationId: "not-generated",
+  installationId: undefined,
   extensionState: undefined,
-  currentUrl: window.location.href.replace(window.location.hash, ""),
+  currentUrl: undefined,
   navigationNonce: 0,
   checklistItem: undefined
 };
@@ -108,9 +109,16 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   private navigationMutationObserver: MutationObserver | null = null;
 
   public async componentDidMount() {
-    this.updateCurrentUser();
+    const { user, installationId } = await this.getCurrentUser();
+    const extensionState = await getExtensionState();
+    const currentUrl = getCurrentUrlWithoutHash();
     this.watchNavigationChange();
-    this.setState({ extensionState: await getExtensionState() });
+    this.setState({
+      extensionState,
+      currentUrl,
+      user,
+      installationId
+    });
   }
 
   public render() {
@@ -124,113 +132,113 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
       return null;
     }
 
-    if (installationId === "not-generated") {
+    if (installationId == null) {
       return null;
     }
 
     return (
-      <ExtensionContext.Provider value={this.state}>
-        <div id="r2c-inline-injector-portal" />
-        <div className="r2c-host">
-          <RepoHeadsUpInjector
-            key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
-              this.state.navigationNonce
-            }`}
-            onChecklistItemClick={this.handleChecklistItemClick}
-          />
-          {this.repoSlug != null && (
-            <ApiFetch<FindingsResponse>
-              url={findingsUrlFromSlug(this.repoSlug)}
-            >
-              {({
-                data: findingsData,
-                loading: findingsLoading,
-                error: findingsError
-              }) =>
-                findingsData != null &&
-                findingsData.findings != null && (
-                  <>
-                    <BlobFindingsInjector
-                      key={`BlobFindingsInjector ${this.state.currentUrl} ${
-                        this.state.navigationNonce
-                      }`}
-                      findingCommitHash={findingsData.commitHash}
-                      findings={findingsData.findings}
-                      repoSlug={this.repoSlug}
-                    />
-                    <TreeFindingsInjector
-                      key={`TreeFindingsInjector ${this.state.currentUrl} ${
-                        this.state.navigationNonce
-                      }`}
-                      findings={findingsData.findings}
-                      commitHash={findingsData.commitHash}
-                      repoSlug={this.repoSlug}
-                    />
-                  </>
-                )
-              }
-            </ApiFetch>
-          )}
-
-          <ApiFetch<VoteResponse> url={buildVotingUrl(getAnalyticsParams())}>
-            {({ data: voteData, fetch: voteFetch }) => (
-              <Twists
-                isOpen={twistTab != null}
-                selectedTwistId={twistTab}
-                onTwistChange={this.handleTwistChange}
+        <ExtensionContext.Provider value={this.state}>
+          <div id="r2c-inline-injector-portal" />
+          <div className="r2c-host">
+            <RepoHeadsUpInjector
+              key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
+                this.state.navigationNonce
+              }`}
+              onChecklistItemClick={this.handleChecklistItemClick}
+            />
+            {this.repoSlug != null && (
+              <ApiFetch<FindingsResponse>
+                url={findingsUrlFromSlug(this.repoSlug)}
               >
-                <Twist
-                  id="preflight"
-                  title="Preflight"
-                  icon={<PreflightIcon />}
-                  panel={
-                    <PreflightTwist
-                      repoSlug={this.repoSlug}
-                      deepLink={this.state.checklistItem}
-                    />
-                  }
-                />
-                <Twist
-                  id="discussion"
-                  title="Comments"
-                  icon={<DiscussionIcon />}
-                  panel={
-                    <Discussion user={user} installationId={installationId} />
-                  }
-                />
-                <ActionButton
-                  id="flag"
-                  title="Flag an issue with this project"
-                  icon={<ReportIcon />}
-                  selected={
-                    voteData != null ? voteData.currentVote === "down" : false
-                  }
-                  count={voteData != null ? voteData.votes.down : undefined}
-                  intent={Intent.DANGER}
-                  onClick={this.handleReportProject(voteFetch, voteData)}
-                />
-                <Twist
-                  id="share"
-                  title="Share the extension"
-                  icon={<ShareIcon />}
-                  panel={
-                    <ShareSection
-                      rtcLink="https://tinyurl.com/r2c-beta"
-                      shortDesc={
-                        "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
-                      }
-                      onEmailClick={l("share-link-click-email")}
-                      onLinkClick={l("share-link-click-copy")}
-                      user={user}
-                      installationId={installationId}
-                    />
-                  }
-                />
-              </Twists>
+                {({
+                  data: findingsData,
+                  loading: findingsLoading,
+                  error: findingsError
+                }) =>
+                  findingsData != null &&
+                  findingsData.findings != null && (
+                    <>
+                      <BlobFindingsInjector
+                        key={`BlobFindingsInjector ${this.state.currentUrl} ${
+                          this.state.navigationNonce
+                        }`}
+                        findingCommitHash={findingsData.commitHash}
+                        findings={findingsData.findings}
+                        repoSlug={this.repoSlug}
+                      />
+                      <TreeFindingsInjector
+                        key={`TreeFindingsInjector ${this.state.currentUrl} ${
+                          this.state.navigationNonce
+                        }`}
+                        findings={findingsData.findings}
+                        commitHash={findingsData.commitHash}
+                        repoSlug={this.repoSlug}
+                      />
+                    </>
+                  )
+                }
+              </ApiFetch>
             )}
-          </ApiFetch>
-        </div>
-      </ExtensionContext.Provider>
+
+            <ApiFetch<VoteResponse> url={buildVotingUrl(getAnalyticsParams())}>
+              {({ data: voteData, fetch: voteFetch }) => (
+                <Twists
+                  isOpen={twistTab != null}
+                  selectedTwistId={twistTab}
+                  onTwistChange={this.handleTwistChange}
+                >
+                  <Twist
+                    id="preflight"
+                    title="Preflight"
+                    icon={<PreflightIcon />}
+                    panel={
+                      <PreflightTwist
+                        repoSlug={this.repoSlug}
+                        deepLink={this.state.checklistItem}
+                      />
+                    }
+                  />
+                  <Twist
+                    id="discussion"
+                    title="Comments"
+                    icon={<DiscussionIcon />}
+                    panel={
+                      <Discussion user={user} installationId={installationId} />
+                    }
+                  />
+                  <ActionButton
+                    id="flag"
+                    title="Flag an issue with this project"
+                    icon={<ReportIcon />}
+                    selected={
+                      voteData != null ? voteData.currentVote === "down" : false
+                    }
+                    count={voteData != null ? voteData.votes.down : undefined}
+                    intent={Intent.DANGER}
+                    onClick={this.handleReportProject(voteFetch, voteData)}
+                  />
+                  <Twist
+                    id="share"
+                    title="Share the extension"
+                    icon={<ShareIcon />}
+                    panel={
+                      <ShareSection
+                        rtcLink="https://tinyurl.com/r2c-beta"
+                        shortDesc={
+                          "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
+                        }
+                        onEmailClick={l("share-link-click-email")}
+                        onLinkClick={l("share-link-click-copy")}
+                        user={user}
+                        installationId={installationId}
+                      />
+                    }
+                  />
+                </Twists>
+              )}
+            </ApiFetch>
+          </div>
+        </ExtensionContext.Provider>
     );
   }
 
@@ -279,10 +287,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
   };
 
   private handleNavigationChange = () => {
-    const locationWithoutHash = window.location.href.replace(
-      window.location.hash,
-      ""
-    );
+    const locationWithoutHash = getCurrentUrlWithoutHash();
 
     this.setState({ navigationNonce: this.state.navigationNonce + 1 });
 
@@ -291,10 +296,14 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     }
   };
 
-  private updateCurrentUser = async () => {
+  private getCurrentUser = async (): Promise<{
+    user: string | undefined;
+    installationId: string;
+  }> => {
     const installationId = await fetchOrCreateExtensionUniqueId();
     const user = await extractCurrentUserFromPage();
-    this.setState({ user, installationId });
+
+    return { user, installationId };
   };
 
   private handleTwistChange = (
@@ -316,7 +325,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     ) => void,
     voteData: VoteResponse | undefined
   ) => (id: TwistId, e: React.MouseEvent<HTMLElement>) => {
-    if (voteData != null) {
+    if (voteData != null && this.state.installationId != null) {
       const newVote = voteData.currentVote == null ? "down" : null;
 
       l("flag-project-button-click", undefined, {
