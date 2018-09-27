@@ -14,7 +14,7 @@ export function getAnalyticsParams(): {
   content: string;
 } {
   return {
-    source: document.location.toString(),
+    source: window.location.href,
     medium: `extension@${getExtensionVersion()}`,
     content: "voting-updown-vertical"
   };
@@ -47,10 +47,7 @@ export class ApiFetch<T> extends React.Component<FetchProps<T>> {
   }
 }
 
-export async function fetchJson<T>(
-  url: string | Request | undefined,
-  init?: RequestInit
-) {
+export async function fetchJson<T>(url: string | Request, init?: RequestInit) {
   const installationId = await fetchOrCreateExtensionUniqueId();
   const user = await extractCurrentUserFromPage();
 
