@@ -12,6 +12,7 @@ import {
 import { IconNames } from "@blueprintjs/icons";
 import { ItemRenderer, Select } from "@blueprintjs/select";
 import { l } from "@r2c/extension/analytics";
+import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PackageEntry,
   PackageResponse,
@@ -27,7 +28,6 @@ import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
 import { sortBy } from "lodash";
 import * as React from "react";
-import Fetch from "react-fetch-component";
 import "./PackageCopyBox.css";
 
 type PackageManagerChoice = "npm" | "yarn";
@@ -60,7 +60,7 @@ export default class RepoPackageSection extends React.Component<
     const { selectedPackage } = this.state;
 
     return (
-      <Fetch<PackageResponse>
+      <ApiFetch<PackageResponse>
         url={packageUrl()}
         onDataChange={this.handleDataChanged}
       >
@@ -212,7 +212,7 @@ export default class RepoPackageSection extends React.Component<
               )}
           </section>
         )}
-      </Fetch>
+      </ApiFetch>
     );
   }
 

@@ -1,35 +1,12 @@
+import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
+import { ExtensionContext } from "@r2c/extension/content/index";
 import {
-  extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
-  getExtensionVersion,
-  setGitHubUser
+  getExtensionVersion
 } from "@r2c/extension/utils";
-
-export async function extractCurrentUserFromPage(): Promise<
-  string | undefined
-> {
-  const { domain } = extractSlugFromCurrentUrl();
-
-  if (domain.includes("github.com")) {
-    const userLoginMetaTags = document.getElementsByName("user-login");
-
-    if (userLoginMetaTags.length === 0) {
-      return undefined;
-    }
-
-    const user = userLoginMetaTags[0].getAttribute("content");
-
-    if (user != null && user !== "") {
-      setGitHubUser(user);
-
-      return user;
-    } else {
-      return undefined;
-    }
-  } else {
-    return undefined;
-  }
-}
+import { merge } from "lodash";
+import * as React from "react";
+import Fetch, { FetchProps } from "react-fetch-component";
 
 export function getAnalyticsParams(): {
   source: string;
@@ -45,19 +22,35 @@ export function getAnalyticsParams(): {
 
 export function buildExtensionHeaders(
   user: string | undefined,
-  installationId: string
+  installationId: string | undefined
 ) {
   return {
     "X-Secarta-GitHub-User": user || `anonymous-${installationId}`,
-    "X-R2C-Extension-Installation-Id": installationId,
+    "X-R2C-Extension-Installation-Id": installationId || "not-generated",
     "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
 }
 
-export const fetchJson = async <T>(
+export class ApiFetch<T> extends React.Component<FetchProps<T>> {
+  public render() {
+    return (
+      <ExtensionContext.Consumer>
+        {({ user, installationId }) => {
+          const options = merge(this.props.options, {
+            headers: buildExtensionHeaders(user, installationId)
+          });
+
+          return <Fetch<T> {...this.props} options={options} />;
+        }}
+      </ExtensionContext.Consumer>
+    );
+  }
+}
+
+export async function fetchJson<T>(
   url: string | Request | undefined,
   init?: RequestInit
-) => {
+) {
   const installationId = await fetchOrCreateExtensionUniqueId();
   const user = await extractCurrentUserFromPage();
 
@@ -71,7 +64,7 @@ export const fetchJson = async <T>(
   } else {
     throw response.statusText;
   }
-};
+}
 
 export interface PostResponse {
   recorded: boolean;

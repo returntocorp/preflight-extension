@@ -1,5 +1,6 @@
 import { Button, Spinner, Tag } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
+import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   FindingsResponse,
   findingsUrlFromSlug
@@ -20,7 +21,6 @@ import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
-import Fetch from "react-fetch-component";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
@@ -249,7 +249,7 @@ export default class PreflightTwist extends React.PureComponent<
         </header>
         <div className="twist-scroll-container">
           <div className="twist-body">
-            <Fetch<PermissionsResponse> url={permissionsUrl()}>
+            <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
               {({ data, loading }) => {
                 const numPermissionsFound =
                   data != null
@@ -307,8 +307,8 @@ export default class PreflightTwist extends React.PureComponent<
                   </PreflightSection>
                 );
               }}
-            </Fetch>
-            <Fetch<VulnsResponse> url={vulnsUrl()}>
+            </ApiFetch>
+            <ApiFetch<VulnsResponse> url={vulnsUrl()}>
               {({ data, loading }) => (
                 <PreflightSection
                   check="vulns"
@@ -342,8 +342,8 @@ export default class PreflightTwist extends React.PureComponent<
                     )}
                 </PreflightSection>
               )}
-            </Fetch>
-            <Fetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
+            </ApiFetch>
+            <ApiFetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
               {({ data, loading, error }) => (
                 <PreflightSection
                   check="findings"
@@ -373,8 +373,8 @@ export default class PreflightTwist extends React.PureComponent<
                     )}
                 </PreflightSection>
               )}
-            </Fetch>
-            <Fetch<PackageResponse> url={packageUrl()}>
+            </ApiFetch>
+            <ApiFetch<PackageResponse> url={packageUrl()}>
               {({ data, loading }) => (
                 <>
                   <PreflightSection
@@ -406,8 +406,8 @@ export default class PreflightTwist extends React.PureComponent<
                   </PreflightSection>
                 </>
               )}
-            </Fetch>
-            <Fetch<RepoResponse> url={repoUrl()}>
+            </ApiFetch>
+            <ApiFetch<RepoResponse> url={repoUrl()}>
               {({ data, loading }) => (
                 <PreflightSection
                   check="activity"
@@ -432,7 +432,7 @@ export default class PreflightTwist extends React.PureComponent<
                   )}
                 </PreflightSection>
               )}
-            </Fetch>
+            </ApiFetch>
           </div>
         </div>
       </div>
