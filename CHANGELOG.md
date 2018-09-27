@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Enable Recon and Preflight manifest experiments by default
 
+### Fixed
+
+- Fixed an issue with floating action bar buttons (thanks @mtuer for reporting!)
+
 ## [1.9.0] - 2018-09-20
 
 ### Added
