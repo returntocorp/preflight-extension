@@ -4,7 +4,6 @@ import { R2CLogo } from "@r2c/extension/icons";
 import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
 import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
 import ProfileTab from "@r2c/extension/popup/ProfileTab";
-import Top10Tab from "@r2c/extension/popup/Top10Tab";
 import {
   ExtensionState,
   getExtensionState,
@@ -57,8 +56,7 @@ class Guide extends React.Component<{}, GuideState> {
               />
             }
           />
-          <Tab id="firehose" title="Firehose" panel={<FirehoseTab />} />
-          <Tab id="top10" title="Top 10" panel={<Top10Tab />} />
+          <Tab id="firehose" title="Activity Feed" panel={<FirehoseTab />} />
           <Tabs.Expander />
           {this.state.currentUser && (
             <Tab

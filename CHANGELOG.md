@@ -7,18 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-## [1.9.3] - 2018-09-24
-
 ### Changed
 
 - We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves.
 - Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
 - Improved formatting and readability of npm install hooks
+- Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
 
 ### Fixed
 
 - Fixed an issue where we weren't showing the uninstall page properly (#64)
 - Fixed an issue where missing packages would cause an error when showing used by (symptom of #50)
+
+### Removed
+
+- Removed Top 10 tab from popup because voting on projects was removed in earlier versions
 
 ## [1.9.2] - 2018-09-21
 
