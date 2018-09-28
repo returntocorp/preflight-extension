@@ -26,7 +26,7 @@ export default class UsedBy extends React.PureComponent<UsedByProps> {
     return (
       <div className="used-by-container">
         <header>
-          <h2>All packages used by</h2>
+          <h2>Packages used by</h2>
         </header>
         <div className="used-by-list">
           {uniqueEndorsers.map(endorser => (
