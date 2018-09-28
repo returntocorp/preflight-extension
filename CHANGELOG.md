@@ -9,18 +9,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves.
-- Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
+- We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves
+- Added instrumentation to inform us when people visit public repositories we don't have Preflight data for
 - Improved formatting and readability of npm install hooks
-- Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
+- Renamed "Firehose" to "Activity Feed" to more clearly describe what it is (#80, #81)
 - Updated the Preflight manifest, conversation, and share icons
-- Permissions now displays the number of network calls found, pending us adding more permissions to our dataset
+- Permissions now displays the number of network calls found, pending us adding more permissions to our dataset (#87)
 
 ### Fixed
 
 - Fixed an issue where we weren't showing the uninstall page properly (#64)
 - Fixed an issue where missing packages would cause an error when showing used by (symptom of #50)
-- Fixed issues with error styling.
+- Fixed issues with error styling (#50)
+- Fixed incorrect display of checkmark when activity data couldn't be loaded (#89)
 
 ### Removed
 
