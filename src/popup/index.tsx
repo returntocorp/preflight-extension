@@ -4,12 +4,7 @@ import { R2CLogo } from "@r2c/extension/icons";
 import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
 import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
 import ProfileTab from "@r2c/extension/popup/ProfileTab";
-import Top10Tab from "@r2c/extension/popup/Top10Tab";
-import {
-  ExtensionState,
-  getExtensionState,
-  toggleExtensionExperiment
-} from "@r2c/extension/shared/ExtensionState";
+import { ExtensionState, getExtensionState, toggleExtensionExperiment } from "@r2c/extension/shared/ExtensionState";
 import { getGitHubUserFromStorage } from "@r2c/extension/utils";
 import * as React from "react";
 import "./index.css";
@@ -58,7 +53,6 @@ class Guide extends React.Component<{}, GuideState> {
             }
           />
           <Tab id="firehose" title="Firehose" panel={<FirehoseTab />} />
-          <Tab id="top10" title="Top 10" panel={<Top10Tab />} />
           <Tabs.Expander />
           {this.state.currentUser && (
             <Tab
