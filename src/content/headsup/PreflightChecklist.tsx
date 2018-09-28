@@ -147,14 +147,6 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
 }) => (
   <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
     {({ loading, data }) => {
-      const permissionKeys =
-        data &&
-        Object.keys(data.permissions).filter(
-          key => data.permissions[key].found
-        );
-      const numPermissions: number = permissionKeys ? permissionKeys.length : 0;
-      const itemState: ChecklistItemState = numPermissions > 0 ? "warn" : "ok";
-
       if (loading != null && loading === true) {
         return (
           <PreflightChecklistItem
@@ -166,18 +158,40 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
             Loading permissions...
           </PreflightChecklistItem>
         );
-      } else if (permissionKeys != null) {
-        return (
-          <PreflightChecklistItem
-            itemType="permissions"
-            onChecklistItemClick={onChecklistItemClick}
-            iconState={itemState}
-          >
-            {numPermissions > 0
-              ? `Permissions detected: ${permissionKeys.join(",")}`
-              : "No permissions"}
-          </PreflightChecklistItem>
-        );
+      } else if (data != null) {
+        // N.B. We currently restrict "permissions" to cover only network calls. We will update this
+        //      once more permissions land and the data is more comprehensive.
+        const networkPermission = data.permissions.network;
+        if (networkPermission != null) {
+          const networkCallCount = networkPermission.locations.length;
+          const itemState: ChecklistItemState = networkPermission.found
+            ? "warn"
+            : "ok";
+
+          return (
+            <PreflightChecklistItem
+              itemType="permissions"
+              onChecklistItemClick={onChecklistItemClick}
+              iconState={itemState}
+            >
+              {networkPermission.found
+                ? `Found ${networkCallCount} network ${
+                    networkCallCount > 1 ? "calls" : "call"
+                  }`
+                : "No network calls detected"}
+            </PreflightChecklistItem>
+          );
+        } else {
+          return (
+            <PreflightChecklistItem
+              onChecklistItemClick={onChecklistItemClick}
+              itemType="permissions"
+              iconState="neutral"
+            >
+              Unable to load network call data
+            </PreflightChecklistItem>
+          );
+        }
       } else {
         return (
           <PreflightChecklistItem
@@ -185,7 +199,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
             itemType="permissions"
             iconState="neutral"
           >
-            Unable to get permissions
+            Unable to load code permissions
           </PreflightChecklistItem>
         );
       }
