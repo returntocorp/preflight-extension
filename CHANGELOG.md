@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - Removed Top 10 tab from popup because voting on projects was removed in earlier versions
+- Removed "flag" button as it was confusing to multiple users. We're going to reintroduce a better reporting workflow in its place
 
 ## [1.9.2] - 2018-09-21
 
