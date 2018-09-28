@@ -107,7 +107,7 @@ export class ErrorHeadsUp extends React.PureComponent<
               intent={Intent.DANGER}
             />
             <div className="error-message-text">
-              Couldn't load Preflight. Make sure <code>api.secarta.io</code> is
+              Couldn't load Preflight. Check that <code>api.secarta.io</code> is
               whitelisted in your browser.
             </div>
           </div>
