@@ -55,8 +55,7 @@ export const ExtensionContext = React.createContext<ContentHostState>(
   DEFAULT_STATE
 );
 
-@HotkeysTarget
-export default class ContentHost extends React.Component<{}, ContentHostState> {
+class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = DEFAULT_STATE;
 
   private repoSlug = extractSlugFromCurrentUrl();
@@ -280,3 +279,5 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     }
   };
 }
+
+export default HotkeysTarget(ContentHost);
