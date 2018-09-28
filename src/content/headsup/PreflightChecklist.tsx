@@ -294,7 +294,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
   } else {
     return (
       <PreflightChecklistItem
-        iconState={itemState}
+        iconState={"neutral"}
         itemType="scripts"
         onChecklistItemClick={props.onChecklistItemClick}
       >
