@@ -2,6 +2,7 @@ import { Button, Icon, Intent, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import { MainToaster } from "@r2c/extension/content/Toaster";
+import * as classnames from "classnames";
 import * as React from "react";
 import "./NonIdealHeadsup.css";
 
@@ -25,30 +26,35 @@ export class UnsupportedHeadsUp extends React.PureComponent<
     l("preflight-unsupported-repo-load");
 
     return (
-      <div className="r2c-repo-headsup unsupported-headsup">
-        <div className="unsupported-message">
-          <span className="unsupported-message-text">
-            🛫 Preflight only covers JavaScript and TypeScript projects at the
-            moment. If this project should have Preflight on it,{" "}
-            <Button
-              rightIcon={IconNames.ENVELOPE}
-              minimal={true}
-              small={true}
-              onClick={l(
-                "preflight-unsupported-request-click",
-                this.handleRequestClick
-              )}
-              intent={Intent.SUCCESS}
-            >
-              let us know!
-            </Button>
-          </span>
+      <div
+        className={classnames(
+          "r2c-repo-headsup",
+          "nonideal-headsup",
+          "unsupported-headsup"
+        )}
+      >
+        <span className="unsupported-message-text">
+          🛫 Preflight only covers JavaScript and TypeScript projects at the
+          moment. If this project should have Preflight on it,{" "}
           <Button
-            icon={IconNames.SMALL_CROSS}
+            rightIcon={IconNames.ENVELOPE}
             minimal={true}
-            onClick={this.closeMessage}
-          />
-        </div>
+            small={true}
+            onClick={l(
+              "preflight-unsupported-request-click",
+              this.handleRequestClick
+            )}
+            intent={Intent.SUCCESS}
+          >
+            let us know!
+          </Button>
+        </span>
+        <Button
+          icon={IconNames.SMALL_CROSS}
+          minimal={true}
+          small={true}
+          onClick={this.closeMessage}
+        />
       </div>
     );
   }
@@ -83,31 +89,50 @@ export class ErrorHeadsUp extends React.PureComponent<
   };
 
   public render() {
+    const hasError = Object.getOwnPropertyNames(this.props.error).length > 0;
+
     return (
-      <div className="r2c-repo-headsup errror-headsup">
-        <div className="error-message">
-          <Icon
-            icon={IconNames.WARNING_SIGN}
-            className="error-icon"
-            intent={Intent.DANGER}
-          />
-          <div className="error-message-text">Couldn't load Preflight</div>
-          <div className="error-message-details">
-            <Button
-              onClick={this.handleToggleShowDetails}
-              minimal={true}
-              small={true}
-              className="error-message-show-more"
-            >
-              Show {this.state.showDetails ? "less" : "more"}
-            </Button>
-            {this.state.showDetails && (
-              <pre className="error-message-raw">
-                {JSON.stringify(this.props.error)}
-              </pre>
-            )}
+      <div
+        className={classnames(
+          "r2c-repo-headsup",
+          "nonideal-headsup",
+          "error-headsup"
+        )}
+      >
+        <div className="error-briefing">
+          <div className="error-briefing-message">
+            <Icon
+              icon={IconNames.WARNING_SIGN}
+              className="error-icon"
+              intent={Intent.DANGER}
+            />
+            <div className="error-message-text">
+              Couldn't load Preflight. Make sure <code>api.secarta.io</code> is
+              whitelisted in your browser.
+            </div>
           </div>
+          {hasError && (
+            <div className="error-briefing-action">
+              <Button
+                onClick={this.handleToggleShowDetails}
+                className="error-message-show-more"
+                small={true}
+                minimal={true}
+              >
+                Show {this.state.showDetails ? "less" : "details"}
+              </Button>
+            </div>
+          )}
         </div>
+        {this.state.showDetails && (
+          <div className="error-details">
+            <pre className="error-raw">
+              {this.props.error.toString()}
+              <br />
+              {JSON.stringify(this.props.error)}
+            </pre>
+          </div>
+        )}
       </div>
     );
   }
@@ -127,7 +152,13 @@ export class LoadingHeadsUp extends React.PureComponent {
     }
 
     return (
-      <div className="r2c-repo-headsup loading-headsup">
+      <div
+        className={classnames(
+          "r2c-repo-headsup",
+          "nonideal-headsup",
+          "loading-headsup"
+        )}
+      >
         <div className="loading-message">
           <Spinner
             size={Spinner.SIZE_SMALL}

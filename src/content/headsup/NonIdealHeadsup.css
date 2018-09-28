@@ -1,14 +1,40 @@
-.unsupported-headsup .unsupported-message-text {
+.r2c-repo-headsup.nonideal-headsup {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nonideal-headsup.error-headsup {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.error-headsup .error-briefing {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
 }
 
-.error-headsup .error-message-details {
-  align-self: flex-end;
+.error-headsup .error-briefing .error-briefing-message {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.error-headsup .error-message-raw {
-  margin-top: 1em;
+.error-headsup .error-briefing .error-briefing-action {
+  flex: 0 0 auto;
+}
 
-  background-color: rgba(16, 22, 26, 0.1);
+.error-headsup .error-details {
+  padding: 1ex;
+  margin-top: 1ex;
+  background-color: rgba(16, 22, 26, 0.05);
+}
+
+.error-headsup .error-details pre {
+  white-space: pre-wrap;
 }
