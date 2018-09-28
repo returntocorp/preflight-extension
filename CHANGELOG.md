@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improved formatting and readability of npm install hooks
 - Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
 - Updated the Preflight manifest, conversation, and share icons
+- Permissions now displays the number of network calls found, pending us adding more permissions to our dataset
 
 ### Fixed
 
