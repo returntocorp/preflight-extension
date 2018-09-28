@@ -1,3 +1,4 @@
+import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { ApiFetch, getAnalyticsParams } from "@r2c/extension/api/fetch";
 import {
@@ -54,7 +55,7 @@ export const ExtensionContext = React.createContext<ContentHostState>(
   DEFAULT_STATE
 );
 
-export default class ContentHost extends React.Component<{}, ContentHostState> {
+class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = DEFAULT_STATE;
 
   private repoSlug = extractSlugFromCurrentUrl();
@@ -186,6 +187,23 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     );
   }
 
+  public renderHotkeys() {
+    return (
+      <Hotkeys>
+        <Hotkey
+          combo="esc"
+          label="Close Preflight side-panel"
+          onKeyDown={this.handleCloseHotKey}
+        />
+        ;
+      </Hotkeys>
+    );
+  }
+
+  private handleCloseHotKey = () => {
+    this.setState({ twistTab: undefined });
+  };
+
   private handleChecklistItemClick = (itemType: PreflightChecklistItemType) => (
     e: React.MouseEvent<HTMLElement>
   ) => {
@@ -261,3 +279,5 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     }
   };
 }
+
+export default HotkeysTarget(ContentHost);
