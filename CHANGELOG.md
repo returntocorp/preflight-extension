@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
 - Improved formatting and readability of npm install hooks
 - Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
+- Updated the Preflight manifest icon from an airplan to an info "i"
 
 ### Fixed
 
