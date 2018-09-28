@@ -89,13 +89,13 @@ const ActivitiesList: React.SFC<ActivitiesListProps> = ({ activities }) => (
 
 const FirehoseFetching: React.SFC = () => (
   <div className="firehose-fetching">
-    <NonIdealState icon={<Spinner />} title="Drinking from the firehose..." />
+    <NonIdealState icon={<Spinner />} title="Fetching activity..." />
   </div>
 );
 
 const FirehoseFailed: React.SFC = () => (
   <div className="firehose-failed">
-    <NonIdealState title="Couldn't load firehose" />
+    <NonIdealState title="Couldn't load activity" />
   </div>
 );
 
