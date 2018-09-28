@@ -1,6 +1,6 @@
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb) [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb)
 
-[![Mozilla Add-on registry](https://img.shields.io/amo/v/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/) [![Number of Mozilla users](https://img.shields.io/amo/users/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/)
+[![Mozilla Add-on registry](https://img.shields.io/amo/v/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/) [![Number of Mozilla users](https://img.shields.io/amo/users/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/) [![Join the chat at https://gitter.im/returntocorp/preflight](https://badges.gitter.im/returntocorp/preflight.svg)](https://gitter.im/returntocorp/preflight?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Preflight Beta - Your GitHub Copilot 🛫
 
