@@ -2,7 +2,12 @@ import * as classnames from "classnames";
 import * as React from "react";
 import "./Twist.css";
 
-export type TwistId = "preflight" | "discussion" | "flag" | "share";
+export type TwistId =
+  | "preflight"
+  | "discussion"
+  | "flag"
+  | "share"
+  | "feedback";
 export type TwistElement = React.ReactElement<
   TwistProps & { children: React.ReactNode }
 >;

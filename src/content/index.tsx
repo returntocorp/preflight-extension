@@ -27,6 +27,7 @@ import {
 } from "@r2c/extension/utils";
 import * as React from "react";
 import { PlaneIcon, SmileyIcon, SpeechBubblesIcon } from "../icons";
+import DOMInjector from "./github/DomInjector";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
@@ -161,8 +162,8 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     }
                   />
                   <Twist
-                    id="share"
-                    title="Share the extension"
+                    id="feedback"
+                    title="Give feedback"
                     icon={<SmileyIcon />}
                     panel={<FeedbackTwist />}
                   />
