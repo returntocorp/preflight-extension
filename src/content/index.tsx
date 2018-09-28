@@ -6,7 +6,6 @@ import {
 } from "@r2c/extension/api/findings";
 import { buildVotingUrl, VoteResponse } from "@r2c/extension/api/votes";
 import Discussion from "@r2c/extension/content/Discussion";
-import FeedbackTwist from "@r2c/extension/content/feedback/FeedbackTwist";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -26,7 +25,7 @@ import {
   isRepositoryPrivate
 } from "@r2c/extension/utils";
 import * as React from "react";
-import { PlaneIcon, SmileyIcon, SpeechBubblesIcon } from "../icons";
+import { PlaneIcon, SpeechBubblesIcon } from "../icons";
 import DOMInjector from "./github/DomInjector";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
@@ -160,12 +159,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     panel={
                       <Discussion user={user} installationId={installationId} />
                     }
-                  />
-                  <Twist
-                    id="feedback"
-                    title="Give feedback"
-                    icon={<SmileyIcon />}
-                    panel={<FeedbackTwist />}
                   />
                 </Twists>
               )}

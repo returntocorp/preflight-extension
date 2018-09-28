@@ -11,6 +11,7 @@ import {
 } from "@r2c/extension/shared/ExtensionState";
 import { getGitHubUserFromStorage } from "@r2c/extension/utils";
 import * as React from "react";
+import FeedbackTab from "./FeedbackTab";
 import "./index.css";
 
 interface GuideState {
@@ -40,6 +41,7 @@ class Guide extends React.Component<{}, GuideState> {
           onChange={this.handleTabChange}
           selectedTabId={this.state.selectedTabId}
           animate={true}
+          renderActiveTabPanelOnly={true}
           className="r2c-guide-tabs"
         >
           <Tab
@@ -58,6 +60,11 @@ class Guide extends React.Component<{}, GuideState> {
           />
           <Tab id="firehose" title="Activity Feed" panel={<FirehoseTab />} />
           <Tabs.Expander />
+          <Tab
+            id="feedback"
+            title="Feedback"
+            panel={<FeedbackTab user={this.state.currentUser} />}
+          />
           {this.state.currentUser && (
             <Tab
               id="profile"
