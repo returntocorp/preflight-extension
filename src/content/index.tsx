@@ -92,7 +92,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
     return (
       <div className="r2c-content-host">
         <ExtensionContext.Provider value={this.state}>
-          <div id="r2c-inline-injector-portal" />
+          <div id={DOMInjector.DEFAULT_INJECTION_ID} />
           <div className="r2c-host">
             <RepoHeadsUpInjector
               key={`RepoHeadsUpInjector ${this.state.currentUrl} ${

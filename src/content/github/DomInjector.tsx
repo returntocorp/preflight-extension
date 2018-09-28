@@ -10,7 +10,7 @@ interface DOMInjectorProps {
   /**
    * The site to inject the child into
    */
-  destination: string | Element;
+  destination?: string | Element;
 
   /**
    * After injection, add this classname to the destination node
@@ -30,11 +30,13 @@ interface DOMInjectorProps {
 }
 
 export default class DOMInjector extends React.PureComponent<DOMInjectorProps> {
+  public static DEFAULT_INJECTION_ID = "r2c-inline-injector-portal";
+
   public render() {
     const {
       children,
       childClassName,
-      destination,
+      destination = `#${DOMInjector.DEFAULT_INJECTION_ID}`,
       injectedClassName,
       relation
     } = this.props;
