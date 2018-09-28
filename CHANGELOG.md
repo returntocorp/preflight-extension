@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed an issue where we weren't showing the uninstall page properly (#64)
+- Fixed an issue where missing packages would cause an error when showing used by (symptom of #50)
 
 ## [1.9.2] - 2018-09-21
 
