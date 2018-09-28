@@ -1,21 +1,10 @@
-import { Intent } from "@blueprintjs/core";
-import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
-import {
-  ApiFetch,
-  buildExtensionHeaders,
-  getAnalyticsParams
-} from "@r2c/extension/api/fetch";
+import { ApiFetch, getAnalyticsParams } from "@r2c/extension/api/fetch";
 import {
   FindingsResponse,
   findingsUrlFromSlug
 } from "@r2c/extension/api/findings";
-import {
-  buildVotingUrl,
-  DEPRECATED_submitVote,
-  VoteResponse
-} from "@r2c/extension/api/votes";
-import ActionButton from "@r2c/extension/content/ActionButton";
+import { buildVotingUrl, VoteResponse } from "@r2c/extension/api/votes";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
@@ -23,7 +12,6 @@ import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInje
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
 import { ShareSection } from "@r2c/extension/content/Share";
-import { MainToaster } from "@r2c/extension/content/Toaster";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
 import {
@@ -35,45 +23,29 @@ import {
   fetchOrCreateExtensionUniqueId,
   getCurrentUrlWithoutHash,
   isGitHubSlug,
-  isRepositoryPrivate,
-  userOrInstallationId
+  isRepositoryPrivate
 } from "@r2c/extension/utils";
 import * as React from "react";
-import { FetchUpdateOptions } from "react-fetch-component";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
 const DiscussionIcon: React.SFC = () => {
   return (
-    <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
-      <path d="M24 20h-3v4l-5.333-4h-7.667v-4h2v2h6.333l2.667 2v-2h3v-8.001h-2v-2h4v12.001zm-6-6h-9.667l-5.333 4v-4h-3v-14.001h18v14.001z" />
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <path d="M2.001 9.352c0 1.873.849 2.943 1.683 3.943.031 1 .085 1.668-.333 3.183 1.748-.558 2.038-.778 3.008-1.374 1 .244 1.474.381 2.611.491-.094.708-.081 1.275.055 2.023-.752-.06-1.528-.178-2.33-.374-1.397.857-4.481 1.725-6.649 2.115.811-1.595 1.708-3.785 1.661-5.312-1.09-1.305-1.705-2.984-1.705-4.695-.001-4.826 4.718-8.352 9.999-8.352 5.237 0 9.977 3.484 9.998 8.318-.644-.175-1.322-.277-2.021-.314-.229-3.34-3.713-6.004-7.977-6.004-4.411 0-8 2.85-8 6.352zm20.883 10.169c-.029 1.001.558 2.435 1.088 3.479-1.419-.258-3.438-.824-4.352-1.385-.772.188-1.514.274-2.213.274-3.865 0-6.498-2.643-6.498-5.442 0-3.174 3.11-5.467 6.546-5.467 3.457 0 6.546 2.309 6.546 5.467 0 1.12-.403 2.221-1.117 3.074zm-7.563-3.021c0-.453-.368-.82-.82-.82s-.82.367-.82.82.368.82.82.82.82-.367.82-.82zm3 0c0-.453-.368-.82-.82-.82s-.82.367-.82.82.368.82.82.82.82-.367.82-.82zm3 0c0-.453-.368-.82-.82-.82s-.82.367-.82.82.368.82.82.82.82-.367.82-.82z" />
     </svg>
   );
 };
 
 const PreflightIcon: React.SFC = () => (
   <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
-    <path d="M20 18v2h-20v-2h20zm-19.989-6.426l2.624-1.5 4.765 1.815s9.197-5.519 11.773-7.038c2.226-1.312 4.268-.853 4.647-.216.448.753.131 2.366-2.576 4.09-2.166 1.38-9.233 5.855-9.233 5.855-4.969 2.708-7.565.657-7.565.657l-4.435-3.663zm5.587-6.621l-2.598 1.5 6.252 3.173 5.388-3.227-9.042-1.446z" />
-  </svg>
-);
-
-// const RepoIcon: React.SFC = () => {
-//   return (
-//     <svg width="24" height="24" fillRule="evenodd" clipRule="evenodd">
-//       <path d="M23.548 10.931l-10.479-10.478c-.302-.302-.698-.453-1.093-.453-.396 0-.791.151-1.093.453l-2.176 2.176 2.76 2.76c.642-.216 1.377-.071 1.889.44.513.515.658 1.256.435 1.9l2.66 2.66c.644-.222 1.387-.078 1.901.437.718.718.718 1.881 0 2.6-.719.719-1.883.719-2.602 0-.54-.541-.674-1.334-.4-2l-2.481-2.481v6.529c.175.087.34.202.487.348.717.717.717 1.881 0 2.601-.719.718-1.884.718-2.601 0-.719-.72-.719-1.884 0-2.601.177-.178.383-.312.602-.402v-6.589c-.219-.089-.425-.223-.602-.401-.544-.544-.676-1.343-.396-2.011l-2.721-2.721-7.185 7.185c-.302.302-.453.697-.453 1.093 0 .395.151.791.453 1.093l10.479 10.478c.302.302.697.452 1.092.452.396 0 .791-.15 1.093-.452l10.431-10.428c.302-.303.452-.699.452-1.094 0-.396-.15-.791-.452-1.093" />
-//     </svg>
-//   );
-// };
-
-const ReportIcon: React.SFC = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M4 24h-2v-24h2v24zm6.161-23c-1.8 0-3.436 1.017-4.161 1.638v11.362c2.447-3.692 5.281-2.538 7.526-1.909 4.435 1.244 6.686-1.535 8.474-4.78-6.427 2.666-5.895-6.311-11.839-6.311z" />
+    <path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 2c5.519 0 10 4.481 10 10s-4.481 10-10 10-10-4.481-10-10 4.481-10 10-10zm-4.809 11.077l3.627-1.796-3.717-3.17 1.149-.569 6.017 2.031 2.874-1.423c.757-.38 2.009-.278 2.294.296.045.092.065.195.065.306-.002.586-.59 1.381-1.221 1.698l-2.874 1.423-2.031 6.016-1.15.569-.268-4.878-3.626 1.796-.749 1.802-.804.398-.281-2.724-1.996-1.874.804-.399 1.887.498z" />
   </svg>
 );
 
 const ShareIcon: React.SFC = () => (
   <svg width="24" height="24" viewBox="0 0 24 24">
-    <path d="M5 7c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm11.122 12.065c-.073.301-.122.611-.122.935 0 2.209 1.791 4 4 4s4-1.791 4-4-1.791-4-4-4c-1.165 0-2.204.506-2.935 1.301l-5.488-2.927c-.23.636-.549 1.229-.943 1.764l5.488 2.927zm7.878-15.065c0-2.209-1.791-4-4-4s-4 1.791-4 4c0 .324.049.634.122.935l-5.488 2.927c.395.535.713 1.127.943 1.764l5.488-2.927c.731.795 1.77 1.301 2.935 1.301 2.209 0 4-1.791 4-4z" />
+    <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.507 13.941c-1.512 1.195-3.174 1.931-5.506 1.931-2.334 0-3.996-.736-5.508-1.931l-.493.493c1.127 1.72 3.2 3.566 6.001 3.566 2.8 0 4.872-1.846 5.999-3.566l-.493-.493zm-9.007-5.941c-.828 0-1.5.671-1.5 1.5s.672 1.5 1.5 1.5 1.5-.671 1.5-1.5-.672-1.5-1.5-1.5zm7 0c-.828 0-1.5.671-1.5 1.5s.672 1.5 1.5 1.5 1.5-.671 1.5-1.5-.672-1.5-1.5-1.5z" />
   </svg>
 );
 
@@ -190,7 +162,7 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                 >
                   <Twist
                     id="preflight"
-                    title="Preflight"
+                    title="Details"
                     icon={<PreflightIcon />}
                     panel={
                       <PreflightTwist
@@ -206,17 +178,6 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
                     panel={
                       <Discussion user={user} installationId={installationId} />
                     }
-                  />
-                  <ActionButton
-                    id="flag"
-                    title="Flag an issue with this project"
-                    icon={<ReportIcon />}
-                    selected={
-                      voteData != null ? voteData.currentVote === "down" : false
-                    }
-                    count={voteData != null ? voteData.votes.down : undefined}
-                    intent={Intent.DANGER}
-                    onClick={this.handleReportProject(voteFetch, voteData)}
                   />
                   <Twist
                     id="share"
@@ -317,68 +278,5 @@ export default class ContentHost extends React.Component<{}, ContentHostState> {
     } else {
       this.setState({ twistTab: undefined, checklistItem: undefined });
     }
-  };
-
-  private handleReportProject = (
-    voteFetch: (
-      url: string,
-      options?: RequestInit,
-      updateOptions?: Partial<FetchUpdateOptions>
-    ) => void,
-    voteData: VoteResponse | undefined
-  ) => (id: TwistId, e: React.MouseEvent<HTMLElement>) => {
-    if (voteData != null && this.state.installationId != null) {
-      const newVote = voteData.currentVote == null ? "down" : null;
-
-      l("flag-project-button-click", undefined, {
-        currentVote: voteData.currentVote,
-        newVote
-      });
-
-      this.submitVote(newVote, this.state.user, this.state.installationId)(
-        e
-      ).then(() => {
-        if (newVote != null) {
-          MainToaster.show({
-            icon: IconNames.FLAG,
-            intent: Intent.SUCCESS,
-            message:
-              "Flagged this project for review. Thanks!\n\nYou can also leave a comment with your opinion."
-          });
-        } else {
-          MainToaster.show({
-            icon: IconNames.FLASH,
-            intent: Intent.SUCCESS,
-            message: "Canceled your report for this project. Have a great day."
-          });
-        }
-
-        // TODO cleanup
-        voteFetch(buildVotingUrl(getAnalyticsParams()), {
-          headers: buildExtensionHeaders(
-            this.state.user,
-            this.state.installationId
-          )
-        });
-      });
-    }
-  };
-
-  private submitVote = (
-    vote: string | null,
-    user: string | undefined,
-    installationId: string
-  ) => async (e: React.MouseEvent<HTMLElement>) => {
-    const isRepoPrivate = isRepositoryPrivate();
-    if (!isRepoPrivate) {
-      const body = {
-        vote,
-        user: userOrInstallationId(user, installationId)
-      };
-
-      return DEPRECATED_submitVote(body);
-    }
-
-    return;
   };
 }

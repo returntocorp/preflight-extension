@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
 - Improved formatting and readability of npm install hooks
 - Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
+- Updated the Preflight manifest, conversation, and share icons
 
 ### Fixed
 
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - Removed Top 10 tab from popup because voting on projects was removed in earlier versions
+- Removed "flag" button as it was confusing to multiple users. We're going to reintroduce a better reporting workflow in its place
 
 ## [1.9.2] - 2018-09-21
 
