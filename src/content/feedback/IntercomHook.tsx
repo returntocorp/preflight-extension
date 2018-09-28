@@ -85,6 +85,14 @@ export default class IntercomHook extends React.Component<IntercomHookProps> {
     return false;
   }
 
+  public componentDidMount() {
+    if (!canUseDOM || !window.Intercom) {
+      return;
+    }
+
+    window.Intercom("showNewMessage");
+  }
+
   public componentWillUnmount() {
     if (!canUseDOM || !window.Intercom) {
       return false;
