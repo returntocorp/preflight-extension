@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Renamed "Firehose" to "Activity Feed" to more clearly describe what it is (#80, #81)
 - Updated the Preflight manifest, conversation, and share icons
 - Permissions now displays the number of network calls found, pending us adding more permissions to our dataset (#87)
+- Removed the word "All" from "All packages used by" (thanks @ievans for the feedback!)
 
 ### Fixed
 
