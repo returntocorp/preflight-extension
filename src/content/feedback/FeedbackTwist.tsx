@@ -1,25 +1,15 @@
 import * as classnames from "classnames";
 import * as React from "react";
-import IntercomHook from "./IntercomHook";
+import { getExtensionUrl } from "../utils";
+import "./FeedbackTwist.css";
 
-interface FeedbackTwistProps {
-  user: string | undefined;
-  installationId: string;
-}
-
-export default class FeedbackTwist extends React.PureComponent<
-  FeedbackTwistProps
-> {
+export default class FeedbackTwist extends React.PureComponent {
   public render() {
-    const { user, installationId } = this.props;
-
     return (
-      <div className={classnames("twist", "preflight-twist")}>
-        <IntercomHook
-          hide_default_launcher={true}
-          name={user}
-          user_id={installationId}
-        />
+      <div className={classnames("twist", "feedback-twist")}>
+        <div className="twist-body">
+          <iframe src={getExtensionUrl("frames/feedback.html")} sandbox="" />
+        </div>
       </div>
     );
   }

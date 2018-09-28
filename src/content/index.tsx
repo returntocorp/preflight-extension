@@ -6,7 +6,7 @@ import {
 } from "@r2c/extension/api/findings";
 import { buildVotingUrl, VoteResponse } from "@r2c/extension/api/votes";
 import Discussion from "@r2c/extension/content/Discussion";
-import FeedbackTwist from "@r2c/extension/content/FeedbackTwist";
+import FeedbackTwist from "@r2c/extension/content/feedback/FeedbackTwist";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
