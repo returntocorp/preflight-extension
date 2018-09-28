@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves.
 - Added instrumentation to inform us when people visit public repositories we don't have Preflight data for.
 - Improved formatting and readability of npm install hooks
+- Renamed "Firehose" to "Activity Feed" to more clearly describe what it is
 
 ### Fixed
 
