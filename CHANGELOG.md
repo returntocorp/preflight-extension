@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Added `esc` as hotkey to close Preflight side panel when it's open
+
 ### Changed
 
 - We no longer show the Preflight sidebar on npmjs.com. We'll bring it back when we have more things to say about npm packages themselves

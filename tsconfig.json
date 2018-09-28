@@ -18,7 +18,8 @@
     "paths": {
       "@r2c/extension/*": ["src/*"]
     },
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "node_modules",
