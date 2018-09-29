@@ -9,26 +9,32 @@ import {
   getExtensionState,
   toggleExtensionExperiment
 } from "@r2c/extension/shared/ExtensionState";
-import { getGitHubUserFromStorage } from "@r2c/extension/utils";
+import {
+  fetchOrCreateExtensionUniqueId,
+  getGitHubUserFromStorage
+} from "@r2c/extension/utils";
 import * as React from "react";
 import FeedbackTab from "./FeedbackTab";
 import "./index.css";
 
 interface GuideState {
   selectedTabId: TabId;
-  currentUser: string | undefined;
+  user: string | undefined;
+  installationId: string | undefined;
   extensionState: ExtensionState | undefined;
 }
 
 class Guide extends React.Component<{}, GuideState> {
   public state: GuideState = {
     selectedTabId: "firehose",
-    currentUser: undefined,
+    user: undefined,
+    installationId: undefined,
     extensionState: undefined
   };
 
   public async componentDidMount() {
     this.fetchCurrentUser();
+    this.fetchInstallationId();
 
     this.setState({ extensionState: await getExtensionState() });
   }
@@ -63,13 +69,18 @@ class Guide extends React.Component<{}, GuideState> {
           <Tab
             id="feedback"
             title="Feedback"
-            panel={<FeedbackTab user={this.state.currentUser} />}
+            panel={
+              <FeedbackTab
+                user={this.state.user}
+                installationId={this.state.installationId}
+              />
+            }
           />
-          {this.state.currentUser && (
+          {this.state.user && (
             <Tab
               id="profile"
               title="Inbox"
-              panel={<ProfileTab user={this.state.currentUser} />}
+              panel={<ProfileTab user={this.state.user} />}
             />
           )}
         </Tabs>
@@ -91,11 +102,17 @@ class Guide extends React.Component<{}, GuideState> {
   };
 
   private fetchCurrentUser = async () => {
-    const currentUser = await getGitHubUserFromStorage();
+    const user = await getGitHubUserFromStorage();
 
-    if (currentUser != null) {
-      this.setState({ currentUser });
+    if (user != null) {
+      this.setState({ user });
     }
+  };
+
+  private fetchInstallationId = async () => {
+    const installationId = await fetchOrCreateExtensionUniqueId();
+
+    this.setState({ installationId });
   };
 
   private handleTabChange = (newTabId: TabId, prevTabId: TabId) => {
