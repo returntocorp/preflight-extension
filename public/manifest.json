@@ -9,7 +9,7 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "content_security_policy": "default-src 'self' https://*.secarta.io https://*.ret2.co https://*.returntocorp.com; img-src https://github.com https://*.githubusercontent.com https://js.intercomcdn.com; script-src 'self' https://*.secarta.io https://widget.intercom.io https://js.intercom.io https://js.intercomcdn.com; style-src 'unsafe-inline'; connect-src https://*.secarta.io https://api-iam.intercom.io; font-src https://js.intercomcdn.com",
+  "content_security_policy": "default-src 'self' https://*.secarta.io https://*.ret2.co https://*.returntocorp.com; img-src https://github.com https://*.githubusercontent.com https://js.intercomcdn.com; script-src 'self' https://*.secarta.io https://widget.intercom.io https://js.intercom.io https://js.intercomcdn.com; style-src 'unsafe-inline'; connect-src https://*.secarta.io https://api-iam.intercom.io https://nexus-websocket-a.intercom.io https://nexus-websocket-b.intercom.io wss://nexus-websocket-a.intercom.io wss://nexus-websocket-b.intercom.io; font-src https://js.intercomcdn.com",
   "applications": {
     "gecko": {
       "id": "extension@ret2.co"
