@@ -138,6 +138,7 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
   private renderInjected() {
     const { repoSlug, filePath, findings, debug } = this.props;
     const commitHashes = new Set(findings
+      .filter(finding => finding.fileName === filePath)
       .map(finding => finding.commitHash)
       .filter(f => f) as string[]);
 
