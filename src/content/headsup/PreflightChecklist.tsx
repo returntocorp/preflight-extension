@@ -277,17 +277,28 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
   const { archived, latestCommitDate } = props.activity;
   const date = Date.parse(latestCommitDate);
   const timeago = Date.now() - date;
-  const itemState: ChecklistItemState =
-    archived || timeago / 1000 / 3600 / 24 / 30 > 6 ? "warn" : "ok";
 
-  if (archived !== undefined && latestCommitDate !== undefined) {
+  if (archived !== undefined && archived) {
+    return (
+      <PreflightChecklistItem
+        iconState="warn"
+        itemType="scripts"
+        onChecklistItemClick={props.onChecklistItemClick}
+      >
+        "Project archived"
+      </PreflightChecklistItem>
+    );
+  } else if (latestCommitDate !== undefined) {
+    const itemState: ChecklistItemState =
+      archived || timeago / 1000 / 3600 / 24 / 30 > 1 ? "warn" : "ok";
+
     return (
       <PreflightChecklistItem
         iconState={itemState}
         itemType="scripts"
         onChecklistItemClick={props.onChecklistItemClick}
       >
-        {archived ? "Archived project" : "Latest commit "}{" "}
+        {"Results updated "}
         <TimeAgo date={date} />
       </PreflightChecklistItem>
     );
@@ -298,7 +309,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
         itemType="scripts"
         onChecklistItemClick={props.onChecklistItemClick}
       >
-        Unable to get activity data
+        Unable to get data freshness stats
       </PreflightChecklistItem>
     );
   }
@@ -441,11 +452,11 @@ export class PreflightChecklist extends React.PureComponent<
     return (
       <section className="preflight-checklist-container">
         <ul className="preflight-checklist">
-          <PreflightPermissionsItem onChecklistItemClick={o} />
           <PreflightActivityItem
             activity={repo.activity}
             onChecklistItemClick={o}
           />
+          <PreflightPermissionsItem onChecklistItemClick={o} />
           <PreflightScriptsItem
             scripts={pkg.npmScripts}
             onChecklistItemClick={o}
