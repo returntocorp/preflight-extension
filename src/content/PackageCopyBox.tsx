@@ -10,7 +10,7 @@ import {
   Position
 } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
-import { ItemRenderer, Select } from "@blueprintjs/select";
+import { ItemListPredicate, ItemRenderer, Select } from "@blueprintjs/select";
 import { l } from "@r2c/extension/analytics";
 import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
@@ -26,7 +26,7 @@ import {
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
-import { sortBy } from "lodash";
+import { includes, sortBy } from "lodash";
 import * as React from "react";
 import "./PackageCopyBox.css";
 
@@ -174,6 +174,7 @@ export default class RepoPackageSection extends React.Component<
                     >
                       <PackageSelect
                         items={data.packages}
+                        itemListPredicate={this.filterPackageList}
                         itemRenderer={this.renderPackageSelectEntry}
                         onItemSelect={this.handlePackageSelect}
                         popoverProps={{
@@ -229,6 +230,9 @@ export default class RepoPackageSection extends React.Component<
       text={pkg.name}
     />
   );
+
+  private filterPackageList: ItemListPredicate<PackageEntry> = (query, items) =>
+    items.filter(item => includes(item.name, query));
 
   private handlePackageSelect = (pkg: PackageEntry) =>
     this.setState({ selectedPackage: pkg });
