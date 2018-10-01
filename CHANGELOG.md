@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated the Preflight manifest, conversation, and share icons
 - Permissions now displays the number of network calls found, pending us adding more permissions to our dataset (#87)
 - Removed the word "All" from "All packages used by" (thanks @ievans for the feedback!)
+- Modified "activity" to instead display "data freshness"
 
 ### Fixed
 
