@@ -24,6 +24,7 @@ export const IntercomAPI: typeof Intercom = (args: unknown) => {
 
 interface IntercomHookProps extends Intercom_.IntercomSettings {
   appId?: string;
+  custom_launcher_selector?: string;
 }
 
 export default class IntercomHook extends React.Component<IntercomHookProps> {
@@ -76,7 +77,8 @@ export default class IntercomHook extends React.Component<IntercomHookProps> {
       return;
     }
 
-    window.intercomSettings = { ...otherProps, app_id: appId };
+    // tslint:disable-next-line:no-any
+    (window.intercomSettings as any) = { ...otherProps, app_id: appId };
 
     if (window.Intercom) {
       window.Intercom("update", otherProps);
@@ -85,14 +87,6 @@ export default class IntercomHook extends React.Component<IntercomHookProps> {
 
   public shouldComponentUpdate() {
     return false;
-  }
-
-  public componentDidMount() {
-    if (!canUseDOM || !window.Intercom) {
-      return;
-    }
-
-    window.Intercom("showNewMessage");
   }
 
   public componentWillUnmount() {
