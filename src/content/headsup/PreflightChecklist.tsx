@@ -383,10 +383,11 @@ export class PreflightChecklistFetch extends React.PureComponent<
                     packageResponse.loading ||
                     findingsResponse.loading;
 
-                  const error =
-                    repoResponse.error ||
-                    packageResponse.error ||
-                    findingsResponse.error;
+                  const error = !loading
+                    ? repoResponse.error ||
+                      packageResponse.error ||
+                      findingsResponse.error
+                    : undefined;
 
                   const data =
                     repoResponse.data != null &&
