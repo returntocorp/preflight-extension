@@ -285,7 +285,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
         itemType="scripts"
         onChecklistItemClick={props.onChecklistItemClick}
       >
-        "Project archived"
+        Project archived
       </PreflightChecklistItem>
     );
   } else if (latestCommitDate !== undefined) {
@@ -309,7 +309,7 @@ const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
         itemType="scripts"
         onChecklistItemClick={props.onChecklistItemClick}
       >
-        Unable to get data freshness stats
+        Unable to load activity data
       </PreflightChecklistItem>
     );
   }
