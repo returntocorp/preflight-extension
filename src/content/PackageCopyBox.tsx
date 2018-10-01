@@ -26,7 +26,7 @@ import {
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
-import { sortBy } from "lodash";
+import { includes, sortBy } from "lodash";
 import * as React from "react";
 import "./PackageCopyBox.css";
 
@@ -232,7 +232,7 @@ export default class RepoPackageSection extends React.Component<
   );
 
   private filterPackageList: ItemListPredicate<PackageEntry> = (query, items) =>
-    items.filter(item => item.name.startsWith(query));
+    items.filter(item => includes(item.name, query));
 
   private handlePackageSelect = (pkg: PackageEntry) =>
     this.setState({ selectedPackage: pkg });
