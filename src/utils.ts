@@ -276,3 +276,18 @@ export function getCurrentUrlWithoutHash(): string {
     return url.replace(window.location.hash, "");
   }
 }
+
+export type BrowserType = "chrome" | "firefox" | "edge" | undefined;
+
+export function getBrowserType(): BrowserType {
+  const url: string = browser.runtime.getURL("/");
+  if (url.startsWith("chrome-")) {
+    return "chrome";
+  } else if (url.startsWith("moz-")) {
+    return "firefox";
+  } else if (url.startsWith("ms-")) {
+    return "edge";
+  } else {
+    return undefined;
+  }
+}

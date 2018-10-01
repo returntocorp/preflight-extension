@@ -1,5 +1,4 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { l } from "@r2c/extension/analytics";
 import { ApiFetch, getAnalyticsParams } from "@r2c/extension/api/fetch";
 import {
   FindingsResponse,
@@ -12,7 +11,6 @@ import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
-import { ShareSection } from "@r2c/extension/content/Share";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
 import {
@@ -27,7 +25,8 @@ import {
   isRepositoryPrivate
 } from "@r2c/extension/utils";
 import * as React from "react";
-import { PlaneIcon, SmileyIcon, SpeechBubblesIcon } from "../icons";
+import { PlaneIcon, SpeechBubblesIcon } from "../icons";
+import DOMInjector from "./github/DomInjector";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
 
@@ -93,7 +92,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
     return (
       <div className="r2c-content-host">
         <ExtensionContext.Provider value={this.state}>
-          <div id="r2c-inline-injector-portal" />
+          <div id={DOMInjector.DEFAULT_INJECTION_ID} />
           <div className="r2c-host">
             <RepoHeadsUpInjector
               key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
@@ -159,23 +158,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     icon={<SpeechBubblesIcon />}
                     panel={
                       <Discussion user={user} installationId={installationId} />
-                    }
-                  />
-                  <Twist
-                    id="share"
-                    title="Share the extension"
-                    icon={<SmileyIcon />}
-                    panel={
-                      <ShareSection
-                        rtcLink="https://tinyurl.com/r2c-beta"
-                        shortDesc={
-                          "Hope you enjoy using the extension. Share our extension with your friends using the options below!"
-                        }
-                        onEmailClick={l("share-link-click-email")}
-                        onLinkClick={l("share-link-click-copy")}
-                        user={user}
-                        installationId={installationId}
-                      />
                     }
                   />
                 </Twists>

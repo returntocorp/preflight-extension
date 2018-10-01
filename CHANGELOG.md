@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added `esc` as hotkey to close Preflight side panel when it's open
+- Added a way to provide feedback and chat with us via Intercom. Click on the extension icon in the browser toolbar and click "Feedback".
 
 ### Changed
 

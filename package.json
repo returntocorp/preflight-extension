@@ -25,11 +25,12 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "@types/classnames": "^2.2.6",
+    "@types/intercom-web": "^2.8.4",
     "@types/jest": "^23.3.1",
     "@types/lodash": "^4.14.116",
+    "@types/node": "~10.10.2",
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.7",
-    "@types/node": "~10.10.2",
     "@types/react-transition-group": "^2.0.13",
     "prettier": "^1.14.2",
     "react-app-rewired": "^1.5.2",
