@@ -62,7 +62,7 @@ export class CommitChooser extends React.PureComponent<CommitChooserProps> {
           onClick={l("commit-warning-action-click")}
           className="past-commit-action-button"
         >
-          Go to past commit
+          Go to exact commit
         </AnchorButton>
       );
     } else if (commitGroups.length > 1) {
@@ -83,7 +83,7 @@ export class CommitChooser extends React.PureComponent<CommitChooserProps> {
           <Button
             className="commit-hash-select-dropdown-button"
             rightIcon={IconNames.CARET_DOWN}
-            text="Go to past commit..."
+            text="Go to exact commit..."
             intent={Intent.SUCCESS}
           />
         </CommitSelect>
@@ -138,6 +138,7 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
   private renderInjected() {
     const { repoSlug, filePath, findings, debug } = this.props;
     const commitHashes = new Set(findings
+      .filter(finding => finding.fileName === filePath)
       .map(finding => finding.commitHash)
       .filter(f => f) as string[]);
 
@@ -180,8 +181,8 @@ export default class CommitWarningHeadsUp extends React.PureComponent<
       <div className="r2c-repo-headsup commit-warning-headsup">
         <div className="headsup-inline-message">
           <span className="headsup-different-commit">
-            We're showing issues that we found in past commits, so markers may
-            not be exact. Go to past commits for exact issue locations.
+            We're showing issues that we found in other commits, so markers may
+            not be exact.
           </span>
           <CommitChooser
             filePath={filePath}

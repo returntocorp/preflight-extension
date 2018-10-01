@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed incorrect display of checkmark when activity data couldn't be loaded (#89)
 - Fixed an issue where we were showing an error message and a loading box at the same time (#68)
 - Fixed an issue where the "Choose a package" search field wasn't actually hooked up 🤔 (#76)
+- Fixed an issue where we were showing the "Issues on other commit" warning banner even if there weren't any issues in the current file (#105)
 
 ### Removed
 

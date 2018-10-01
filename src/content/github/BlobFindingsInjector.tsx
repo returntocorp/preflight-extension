@@ -20,7 +20,7 @@ const ApproximateFindingNotice: React.SFC<BlobFindingsHighlighterProps> = ({
   filePath
 }) => (
   <div className="approximate-finding-notice">
-    <header className="notice-title">Issues occurs in past commits</header>
+    <header className="notice-title">Issue occurs in another commit</header>
     <span className="notice-text">Location may be approximate</span>
     <CommitChooser
       repoSlug={repoSlug}
