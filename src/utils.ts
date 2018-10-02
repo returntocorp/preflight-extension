@@ -109,7 +109,8 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
       rest: rest.join("/"),
       commitHash,
       filePath: filePath.join("/"),
-      seemsLikeCommitHash: commitHash.length === 40,
+      seemsLikeCommitHash:
+        commitHash != null ? commitHash.length === 40 : undefined,
       startLineHash: startLine,
       endLineHash: endLine
     };

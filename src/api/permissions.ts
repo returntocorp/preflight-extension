@@ -1,4 +1,5 @@
 import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import { FindingEntry } from "./findings";
 
 export function permissionsUrl() {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
@@ -10,12 +11,7 @@ export interface PermissionEntry {
   name: string;
   displayName: string;
   found: boolean;
-  locations: PermissionLocation[];
-}
-
-export interface PermissionLocation {
-  file_name: string;
-  start_line: number;
+  locations: FindingEntry[];
 }
 
 export interface PermissionsResponse {

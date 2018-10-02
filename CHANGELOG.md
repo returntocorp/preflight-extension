@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added `esc` as hotkey to close Preflight side panel when it's open
 - Added a way to provide feedback and chat with us via Intercom. Click on the extension icon in the browser toolbar and click "Feedback".
+- You can now explore locations in the project where we found permissions
 
 ### Changed
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed where "Choose a package" search field wasn't actually hooked up 🤔 (#76)
 - Fixed accidentally showing the "Issues on other commit" warning banner even if there weren't any issues in the current file (#105)
 - Fixed the package select box moving about on small screens (#73)
+- Fixed parsing of GitHub URLs so a trailing slash doesn't break things
 
 ### Removed
 
