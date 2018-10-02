@@ -182,7 +182,16 @@ export default class RepoPackageSection extends React.Component<
                           minimal: true,
                           popoverClassName: "package-select-menu",
                           className: "package-select-dropdown-wrapper",
-                          targetClassName: "package-select-dropdown-target"
+                          targetClassName: "package-select-dropdown-target",
+                          portalClassName: "package-select-portal",
+                          modifiers: {
+                            preventOverflow: {
+                              enabled: false,
+                              escapeWithReference: false,
+                              boundariesElement: "viewport"
+                            },
+                            flip: { enabled: false }
+                          }
                         }}
                       >
                         <Button

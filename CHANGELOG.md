@@ -25,13 +25,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Fixed an issue where we weren't showing the uninstall page properly (#64)
-- Fixed an issue where missing packages would cause an error when showing used by (symptom of #50)
+- Fixed not showing the uninstall page properly (#64)
+- Fixed missing packages causing an error when showing used by (symptom of #50)
 - Fixed issues with error styling (#50)
 - Fixed incorrect display of checkmark when activity data couldn't be loaded (#89)
-- Fixed an issue where we were showing an error message and a loading box at the same time (#68)
-- Fixed an issue where the "Choose a package" search field wasn't actually hooked up 🤔 (#76)
-- Fixed an issue where we were showing the "Issues on other commit" warning banner even if there weren't any issues in the current file (#105)
+- Fixed where we were showing an error message and a loading box at the same time (#68)
+- Fixed where "Choose a package" search field wasn't actually hooked up 🤔 (#76)
+- Fixed accidentally showing the "Issues on other commit" warning banner even if there weren't any issues in the current file (#105)
+- Fixed the package select box moving about on small screens (#73)
 
 ### Removed
 
