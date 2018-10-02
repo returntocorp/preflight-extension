@@ -21,7 +21,7 @@ import {
   vulnsUrl
 } from "@r2c/extension/api/vulns";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
-import { buildFindingFileLink, ExtractedRepoSlug } from "@r2c/extension/utils";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
@@ -308,23 +308,11 @@ export default class PreflightTwist extends React.PureComponent<
                                   <span className="permission-entry-name">
                                     {data.permissions[key].displayName}
                                   </span>
-                                  {data.permissions[key].locations.map(
-                                    location =>
-                                      location.file_name != null &&
-                                      location.start_line != null && (
-                                        <a
-                                          href={buildFindingFileLink(
-                                            repoSlug,
-                                            data.commitHash,
-                                            location.file_name,
-                                            location.start_line
-                                          )}
-                                        >
-                                          {location.file_name}:
-                                          {location.start_line}
-                                        </a>
-                                      )
-                                  )}
+                                  <FindingsGroupedList
+                                    commitHash={data.commitHash}
+                                    findings={data.permissions[key].locations}
+                                    repoSlug={repoSlug}
+                                  />
                                 </div>
                               )
                           )}
