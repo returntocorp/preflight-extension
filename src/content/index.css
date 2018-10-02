@@ -9,6 +9,10 @@
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+.bp3-portal {
+  z-index: 2147400000;
+}
+
 #r2c-extension-root .bp3-input {
   background-color: #fff !important;
 }
