@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.10.1] - 2018-10-02
+
+### Fixed
+
+- Fixed the email button in the Feedback tab not navigating properly
+
 ## [1.10.0] - 2018-10-01
 
 ### Added
