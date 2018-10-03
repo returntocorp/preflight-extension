@@ -4,7 +4,8 @@
     "module": "es2015",
     "paths": {
       "@r2c/extension/*": ["src/*"]
-    }
+    },
+    "baseUrl": "../"
   },
   "include": ["../**/*"]
 }
