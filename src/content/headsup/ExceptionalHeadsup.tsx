@@ -1,6 +1,7 @@
 import { Button, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import * as React from "react";
+import "./ExceptionalHeadsUp.css";
 
 export default class ExceptionalHeadsUp extends React.PureComponent {
   public render() {

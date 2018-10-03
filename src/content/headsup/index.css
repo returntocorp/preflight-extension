@@ -63,54 +63,10 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   margin-left: 0.5em;
 }
 
-.exceptional-headsup {
-  border-color: rgba(104, 80, 21, 0.3);
-  background-color: rgb(255, 246, 214);
-  color: rgb(104, 80, 21);
-}
-
-.exceptional-headsup h2 {
-  line-height: 24px;
-  margin-bottom: 1ex;
-}
-
-.r2c-repo-headsup.exceptional-headsup .repo-headsup-body {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 2em;
-}
-
-.exceptional-headsup .repo-headsup-icon {
-  flex: 0 0 40px;
-  margin-right: 1em;
-  display: flex;
-  justify-content: center;
-}
-
 .repo-headsup-message-icons {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.unsupported-headsup .unsupported-message,
-.r2c-repo-headsup .headsup-inline-message {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.loading-headsup .loading-message,
-.error-headsup .error-message {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.loading-headsup .loading-headsup-spinner,
-.error-headsup .error-icon {
-  margin-right: 1em;
 }
 
 .r2c-repo-headsup footer {
