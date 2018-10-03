@@ -27,7 +27,9 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.11",
+    "@storybook/addon-centered": "^3.4.11",
     "@storybook/addon-info": "^3.4.11",
+    "@storybook/addon-knobs": "^3.4.11",
     "@storybook/addon-links": "^3.4.11",
     "@storybook/addons": "^3.4.11",
     "@storybook/react": "^3.4.11",
@@ -40,6 +42,8 @@
     "@types/react-dom": "^16.0.7",
     "@types/react-transition-group": "^2.0.13",
     "@types/storybook__addon-actions": "^3.4.1",
+    "@types/storybook__addon-centered": "^3.3.1",
+    "@types/storybook__addon-knobs": "^3.4.1",
     "@types/storybook__addon-links": "^3.3.2",
     "@types/storybook__react": "^3.0.9",
     "babel-core": "^6.26.3",
