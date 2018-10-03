@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+
+- When you click on the issues badge next to a file or folder, you can now go directly to the individual files and issues by clicking on them. (#102)
+
 ## [1.10.1] - 2018-10-02
 
 ### Fixed

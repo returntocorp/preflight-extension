@@ -21,6 +21,7 @@ interface TreeFindingsHighlighterProps extends TreeFindingsInjectorProps {
 
 interface TreeFindingHighlightProps {
   findings: FindingEntry[];
+  repoSlug: ExtractedRepoSlug;
   commitHash: string;
   path: string;
 }
@@ -29,7 +30,7 @@ class TreeFindingHighlight extends React.PureComponent<
   TreeFindingHighlightProps
 > {
   public render() {
-    const { findings, commitHash, path } = this.props;
+    const { findings, commitHash, path, repoSlug } = this.props;
 
     return (
       <DOMInjector
@@ -44,6 +45,7 @@ class TreeFindingHighlight extends React.PureComponent<
             <FindingsGroupedList
               findings={findings}
               commitHash={commitHash}
+              repoSlug={repoSlug}
               className="r2c-tree-findings-grouped-list"
             />
           }
@@ -69,7 +71,7 @@ class TreeFindingsHighlighter extends React.PureComponent<
   TreeFindingsHighlighterProps
 > {
   public render() {
-    const { currentPath, findings, commitHash } = this.props;
+    const { currentPath, findings, commitHash, repoSlug } = this.props;
 
     const filtered = findings.filter(finding =>
       finding.fileName.startsWith(currentPath)
@@ -92,6 +94,7 @@ class TreeFindingsHighlighter extends React.PureComponent<
       <>
         {[...immediatePathChildren.values()].map(directoryEntry => (
           <TreeFindingHighlight
+            repoSlug={repoSlug}
             key={directoryEntry}
             commitHash={commitHash}
             findings={filtered.filter(finding =>
