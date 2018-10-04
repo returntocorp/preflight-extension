@@ -2,8 +2,20 @@
 
 ## Getting started
 
-1. `yarn` to install dependencies
-1. `yarn start` to start the dev server _OR_ `yarn build` to produce a production build.
+First, run:
+
+```
+yarn
+```
+
+to install dependencies.
+
+For development:
+
+- Run `yarn start` to start the dev server
+- Run `yarn build` to produce a production build
+- Run `yarn storybook` to start a [Storybook](https://github.com/storybooks/storybook/) instance (port 6006 by default)
+  - Look in the `stories/` directory for the story description files
 
 You should be able to use `yarn start` for the vast majority of development for both scripts injected into the page and the popup.
 
