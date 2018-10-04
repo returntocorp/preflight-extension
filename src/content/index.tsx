@@ -1,10 +1,9 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { ApiFetch, getAnalyticsParams } from "@r2c/extension/api/fetch";
+import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   FindingsResponse,
   findingsUrlFromSlug
 } from "@r2c/extension/api/findings";
-import { buildVotingUrl, VoteResponse } from "@r2c/extension/api/votes";
 import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
@@ -134,35 +133,31 @@ class ContentHost extends React.Component<{}, ContentHostState> {
               </ApiFetch>
             )}
 
-            <ApiFetch<VoteResponse> url={buildVotingUrl(getAnalyticsParams())}>
-              {({ data: voteData, fetch: voteFetch }) => (
-                <Twists
-                  isOpen={twistTab != null}
-                  selectedTwistId={twistTab}
-                  onTwistChange={this.handleTwistChange}
-                >
-                  <Twist
-                    id="preflight"
-                    title="Details"
-                    icon={<PlaneIcon />}
-                    panel={
-                      <PreflightTwist
-                        repoSlug={this.repoSlug}
-                        deepLink={this.state.checklistItem}
-                      />
-                    }
+            <Twists
+              isOpen={twistTab != null}
+              selectedTwistId={twistTab}
+              onTwistChange={this.handleTwistChange}
+            >
+              <Twist
+                id="preflight"
+                title="Details"
+                icon={<PlaneIcon />}
+                panel={
+                  <PreflightTwist
+                    repoSlug={this.repoSlug}
+                    deepLink={this.state.checklistItem}
                   />
-                  <Twist
-                    id="discussion"
-                    title="Comments"
-                    icon={<SpeechBubblesIcon />}
-                    panel={
-                      <Discussion user={user} installationId={installationId} />
-                    }
-                  />
-                </Twists>
-              )}
-            </ApiFetch>
+                }
+              />
+              <Twist
+                id="discussion"
+                title="Comments"
+                icon={<SpeechBubblesIcon />}
+                panel={
+                  <Discussion user={user} installationId={installationId} />
+                }
+              />
+            </Twists>
           </div>
         </ExtensionContext.Provider>
       </div>
