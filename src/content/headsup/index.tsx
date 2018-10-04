@@ -2,8 +2,16 @@ import { Button, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
-import { ErrorHeadsUp, LoadingHeadsUp, UnsupportedHeadsUp } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import { PreflightChecklist, PreflightChecklistFetch, PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
+import {
+  ErrorHeadsUp,
+  LoadingHeadsUp,
+  UnsupportedHeadsUp
+} from "@r2c/extension/content/headsup/NonIdealHeadsup";
+import {
+  PreflightChecklist,
+  PreflightChecklistFetch,
+  PreflightChecklistItemType
+} from "@r2c/extension/content/headsup/PreflightChecklist";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
@@ -36,11 +44,12 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
         {({ loading, error, data, response }) => (
           <>
             {loading && <LoadingHeadsUp />}
-            {response != null &&
-              response.repo.status === 404 && <UnsupportedHeadsUp />}
+            {response.pkg != null &&
+              response.pkg.status === 404 && <UnsupportedHeadsUp />}
             {error &&
-              (response == null ||
-              response.repo.status !== 404) && <ErrorHeadsUp error={error} />}
+              (response.pkg == null || response.pkg.status !== 404) && (
+                <ErrorHeadsUp error={error} />
+              )}
             {data && (
               <div className="r2c-repo-headsup checklist-headsup">
                 <header>

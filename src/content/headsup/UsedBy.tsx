@@ -5,20 +5,22 @@ import * as React from "react";
 import "./UsedBy.css";
 
 interface UsedByProps {
-  pkg: PackageResponse;
+  pkg: PackageResponse | undefined;
 }
 
 export default class UsedBy extends React.PureComponent<UsedByProps> {
   public render() {
     const { pkg } = this.props;
-    const endorsers = flatten(pkg.packages.map(entry => entry.endorsers));
+    if (pkg == null) {
+      return null;
+    }
 
+    const endorsers = flatten(pkg.packages.map(entry => entry.endorsers));
     if (endorsers.length === 0) {
       return null;
     }
 
     const uniqueEndorsers = uniq(endorsers);
-
     if (uniqueEndorsers.length === 0) {
       return null;
     }

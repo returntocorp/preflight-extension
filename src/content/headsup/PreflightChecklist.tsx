@@ -208,7 +208,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
 );
 
 interface PreflightScriptsItemProps extends PreflightChecklistInteractionProps {
-  scripts: ScriptEntry[];
+  scripts: ScriptEntry[] | undefined;
 }
 
 const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = props => {
@@ -270,49 +270,52 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
 
 interface PreflightActivityItemProps
   extends PreflightChecklistInteractionProps {
-  activity: Activity;
+  activity: Activity | undefined;
 }
 
 const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
-  const { archived, latestCommitDate } = props.activity;
-  const date = Date.parse(latestCommitDate);
-  const timeago = Date.now() - date;
+  const { activity } = props;
+  if (activity != null) {
+    const { archived, latestCommitDate } = activity;
+    const date = Date.parse(latestCommitDate);
+    const timeago = Date.now() - date;
 
-  if (archived !== undefined && archived) {
-    return (
-      <PreflightChecklistItem
-        iconState="warn"
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        Project archived
-      </PreflightChecklistItem>
-    );
-  } else if (latestCommitDate !== undefined) {
-    const itemState: ChecklistItemState =
-      archived || timeago / 1000 / 3600 / 24 / 30 > 1 ? "warn" : "ok";
+    if (archived !== undefined && archived) {
+      return (
+        <PreflightChecklistItem
+          iconState="warn"
+          itemType="scripts"
+          onChecklistItemClick={props.onChecklistItemClick}
+        >
+          Project archived
+        </PreflightChecklistItem>
+      );
+    } else if (latestCommitDate !== undefined) {
+      const itemState: ChecklistItemState =
+        archived || timeago / 1000 / 3600 / 24 / 30 > 1 ? "warn" : "ok";
 
-    return (
-      <PreflightChecklistItem
-        iconState={itemState}
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        {"Results updated "}
-        <TimeAgo date={date} />
-      </PreflightChecklistItem>
-    );
-  } else {
-    return (
-      <PreflightChecklistItem
-        iconState="neutral"
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        Unable to load activity data
-      </PreflightChecklistItem>
-    );
+      return (
+        <PreflightChecklistItem
+          iconState={itemState}
+          itemType="scripts"
+          onChecklistItemClick={props.onChecklistItemClick}
+        >
+          {"Results updated "}
+          <TimeAgo date={date} />
+        </PreflightChecklistItem>
+      );
+    }
   }
+
+  return (
+    <PreflightChecklistItem
+      iconState="neutral"
+      itemType="scripts"
+      onChecklistItemClick={props.onChecklistItemClick}
+    >
+      Unable to load activity data
+    </PreflightChecklistItem>
+  );
 };
 
 interface PreflightFindingsItemProps
@@ -362,9 +365,9 @@ interface PreflightChecklistFetchProps {
 }
 
 interface PreflightChecklistFetchData {
-  repo: RepoResponse;
-  pkg: PackageResponse;
-  findings: FindingsResponse;
+  repo: RepoResponse | undefined;
+  pkg: PackageResponse | undefined;
+  findings: FindingsResponse | undefined;
 }
 
 type PreflightChecklistFetchDataResponse = {
@@ -374,8 +377,8 @@ type PreflightChecklistFetchDataResponse = {
 interface PreflightChecklistFetchResponse {
   loading: boolean | null;
   error: Error | undefined;
-  data: PreflightChecklistFetchData | undefined;
-  response: PreflightChecklistFetchDataResponse | undefined;
+  data: PreflightChecklistFetchData;
+  response: PreflightChecklistFetchDataResponse;
 }
 
 export class PreflightChecklistFetch extends React.PureComponent<
@@ -395,32 +398,22 @@ export class PreflightChecklistFetch extends React.PureComponent<
                     findingsResponse.loading;
 
                   const error = !loading
-                    ? repoResponse.error ||
-                      packageResponse.error ||
+                    ? repoResponse.error &&
+                      packageResponse.error &&
                       findingsResponse.error
                     : undefined;
 
-                  const data =
-                    repoResponse.data != null &&
-                    packageResponse.data != null &&
-                    findingsResponse.data != null
-                      ? {
-                          repo: repoResponse.data,
-                          pkg: packageResponse.data,
-                          findings: findingsResponse.data
-                        }
-                      : undefined;
+                  const data = {
+                    repo: repoResponse.data,
+                    pkg: packageResponse.data,
+                    findings: findingsResponse.data
+                  };
 
-                  const response =
-                    repoResponse.response != null &&
-                    packageResponse.response != null &&
-                    findingsResponse.response != null
-                      ? {
-                          repo: repoResponse.response,
-                          pkg: packageResponse.response,
-                          findings: findingsResponse.response
-                        }
-                      : undefined;
+                  const response = {
+                    repo: repoResponse.response,
+                    pkg: packageResponse.response,
+                    findings: findingsResponse.response
+                  };
 
                   const fetchResponse: PreflightChecklistFetchResponse = {
                     loading,
@@ -453,24 +446,28 @@ export class PreflightChecklist extends React.PureComponent<
       <section className="preflight-checklist-container">
         <ul className="preflight-checklist">
           <PreflightActivityItem
-            activity={repo.activity}
+            activity={repo != null ? repo.activity : undefined}
             onChecklistItemClick={o}
           />
           <PreflightPermissionsItem onChecklistItemClick={o} />
           <PreflightScriptsItem
-            scripts={pkg.npmScripts}
+            scripts={pkg != null ? pkg.npmScripts : undefined}
             onChecklistItemClick={o}
           />
           <PreflightRankItem
             onChecklistItemClick={o}
             pkg={
-              pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]
+              pkg != null
+                ? pkg.packages.sort(
+                    (a, b) => a.package_rank - b.package_rank
+                  )[0]
+                : undefined
             }
           />
           <PreflightVulnsItem onChecklistItemClick={o} />
           <PreflightFindingsItem
             onChecklistItemClick={o}
-            findings={findings.findings}
+            findings={findings != null ? findings.findings : undefined}
           />
         </ul>
       </section>
