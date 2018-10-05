@@ -2,7 +2,7 @@
 
 const uninstallUrl = `https://goo.gl/forms/B8ALNAcRHoLWHBVF2`;
 const setUninstallUrl = new Promise((resolve, reject) => {
-  const shim = browser || chrome;
+  const shim = window.browser || window.chrome;
   return shim.runtime.setUninstallURL(uninstallUrl, () => {
     const lastError = shim.runtime.lastError;
     if (lastError) {
