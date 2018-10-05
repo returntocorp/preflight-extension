@@ -1,24 +1,24 @@
 const path = require("path");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const fs = require("fs-extra");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = function override(config, env) {
   let buildPath = "./build";
 
   // Add entry for content-script
   const defaultEntryArray = config.entry;
-  const resolvedContentPath = defaultEntryArray[
-    defaultEntryArray.length - 1
-  ].replace("index.tsx", "content.tsx");
+  const defaultEntryPrefix = defaultEntryArray.slice(0, 1);
+  const indexPath = defaultEntryArray[defaultEntryArray.length - 1];
+  const contentPath = indexPath.replace("index.tsx", "content.tsx");
+  const popupPath = indexPath.replace("index.tsx", "popup.tsx");
+
   config.entry = {
-    // Cut out the middle item in the entry array (the hot reloading script)
-    // so we can use webpack dev server with the popup :D
-    main: [
-      ...defaultEntryArray.slice(0, 1),
-      defaultEntryArray[defaultEntryArray.length - 1]
-    ],
-    content: [...defaultEntryArray.slice(0, 1), resolvedContentPath]
+    main: [...defaultEntryPrefix, indexPath],
+    content: [...defaultEntryPrefix, contentPath],
+    popup: [...defaultEntryPrefix, popupPath]
   };
+
   console.log(config.entry);
 
   config.devServer = {
@@ -30,6 +30,17 @@ module.exports = function override(config, env) {
   config.output.path = path.join(__dirname, buildPath);
   config.output.filename = "static/js/[name].bundle.js";
   config.plugins.push(new WriteFilePlugin());
+
+  config.plugins = [
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve(__dirname, "public/popup.html"),
+      filename: "popup.html",
+      minify: config.plugins[0].minify
+    }),
+    ...(config.plugins || [])
+  ];
+
   fs.removeSync(buildPath);
   fs.copySync("./public/", buildPath);
 
