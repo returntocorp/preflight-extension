@@ -17,7 +17,7 @@
   },
   "browser_action": {
     "default_title": "R2C - Dev",
-    "default_popup": "index.html",
+    "default_popup": "popup.html",
     "default_icon": "r2c-circle.png"
   },
   "content_scripts": [

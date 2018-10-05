@@ -1,0 +1,24 @@
+body#r2c-web-app {
+  margin: 0;
+}
+
+#r2c-web-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.r2c-web-placeholder {
+  background-color: #0870ae;
+
+  height: 100%;
+  width: 100%;
+
+  flex: 1 1 auto;
+  justify-self: stretch;
+  align-self: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
