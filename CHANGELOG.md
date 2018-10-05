@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed the email button in the Feedback tab not navigating properly
+- Fixed a missing uninstall hook in Chrome since it doesn't support `window.browser` (#64)
 
 ## [1.10.0] - 2018-10-01
 
