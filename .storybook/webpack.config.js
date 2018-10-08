@@ -2,6 +2,7 @@ const path = require("path");
 const TSDocgenPlugin = require("react-docgen-typescript-webpack-plugin"); // Optional
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = (baseConfig, env, config) => {
   config.module.rules.push({
@@ -24,6 +25,7 @@ module.exports = (baseConfig, env, config) => {
 
   config.plugins = [
     ...(config.plugins || []),
+    new MonacoWebpackPlugin(),
     new TSDocgenPlugin(), // optional
     new ForkTsCheckerWebpackPlugin({
       tslint: path.resolve(__dirname, "../tslint.json"),
