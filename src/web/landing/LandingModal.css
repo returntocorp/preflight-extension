@@ -1,0 +1,56 @@
+.pf-landing-modal {
+  width: 980px;
+  height: 540px;
+
+  display: grid;
+  grid-template-columns: [snippet-start] auto [snippet-end engage-start] 320px [engage-end];
+  grid-column-gap: 0;
+  grid-template-rows: [header-start] 40px [header-end content-start] auto [content-end];
+  grid-template-areas:
+    "header header"
+    "snippet engage";
+  align-items: stretch;
+
+  border: 1px solid rgba(16, 22, 26, 0.05);
+  box-shadow: 0px 1px 5px rgba(16, 22, 26, 0.25);
+}
+
+.pf-landing-modal .pf-landing-header {
+  grid-area: header;
+  background-color: rgba(16, 22, 26, 0.05);
+  border-bottom: rgba(16, 22, 26, 0.15);
+  padding: 1ex;
+}
+
+.pf-landing-header .snippet-source {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+}
+
+.pf-landing-header .snippet-source > div {
+  margin-right: 1em;
+}
+
+.pf-landing-header .snipet-source-domain {
+  font-weight: 600;
+}
+
+.pf-landing-modal .pf-snippet {
+  grid-area: snippet;
+  border-right: 1px solid rgba(16, 22, 26, 0.15);
+}
+
+.pf-landing-modal .pf-engage {
+  grid-area: engage;
+}
+
+.pf-snippet .snippet-line-highlight {
+  background-color: #fdfd7a;
+  box-shadow: 0px 1px 4px hsla(60, 97%, 20%, 0.2);
+  padding: 2px;
+}
+
+.pf-snippet .snippet-glyph-margin-highlight {
+  background-color: rgb(209, 57, 19);
+}

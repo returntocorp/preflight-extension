@@ -5,6 +5,7 @@ import {
   LoadingHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
+import LandingModal from "@r2c/extension/web/landing/LandingModal";
 import centered from "@storybook/addon-centered";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
@@ -18,3 +19,7 @@ storiesOf("Headsup", module)
   ))
   .add("Non-ideal, unsupported", () => <UnsupportedHeadsUp />)
   .add("Exceptional", () => <ExceptionalHeadsUp />);
+
+storiesOf("Landing", module)
+  .addDecorator(centered)
+  .add("With sample code", () => <LandingModal />);
