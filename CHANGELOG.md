@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - When you click on the issues badge next to a file or folder, you can now go directly to the individual files and issues by clicking on them. (#102)
+- We've hidden the Permissions checklist item behind an experiment for now while we're working on finding new permissions and improving how we detect permissions. We'll bring it back when we've had some time to validate our new permission behavior.
 
 ## [1.10.1] - 2018-10-02
 
