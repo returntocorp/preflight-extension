@@ -22,6 +22,7 @@ import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
 import TimeAgo from "react-timeago";
+import { ExtensionContext } from "../index";
 
 export type PreflightChecklistItemType =
   | "permissions"
@@ -451,28 +452,37 @@ export class PreflightChecklist extends React.PureComponent<
 
     return (
       <section className="preflight-checklist-container">
-        <ul className="preflight-checklist">
-          <PreflightActivityItem
-            activity={repo.activity}
-            onChecklistItemClick={o}
-          />
-          <PreflightPermissionsItem onChecklistItemClick={o} />
-          <PreflightScriptsItem
-            scripts={pkg.npmScripts}
-            onChecklistItemClick={o}
-          />
-          <PreflightRankItem
-            onChecklistItemClick={o}
-            pkg={
-              pkg.packages.sort((a, b) => a.package_rank - b.package_rank)[0]
-            }
-          />
-          <PreflightVulnsItem onChecklistItemClick={o} />
-          <PreflightFindingsItem
-            onChecklistItemClick={o}
-            findings={findings.findings}
-          />
-        </ul>
+        <ExtensionContext.Consumer>
+          {({ extensionState }) => (
+            <ul className="preflight-checklist">
+              <PreflightActivityItem
+                activity={repo.activity}
+                onChecklistItemClick={o}
+              />
+              {extensionState != null &&
+                extensionState.experiments.permissions && (
+                  <PreflightPermissionsItem onChecklistItemClick={o} />
+                )}
+              <PreflightScriptsItem
+                scripts={pkg.npmScripts}
+                onChecklistItemClick={o}
+              />
+              <PreflightRankItem
+                onChecklistItemClick={o}
+                pkg={
+                  pkg.packages.sort(
+                    (a, b) => a.package_rank - b.package_rank
+                  )[0]
+                }
+              />
+              <PreflightVulnsItem onChecklistItemClick={o} />
+              <PreflightFindingsItem
+                onChecklistItemClick={o}
+                findings={findings.findings}
+              />
+            </ul>
+          )}
+        </ExtensionContext.Consumer>
       </section>
     );
   }

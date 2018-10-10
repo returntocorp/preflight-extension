@@ -70,10 +70,13 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           helperText="Try out some of our freshest ideas. You may need to refresh the page after toggling these experiments."
           className="extension-experiments-cp"
         >
-          <span>
-            You're running the latest and greatest - no optional experiments to
-            try out today.
-          </span>
+          <ExperimentSwitch
+            title="Permission checks"
+            description="We'll show capabilities and permissions that we've detected in this project as issues you can interact with."
+            experiments={this.props.extensionState.experiments}
+            experimentName="permissions"
+            onToggleExperiment={this.props.onToggleExperiment}
+          />
         </FormGroup>
       </div>
     );
