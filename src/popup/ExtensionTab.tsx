@@ -1,11 +1,45 @@
-import { FormGroup } from "@blueprintjs/core";
+import { FormGroup, Switch } from "@blueprintjs/core";
 import {
+  ExperimentManifest,
   ExperimentName,
   ExtensionState
 } from "@r2c/extension/shared/ExtensionState";
 import { getExtensionVersion } from "@r2c/extension/utils";
 import * as React from "react";
+import { l } from "../analytics";
 import "./ExtensionTab.css";
+
+interface ExperimentSwitchProps {
+  title: string;
+  description: string;
+  experiments: ExperimentManifest;
+  experimentName: ExperimentName;
+  onToggleExperiment(
+    experimentName: ExperimentName
+  ): React.FormEventHandler<HTMLInputElement>;
+}
+
+class ExperimentSwitch extends React.PureComponent<ExperimentSwitchProps> {
+  public render() {
+    const { title, description, experiments, experimentName } = this.props;
+
+    return (
+      <Switch
+        labelElement={
+          <div className="experiment-label">
+            <div className="experiment-label-title">{title}</div>
+            <div className="experiment-label-description">{description}</div>
+          </div>
+        }
+        checked={experiments[experimentName]}
+        onChange={l(
+          `experiment-${experimentName}-toggle`,
+          this.props.onToggleExperiment(experimentName)
+        )}
+      />
+    );
+  }
+}
 
 interface ExtensionTabProps {
   extensionState: ExtensionState | undefined;
