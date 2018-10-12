@@ -26,6 +26,7 @@ import { sumBy } from "lodash";
 import * as React from "react";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
+import { RepoResponse, repoUrl } from "../api/repo";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import { ExtensionContext } from "./index";
 import "./PreflightInstallHook.css";
@@ -270,9 +271,18 @@ export default class PreflightTwist extends React.PureComponent<
 
     return (
       <div className={classnames("twist", "preflight-twist")}>
-        <header className="twist-header">
-          <h1 className="twist-title">Manifest</h1>
-        </header>
+        <ApiFetch<RepoResponse> url={repoUrl()}>
+          {({ data, loading }) => (
+            <header className="twist-header">
+              <h1 className="twist-title">Manifest</h1>
+              {data != null && (
+                <span className="twist-updated">
+                  Updated <TimeAgo date={data.activity.latestCommitDate} />
+                </span>
+              )}
+            </header>
+          )}
+        </ApiFetch>
         <div className="twist-scroll-container">
           <ExtensionContext.Consumer>
             {({ extensionState }) => (
