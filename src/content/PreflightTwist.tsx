@@ -14,7 +14,6 @@ import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
-import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import {
   VulnerabilityEntry,
   VulnsResponse,
@@ -421,32 +420,6 @@ export default class PreflightTwist extends React.PureComponent<
                               key={`${script.type}_${i}`}
                             />
                           ))}
-                        </div>
-                      )}
-                    </PreflightSection>
-                  )}
-                </ApiFetch>
-                <ApiFetch<RepoResponse> url={repoUrl()}>
-                  {({ data, loading }) => (
-                    <PreflightSection
-                      check="activity"
-                      title="Commit activity"
-                      description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
-                      startOpen={
-                        (data != null && data.activity != null) ||
-                        deepLink === "activity"
-                      }
-                      loading={loading}
-                      domRef={this.twistRefs.activity}
-                    >
-                      {data && (
-                        <div className="last-committed">
-                          <span className="last-committed-message">
-                            Last committed:{" "}
-                          </span>
-                          <span className="last-committed-date">
-                            {data.activity.latestCommitDate}
-                          </span>
                         </div>
                       )}
                     </PreflightSection>
