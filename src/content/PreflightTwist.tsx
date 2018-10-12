@@ -28,6 +28,7 @@ import * as React from "react";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
+import { ExtensionContext } from "./index";
 import "./PreflightInstallHook.css";
 import "./PreflightTwist.css";
 import "./PreflightVulnerabilityEntry.css";
@@ -274,174 +275,186 @@ export default class PreflightTwist extends React.PureComponent<
           <h1 className="twist-title">Manifest</h1>
         </header>
         <div className="twist-scroll-container">
-          <div className="twist-body">
-            <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
-              {({ data, loading }) => {
-                const numPermissionsFound =
-                  data != null
-                    ? Object.keys(data.permissions)
-                        .map(key => data.permissions[key].found)
-                        .filter(f => f === true).length
-                    : undefined;
+          <ExtensionContext.Consumer>
+            {({ extensionState }) => (
+              <div className="twist-body">
+                {extensionState != null &&
+                  extensionState.experiments.permissions && (
+                    <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
+                      {({ data, loading }) => {
+                        const numPermissionsFound =
+                          data != null
+                            ? Object.keys(data.permissions)
+                                .map(key => data.permissions[key].found)
+                                .filter(f => f === true).length
+                            : undefined;
 
-                return (
-                  <PreflightSection
-                    check="permissions"
-                    title="Permissions"
-                    description="The project's capabilities when it runs. Unexpected capabilities can indicate a security breach or malice."
-                    startOpen={
-                      (numPermissionsFound != null &&
-                        numPermissionsFound > 0) ||
-                      deepLink === "permissions"
-                    }
-                    count={numPermissionsFound}
-                    loading={loading}
-                    domRef={this.twistRefs.permissions}
-                  >
-                    {data != null &&
-                      data.permissions != null && (
-                        <>
-                          {Object.keys(data.permissions).map(
-                            key =>
-                              data.permissions[key].found && (
-                                <div className="permission-entry" key={key}>
-                                  <span className="permission-entry-name">
-                                    {data.permissions[key].displayName}
-                                  </span>
-                                  <FindingsGroupedList
-                                    commitHash={data.commitHash}
-                                    findings={data.permissions[key].locations}
-                                    repoSlug={repoSlug}
-                                  />
-                                </div>
-                              )
-                          )}
-                        </>
-                      )}
-                  </PreflightSection>
-                );
-              }}
-            </ApiFetch>
-            <ApiFetch<VulnsResponse> url={vulnsUrl()}>
-              {({ data, loading }) => (
-                <PreflightSection
-                  check="vulns"
-                  title="Vulnerabilities"
-                  description="Current or historical vulnerabilities discovered in this project."
-                  startOpen={
-                    (data != null && data.vuln.length > 0) ||
-                    deepLink === "vulns"
-                  }
-                  count={
-                    data != null
-                      ? sumBy(
-                          data.vuln,
-                          packageVulns => packageVulns.vuln.length
-                        )
-                      : undefined
-                  }
-                  loading={loading}
-                  domRef={this.twistRefs.vulns}
-                >
-                  {data != null &&
-                    data.vuln.map(
-                      (vulns, entriesIdx) =>
-                        vulns != null &&
-                        vulns.vuln.map(vuln => (
-                          <PreflightVulnerabilityEntry
-                            vuln={vuln}
-                            key={vuln.slug}
+                        return (
+                          <PreflightSection
+                            check="permissions"
+                            title="Permissions"
+                            description="The project's capabilities when it runs. Unexpected capabilities can indicate a security breach or malice."
+                            startOpen={
+                              (numPermissionsFound != null &&
+                                numPermissionsFound > 0) ||
+                              deepLink === "permissions"
+                            }
+                            count={numPermissionsFound}
+                            loading={loading}
+                            domRef={this.twistRefs.permissions}
+                          >
+                            {data != null &&
+                              data.permissions != null && (
+                                <>
+                                  {Object.keys(data.permissions).map(
+                                    key =>
+                                      data.permissions[key].found && (
+                                        <div
+                                          className="permission-entry"
+                                          key={key}
+                                        >
+                                          <span className="permission-entry-name">
+                                            {data.permissions[key].displayName}
+                                          </span>
+                                          <FindingsGroupedList
+                                            commitHash={data.commitHash}
+                                            findings={
+                                              data.permissions[key].locations
+                                            }
+                                            repoSlug={repoSlug}
+                                          />
+                                        </div>
+                                      )
+                                  )}
+                                </>
+                              )}
+                          </PreflightSection>
+                        );
+                      }}
+                    </ApiFetch>
+                  )}
+                <ApiFetch<VulnsResponse> url={vulnsUrl()}>
+                  {({ data, loading }) => (
+                    <PreflightSection
+                      check="vulns"
+                      title="Vulnerabilities"
+                      description="Current or historical vulnerabilities discovered in this project."
+                      startOpen={
+                        (data != null && data.vuln.length > 0) ||
+                        deepLink === "vulns"
+                      }
+                      count={
+                        data != null
+                          ? sumBy(
+                              data.vuln,
+                              packageVulns => packageVulns.vuln.length
+                            )
+                          : undefined
+                      }
+                      loading={loading}
+                      domRef={this.twistRefs.vulns}
+                    >
+                      {data != null &&
+                        data.vuln.map(
+                          (vulns, entriesIdx) =>
+                            vulns != null &&
+                            vulns.vuln.map(vuln => (
+                              <PreflightVulnerabilityEntry
+                                vuln={vuln}
+                                key={vuln.slug}
+                              />
+                            ))
+                        )}
+                    </PreflightSection>
+                  )}
+                </ApiFetch>
+                <ApiFetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
+                  {({ data, loading, error }) => (
+                    <PreflightSection
+                      check="findings"
+                      title="Findings"
+                      description="Weaknesses or bad practices that we automatically discovered in this project."
+                      startOpen={
+                        (data != null &&
+                          data.findings != null &&
+                          data.findings.length > 0) ||
+                        deepLink === "findings"
+                      }
+                      count={
+                        data != null && data.findings != null
+                          ? data.findings.length
+                          : undefined
+                      }
+                      loading={loading}
+                      domRef={this.twistRefs.findings}
+                    >
+                      {data != null &&
+                        data.findings != null && (
+                          <FindingsGroupedList
+                            commitHash={data.commitHash}
+                            findings={data.findings}
+                            repoSlug={repoSlug}
                           />
-                        ))
-                    )}
-                </PreflightSection>
-              )}
-            </ApiFetch>
-            <ApiFetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
-              {({ data, loading, error }) => (
-                <PreflightSection
-                  check="findings"
-                  title="Findings"
-                  description="Weaknesses or bad practices that we automatically discovered in this project."
-                  startOpen={
-                    (data != null &&
-                      data.findings != null &&
-                      data.findings.length > 0) ||
-                    deepLink === "findings"
-                  }
-                  count={
-                    data != null && data.findings != null
-                      ? data.findings.length
-                      : undefined
-                  }
-                  loading={loading}
-                  domRef={this.twistRefs.findings}
-                >
-                  {data != null &&
-                    data.findings != null && (
-                      <FindingsGroupedList
-                        commitHash={data.commitHash}
-                        findings={data.findings}
-                        repoSlug={repoSlug}
-                      />
-                    )}
-                </PreflightSection>
-              )}
-            </ApiFetch>
-            <ApiFetch<PackageResponse> url={packageUrl()}>
-              {({ data, loading }) => (
-                <PreflightSection
-                  check="scripts"
-                  title="Install hooks"
-                  description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
-                  startOpen={
-                    (data != null && data.npmScripts.length > 0) ||
-                    deepLink === "scripts"
-                  }
-                  count={data != null ? data.npmScripts.length : undefined}
-                  loading={loading}
-                  domRef={this.twistRefs.scripts}
-                >
-                  {data && (
-                    <div className="install-hooks">
-                      {data.npmScripts.map((script, i) => (
-                        <PreflightInstallHook
-                          script={script}
-                          key={`${script.type}_${i}`}
-                        />
-                      ))}
-                    </div>
+                        )}
+                    </PreflightSection>
                   )}
-                </PreflightSection>
-              )}
-            </ApiFetch>
-            <ApiFetch<RepoResponse> url={repoUrl()}>
-              {({ data, loading }) => (
-                <PreflightSection
-                  check="activity"
-                  title="Commit activity"
-                  description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
-                  startOpen={
-                    (data != null && data.activity != null) ||
-                    deepLink === "activity"
-                  }
-                  loading={loading}
-                  domRef={this.twistRefs.activity}
-                >
-                  {data && (
-                    <div className="last-committed">
-                      <span className="last-committed-message">
-                        Last committed:{" "}
-                      </span>
-                      <span className="last-committed-date">
-                        {data.activity.latestCommitDate}
-                      </span>
-                    </div>
+                </ApiFetch>
+                <ApiFetch<PackageResponse> url={packageUrl()}>
+                  {({ data, loading }) => (
+                    <PreflightSection
+                      check="scripts"
+                      title="Install hooks"
+                      description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
+                      startOpen={
+                        (data != null && data.npmScripts.length > 0) ||
+                        deepLink === "scripts"
+                      }
+                      count={data != null ? data.npmScripts.length : undefined}
+                      loading={loading}
+                      domRef={this.twistRefs.scripts}
+                    >
+                      {data && (
+                        <div className="install-hooks">
+                          {data.npmScripts.map((script, i) => (
+                            <PreflightInstallHook
+                              script={script}
+                              key={`${script.type}_${i}`}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </PreflightSection>
                   )}
-                </PreflightSection>
-              )}
-            </ApiFetch>
-          </div>
+                </ApiFetch>
+                <ApiFetch<RepoResponse> url={repoUrl()}>
+                  {({ data, loading }) => (
+                    <PreflightSection
+                      check="activity"
+                      title="Commit activity"
+                      description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
+                      startOpen={
+                        (data != null && data.activity != null) ||
+                        deepLink === "activity"
+                      }
+                      loading={loading}
+                      domRef={this.twistRefs.activity}
+                    >
+                      {data && (
+                        <div className="last-committed">
+                          <span className="last-committed-message">
+                            Last committed:{" "}
+                          </span>
+                          <span className="last-committed-date">
+                            {data.activity.latestCommitDate}
+                          </span>
+                        </div>
+                      )}
+                    </PreflightSection>
+                  )}
+                </ApiFetch>
+              </div>
+            )}
+          </ExtensionContext.Consumer>
         </div>
       </div>
     );

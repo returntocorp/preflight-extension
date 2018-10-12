@@ -1,10 +1,11 @@
 import { fetchFromStorage, updateStorage } from "@r2c/extension/utils";
 
-export type ExperimentName = "emptyPlaceholder";
+export type ExperimentName = "permissions" | "emptyPlaceholder";
 
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
+  permissions: false,
   emptyPlaceholder: false
 };
 

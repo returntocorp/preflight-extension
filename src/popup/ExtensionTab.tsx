@@ -1,11 +1,45 @@
-import { FormGroup } from "@blueprintjs/core";
+import { FormGroup, Switch } from "@blueprintjs/core";
 import {
+  ExperimentManifest,
   ExperimentName,
   ExtensionState
 } from "@r2c/extension/shared/ExtensionState";
 import { getExtensionVersion } from "@r2c/extension/utils";
 import * as React from "react";
+import { l } from "../analytics";
 import "./ExtensionTab.css";
+
+interface ExperimentSwitchProps {
+  title: string;
+  description: string;
+  experiments: ExperimentManifest;
+  experimentName: ExperimentName;
+  onToggleExperiment(
+    experimentName: ExperimentName
+  ): React.FormEventHandler<HTMLInputElement>;
+}
+
+class ExperimentSwitch extends React.PureComponent<ExperimentSwitchProps> {
+  public render() {
+    const { title, description, experiments, experimentName } = this.props;
+
+    return (
+      <Switch
+        labelElement={
+          <div className="experiment-label">
+            <div className="experiment-label-title">{title}</div>
+            <div className="experiment-label-description">{description}</div>
+          </div>
+        }
+        checked={experiments[experimentName]}
+        onChange={l(
+          `experiment-${experimentName}-toggle`,
+          this.props.onToggleExperiment(experimentName)
+        )}
+      />
+    );
+  }
+}
 
 interface ExtensionTabProps {
   extensionState: ExtensionState | undefined;
@@ -36,10 +70,13 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           helperText="Try out some of our freshest ideas. You may need to refresh the page after toggling these experiments."
           className="extension-experiments-cp"
         >
-          <span>
-            You're running the latest and greatest - no optional experiments to
-            try out today.
-          </span>
+          <ExperimentSwitch
+            title="Permission checks"
+            description="We'll show capabilities and permissions that we've detected in this project as issues you can interact with."
+            experiments={this.props.extensionState.experiments}
+            experimentName="permissions"
+            onToggleExperiment={this.props.onToggleExperiment}
+          />
         </FormGroup>
       </div>
     );
