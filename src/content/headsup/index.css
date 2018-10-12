@@ -34,11 +34,6 @@
   align-items: center;
 }
 
-.r2c-repo-headsup > header .checklist-right .updated-message {
-  font-size: 12px;
-  color: rgba(16, 22, 26, 0.8);
-}
-
 .r2c-repo-headsup > header .checklist-right svg.r2c-logo {
   height: 1em;
   width: auto;
@@ -53,6 +48,20 @@
   font-size: 18px;
   display: flex;
   align-items: center;
+}
+
+.r2c-repo-headsup > header .checklist-right .updated-message {
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
+  cursor: pointer;
+}
+
+.r2c-repo-headsup
+  > header
+  .checklist-right
+  .updated-message:hover
+  .updated-timeago {
+  text-decoration: underline;
 }
 
 .r2c-repo-headsup.checklist-headsup .repo-headsup-body {
@@ -113,7 +122,7 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   align-items: center;
 
   font-size: 12px;
-  color: rgba(16, 22, 26, 0.8);
+  color: rgba(16, 22, 26, 0.6);
 }
 
 .preflight-legend .legend-entry svg {

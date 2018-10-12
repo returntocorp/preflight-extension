@@ -20,6 +20,7 @@ import {
   vulnsUrl
 } from "@r2c/extension/api/vulns";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
+import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
@@ -276,9 +277,10 @@ export default class PreflightTwist extends React.PureComponent<
             <header className="twist-header">
               <h1 className="twist-title">Manifest</h1>
               {data != null && (
-                <span className="twist-updated">
-                  Updated <TimeAgo date={data.activity.latestCommitDate} />
-                </span>
+                <LastUpdatedBadge
+                  lastUpdatedDate={new Date(data.activity.latestCommitDate)}
+                  repoSlug={this.props.repoSlug}
+                />
               )}
             </header>
           )}

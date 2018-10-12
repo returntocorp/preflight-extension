@@ -97,6 +97,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
               key={`RepoHeadsUpInjector ${this.state.currentUrl} ${
                 this.state.navigationNonce
               }`}
+              repoSlug={this.repoSlug}
               onChecklistItemClick={this.handleChecklistItemClick}
             />
             {this.repoSlug != null && (

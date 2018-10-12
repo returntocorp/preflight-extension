@@ -10,14 +10,16 @@ import {
   PreflightChecklistItemType
 } from "@r2c/extension/content/headsup/PreflightChecklist";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
+import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import TimeAgo from "react-timeago";
 import "./index.css";
 
 interface HeadsUpProps {
+  repoSlug: ExtractedRepoSlug;
   onChecklistItemClick(
     itemType: PreflightChecklistItemType
   ): React.MouseEventHandler<HTMLElement>;
@@ -47,12 +49,13 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
                     <span className="preflight-logo">preflight</span>
                   </div>
                   <div className="checklist-right">
-                    <span className="updated-message">
-                      Preflight updated{" "}
-                      <span className="upated-timeago">
-                        <TimeAgo date={data.repo.activity.latestCommitDate} />
-                      </span>
-                    </span>
+                    <LastUpdatedBadge
+                      commitHash={data.findings.commitHash}
+                      lastUpdatedDate={
+                        new Date(data.repo.activity.latestCommitDate)
+                      }
+                      repoSlug={this.props.repoSlug}
+                    />
                     <R2CLogo />
                   </div>
                 </header>

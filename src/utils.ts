@@ -278,6 +278,13 @@ export function getCurrentUrlWithoutHash(): string {
   }
 }
 
+export function buildGitHubTreeCommitUrl(
+  { domain, org, repo }: ExtractedRepoSlug,
+  commitHash: string
+): string {
+  return `https://${domain}/${org}/${repo}/tree/${commitHash}`;
+}
+
 export type BrowserType = "chrome" | "firefox" | "edge" | undefined;
 
 export function getBrowserType(): BrowserType {
