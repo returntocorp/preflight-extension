@@ -16,12 +16,11 @@ import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
-import { Activity, RepoResponse, repoUrl } from "@r2c/extension/api/repo";
+import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
-import TimeAgo from "react-timeago";
 import { ExtensionContext } from "../index";
 
 export type PreflightChecklistItemType =
@@ -269,53 +268,6 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
   );
 };
 
-interface PreflightActivityItemProps
-  extends PreflightChecklistInteractionProps {
-  activity: Activity;
-}
-
-const PreflightActivityItem: React.SFC<PreflightActivityItemProps> = props => {
-  const { archived, latestCommitDate } = props.activity;
-  const date = Date.parse(latestCommitDate);
-  const timeago = Date.now() - date;
-
-  if (archived !== undefined && archived) {
-    return (
-      <PreflightChecklistItem
-        iconState="warn"
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        Project archived
-      </PreflightChecklistItem>
-    );
-  } else if (latestCommitDate !== undefined) {
-    const itemState: ChecklistItemState =
-      archived || timeago / 1000 / 3600 / 24 / 30 > 1 ? "warn" : "ok";
-
-    return (
-      <PreflightChecklistItem
-        iconState={itemState}
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        {"Results updated "}
-        <TimeAgo date={date} />
-      </PreflightChecklistItem>
-    );
-  } else {
-    return (
-      <PreflightChecklistItem
-        iconState="neutral"
-        itemType="scripts"
-        onChecklistItemClick={props.onChecklistItemClick}
-      >
-        Unable to load activity data
-      </PreflightChecklistItem>
-    );
-  }
-};
-
 interface PreflightFindingsItemProps
   extends PreflightChecklistInteractionProps {
   findings: FindingEntry[] | undefined;
@@ -448,17 +400,13 @@ export class PreflightChecklist extends React.PureComponent<
   PreflightChecklistProps
 > {
   public render() {
-    const { repo, pkg, findings, onChecklistItemClick: o } = this.props;
+    const { pkg, findings, onChecklistItemClick: o } = this.props;
 
     return (
       <section className="preflight-checklist-container">
         <ExtensionContext.Consumer>
           {({ extensionState }) => (
             <ul className="preflight-checklist">
-              <PreflightActivityItem
-                activity={repo.activity}
-                onChecklistItemClick={o}
-              />
               {extensionState != null &&
                 extensionState.experiments.permissions && (
                   <PreflightPermissionsItem onChecklistItemClick={o} />
