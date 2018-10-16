@@ -74,7 +74,7 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
               </div>
             );
           } else {
-            return <ErrorHeadsUp error={new Error("")} />;
+            return <ErrorHeadsUp error={new Error("Something went wrong! We're unable to determine the reason.")} />;
           }
         }}
       </PreflightChecklistFetch>
