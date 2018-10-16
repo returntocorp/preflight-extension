@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+#unsupported-message-request-button {
+  padding: 0 3px 3px 3px;
+}
+
 .loading-headsup .loading-message,
 .error-headsup .error-message {
   display: flex;
