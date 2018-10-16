@@ -6,8 +6,9 @@
   align-items: center;
 }
 
-#unsupported-message-request-button {
-  padding: 0 3px 3px 3px;
+.unsupported-message-text {
+  display: flex;
+  align-items: baseline;
 }
 
 .loading-headsup .loading-message,
