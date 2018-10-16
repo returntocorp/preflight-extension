@@ -51,9 +51,7 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
                   <div className="checklist-right">
                     <LastUpdatedBadge
                       commitHash={data.findings.commitHash}
-                      lastUpdatedDate={
-                        new Date(data.repo.activity.latestCommitDate)
-                      }
+                      lastUpdatedDate={new Date(data.repo.analyzedAt)}
                       repoSlug={this.props.repoSlug}
                     />
                     <R2CLogo />

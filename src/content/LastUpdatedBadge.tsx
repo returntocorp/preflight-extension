@@ -44,7 +44,7 @@ export default class LastUpdatedBadge extends React.PureComponent<
               <div className="current-commit">Current commit</div>
             )}
           <span className="updated-message">
-            Updated{" "}
+            Last scanned{" "}
             <span className="updated-timeago">
               <TimeAgo date={lastUpdatedDate} />
             </span>
