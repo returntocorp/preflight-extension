@@ -6,6 +6,11 @@
   align-items: center;
 }
 
+.unsupported-message-text {
+  display: flex;
+  align-items: baseline;
+}
+
 .loading-headsup .loading-message,
 .error-headsup .error-message {
   display: flex;

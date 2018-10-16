@@ -37,6 +37,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
           🛫 Preflight only covers JavaScript and TypeScript projects at the
           moment. If this project should have Preflight on it,{" "}
           <Button
+            id="unsupported-message-request-button"
             rightIcon={IconNames.ENVELOPE}
             minimal={true}
             small={true}
