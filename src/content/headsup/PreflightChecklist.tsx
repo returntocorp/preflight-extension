@@ -208,7 +208,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
 );
 
 interface PreflightScriptsItemProps extends PreflightChecklistInteractionProps {
-  scripts: ScriptEntry[];
+  scripts: ScriptEntry[] | undefined;
 }
 
 const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = props => {
@@ -316,8 +316,8 @@ interface PreflightChecklistFetchProps {
 
 interface PreflightChecklistFetchData {
   repo: RepoResponse;
-  pkg: PackageResponse;
-  findings: FindingsResponse;
+  pkg: PackageResponse | undefined;
+  findings: FindingsResponse | undefined;
 }
 
 type PreflightChecklistFetchDataResponse = {
@@ -347,16 +347,10 @@ export class PreflightChecklistFetch extends React.PureComponent<
                     packageResponse.loading ||
                     findingsResponse.loading;
 
-                  const error = !loading
-                    ? repoResponse.error ||
-                      packageResponse.error ||
-                      findingsResponse.error
-                    : undefined;
+                  const error = !loading ? repoResponse.error : undefined;
 
                   const data =
-                    repoResponse.data != null &&
-                    packageResponse.data != null &&
-                    findingsResponse.data != null
+                    !loading && repoResponse.data != null
                       ? {
                           repo: repoResponse.data,
                           pkg: packageResponse.data,
@@ -412,21 +406,23 @@ export class PreflightChecklist extends React.PureComponent<
                   <PreflightPermissionsItem onChecklistItemClick={o} />
                 )}
               <PreflightScriptsItem
-                scripts={pkg.npmScripts}
+                scripts={pkg ? pkg.npmScripts : undefined}
                 onChecklistItemClick={o}
               />
               <PreflightRankItem
                 onChecklistItemClick={o}
                 pkg={
-                  pkg.packages.sort(
-                    (a, b) => a.package_rank - b.package_rank
-                  )[0]
+                  pkg
+                    ? pkg.packages.sort(
+                        (a, b) => a.package_rank - b.package_rank
+                      )[0]
+                    : undefined
                 }
               />
               <PreflightVulnsItem onChecklistItemClick={o} />
               <PreflightFindingsItem
                 onChecklistItemClick={o}
-                findings={findings.findings}
+                findings={findings ? findings.findings : undefined}
               />
             </ul>
           )}

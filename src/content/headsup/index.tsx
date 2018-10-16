@@ -33,16 +33,18 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
   public render() {
     return (
       <PreflightChecklistFetch>
-        {({ loading, error, data, response }) => (
-          <>
-            {loading && <LoadingHeadsUp />}
-            {response != null &&
-              response.repo.status === 404 && <UnsupportedHeadsUp />}
-            {error &&
-              (response == null || response.repo.status !== 404) && (
-                <ErrorHeadsUp error={error} />
-              )}
-            {data && (
+        {({ loading, error, data, response }) => {
+          if (loading) {
+            return <LoadingHeadsUp />;
+          } else if (response != null && response.repo.status === 404) {
+            return <UnsupportedHeadsUp />;
+          } else if (
+            error &&
+            (response == null || response.repo.status !== 404)
+          ) {
+            return <ErrorHeadsUp error={error} />;
+          } else if (data != null) {
+            return (
               <div className="r2c-repo-headsup checklist-headsup">
                 <header>
                   <div className="checklist-left">
@@ -50,7 +52,7 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
                   </div>
                   <div className="checklist-right">
                     <LastUpdatedBadge
-                      commitHash={data.findings.commitHash}
+                      commitHash={data.repo.commitHash}
                       lastUpdatedDate={new Date(data.repo.analyzedAt)}
                       repoSlug={this.props.repoSlug}
                     />
@@ -66,13 +68,15 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
                   </div>
                   <div className="repo-headsup-actions">
                     <RepoPackageSection />
-                    <UsedBy pkg={data.pkg} />
+                    {data.pkg && <UsedBy pkg={data.pkg} />}
                   </div>
                 </div>
               </div>
-            )}
-          </>
-        )}
+            );
+          } else {
+            return <ErrorHeadsUp error={new Error("")} />;
+          }
+        }}
       </PreflightChecklistFetch>
     );
   }
