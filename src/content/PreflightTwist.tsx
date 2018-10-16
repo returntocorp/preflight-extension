@@ -278,7 +278,7 @@ export default class PreflightTwist extends React.PureComponent<
               <h1 className="twist-title">Manifest</h1>
               {data != null && (
                 <LastUpdatedBadge
-                  lastUpdatedDate={new Date(data.activity.latestCommitDate)}
+                  lastUpdatedDate={new Date(data.analyzedAt)}
                   repoSlug={this.props.repoSlug}
                 />
               )}

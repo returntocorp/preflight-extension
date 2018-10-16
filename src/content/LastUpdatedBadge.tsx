@@ -23,15 +23,11 @@ export default class LastUpdatedBadge extends React.PureComponent<
       <Popover
         content={
           <div className="r2c-updated-commit-popover">
+            Code analyzed at{" "}
             {commitHash != null && (
-              <dl className="commit-hash">
-                <dt className="commit-hash-label">Commit hash</dt>
-                <dd className="commit-hash-value">
-                  <a href={buildGitHubTreeCommitUrl(repoSlug, commitHash)}>
-                    {commitHash}
-                  </a>
-                </dd>
-              </dl>
+              <a href={buildGitHubTreeCommitUrl(repoSlug, commitHash)}>
+                {commitHash.substring(0, 7)}
+              </a>
             )}
           </div>
         }
@@ -44,7 +40,7 @@ export default class LastUpdatedBadge extends React.PureComponent<
               <div className="current-commit">Current commit</div>
             )}
           <span className="updated-message">
-            Last scanned{" "}
+            Code scanned{" "}
             <span className="updated-timeago">
               <TimeAgo date={lastUpdatedDate} />
             </span>
