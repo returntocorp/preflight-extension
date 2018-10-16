@@ -2,6 +2,11 @@
   margin-top: 10px;
 }
 
+.twist.preflight-twist header .twist-updated {
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
+}
+
 .twist .preflight-section {
   margin-bottom: 10px;
   padding-bottom: 10px;

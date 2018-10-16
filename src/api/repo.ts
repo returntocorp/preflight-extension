@@ -9,10 +9,12 @@ export function repoUrl() {
 export interface RepoResponse {
   gitUrl: string;
   activity: Activity;
+  analyzedAt: string;
+  commitHash: string;
 }
 
 export interface Activity {
-    archived: boolean,
-    isActive: boolean,
-    latestCommitDate: string
+  archived: boolean;
+  isActive: boolean;
+  latestCommitDate: string;
 }

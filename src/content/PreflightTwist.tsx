@@ -14,19 +14,20 @@ import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
-import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import {
   VulnerabilityEntry,
   VulnsResponse,
   vulnsUrl
 } from "@r2c/extension/api/vulns";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
+import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
+import { RepoResponse, repoUrl } from "../api/repo";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import { ExtensionContext } from "./index";
 import "./PreflightInstallHook.css";
@@ -271,9 +272,19 @@ export default class PreflightTwist extends React.PureComponent<
 
     return (
       <div className={classnames("twist", "preflight-twist")}>
-        <header className="twist-header">
-          <h1 className="twist-title">Manifest</h1>
-        </header>
+        <ApiFetch<RepoResponse> url={repoUrl()}>
+          {({ data, loading }) => (
+            <header className="twist-header">
+              <h1 className="twist-title">Manifest</h1>
+              {data != null && (
+                <LastUpdatedBadge
+                  lastUpdatedDate={new Date(data.analyzedAt)}
+                  repoSlug={this.props.repoSlug}
+                />
+              )}
+            </header>
+          )}
+        </ApiFetch>
         <div className="twist-scroll-container">
           <ExtensionContext.Consumer>
             {({ extensionState }) => (
@@ -421,32 +432,6 @@ export default class PreflightTwist extends React.PureComponent<
                               key={`${script.type}_${i}`}
                             />
                           ))}
-                        </div>
-                      )}
-                    </PreflightSection>
-                  )}
-                </ApiFetch>
-                <ApiFetch<RepoResponse> url={repoUrl()}>
-                  {({ data, loading }) => (
-                    <PreflightSection
-                      check="activity"
-                      title="Commit activity"
-                      description="How long ago someone contributed to the repo. Using an inactive repo can be riskier than using a maintained one."
-                      startOpen={
-                        (data != null && data.activity != null) ||
-                        deepLink === "activity"
-                      }
-                      loading={loading}
-                      domRef={this.twistRefs.activity}
-                    >
-                      {data && (
-                        <div className="last-committed">
-                          <span className="last-committed-message">
-                            Last committed:{" "}
-                          </span>
-                          <span className="last-committed-date">
-                            {data.activity.latestCommitDate}
-                          </span>
                         </div>
                       )}
                     </PreflightSection>

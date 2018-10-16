@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - When you click on the issues badge next to a file or folder, you can now go directly to the individual files and issues by clicking on them. (#102)
 - We've hidden the Permissions checklist item behind an experiment for now while we're working on finding new permissions and improving how we detect permissions. We'll bring it back when we've had some time to validate our new permission behavior.
+- The Preflight checklist now has a header instead of a footer.
+- We've moved information about how recently Preflight data was updated to the top of the checklist and details pane.
 
 ### Fixed
 
