@@ -40,7 +40,7 @@ class NormalHeadsUp extends React.PureComponent<HeadsUpProps, HeadsupState> {
             return <UnsupportedHeadsUp />;
           } else if (
             error &&
-            (response == null || response.repo.status !== 404)
+            (response == null || response.repo.status !== 404) // Failed to make a network request or received a non-404 failure status code
           ) {
             return <ErrorHeadsUp error={error} />;
           } else if (data != null) {
