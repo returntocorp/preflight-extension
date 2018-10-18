@@ -314,7 +314,7 @@ interface PreflightChecklistFetchProps {
   children(response: PreflightChecklistFetchResponse): React.ReactNode;
 }
 
-interface PreflightChecklistFetchData {
+export interface PreflightChecklistFetchData {
   repo: RepoResponse;
   pkg: PackageResponse | undefined;
   findings: FindingsResponse | undefined;
