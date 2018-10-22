@@ -6,6 +6,10 @@ export function packageUrl() {
   return `https://api.secarta.io/v1/package/${domain}/${org}/${repo}`;
 }
 
+export function relatedPackagesUrl() {
+  return `${packageUrl()}/related`;
+}
+
 export interface PackageEntry {
   endorsers: string[];
   name: string;
@@ -26,4 +30,14 @@ export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
   npmScripts: ScriptEntry[];
+}
+
+export interface RelatedPackageEntry {
+  related: string;
+  occurs: number;
+}
+
+export interface RelatedPackagesResponse {
+  gitUrl: string;
+  related: { [k: string]: RelatedPackageEntry[] };
 }
