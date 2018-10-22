@@ -1,4 +1,5 @@
 import { HeadsUpProps } from "@r2c/extension/content/headsup";
+import RepoPackageSection from "@r2c/extension/content/headsup/PackageCopyBox";
 import {
   PreflightChecklist,
   PreflightChecklistFetchData
@@ -6,7 +7,6 @@ import {
 import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
-import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
 import { R2CLogo } from "@r2c/extension/icons";
 import * as React from "react";
 import "./index.css";
