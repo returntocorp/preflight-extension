@@ -3,6 +3,7 @@ import {
   PreflightChecklist,
   PreflightChecklistFetchData
 } from "@r2c/extension/content/headsup/PreflightChecklist";
+import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import RepoPackageSection from "@r2c/extension/content/PackageCopyBox";
@@ -42,9 +43,14 @@ export default class NormalHeadsUp extends React.PureComponent<
               onChecklistItemClick={this.props.onChecklistItemClick}
             />
           </div>
+          {data.pkg && (
+            <div className="repo-headsup-supplemental">
+              <UsedBy pkg={data.pkg} />
+              <RelatedPackages pkg={data.pkg} />
+            </div>
+          )}
           <div className="repo-headsup-actions">
             <RepoPackageSection />
-            {data.pkg && <UsedBy pkg={data.pkg} />}
           </div>
         </div>
       </div>
