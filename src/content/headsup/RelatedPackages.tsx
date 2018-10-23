@@ -26,30 +26,81 @@ const PackageLink: React.SFC<PackageLinkProps> = ({ to, className }) => (
   </a>
 );
 
-interface RelatedPackagesListProps {
-  relatedPackages: RelatedPackageEntry[];
+interface PluralizedListProps<T> {
+  items: T[];
+  className?: string;
+  empty: React.ReactNode;
+  children(toRender: T): React.ReactNode;
 }
 
-class RelatedPackagesList extends React.PureComponent<
+class PluralizedList<T> extends React.PureComponent<PluralizedListProps<T>> {
+  private NUM_PREVIEW_PACKAGES = 3;
+
+  public render() {
+    const { items, empty, className, children } = this.props;
+
+    if (items.length === 0) {
+      return empty;
+    } else if (items.length === 1) {
+      return children(items[0]);
+    } else if (items.length === 2) {
+      return (
+        <span className={classnames("pluralized-list", className)}>
+          {children(items[0])} and {children(items[1])}
+        </span>
+      );
+    } else {
+      const numPreview = Math.min(this.NUM_PREVIEW_PACKAGES, items.length - 1);
+
+      return (
+        <span className={classnames("pluralized-list", className)}>
+          {items.slice(0, numPreview).map((item, i) => (
+            <span key={i} className="pluralized-list-preview-item">
+              {children(item)},{" "}
+            </span>
+          ))}{" "}
+          and{" "}
+          {items.length === this.NUM_PREVIEW_PACKAGES ? (
+            <span className="related-packages-last">
+              {children(items[items.length - 1])}
+            </span>
+          ) : (
+            <span className="related-packages-more">
+              {items.length - this.NUM_PREVIEW_PACKAGES} more
+            </span>
+          )}
+        </span>
+      );
+    }
+  }
+}
+
+interface RelatedPackagesListProps {
+  relatedPackages: RelatedPackageEntry[] | undefined;
+}
+
+export class RelatedPackagesList extends React.PureComponent<
   RelatedPackagesListProps
 > {
   public render() {
     const { relatedPackages } = this.props;
 
-    return (
-      <span className="related-packages-list">
-        {relatedPackages.slice(0, 3).map(entry => (
-          <span key={entry.related} className="related-packages-link-wrapper">
-            <PackageLink to={entry.related} />,{" "}
-          </span>
-        ))}
-        {relatedPackages.length > 3 && (
-          <span className="related-packages-more">
-            and {relatedPackages.length - 3} more
-          </span>
-        )}
-      </span>
-    );
+    if (relatedPackages == null) {
+      return null;
+    } else {
+      return (
+        <PluralizedList
+          empty={
+            <div className="nonideal-inline">
+              <Icon icon="heart-broken" /> No related packages
+            </div>
+          }
+          items={relatedPackages}
+        >
+          {item => <PackageLink to={item.related} />}
+        </PluralizedList>
+      );
+    }
   }
 }
 
@@ -75,14 +126,10 @@ export default class RelatedPackages extends React.PureComponent<
                 [Classes.SKELETON]: loading
               })}
             >
-              {data != null && data.related[selectedPackage.name] != null ? (
+              {data != null && (
                 <RelatedPackagesList
                   relatedPackages={data.related[selectedPackage.name]}
                 />
-              ) : (
-                <div className="nonideal-inline">
-                  <Icon icon="heart-broken" /> No related packages
-                </div>
               )}
             </div>
           </section>
