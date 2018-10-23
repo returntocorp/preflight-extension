@@ -42,7 +42,7 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
     return (
       <DOMInjector
         destination=".repository-lang-stats-graph"
-        childClassName="r2c-repo-headsup-container"
+        childClassName="preflight-container"
         injectedClassName="r2c-repo-headsup-container"
         relation="after"
       >
