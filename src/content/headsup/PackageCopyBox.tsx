@@ -250,7 +250,7 @@ interface WrappedPackageCopyBoxState {
   controlSelectedPackage: boolean;
   selectedPackage: PackageEntry | undefined;
   controlPackageManager: boolean;
-  packageManager: PackageManagerChoice | undefined;
+  packageManager: PackageManagerChoice;
 }
 
 export default class WrappedPackageCopyBox extends React.Component<
@@ -276,16 +276,18 @@ export default class WrappedPackageCopyBox extends React.Component<
   public componentDidUpdate(prevProps: WrappedPackageCopyBoxProps) {
     if (
       this.state.controlPackageManager &&
+      this.props.packageManager != null &&
       this.props.packageManager !== prevProps.packageManager
     ) {
-      this.setState({ packageManager: this.props.packageManager });
+      this.changePackageManager(this.props.packageManager);
     }
 
     if (
       this.state.controlSelectedPackage &&
+      this.props.selectedPackage != null &&
       this.props.selectedPackage !== prevProps.selectedPackage
     ) {
-      this.setState({ selectedPackage: this.props.selectedPackage });
+      this.selectPackage(this.props.selectedPackage);
     }
 
     if (
@@ -294,16 +296,14 @@ export default class WrappedPackageCopyBox extends React.Component<
       this.props.packages != null &&
       this.props.packages.packages.length > 0
     ) {
-      this.setState({ selectedPackage: this.props.packages.packages[0] });
+      this.selectPackage(this.props.packages.packages[0]);
     }
   }
 
   public render() {
-    const {
-      packages: data,
-      selectedPackage,
-      packageManager = this.DEFAULT_PACKAGE_MANAGER
-    } = this.props;
+    const { packages: data } = this.props;
+
+    const { selectedPackage, packageManager } = this.state;
 
     if (data == null || data.packages.length === 0) {
       return (
