@@ -48,7 +48,7 @@ export default class NormalHeadsUp extends React.PureComponent<
           </div>
         </header>
         <div className="repo-headsup-body">
-          <div className="repo-headsup-checklist">
+          <div className="repo-headsup-checklist repo-headsup-column">
             <PreflightChecklist
               {...data}
               onChecklistItemClick={this.props.onChecklistItemClick}
@@ -56,12 +56,12 @@ export default class NormalHeadsUp extends React.PureComponent<
           </div>
           {data.pkg &&
             selectedPackage && (
-              <div className="repo-headsup-supplemental">
+              <div className="repo-headsup-supplemental repo-headsup-column">
                 <UsedBy pkg={data.pkg} selectedPackage={selectedPackage} />
                 <RelatedPackages selectedPackage={selectedPackage} />
               </div>
             )}
-          <div className="repo-headsup-actions">
+          <div className="repo-headsup-actions repo-headsup-column">
             <PackageCopyBox
               packages={data.pkg}
               onSelectPackage={this.handlePackageSelect}
