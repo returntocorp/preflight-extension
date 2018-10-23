@@ -1,4 +1,4 @@
-import { PackageResponse } from "@r2c/extension/api/package";
+import { PackageEntry, PackageResponse } from "@r2c/extension/api/package";
 import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import { flatten, uniq } from "lodash";
 import * as React from "react";
@@ -6,6 +6,7 @@ import "./UsedBy.css";
 
 interface UsedByProps {
   pkg: PackageResponse;
+  selectedPackage: PackageEntry;
 }
 
 export default class UsedBy extends React.PureComponent<UsedByProps> {
@@ -24,7 +25,7 @@ export default class UsedBy extends React.PureComponent<UsedByProps> {
     }
 
     return (
-      <div className="used-by-container">
+      <section className="used-by-container">
         <header>
           <h2>Packages used by</h2>
         </header>
@@ -39,7 +40,7 @@ export default class UsedBy extends React.PureComponent<UsedByProps> {
             />
           ))}
         </div>
-      </div>
+      </section>
     );
   }
 }

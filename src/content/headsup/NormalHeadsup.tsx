@@ -56,11 +56,11 @@ export default class NormalHeadsUp extends React.PureComponent<
           </div>
           {data.pkg &&
             selectedPackage && (
-            <div className="repo-headsup-supplemental">
-              <UsedBy pkg={data.pkg} />
-              <RelatedPackages pkg={data.pkg} />
-            </div>
-          )}
+              <div className="repo-headsup-supplemental">
+                <UsedBy pkg={data.pkg} selectedPackage={selectedPackage} />
+                <RelatedPackages selectedPackage={selectedPackage} />
+              </div>
+            )}
           <div className="repo-headsup-actions">
             <PackageCopyBox
               packages={data.pkg}
