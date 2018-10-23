@@ -1,5 +1,6 @@
+import { PackageEntry } from "@r2c/extension/api/package";
 import { HeadsUpProps } from "@r2c/extension/content/headsup";
-import RepoPackageSection from "@r2c/extension/content/headsup/PackageCopyBox";
+import PackageCopyBox from "@r2c/extension/content/headsup/PackageCopyBox";
 import {
   PreflightChecklist,
   PreflightChecklistFetchData
@@ -15,11 +16,21 @@ interface NormalHeadsUpProps extends HeadsUpProps {
   data: PreflightChecklistFetchData;
 }
 
+interface NormalHeadsUpState {
+  selectedPackage: PackageEntry | undefined;
+}
+
 export default class NormalHeadsUp extends React.PureComponent<
-  NormalHeadsUpProps
+  NormalHeadsUpProps,
+  NormalHeadsUpState
 > {
+  public state: NormalHeadsUpState = {
+    selectedPackage: undefined
+  };
+
   public render() {
     const { data } = this.props;
+    const { selectedPackage } = this.state;
 
     return (
       <div className="r2c-repo-headsup checklist-headsup">
@@ -43,17 +54,25 @@ export default class NormalHeadsUp extends React.PureComponent<
               onChecklistItemClick={this.props.onChecklistItemClick}
             />
           </div>
-          {data.pkg && (
+          {data.pkg &&
+            selectedPackage && (
             <div className="repo-headsup-supplemental">
               <UsedBy pkg={data.pkg} />
               <RelatedPackages pkg={data.pkg} />
             </div>
           )}
           <div className="repo-headsup-actions">
-            <RepoPackageSection />
+            <PackageCopyBox
+              packages={data.pkg}
+              onSelectPackage={this.handlePackageSelect}
+            />
           </div>
         </div>
       </div>
     );
   }
+
+  private handlePackageSelect = (newPackage: PackageEntry) => {
+    this.setState({ selectedPackage: newPackage });
+  };
 }
