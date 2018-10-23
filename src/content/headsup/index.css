@@ -68,15 +68,27 @@
   flex: 1 1 auto;
 
   display: grid;
-  grid-template-columns: [checklist-start] auto [checklist-end actions-start] 30% [actions-end];
+  grid-template-columns: [checklist-start] auto [checklist-end supplemental-start] 280px [supplemental-end actions-start] 280px [actions-end];
   grid-column-gap: 20px;
   grid-template-rows: auto;
-  grid-template-areas: "checklist actions";
+  grid-template-areas: "checklist supplemental actions";
   align-items: stretch;
 }
 
 .repo-headsup-body .repo-headsup-checklist {
   grid-area: checklist;
+}
+
+.repo-headsup-body .repo-headsup-supplemental {
+  grid-area: supplemental;
+}
+
+.repo-headsup-body .repo-headsup-supplemental > section {
+  margin-bottom: 1em;
+}
+
+.repo-headsup-body .repo-headsup-supplemental > section:last-child {
+  margin-bottom: 0;
 }
 
 .repo-headsup-body .repo-headsup-actions {
