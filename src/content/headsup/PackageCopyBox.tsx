@@ -12,265 +12,179 @@ import {
 import { IconNames } from "@blueprintjs/icons";
 import { ItemListPredicate, ItemRenderer, Select } from "@blueprintjs/select";
 import { l } from "@r2c/extension/analytics";
-import { ApiFetch } from "@r2c/extension/api/fetch";
-import {
-  PackageEntry,
-  PackageResponse,
-  packageUrl
-} from "@r2c/extension/api/package";
+import { PackageEntry, PackageResponse } from "@r2c/extension/api/package";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import CopyButton from "@r2c/extension/shared/CopyButton";
 import {
+  buildPackageLink,
   getPreferredPackageManager,
   setPreferredPackageManager
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
-import { includes, sortBy } from "lodash";
+import { includes } from "lodash";
 import * as React from "react";
 import "./PackageCopyBox.css";
 
 type PackageManagerChoice = "npm" | "yarn";
 
-interface RepoPackageSectionState {
+interface PackageCopyBoxProps {
+  packages: PackageResponse;
+  selectedPackage: PackageEntry;
   packageManager: PackageManagerChoice;
-  selectedPackage: PackageEntry | undefined;
+  onSelectPackage(
+    newPackage: PackageEntry
+  ): React.MouseEventHandler<HTMLElement>;
+  onChangePackageManager(
+    newManager: PackageManagerChoice
+  ): React.MouseEventHandler<HTMLElement>;
 }
 
 const PackageSelect = Select.ofType<PackageEntry>();
 
-export default class RepoPackageSection extends React.Component<
-  {},
-  RepoPackageSectionState
-> {
-  public DEFAULT_PACKAGE_MANAGER: PackageManagerChoice = "npm";
-
-  public state: RepoPackageSectionState = {
-    packageManager: this.DEFAULT_PACKAGE_MANAGER,
-    selectedPackage: undefined
-  };
-
+export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
   private packageFieldRef: { [key: string]: HTMLInputElement | null } = {};
 
-  public componentDidMount() {
-    this.fetchPreferredPackageManager();
-  }
-
   public render() {
-    const { selectedPackage } = this.state;
+    const {
+      packages,
+      selectedPackage,
+      packageManager,
+      onSelectPackage,
+      onChangePackageManager
+    } = this.props;
 
     return (
-      <ApiFetch<PackageResponse>
-        url={packageUrl()}
-        onDataChange={this.handleDataChanged}
-      >
-        {({ loading, data, error }) => (
-          <section className="package-copy-box">
-            {loading && (
-              <NonIdealState
-                icon="globe"
-                title="Loading..."
-                className={classnames({ [Classes.SKELETON]: loading })}
-              />
+      <section className="package-copy-box">
+        <header>
+          <div className="package-action-description">
+            <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
+            <p>
+              Save time and{" "}
+              <a
+                href="https://blog.npmjs.org/post/163723642530/crossenv-malware-on-the-npm-registry"
+                title="Information about and example of typosquatting"
+              >
+                avoid typos
+              </a>{" "}
+              using this command.
+            </p>
+          </div>
+          <div className="package-registry-toggle">
+            {packageManager === "npm" ? (
+              <a
+                onClick={l(
+                  "choose-package-manager",
+                  onChangePackageManager("yarn"),
+                  {
+                    oldPackageManager: packageManager,
+                    newChoice: "yarn"
+                  }
+                )}
+                role="button"
+              >
+                Use Yarn
+              </a>
+            ) : (
+              <a
+                onClick={l(
+                  "choose-package-manager",
+                  onChangePackageManager("npm"),
+                  {
+                    oldPackageManager: packageManager,
+                    newChoice: "npm"
+                  }
+                )}
+                role="button"
+              >
+                Use npm
+              </a>
             )}
-            {data &&
-              data.packages.length === 0 && (
-                <NonIdealState icon="box" description="Not published to npm" />
-              )}
-            {data &&
-              data.packages.length > 0 && (
-                <>
-                  <header>
-                    <div className="package-action-description">
-                      <h2>
-                        Install with{" "}
-                        {this.state.packageManager === "npm" ? "npm" : "Yarn"}
-                      </h2>
-                      <p>
-                        Save time and{" "}
-                        <a
-                          href="https://blog.npmjs.org/post/163723642530/crossenv-malware-on-the-npm-registry"
-                          title="Information about and example of typosquatting"
-                        >
-                          avoid typos
-                        </a>{" "}
-                        using this command.
-                      </p>
-                    </div>
-                    <div className="package-registry-toggle">
-                      {this.state.packageManager === "npm" ? (
-                        <a
-                          onClick={l(
-                            "choose-package-manager",
-                            this.handleRegistryChange("yarn"),
-                            {
-                              oldPackageManager: this.state.packageManager,
-                              newChoice: "yarn"
-                            }
-                          )}
-                          role="button"
-                        >
-                          Use Yarn
-                        </a>
-                      ) : (
-                        <a
-                          onClick={l(
-                            "choose-package-manager",
-                            this.handleRegistryChange("npm"),
-                            {
-                              oldPackageManager: this.state.packageManager,
-                              newChoice: "npm"
-                            }
-                          )}
-                          role="button"
-                        >
-                          Use npm
-                        </a>
-                      )}
-                    </div>
-                  </header>
-                  <div className="nutrition-section-value">
-                    {selectedPackage && (
-                      <div className="nutrition-package">
-                        <InputGroup
-                          type="text"
-                          value={this.buildInstallCommand(
-                            this.state.packageManager,
-                            selectedPackage.name
-                          )}
-                          rightElement={
-                            <CopyButton
-                              onClick={l(
-                                "copy-package-button-click",
-                                this.handleCopy(
-                                  this.state.packageManager,
-                                  selectedPackage.name
-                                ),
-                                {
-                                  packageManager: this.state.packageManager,
-                                  name: selectedPackage.name
-                                }
-                              )}
-                            />
-                          }
-                          onClick={l("copy-package-input-click")}
-                          className={classnames(
-                            Classes.FILL,
-                            "package-npm-field"
-                          )}
-                          inputRef={this.setPackageFieldRef(
-                            this.state.packageManager,
-                            selectedPackage.name
-                          )}
-                          readOnly={true}
-                        />
-                      </div>
+          </div>
+        </header>
+        <div className="nutrition-section-value">
+          {selectedPackage && (
+            <div className="nutrition-package">
+              <InputGroup
+                type="text"
+                value={buildInstallCommand(
+                  packageManager,
+                  selectedPackage.name
+                )}
+                rightElement={
+                  <CopyButton
+                    onClick={l(
+                      "copy-package-button-click",
+                      this.handleCopy(packageManager, selectedPackage.name),
+                      {
+                        packageManager: packageManager,
+                        name: selectedPackage.name
+                      }
                     )}
-                    <ButtonGroup
-                      className={classnames(
-                        "package-copy-other-actions",
-                        Classes.FILL
-                      )}
-                    >
-                      <PackageSelect
-                        items={data.packages}
-                        itemListPredicate={this.filterPackageList}
-                        itemRenderer={this.renderPackageSelectEntry}
-                        onItemSelect={this.handlePackageSelect}
-                        popoverProps={{
-                          position: Position.BOTTOM_LEFT,
-                          minimal: true,
-                          popoverClassName: "package-select-menu",
-                          className: "package-select-dropdown-wrapper",
-                          targetClassName: "package-select-dropdown-target",
-                          portalClassName: "package-select-portal",
-                          modifiers: {
-                            preventOverflow: {
-                              enabled: false,
-                              escapeWithReference: false,
-                              boundariesElement: "viewport"
-                            },
-                            flip: { enabled: false }
-                          }
-                        }}
-                      >
-                        <Button
-                          className="package-select-dropdown-button"
-                          rightIcon={IconNames.CARET_DOWN}
-                          minimal={true}
-                          text="Choose another..."
-                          intent={Intent.PRIMARY}
-                        />
-                      </PackageSelect>
-                      <AnchorButton
-                        className="package-npm-link-button"
-                        minimal={true}
-                        href={
-                          selectedPackage != null
-                            ? this.buildPackageLink(selectedPackage.name)
-                            : undefined
-                        }
-                        disabled={selectedPackage == null}
-                        rightIcon={IconNames.SHARE}
-                        intent={Intent.PRIMARY}
-                      >
-                        See on npm
-                      </AnchorButton>
-                    </ButtonGroup>
-                  </div>
-                </>
-              )}
-          </section>
-        )}
-      </ApiFetch>
+                  />
+                }
+                onClick={l("copy-package-input-click")}
+                className={classnames(Classes.FILL, "package-npm-field")}
+                inputRef={this.setPackageFieldRef(
+                  packageManager,
+                  selectedPackage.name
+                )}
+                readOnly={true}
+              />
+            </div>
+          )}
+          <ButtonGroup
+            className={classnames("package-copy-other-actions", Classes.FILL)}
+          >
+            <PackageSelect
+              items={packages.packages}
+              itemListPredicate={this.filterPackageList}
+              itemRenderer={this.renderPackageSelectEntry}
+              onItemSelect={onSelectPackage}
+              popoverProps={{
+                position: Position.BOTTOM_LEFT,
+                minimal: true,
+                popoverClassName: "package-select-menu",
+                className: "package-select-dropdown-wrapper",
+                targetClassName: "package-select-dropdown-target",
+                portalClassName: "package-select-portal",
+                modifiers: {
+                  preventOverflow: {
+                    enabled: false,
+                    escapeWithReference: false,
+                    boundariesElement: "viewport"
+                  },
+                  flip: { enabled: false }
+                }
+              }}
+            >
+              <Button
+                className="package-select-dropdown-button"
+                rightIcon={IconNames.CARET_DOWN}
+                minimal={true}
+                text="Choose another..."
+                intent={Intent.PRIMARY}
+              />
+            </PackageSelect>
+            <AnchorButton
+              className="package-npm-link-button"
+              minimal={true}
+              href={
+                selectedPackage != null
+                  ? buildPackageLink(selectedPackage.name)
+                  : undefined
+              }
+              disabled={selectedPackage == null}
+              rightIcon={IconNames.SHARE}
+              intent={Intent.PRIMARY}
+            >
+              See on npm
+            </AnchorButton>
+          </ButtonGroup>
+        </div>
+      </section>
     );
   }
-
-  private renderPackageSelectEntry: ItemRenderer<PackageEntry> = (
-    pkg,
-    { handleClick, modifiers, query }
-  ) => (
-    <MenuItem
-      active={modifiers.active}
-      disabled={modifiers.disabled}
-      label={renderShortRank(pkg.package_rank)}
-      key={`${pkg.registry}/${pkg.name}`}
-      onClick={handleClick}
-      text={pkg.name}
-    />
-  );
-
-  private filterPackageList: ItemListPredicate<PackageEntry> = (query, items) =>
-    items.filter(item => includes(item.name, query));
-
-  private handlePackageSelect = (pkg: PackageEntry) =>
-    this.setState({ selectedPackage: pkg });
-
-  private handleDataChanged = (data: PackageResponse) => {
-    const sortedPackages = sortBy(data.packages, ["package_rank", "name"]);
-    this.setState({ selectedPackage: sortedPackages[0] });
-
-    return {
-      ...data,
-      packages: sortedPackages
-    };
-  };
-
-  private fetchPreferredPackageManager = async () => {
-    const packageManager = (await getPreferredPackageManager()) as PackageManagerChoice;
-    if (packageManager != null) {
-      this.setState({
-        packageManager: packageManager || this.DEFAULT_PACKAGE_MANAGER
-      });
-    }
-  };
-
-  private handleRegistryChange = (packageManager: PackageManagerChoice) => (
-    e: React.MouseEvent<HTMLElement>
-  ) => {
-    this.setState({ packageManager });
-    setPreferredPackageManager(packageManager);
-  };
 
   private handleCopy = (registry: string, packageName: string) => (
     e: React.MouseEvent<HTMLElement>
@@ -281,7 +195,7 @@ export default class RepoPackageSection extends React.Component<
     if (toCopy != null) {
       toCopy.focus();
       toCopy.setSelectionRange(0, toCopy.value.length);
-      this.copyToClipboard(this.buildInstallCommand(registry, packageName));
+      this.copyToClipboard(buildInstallCommand(registry, packageName));
     }
   };
 
@@ -301,40 +215,186 @@ export default class RepoPackageSection extends React.Component<
     this.packageFieldRef[key] = ref;
   };
 
+  private renderPackageSelectEntry: ItemRenderer<PackageEntry> = (
+    pkg,
+    { handleClick, modifiers, query }
+  ) => (
+    <MenuItem
+      active={modifiers.active}
+      disabled={modifiers.disabled}
+      label={renderShortRank(pkg.package_rank)}
+      key={`${pkg.registry}/${pkg.name}`}
+      onClick={handleClick}
+      text={pkg.name}
+    />
+  );
+
+  private filterPackageList: ItemListPredicate<PackageEntry> = (query, items) =>
+    items.filter(item => includes(item.name, query));
+
   private buildPackageFieldRefKey = (
     registry: string,
     packageName: string
   ): string => `${registry}/${packageName}`;
+}
 
-  private buildInstallCommand = (
-    registry: string,
-    packageName: string,
-    dev: boolean = false
-  ): string => {
-    const cmds = {
-      npm: `npm install ${dev ? "-D " : ""}${packageName}`,
-      yarn: `yarn add ${dev ? "-D " : ""}${packageName}`
+interface WrappedPackageCopyBoxProps {
+  packages: PackageResponse | undefined;
+  selectedPackage?: PackageEntry;
+  packageManager?: PackageManagerChoice;
+  onSelectPackage?(newPackage: PackageEntry): void;
+  onChangePackageManager?(newManager: PackageManagerChoice): void;
+}
+
+interface WrappedPackageCopyBoxState {
+  controlSelectedPackage: boolean;
+  selectedPackage: PackageEntry | undefined;
+  controlPackageManager: boolean;
+  packageManager: PackageManagerChoice | undefined;
+}
+
+export default class WrappedPackageCopyBox extends React.Component<
+  WrappedPackageCopyBoxProps,
+  WrappedPackageCopyBoxState
+> {
+  public DEFAULT_PACKAGE_MANAGER: PackageManagerChoice = "npm";
+
+  public constructor(props: WrappedPackageCopyBoxProps) {
+    super(props);
+    this.state = {
+      controlSelectedPackage: props.selectedPackage != null,
+      selectedPackage: props.selectedPackage || undefined,
+      controlPackageManager: props.packageManager != null,
+      packageManager: props.packageManager || this.DEFAULT_PACKAGE_MANAGER
     };
-    switch (registry) {
-      case "npm":
-        return cmds.npm;
-      case "yarn":
-        return cmds.yarn;
-      default:
-        return cmds.npm;
+  }
+
+  public componentDidMount() {
+    this.fetchPreferredPackageManager();
+  }
+
+  public componentDidUpdate(prevProps: WrappedPackageCopyBoxProps) {
+    if (
+      this.state.controlPackageManager &&
+      this.props.packageManager !== prevProps.packageManager
+    ) {
+      this.setState({ packageManager: this.props.packageManager });
+    }
+
+    if (
+      this.state.controlSelectedPackage &&
+      this.props.selectedPackage !== prevProps.selectedPackage
+    ) {
+      this.setState({ selectedPackage: this.props.selectedPackage });
+    }
+
+    if (
+      !this.state.controlSelectedPackage &&
+      this.state.selectedPackage == null &&
+      this.props.packages != null &&
+      this.props.packages.packages.length > 0
+    ) {
+      this.setState({ selectedPackage: this.props.packages.packages[0] });
+    }
+  }
+
+  public render() {
+    const {
+      packages: data,
+      selectedPackage,
+      packageManager = this.DEFAULT_PACKAGE_MANAGER
+    } = this.props;
+
+    if (data == null || data.packages.length === 0) {
+      return (
+        <section className="package-copy-box">
+          <NonIdealState icon="box" description="Not published to npm" />
+        </section>
+      );
+    } else if (selectedPackage == null) {
+      return (
+        <section className="package-copy-box">
+          <NonIdealState icon="box" description="No packages to pick from" />
+        </section>
+      );
+    } else {
+      return (
+        <PackageCopyBox
+          packages={data}
+          selectedPackage={selectedPackage}
+          packageManager={packageManager}
+          onSelectPackage={this.handlePackageSelect}
+          onChangePackageManager={this.handlePackageManagerChange}
+        />
+      );
+    }
+  }
+
+  private fetchPreferredPackageManager = async () => {
+    const packageManager = (await getPreferredPackageManager()) as PackageManagerChoice;
+    if (packageManager != null) {
+      this.setState({
+        packageManager: packageManager || this.DEFAULT_PACKAGE_MANAGER
+      });
     }
   };
 
-  private buildPackageLink = (name: string): string =>
-    `https://npmjs.com/package/${name}`;
+  private handlePackageSelect = (pkg: PackageEntry) => (
+    e: React.MouseEvent<HTMLElement>
+  ) => this.selectPackage(pkg);
+
+  private selectPackage = (pkg: PackageEntry) => {
+    if (this.props.onSelectPackage != null) {
+      this.props.onSelectPackage(pkg);
+    }
+
+    if (!this.state.controlSelectedPackage) {
+      this.setState({ selectedPackage: pkg });
+    }
+  };
+
+  private handlePackageManagerChange = (
+    packageManager: PackageManagerChoice
+  ) => (e: React.MouseEvent<HTMLElement>) =>
+    this.changePackageManager(packageManager);
+
+  private changePackageManager = (packageManager: PackageManagerChoice) => {
+    if (this.props.onChangePackageManager != null) {
+      this.props.onChangePackageManager(packageManager);
+    }
+
+    if (!this.state.controlPackageManager) {
+      this.setState({ packageManager });
+      setPreferredPackageManager(packageManager);
+    }
+  };
 }
 
-export function renderShortRank(rank: number): string {
+function renderShortRank(rank: number): string {
   if (rank > 10000) {
     return ">10k";
   } else if (rank >= 1000) {
     return `Top ${(rank / 1000).toLocaleString()}k`;
   } else {
     return `Top ${rank.toLocaleString()}`;
+  }
+}
+
+function buildInstallCommand(
+  registry: string,
+  packageName: string,
+  dev: boolean = false
+): string {
+  const cmds = {
+    npm: `npm install ${dev ? "-D " : ""}${packageName}`,
+    yarn: `yarn add ${dev ? "-D " : ""}${packageName}`
+  };
+  switch (registry) {
+    case "npm":
+      return cmds.npm;
+    case "yarn":
+      return cmds.yarn;
+    default:
+      return cmds.npm;
   }
 }
