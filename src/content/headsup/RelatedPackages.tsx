@@ -6,25 +6,9 @@ import {
   RelatedPackagesResponse,
   relatedPackagesUrl
 } from "@r2c/extension/api/package";
-import { buildPackageLink } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import "./RelatedPackages.css";
-
-interface PackageLinkProps {
-  to: string;
-  className?: string;
-}
-
-const PackageLink: React.SFC<PackageLinkProps> = ({ to, className }) => (
-  <a
-    href={buildPackageLink(to)}
-    rel="noopener noreferer"
-    className={classnames("package-link", className)}
-  >
-    {to}
-  </a>
-);
 
 interface PluralizedListProps<T> {
   items: T[];
