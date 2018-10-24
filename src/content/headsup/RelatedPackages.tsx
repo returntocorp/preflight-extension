@@ -76,7 +76,8 @@ export class RelatedPackagesList extends React.PureComponent<
         <PluralizedList
           empty={
             <div className="nonideal-inline">
-              <Icon icon="heart-broken" /> No related packages
+              <Icon icon="heart-broken" className="nonideal-inline-icon" /> No
+              related packages
             </div>
           }
           items={relatedPackages}
