@@ -271,6 +271,10 @@ export default class WrappedPackageCopyBox extends React.Component<
 
   public componentDidMount() {
     this.fetchPreferredPackageManager();
+
+    // Race condition may cause data to be loaded already, so we need to set
+    // defaults on both mount and update
+    this.setDefaultSelectedPackage();
   }
 
   public componentDidUpdate(prevProps: WrappedPackageCopyBoxProps) {
@@ -290,14 +294,7 @@ export default class WrappedPackageCopyBox extends React.Component<
       this.selectPackage(this.props.selectedPackage);
     }
 
-    if (
-      !this.state.controlSelectedPackage &&
-      this.state.selectedPackage == null &&
-      this.props.packages != null &&
-      this.props.packages.packages.length > 0
-    ) {
-      this.selectPackage(this.props.packages.packages[0]);
-    }
+    this.setDefaultSelectedPackage();
   }
 
   public render() {
@@ -366,6 +363,17 @@ export default class WrappedPackageCopyBox extends React.Component<
     if (!this.state.controlPackageManager) {
       this.setState({ packageManager });
       setPreferredPackageManager(packageManager);
+    }
+  };
+
+  private setDefaultSelectedPackage = () => {
+    if (
+      !this.state.controlSelectedPackage &&
+      this.state.selectedPackage == null &&
+      this.props.packages != null &&
+      this.props.packages.packages.length > 0
+    ) {
+      this.selectPackage(this.props.packages.packages[0]);
     }
   };
 }
