@@ -35,6 +35,9 @@ export interface PackageResponse {
 export interface RelatedPackageEntry {
   related: string;
   occurs: number;
+  packageOccurs: number;
+  relatedOccurs: number;
+  sourceUrl: string;
 }
 
 export interface RelatedPackagesResponse {

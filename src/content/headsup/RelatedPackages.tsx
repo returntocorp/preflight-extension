@@ -97,7 +97,11 @@ export class RelatedPackagesList extends React.PureComponent<
           }
           items={relatedPackages}
         >
-          {item => <PackageLink to={item.related} />}
+          {item => (
+            <a href={item.sourceUrl} rel="noreferer noopener">
+              {item.related}
+            </a>
+          )}
         </PluralizedList>
       );
     }
