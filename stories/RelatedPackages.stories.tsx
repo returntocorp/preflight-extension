@@ -7,23 +7,38 @@ import * as React from "react";
 const relatedPackages: RelatedPackageEntry[] = [
   {
     occurs: 50000,
-    related: "lodash"
+    related: "lodash",
+    packageOccurs: 100000,
+    relatedOccurs: 1000000,
+    sourceUrl: "https://github.com/lodash/lodash"
   },
   {
     occurs: 4000,
-    related: "react"
+    related: "react",
+    packageOccurs: 100000,
+    relatedOccurs: 400000,
+    sourceUrl: "https://github.com/facebook/react"
   },
   {
     occurs: 300,
-    related: "vue"
+    related: "vue",
+    packageOccurs: 100000,
+    relatedOccurs: 30000,
+    sourceUrl: "https://github.com/vuejs/vue"
   },
   {
     occurs: 20,
-    related: "left-pad"
+    related: "left-pad",
+    packageOccurs: 100000,
+    relatedOccurs: 2000,
+    sourceUrl: "https://github.com/stevemao/left-pad"
   },
   {
     occurs: 1,
-    related: "typescript"
+    related: "typescript",
+    packageOccurs: 100000,
+    relatedOccurs: 100,
+    sourceUrl: "https://github.com/Microsoft/typescript"
   }
 ];
 
