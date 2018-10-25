@@ -19,6 +19,15 @@ export default class LastUpdatedBadge extends React.PureComponent<
   public render() {
     const { repoSlug, commitHash, lastUpdatedDate } = this.props;
 
+    const isCurrentCommitByRepoSlug =
+      commitHash != null && commitHash === repoSlug.commitHash;
+    // Returns true for any page that has a commit tease sha element (e.g. GitHub project home, a file)
+    const commitTeaseSha = this.getCommitTeaseSha();
+    const isCurrentCommitByCommitTeaseSha =
+      commitHash != null &&
+      commitTeaseSha != null &&
+      commitHash.startsWith(commitTeaseSha);
+
     return (
       <Popover
         content={
@@ -35,10 +44,9 @@ export default class LastUpdatedBadge extends React.PureComponent<
         position={Position.BOTTOM}
       >
         <span className="r2c-last-updated-badge">
-          {commitHash != null &&
-            commitHash === repoSlug.commitHash && (
-              <div className="current-commit">Current commit</div>
-            )}
+          {(isCurrentCommitByRepoSlug || isCurrentCommitByCommitTeaseSha) && (
+            <div className="current-commit">Current commit</div>
+          )}
           <span className="updated-message">
             Code scanned{" "}
             <span className="updated-timeago">
@@ -48,5 +56,13 @@ export default class LastUpdatedBadge extends React.PureComponent<
         </span>
       </Popover>
     );
+  }
+
+  private getCommitTeaseSha(): string | null {
+    const commitHashElement: HTMLElement | null = document.querySelector(
+      "a.commit-tease-sha"
+    );
+
+    return commitHashElement != null ? commitHashElement.innerText : null;
   }
 }
