@@ -31,7 +31,17 @@
     "no-submodule-imports": false,
     "max-func-body-length": false,
     "max-classes-per-file": false,
-    "prefer-type-cast": false
+    "prefer-type-cast": false,
+    "function-name": [
+      true,
+      {
+        "method-regex": "^([A-Z]*_)?[a-z][\\w\\d]+$",
+        "private-method-regex": "^([A-Z]*_)?[a-z][\\w\\d]+$",
+        "protected-method-regex": "^([A-Z]*_)?[a-z][\\w\\d]+$",
+        "static-method-regex": "^([A-Z]*_)?[a-z][\\w\\d]+$",
+        "function-regex": "^([A-Z]*_)?[a-z][\\w\\d]+$"
+      }
+    ]
   },
   "linterOptions": {
     "exclude": [

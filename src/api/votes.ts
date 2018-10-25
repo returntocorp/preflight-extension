@@ -61,14 +61,12 @@ function buildVoteOverviewUrl() {
   return `https://api.secarta.io/v1/vote/overview`;
 }
 
-// tslint:disable-next-line:function-name
 export async function DEPRECATED_getVotes(): Promise<VoteResponse> {
   const votesUrl = buildVotingUrl(getAnalyticsParams());
 
   return fetchJson<VoteResponse>(votesUrl);
 }
 
-// tslint:disable-next-line:function-name
 export async function DEPRECATED_submitVote(
   body: VotePostBody
 ): Promise<VoteResponse> {
@@ -80,7 +78,6 @@ export async function DEPRECATED_submitVote(
   });
 }
 
-// tslint:disable-next-line:function-name
 export async function DEPRECATED_getVoteOverview(): Promise<
   VoteOverviewResponse
 > {
