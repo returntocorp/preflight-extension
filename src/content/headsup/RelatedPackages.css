@@ -10,3 +10,16 @@
 .nonideal-inline .nonideal-inline-icon {
   margin-right: 1em;
 }
+
+.pluralized-list-more-select-popover .bp3-popover-content {
+  width: 250px;
+}
+
+.pluralized-list-more-select-popover .bp3-popover-content > div {
+  /* Div wrapper just inside content, parent to all select menu popover contents */
+  overflow: hidden;
+}
+
+.pluralized-list-more-select-popover .pluralized-list-more-vlist li {
+  list-style: none;
+}
