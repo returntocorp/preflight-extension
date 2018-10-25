@@ -1,4 +1,4 @@
-import { Classes, Intent, NonIdealState } from "@blueprintjs/core";
+import { Classes, Intent } from "@blueprintjs/core";
 import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PackageEntry,
@@ -101,7 +101,11 @@ export default class RelatedPackages extends React.PureComponent<
         {({ loading, data, error }) => {
           if (loading) {
             return (
-              <NonIdealState title="Loading..." className={Classes.SKELETON} />
+              <NonIdealInline
+                icon="heart"
+                message="Loading..."
+                className={Classes.SKELETON}
+              />
             );
           } else if (data != null && Object.keys(data.related).length > 0) {
             if (data.related[selectedPackage.name] != null) {
