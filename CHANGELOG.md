@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+
+- Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
+
 ## [1.11.0] - 2018-10-16
 
 ### Changed

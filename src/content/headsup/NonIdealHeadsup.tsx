@@ -34,11 +34,11 @@ export class UnsupportedHeadsUp extends React.PureComponent<
         )}
       >
         <span className="unsupported-message-text">
-          🛫 Preflight only covers JavaScript and TypeScript projects at the
-          moment. If this project should have Preflight on it,{" "}
+          🛫 Preflight couldn't find results or npm packages associated with
+          this repository. If this seems in error, please{" "}
           <Button
             id="unsupported-message-request-button"
-            rightIcon={IconNames.ENVELOPE}
+            rightIcon={IconNames.FLAG}
             minimal={true}
             small={true}
             onClick={l(
