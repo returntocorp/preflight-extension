@@ -20,7 +20,6 @@ import {
   extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
   getCurrentUrlWithoutHash,
-  hasSupportedLanguage,
   isGitHubSlug,
   isRepositoryPrivate
 } from "@r2c/extension/utils";
@@ -82,10 +81,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
     }
 
     if (!isGitHubSlug(this.repoSlug)) {
-      return null;
-    }
-
-    if (!hasSupportedLanguage()) {
       return null;
     }
 

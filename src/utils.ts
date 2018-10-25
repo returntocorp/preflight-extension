@@ -1,7 +1,3 @@
-import { intersection, map } from "lodash";
-
-export const SUPPORTED_LANGUAGES = ["javascript", "typescript"];
-
 // tslint:disable:no-any
 type WindowBrowserShim = any;
 // tslint:enable:no-any
@@ -306,17 +302,4 @@ export function getBrowserType(): BrowserType {
 
 export function buildPackageLink(name: string): string {
   return `https://npmjs.com/package/${name}`;
-}
-
-// TODO (dlukeomalley): should only be used on project pages?
-export function hasSupportedLanguage(): Boolean {
-  const languageSpans: NodeListOf<HTMLElement> = document.querySelectorAll(
-    "span.language-color:not(.color-block)"
-  );
-
-  const languages = map(languageSpans, languageSpan => {
-    return languageSpan.innerText.toLowerCase();
-  });
-
-  return intersection(SUPPORTED_LANGUAGES, languages).length > 0;
 }
