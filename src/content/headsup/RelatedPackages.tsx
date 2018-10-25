@@ -1,4 +1,4 @@
-import { Classes, Icon } from "@blueprintjs/core";
+import { Classes, Icon, Intent, NonIdealState } from "@blueprintjs/core";
 import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PackageEntry,
@@ -13,7 +13,7 @@ import "./RelatedPackages.css";
 interface PluralizedListProps<T> {
   items: T[];
   className?: string;
-  empty: React.ReactNode;
+  empty?: React.ReactNode;
   children(toRender: T): React.ReactNode;
 }
 
@@ -73,15 +73,7 @@ export class RelatedPackagesList extends React.PureComponent<
       return null;
     } else {
       return (
-        <PluralizedList
-          empty={
-            <div className="nonideal-inline">
-              <Icon icon="heart-broken" className="nonideal-inline-icon" /> No
-              related packages
-            </div>
-          }
-          items={relatedPackages}
-        >
+        <PluralizedList items={relatedPackages}>
           {item => (
             <a href={item.sourceUrl} rel="noreferer noopener">
               {item.related}
@@ -105,24 +97,56 @@ export default class RelatedPackages extends React.PureComponent<
 
     return (
       <ApiFetch<RelatedPackagesResponse> url={relatedPackagesUrl()}>
-        {({ loading, data, error }) => (
-          <section className="related-packages-container">
-            <header className={classnames({ [Classes.SKELETON]: loading })}>
-              <h2>Project used with</h2>
-            </header>
-            <div
-              className={classnames("related-packages-list", {
-                [Classes.SKELETON]: loading
-              })}
-            >
-              {data != null && (
-                <RelatedPackagesList
-                  relatedPackages={data.related[selectedPackage.name]}
-                />
-              )}
-            </div>
-          </section>
-        )}
+        {({ loading, data, error }) => {
+          if (loading) {
+            return (
+              <NonIdealState title="Loading..." className={Classes.SKELETON} />
+            );
+          } else if (data != null && Object.keys(data.related).length > 0) {
+            if (data.related[selectedPackage.name] != null) {
+              return (
+                <section className="related-packages-container">
+                  <header>
+                    <h2>Project used with</h2>
+                  </header>
+                  <div className="related-packages-list">
+                    <RelatedPackagesList
+                      relatedPackages={data.related[selectedPackage.name]}
+                    />
+                  </div>
+                </section>
+              );
+            } else {
+              // No related packages for the currently selected package, but
+              // other packages of this project have related packages
+              return (
+                <div className="nonideal-inline">
+                  <Icon
+                    icon="heart-broken"
+                    className="nonideal-inline-icon"
+                    intent={Intent.DANGER}
+                  />{" "}
+                  No related packages for {selectedPackage}, but other packages
+                  have related packages.
+                </div>
+              );
+            }
+          } else if (error) {
+            return (
+              <div className="nonideal-inline">
+                <Icon
+                  icon="offline"
+                  className="nonideal-inline-icon"
+                  intent={Intent.DANGER}
+                />{" "}
+                Couldn't fetch related packages
+              </div>
+            );
+          } else {
+            // Doesn't seem like we have any related packages for this project
+            return null;
+          }
+        }}
       </ApiFetch>
     );
   }
