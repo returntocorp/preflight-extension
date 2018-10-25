@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
 
+### Added
+
+- We show the "Current Commit" badge when viewing the master branch if we've analyzed the latest commit (previously you had to be looking at the specific commit, not master) (#147)
+
 ## [1.11.0] - 2018-10-16
 
 ### Changed
