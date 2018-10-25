@@ -91,7 +91,8 @@
   grid-area: supplemental;
 }
 
-.repo-headsup-body .repo-headsup-supplemental > section {
+.repo-headsup-body .repo-headsup-supplemental > section,
+.repo-headsup-body .repo-headsup-supplemental .headsup-supplemental-nonideal {
   margin-bottom: 1em;
 }
 

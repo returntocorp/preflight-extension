@@ -1,4 +1,4 @@
-import { Classes, Icon, Intent, NonIdealState } from "@blueprintjs/core";
+import { Classes, Intent, NonIdealState } from "@blueprintjs/core";
 import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PackageEntry,
@@ -6,6 +6,7 @@ import {
   RelatedPackagesResponse,
   relatedPackagesUrl
 } from "@r2c/extension/api/package";
+import NonIdealInline from "@r2c/extension/content/NonIdealInline";
 import * as classnames from "classnames";
 import * as React from "react";
 import "./RelatedPackages.css";
@@ -120,31 +121,36 @@ export default class RelatedPackages extends React.PureComponent<
               // No related packages for the currently selected package, but
               // other packages of this project have related packages
               return (
-                <div className="nonideal-inline">
-                  <Icon
-                    icon="heart-broken"
-                    className="nonideal-inline-icon"
-                    intent={Intent.DANGER}
-                  />{" "}
-                  No related packages for {selectedPackage}, but other packages
-                  have related packages.
-                </div>
+                <NonIdealInline
+                  icon="heart-broken"
+                  className="related-package-nonideal headsup-supplemental-nonideal"
+                  message={`No related packages for ${
+                    selectedPackage.name
+                  }, but other
+                  packages have related packages.`}
+                  muted={true}
+                />
               );
             }
           } else if (error) {
             return (
-              <div className="nonideal-inline">
-                <Icon
-                  icon="offline"
-                  className="nonideal-inline-icon"
-                  intent={Intent.DANGER}
-                />{" "}
-                Couldn't fetch related packages
-              </div>
+              <NonIdealInline
+                icon="offline"
+                className="related-package-nonideal headsup-supplemental-nonideal"
+                intent={Intent.DANGER}
+                message="Couldn't fetch related packages"
+              />
             );
           } else {
             // Doesn't seem like we have any related packages for this project
-            return null;
+            return (
+              <NonIdealInline
+                icon="heart-broken"
+                className="related-package-nonideal headsup-supplemental-nonideal"
+                message={`No related packages for ${selectedPackage.name}`}
+                muted={true}
+              />
+            );
           }
         }}
       </ApiFetch>
