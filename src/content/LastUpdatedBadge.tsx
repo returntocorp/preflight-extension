@@ -23,55 +23,52 @@ export default class LastUpdatedBadge extends React.PureComponent<
     const { repoSlug, commitHash, lastUpdatedDate } = this.props;
 
     return (
-      <Popover
-        content={
-          <div className="r2c-updated-commit-popover">
-            Code analyzed at{" "}
-            {commitHash != null && (
-              <a href={buildGitHubTreeCommitUrl(repoSlug, commitHash)}>
-                {commitHash.substring(0, 7)}
-              </a>
-            )}
-          </div>
-        }
-        disabled={commitHash == null}
-        position={Position.BOTTOM}
-      >
-        <span className="r2c-last-updated-badge">
-          <DomElementLoadedWatcher
-            querySelector={this.COMMIT_TEASE_SHA_SELECTOR}
-          >
-            {({ done }) => {
-              if (done) {
-                const isCurrentCommitByRepoSlug =
-                  commitHash != null && commitHash === repoSlug.commitHash;
-                // Returns true for any page that has a commit tease sha element (e.g. GitHub project home, a file)
-                const commitTeaseSha = this.getCommitTeaseSha();
-                const isCurrentCommitByCommitTeaseSha =
-                  commitHash != null &&
-                  commitTeaseSha != null &&
-                  commitHash.startsWith(commitTeaseSha);
+      <span className="r2c-last-updated-badge">
+        <DomElementLoadedWatcher querySelector={this.COMMIT_TEASE_SHA_SELECTOR}>
+          {({ done }) => {
+            if (done) {
+              const isCurrentCommitByRepoSlug =
+                commitHash != null && commitHash === repoSlug.commitHash;
+              // Returns true for any page that has a commit tease sha element (e.g. GitHub project home, a file)
+              const commitTeaseSha = this.getCommitTeaseSha();
+              const isCurrentCommitByCommitTeaseSha =
+                commitHash != null &&
+                commitTeaseSha != null &&
+                commitHash.startsWith(commitTeaseSha);
 
-                if (
-                  isCurrentCommitByRepoSlug ||
-                  isCurrentCommitByCommitTeaseSha
-                ) {
-                  return <div className="current-commit">Current commit</div>;
-                }
+              if (
+                isCurrentCommitByRepoSlug ||
+                isCurrentCommitByCommitTeaseSha
+              ) {
+                return <div className="current-commit">Current commit</div>;
               }
+            }
 
-              return null;
-            }}
-          </DomElementLoadedWatcher>
-
+            return null;
+          }}
+        </DomElementLoadedWatcher>
+        <Popover
+          content={
+            <div className="r2c-updated-commit-popover">
+              Code analyzed at{" "}
+              {commitHash != null && (
+                <a href={buildGitHubTreeCommitUrl(repoSlug, commitHash)}>
+                  {commitHash.substring(0, 7)}
+                </a>
+              )}
+            </div>
+          }
+          disabled={commitHash == null}
+          position={Position.BOTTOM}
+        >
           <span className="updated-message">
             Code scanned{" "}
             <span className="updated-timeago">
               <TimeAgo date={lastUpdatedDate} />
             </span>
           </span>
-        </span>
-      </Popover>
+        </Popover>
+      </span>
     );
   }
 
