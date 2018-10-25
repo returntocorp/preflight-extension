@@ -41,10 +41,12 @@ export default class LastUpdatedBadge extends React.PureComponent<
                 isCurrentCommitByCommitTeaseSha
               ) {
                 return <div className="current-commit">Current commit</div>;
+              } else {
+                return null;
               }
+            } else {
+              return null;
             }
-
-            return null;
           }}
         </DomElementLoadedWatcher>
         <Popover
