@@ -60,6 +60,8 @@ export default class LastUpdatedBadge extends React.PureComponent<
               )}
             </div>
           }
+          className="r2c-updated-commit-wrapper"
+          targetClassName="r2c-updated-commit-target"
           disabled={commitHash == null}
           position={Position.BOTTOM}
         >
