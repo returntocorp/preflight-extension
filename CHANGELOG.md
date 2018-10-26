@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+
+- Fixed an issue where we incorrectly reported no package.json install scripts for some projects
+
 ### Changed
 
 - Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
@@ -14,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - We show the "Current Commit" badge when viewing the master branch if we've analyzed the latest commit (previously you had to be looking at the specific commit, not master) (#147)
+
+### Removed
+
+- We no longer surface non-literal regular expression findings because we've found regex DDOS findings to be low signal
 
 ## [1.11.0] - 2018-10-16
 
