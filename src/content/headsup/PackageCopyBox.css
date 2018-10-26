@@ -38,7 +38,10 @@
 .package-copy-box .package-npm-field {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
-  margin-bottom: 5px;
+}
+
+.package-copy-box .package-npm-field .bp3-input {
+  border-radius: 3px 3px 0 0;
 }
 
 .package-copy-box .package-npm-field .copy-button {
@@ -81,6 +84,18 @@
   flex: 0 0 120px;
 }
 
+.package-copy-other-actions {
+}
+
 .package-copy-other-actions .bp3-button {
   font-size: 12px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border: 1px solid rgba(16, 22, 26, 0.15);
+  border-right: none;
+  border-top: none;
+}
+
+.package-copy-other-actions .bp3-button:last-child {
+  border-right: 1px solid rgba(16, 22, 26, 0.15);
 }

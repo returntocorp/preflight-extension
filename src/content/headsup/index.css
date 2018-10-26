@@ -2,22 +2,18 @@
   border: 1px solid #dfe2e5;
   border-radius: 3px;
   margin-top: 10px;
-  padding: 10px;
 
   display: flex;
   flex-direction: column;
 }
 
 .r2c-repo-headsup > header {
-  margin-bottom: 1ex;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
-  margin: -10px -10px 10px -10px;
-  padding: 10px;
+  padding: 6px 10px;
   border-bottom: 1px solid rgba(16, 22, 26, 0.1);
 
   background-color: rgba(16, 22, 26, 0.03);
@@ -68,22 +64,49 @@
   flex: 1 1 auto;
 
   display: grid;
-  grid-template-columns: [checklist-start] auto [checklist-end actions-start] 30% [actions-end];
+  grid-template-columns: [checklist-start] 1fr [checklist-end supplemental-start] 1fr [supplemental-end actions-start] 1fr [actions-end];
   grid-column-gap: 20px;
   grid-template-rows: auto;
-  grid-template-areas: "checklist actions";
+  grid-template-areas: "checklist supplemental actions";
+  justify-items: stretch;
   align-items: stretch;
 }
 
-.repo-headsup-body .repo-headsup-checklist {
+.repo-headsup-body .repo-headsup-column {
+  border-left: 1px solid rgba(16, 22, 26, 0.1);
+  padding: 10px;
+  margin-left: -10px;
+}
+
+.repo-headsup-body .repo-headsup-column:first-child {
+  border-left: none;
+  margin-left: 0;
+}
+
+.repo-headsup-body .repo-headsup-column.repo-headsup-checklist {
   grid-area: checklist;
 }
 
-.repo-headsup-body .repo-headsup-actions {
+.repo-headsup-body .repo-headsup-column.repo-headsup-supplemental {
+  grid-area: supplemental;
+}
+
+.repo-headsup-body .repo-headsup-supplemental > section,
+.repo-headsup-body .repo-headsup-supplemental .headsup-supplemental-nonideal {
+  margin-bottom: 1em;
+}
+
+.repo-headsup-body header .selected-package {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+}
+
+.repo-headsup-body .repo-headsup-supplemental > section:last-child {
+  margin-bottom: 0;
+}
+
+.repo-headsup-body .repo-headsup-column.repo-headsup-actions {
   grid-area: actions;
-  border-left: 1px solid rgba(16, 22, 26, 0.1);
-  padding-left: 9px;
-  margin-left: -10px;
 }
 
 ul.preflight-checklist {

@@ -1,0 +1,18 @@
+.nonideal-inline {
+  display: flex;
+  align-items: center;
+}
+
+.nonideal-inline.nonideal-inline-muted {
+  color: rgba(16, 22, 26, 0.6);
+}
+
+.nonideal-inline .nonideal-inline-icon-wrapper {
+  margin-right: 1em;
+  display: flex;
+  align-items: center;
+}
+
+.nonideal-inline.nonideal-inline-muted .nonideal-inline-icon {
+  opacity: 0.6;
+}

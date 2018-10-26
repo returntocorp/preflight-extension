@@ -299,3 +299,7 @@ export function getBrowserType(): BrowserType {
     return undefined;
   }
 }
+
+export function buildPackageLink(name: string): string {
+  return `https://npmjs.com/package/${name}`;
+}
