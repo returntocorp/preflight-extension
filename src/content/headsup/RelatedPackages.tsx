@@ -19,7 +19,7 @@ interface PluralizedListProps<T> {
 }
 
 class PluralizedList<T> extends React.PureComponent<PluralizedListProps<T>> {
-  private NUM_PREVIEW_PACKAGES = 3;
+  private NUM_PREVIEW_ITEMS = 3;
 
   public render() {
     const { items, empty, className, children } = this.props;
@@ -35,7 +35,7 @@ class PluralizedList<T> extends React.PureComponent<PluralizedListProps<T>> {
         </span>
       );
     } else {
-      const numPreview = Math.min(this.NUM_PREVIEW_PACKAGES, items.length - 1);
+      const numPreview = Math.min(this.NUM_PREVIEW_ITEMS, items.length - 1);
 
       return (
         <span className={classnames("pluralized-list", className)}>
@@ -45,13 +45,13 @@ class PluralizedList<T> extends React.PureComponent<PluralizedListProps<T>> {
             </span>
           ))}{" "}
           and{" "}
-          {items.length === this.NUM_PREVIEW_PACKAGES ? (
-            <span className="related-packages-last">
+          {items.length === this.NUM_PREVIEW_ITEMS ? (
+            <span className="pluralized-list-last">
               {children(items[items.length - 1])}
             </span>
           ) : (
-            <span className="related-packages-more">
-              {items.length - this.NUM_PREVIEW_PACKAGES} more
+            <span className="pluralized-list-more">
+              {items.length - this.NUM_PREVIEW_ITEMS} more
             </span>
           )}
         </span>
