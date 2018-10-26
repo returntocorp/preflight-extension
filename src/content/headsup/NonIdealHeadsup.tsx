@@ -127,11 +127,7 @@ export class ErrorHeadsUp extends React.PureComponent<
         </div>
         {this.state.showDetails && (
           <div className="error-details">
-            <pre className="error-raw">
-              {this.props.error.toString()}
-              <br />
-              {JSON.stringify(this.props.error)}
-            </pre>
+            <pre className="error-raw">{JSON.stringify(this.props.error)}</pre>
           </div>
         )}
       </div>

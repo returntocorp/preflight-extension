@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed an issue where we incorrectly reported no package.json install scripts for some projects
+- Fixed us always displaying `[object Object]` in error message details
 
 ### Changed
 
