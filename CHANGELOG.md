@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
-- Made package handling more consistent across preflight. Instead of showing information for all packages associated with the project you're looking at, we now show information for the currently selected package in the "Install" box, the "Used by" section, and the "Used with" section
+- Made package handling more consistent across Preflight. Instead of showing information for all packages associated with the project you're looking at, we now show information for the currently selected package in the "Install" box, the "Used by" section, and the "Used with" section
 
 ### Fixed
 
