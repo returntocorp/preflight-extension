@@ -14,7 +14,7 @@ import "./RelatedPackages.css";
 interface PluralizedListProps<T> {
   items: T[];
   className?: string;
-  empty?: React.ReactNode;
+  noItems?: React.ReactNode;
   children(toRender: T): React.ReactNode;
 }
 
@@ -22,10 +22,10 @@ class PluralizedList<T> extends React.PureComponent<PluralizedListProps<T>> {
   private NUM_PREVIEW_ITEMS = 3;
 
   public render() {
-    const { items, empty, className, children } = this.props;
+    const { items, noItems, className, children } = this.props;
 
     if (items.length === 0) {
-      return empty;
+      return noItems;
     } else if (items.length === 1) {
       return children(items[0]);
     } else if (items.length === 2) {

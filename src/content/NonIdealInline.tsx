@@ -23,14 +23,14 @@ export default class NonIdealInline extends React.PureComponent<
           "nonideal-inline-muted": muted
         })}
       >
-        {this.maybeRenderVisual()}
+        {this.maybeRenderIcon()}
         <span className="nonideal-inline-message">{message}</span>
       </div>
     );
   }
 
   // Inspired by blueprintjs NonIdealState
-  private maybeRenderVisual = () => {
+  private maybeRenderIcon = () => {
     const { icon, intent } = this.props;
 
     if (icon == null) {

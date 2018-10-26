@@ -16,7 +16,7 @@ export default class UsedBy extends React.PureComponent<UsedByProps> {
     const endorsers = flatten(pkg.packages.map(entry => entry.endorsers));
     const uniqueEndorsers = uniq(endorsers);
 
-    if (endorsers.length === 0 || uniqueEndorsers.length === 0) {
+    if (endorsers.length === 0) {
       return (
         <NonIdealInline
           icon="blocked-person"
