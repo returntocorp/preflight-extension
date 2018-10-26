@@ -7,18 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Fixed
-
-- Fixed an issue where we incorrectly reported no package.json install scripts for some projects
-- Fixed us always displaying `[object Object]` in error message details
-
-### Changed
-
-- Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
+## [1.12.0] - 2018-10-26
 
 ### Added
 
 - We show the "Current Commit" badge when viewing the master branch if we've analyzed the latest commit (previously you had to be looking at the specific commit, not master) (#147)
+- You can now discover packages frequently used alongside the package you're currently viewing
+
+### Changed
+
+- Updated the language we use for unsupported projects to more clearly explain our npm focus (thanks @deifactor for the feedback!)
+- Made package handling more consistent across preflight. Instead of showing information for all packages associated with the project you're looking at, we now show information for the currently selected package in the "Install" box, the "Used by" section, and the "Used with" section
+
+### Fixed
+
+- Fixed an issue where we incorrectly reported no package.json install scripts for some projects
+- Fixed us always displaying `[object Object]` in error message details
 
 ### Removed
 
