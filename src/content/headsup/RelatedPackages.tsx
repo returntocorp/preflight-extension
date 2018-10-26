@@ -112,7 +112,12 @@ export default class RelatedPackages extends React.PureComponent<
               return (
                 <section className="related-packages-container">
                   <header>
-                    <h2>Project used with</h2>
+                    <h2>
+                      <span className="related-packages-package selected-package">
+                        {selectedPackage.name}
+                      </span>{" "}
+                      used with
+                    </h2>
                   </header>
                   <div className="related-packages-list">
                     <RelatedPackagesList

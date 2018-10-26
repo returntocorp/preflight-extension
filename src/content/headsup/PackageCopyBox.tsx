@@ -58,7 +58,11 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
-            <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
+            <h2>
+              Install{" "}
+              <span className="selected-package">{selectedPackage.name}</span>{" "}
+              with {packageManager === "npm" ? "npm" : "Yarn"}
+            </h2>
             <p>
               Save time and{" "}
               <a
@@ -162,7 +166,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 className="package-select-dropdown-button"
                 rightIcon={IconNames.CARET_DOWN}
                 minimal={true}
-                text="Choose another..."
+                text="Change package"
                 intent={Intent.PRIMARY}
               />
             </PackageSelect>

@@ -96,6 +96,11 @@
   margin-bottom: 1em;
 }
 
+.repo-headsup-body header .selected-package {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+}
+
 .repo-headsup-body .repo-headsup-supplemental > section:last-child {
   margin-bottom: 0;
 }
