@@ -58,9 +58,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
-            <h2>
-              Install package with {packageManager === "npm" ? "npm" : "Yarn"}
-            </h2>
+            <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
             <p>
               Save time and{" "}
               <a
