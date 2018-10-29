@@ -9,14 +9,18 @@ import {
 import {
   PackageEntry,
   PackageResponse,
-  packageUrl,
-  ScriptEntry
+  packageUrl
 } from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
 import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
+import {
+  ScriptEntry,
+  ScriptsResponse,
+  scriptsUrl
+} from "@r2c/extension/api/scripts";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
@@ -317,6 +321,7 @@ interface PreflightChecklistFetchProps {
 export interface PreflightChecklistFetchData {
   repo: RepoResponse;
   pkg: PackageResponse | undefined;
+  scripts: ScriptsResponse | undefined;
   findings: FindingsResponse | undefined;
 }
 
@@ -341,43 +346,50 @@ export class PreflightChecklistFetch extends React.PureComponent<
           <ApiFetch<PackageResponse> url={packageUrl()}>
             {packageResponse => (
               <ApiFetch<FindingsResponse> url={findingsUrl()}>
-                {findingsResponse => {
-                  const loading =
-                    repoResponse.loading ||
-                    packageResponse.loading ||
-                    findingsResponse.loading;
+                {findingsResponse => (
+                  <ApiFetch<ScriptsResponse> url={scriptsUrl()}>
+                    {scriptsResponse => {
+                      const loading =
+                        repoResponse.loading ||
+                        packageResponse.loading ||
+                        findingsResponse.loading ||
+                        scriptsResponse.loading;
 
-                  const error = !loading ? repoResponse.error : undefined;
+                      const error = !loading ? repoResponse.error : undefined;
 
-                  const data =
-                    !loading && repoResponse.data != null
-                      ? {
-                          repo: repoResponse.data,
-                          pkg: packageResponse.data,
-                          findings: findingsResponse.data
-                        }
-                      : undefined;
+                      const data =
+                        !loading && repoResponse.data != null
+                          ? {
+                              repo: repoResponse.data,
+                              pkg: packageResponse.data,
+                              findings: findingsResponse.data,
+                              scripts: scriptsResponse.data
+                            }
+                          : undefined;
 
-                  const response =
-                    repoResponse.response != null &&
-                    packageResponse.response != null &&
-                    findingsResponse.response != null
-                      ? {
-                          repo: repoResponse.response,
-                          pkg: packageResponse.response,
-                          findings: findingsResponse.response
-                        }
-                      : undefined;
+                      const response =
+                        repoResponse.response != null &&
+                        packageResponse.response != null &&
+                        findingsResponse.response != null
+                          ? {
+                              repo: repoResponse.response,
+                              pkg: packageResponse.response,
+                              findings: findingsResponse.response,
+                              scripts: scriptsResponse.response
+                            }
+                          : undefined;
 
-                  const fetchResponse: PreflightChecklistFetchResponse = {
-                    loading,
-                    error,
-                    data,
-                    response
-                  };
+                      const fetchResponse: PreflightChecklistFetchResponse = {
+                        loading,
+                        error,
+                        data,
+                        response
+                      };
 
-                  return this.props.children(fetchResponse);
-                }}
+                      return this.props.children(fetchResponse);
+                    }}
+                  </ApiFetch>
+                )}
               </ApiFetch>
             )}
           </ApiFetch>
@@ -394,7 +406,7 @@ export class PreflightChecklist extends React.PureComponent<
   PreflightChecklistProps
 > {
   public render() {
-    const { pkg, findings, onChecklistItemClick: o } = this.props;
+    const { pkg, findings, scripts, onChecklistItemClick: o } = this.props;
 
     return (
       <section className="preflight-checklist-container">
@@ -406,7 +418,11 @@ export class PreflightChecklist extends React.PureComponent<
                   <PreflightPermissionsItem onChecklistItemClick={o} />
                 )}
               <PreflightScriptsItem
-                scripts={pkg ? pkg.npmScripts : undefined}
+                scripts={
+                  scripts != null && scripts.scripts != null
+                    ? scripts.scripts
+                    : undefined
+                }
                 onChecklistItemClick={o}
               />
               <PreflightRankItem

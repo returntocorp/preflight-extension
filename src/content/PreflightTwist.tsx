@@ -6,14 +6,14 @@ import {
   findingsUrlFromSlug
 } from "@r2c/extension/api/findings";
 import {
-  PackageResponse,
-  packageUrl,
-  ScriptEntry
-} from "@r2c/extension/api/package";
-import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
+import {
+  ScriptEntry,
+  ScriptsResponse,
+  scriptsUrl
+} from "@r2c/extension/api/scripts";
 import {
   VulnerabilityEntry,
   VulnsResponse,
@@ -410,30 +410,37 @@ export default class PreflightTwist extends React.PureComponent<
                     </PreflightSection>
                   )}
                 </ApiFetch>
-                <ApiFetch<PackageResponse> url={packageUrl()}>
+                <ApiFetch<ScriptsResponse> url={scriptsUrl()}>
                   {({ data, loading }) => (
                     <PreflightSection
                       check="scripts"
                       title="Install hooks"
                       description="Hooks can run before or after installing this package, and their presence can indicate a security issue."
                       startOpen={
-                        (data != null && data.npmScripts.length > 0) ||
+                        (data != null &&
+                          data.scripts != null &&
+                          data.scripts.length > 0) ||
                         deepLink === "scripts"
                       }
-                      count={data != null ? data.npmScripts.length : undefined}
+                      count={
+                        data != null && data.scripts != null
+                          ? data.scripts.length
+                          : undefined
+                      }
                       loading={loading}
                       domRef={this.twistRefs.scripts}
                     >
-                      {data && (
-                        <div className="install-hooks">
-                          {data.npmScripts.map((script, i) => (
-                            <PreflightInstallHook
-                              script={script}
-                              key={`${script.type}_${i}`}
-                            />
-                          ))}
-                        </div>
-                      )}
+                      {data &&
+                        data.scripts != null && (
+                          <div className="install-hooks">
+                            {data.scripts.map((script, i) => (
+                              <PreflightInstallHook
+                                script={script}
+                                key={`${script.type}_${i}`}
+                              />
+                            ))}
+                          </div>
+                        )}
                     </PreflightSection>
                   )}
                 </ApiFetch>

@@ -18,18 +18,9 @@ export interface PackageEntry {
   rank_description: string;
 }
 
-export interface ScriptEntry {
-  script: string;
-
-  // Disabling TSlint because the API returns a property called `type`
-  // tslint:disable-next-line:no-reserved-keywords
-  type: string;
-}
-
 export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
-  npmScripts: ScriptEntry[];
 }
 
 export interface RelatedPackageEntry {
