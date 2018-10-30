@@ -1,6 +1,8 @@
 import { Button, Icon, Intent, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
+import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
+import { PreflightProjectState } from "@r2c/extension/content/headsup/PreflightProjectState";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import * as classnames from "classnames";
 import * as React from "react";
@@ -74,7 +76,8 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 }
 
 interface ErrorHeadsUpProps {
-  error: React.ErrorInfo | Error;
+  projectState: PreflightProjectState;
+  error: PreflightChecklistErrors | Error | React.ErrorInfo | string;
 }
 
 interface ErrorHeadsUpState {
@@ -127,6 +130,7 @@ export class ErrorHeadsUp extends React.PureComponent<
         </div>
         {this.state.showDetails && (
           <div className="error-details">
+            <pre className="error-code">{this.props.projectState}</pre>
             <pre className="error-raw">{JSON.stringify(this.props.error)}</pre>
           </div>
         )}

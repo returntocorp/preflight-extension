@@ -6,10 +6,12 @@ import {
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
-import {
-  PreflightChecklistFetch,
-  PreflightChecklistItemType
-} from "@r2c/extension/content/headsup/PreflightChecklist";
+import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
+import PreflightFetch, {
+  PreflightChecklistFetchData,
+  PreflightChecklistFetchResponse
+} from "@r2c/extension/content/headsup/PreflightFetch";
+import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
 import "./index.css";
@@ -55,36 +57,107 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
 
   private renderInjectedOrError() {
     if (this.state.error) {
-      return <ErrorHeadsUp error={this.state.error} />;
+      return (
+        <ErrorHeadsUp
+          projectState={ProjectState.ERROR_UNKNOWN}
+          error={this.state.error}
+        />
+      );
     } else {
       return (
-        <PreflightChecklistFetch>
-          {({ loading, error, data, response }) => {
-            if (loading) {
-              return <LoadingHeadsUp />;
-            } else if (response != null && response.repo.status === 404) {
-              return <UnsupportedHeadsUp />;
-            } else if (
-              error &&
-              (response == null || response.repo.status !== 404) // Failed to make a network request or received a non-404 failure status code
-            ) {
-              return <ErrorHeadsUp error={error} />;
-            } else if (data != null) {
-              return <NormalHeadsUp data={data} {...this.props} />;
-            } else {
-              return (
-                <ErrorHeadsUp
-                  error={
-                    new Error(
-                      "Something went wrong! We're unable to determine the reason."
-                    )
-                  }
-                />
-              );
+        <PreflightFetch>
+          {fetchResponse => {
+            const { loading, error, data } = fetchResponse;
+            const state = this.flowProjectState(fetchResponse);
+
+            switch (state) {
+              case ProjectState.LOADING_ALL:
+                return <LoadingHeadsUp />;
+              case ProjectState.EMPTY_UNSUPPORTED:
+                return <UnsupportedHeadsUp />;
+              case ProjectState.ERROR_API:
+              case ProjectState.ERROR_MISSING_DATA:
+                return (
+                  error != null && (
+                    <ErrorHeadsUp projectState={state} error={error} />
+                  )
+                );
+              case ProjectState.LOADING_SOME:
+              case ProjectState.PARTIAL:
+              case ProjectState.COMPLETE:
+                return (
+                  data != null && (
+                    <NormalHeadsUp
+                      data={data}
+                      loading={loading}
+                      {...this.props}
+                    />
+                  )
+                );
+              case ProjectState.ERROR_UNKNOWN:
+              default:
+                return (
+                  <ErrorHeadsUp
+                    projectState={state}
+                    error={
+                      new Error(
+                        "Something went wrong! We're unable to determine the reason."
+                      )
+                    }
+                  />
+                );
             }
           }}
-        </PreflightChecklistFetch>
+        </PreflightFetch>
       );
+    }
+  }
+
+  private flowProjectState({
+    data,
+    loading,
+    error,
+    response
+  }: PreflightChecklistFetchResponse): ProjectState.PreflightProjectState {
+    console.log(data, loading, error, response);
+    if (loading != null && loading.some) {
+      if (loading.every) {
+        console.log("All loading");
+
+        return ProjectState.LOADING_ALL;
+      } else {
+        console.log("Some loading");
+
+        return ProjectState.LOADING_SOME;
+      }
+    } else if (response != null && error != null && error.every) {
+      if (
+        (Object.keys(response) as (keyof PreflightChecklistFetchData)[]).every(
+          k => response[k] != null && response[k].status === 404
+        )
+      ) {
+        console.log("Everything is 404");
+
+        return ProjectState.ERROR_MISSING_DATA;
+      } else {
+        console.log("Everything is error, but also 404");
+
+        return ProjectState.ERROR_API;
+      }
+    } else if (data != null && data.some) {
+      if (data.every) {
+        console.log("All complete");
+
+        return ProjectState.COMPLETE;
+      } else {
+        console.log("Partial complete");
+
+        return ProjectState.PARTIAL;
+      }
+    } else {
+      console.log("Unknown error");
+
+      return ProjectState.ERROR_UNKNOWN;
     }
   }
 }
