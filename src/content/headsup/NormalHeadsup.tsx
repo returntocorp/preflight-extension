@@ -62,7 +62,11 @@ export default class NormalHeadsUp extends React.PureComponent<
           {data.pkg &&
             selectedPackage && (
               <div className="repo-headsup-supplemental repo-headsup-column">
-                <UsedBy pkg={data.pkg} selectedPackage={selectedPackage} />
+                <UsedBy
+                  pkg={data.pkg}
+                  selectedPackage={selectedPackage}
+                  loading={loading.pkg}
+                />
                 <RelatedPackages selectedPackage={selectedPackage} />
               </div>
             )}
@@ -70,6 +74,7 @@ export default class NormalHeadsUp extends React.PureComponent<
             <PackageCopyBox
               packages={data.pkg}
               onSelectPackage={this.handlePackageSelect}
+              loading={loading.pkg}
             />
           </div>
         </div>

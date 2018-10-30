@@ -239,6 +239,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
 }
 
 interface WrappedPackageCopyBoxProps {
+  loading: boolean | null;
   packages: PackageResponse | undefined;
   selectedPackage?: PackageEntry;
   packageManager?: PackageManagerChoice;
@@ -298,11 +299,17 @@ export default class WrappedPackageCopyBox extends React.Component<
   }
 
   public render() {
-    const { packages: data } = this.props;
+    const { packages: data, loading } = this.props;
 
     const { selectedPackage, packageManager } = this.state;
 
-    if (data == null || data.packages.length === 0) {
+    if (loading) {
+      return (
+        <section className={classnames("package-copy-box", Classes.SKELETON)}>
+          <NonIdealState icon="box" description="Loading..." />
+        </section>
+      );
+    } else if (data == null || data.packages.length === 0) {
       return (
         <section className="package-copy-box">
           <NonIdealState icon="box" description="Not published to npm" />
