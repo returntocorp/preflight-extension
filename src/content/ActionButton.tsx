@@ -1,5 +1,4 @@
 import { Intent, Position, Tooltip } from "@blueprintjs/core";
-import { intentClass } from "@blueprintjs/core/lib/esm/common/classes";
 import { l } from "@r2c/extension/analytics";
 import { TwistId } from "@r2c/extension/content/Twist";
 import * as classnames from "classnames";
@@ -49,7 +48,7 @@ export default class ActionButton extends React.PureComponent<
         className={classnames(
           "r2c-action-button",
           `${id}-action-button`,
-          intentClass(intent),
+          intent,
           {
             "action-button-selected": selected
           }

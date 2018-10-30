@@ -1,6 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs"
-  }
+    "module": "commonjs",
+    "paths": {
+      "@r2c/extension/*": ["src/*"]
+    },
+    "baseUrl": "../"
+  },
+  "include": ["../**/*"]
 }

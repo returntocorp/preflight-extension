@@ -58,5 +58,10 @@
     "tslint-microsoft-contrib": "^5.2.0",
     "typescript": "^3.0.1",
     "write-file-webpack-plugin": "^4.3.2"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^@r2c/extension/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }
