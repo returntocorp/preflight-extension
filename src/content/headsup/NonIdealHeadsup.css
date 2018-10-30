@@ -11,6 +11,18 @@
   align-items: baseline;
 }
 
+.dismiss-options .unsupported-message,
+.r2c-repo-headsup .headsup-inline-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dismiss-options {
+  align-content: center
+}
+
 .loading-headsup .loading-message,
 .error-headsup .error-message {
   display: flex;

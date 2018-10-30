@@ -8,8 +8,14 @@ import * as classnames from "classnames";
 import * as React from "react";
 import "./NonIdealHeadsup.css";
 
+enum ClosedState {
+  Open,
+  DisplayOptions,
+  Closed
+}
+
 interface UnsupportedMessageState {
-  closed: boolean;
+  closed: ClosedState;
 }
 
 export class UnsupportedHeadsUp extends React.PureComponent<
@@ -17,12 +23,47 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   UnsupportedMessageState
 > {
   public state: UnsupportedMessageState = {
-    closed: false
+    closed: localStorage.getItem("closed") === "true" ? ClosedState.Closed : ClosedState.Open
   };
 
   public render() {
-    if (this.state.closed) {
+
+    if (this.state.closed === ClosedState.Closed) {
       return null;
+    }
+    else if (this.state.closed === ClosedState.DisplayOptions) {
+      return (
+        <div
+        className={classnames(
+          "r2c-repo-headsup",
+          "nonideal-headsup",
+          "unsupported-headsup"
+        )}
+        >
+          <span className="dismiss-options">
+            <Button
+              id="dismiss-always-button"
+              minimal={true}
+              small={true}
+              onClick={
+                this.handleDismissAlways
+              }
+            >
+              Dismiss Always
+            </Button>
+            <Button
+              id="dismiss-once-button"
+              minimal={true}
+              small={true}
+              onClick={
+                this.handleDismissOnce
+              }
+            >
+              Dismiss Once
+            </Button>
+          </span>
+        </div>
+      );
     }
 
     l("preflight-unsupported-repo-load");
@@ -63,7 +104,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   }
 
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({ closed: true });
+    this.setState({ closed: ClosedState.DisplayOptions });
   };
 
   private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
@@ -73,6 +114,15 @@ export class UnsupportedHeadsUp extends React.PureComponent<
       icon: IconNames.HEART
     });
   };
+
+  private handleDismissAlways: React.MouseEventHandler<HTMLElement> = e => {
+    localStorage.setItem("closed", "true");
+    this.setState({closed: ClosedState.Closed});
+  }
+
+  private handleDismissOnce: React.MouseEventHandler<HTMLElement> = e => {
+    this.setState({closed: ClosedState.Closed});
+  }
 }
 
 interface ErrorHeadsUpProps {
@@ -144,13 +194,13 @@ export class ErrorHeadsUp extends React.PureComponent<
 
 export class LoadingHeadsUp extends React.PureComponent {
   public state: UnsupportedMessageState = {
-    closed: false
+    closed: ClosedState.Open
   };
 
   public render() {
-    if (this.state.closed) {
+    if (this.state.closed === ClosedState.Closed) {
       return null;
-    }
+    } 
 
     return (
       <div
