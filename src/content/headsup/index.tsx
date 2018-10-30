@@ -68,7 +68,7 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
         <PreflightFetch>
           {fetchResponse => {
             const { loading, error, data } = fetchResponse;
-            const state = this.flowProjectState(fetchResponse);
+            const state = flowProjectState(fetchResponse);
 
             switch (state) {
               case ProjectState.LOADING_ALL:
@@ -112,53 +112,38 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
       );
     }
   }
+}
 
-  private flowProjectState({
-    data,
-    loading,
-    error,
-    response
-  }: PreflightChecklistFetchResponse): ProjectState.PreflightProjectState {
-    console.log(data, loading, error, response);
-    if (loading != null && loading.some) {
-      if (loading.every) {
-        console.log("All loading");
-
-        return ProjectState.LOADING_ALL;
-      } else {
-        console.log("Some loading");
-
-        return ProjectState.LOADING_SOME;
-      }
-    } else if (response != null && error != null && error.every) {
-      if (
-        (Object.keys(response) as (keyof PreflightChecklistFetchData)[]).every(
-          k => response[k] != null && response[k].status === 404
-        )
-      ) {
-        console.log("Everything is 404");
-
-        return ProjectState.ERROR_MISSING_DATA;
-      } else {
-        console.log("Everything is error, but also 404");
-
-        return ProjectState.ERROR_API;
-      }
-    } else if (data != null && data.some) {
-      if (data.every) {
-        console.log("All complete");
-
-        return ProjectState.COMPLETE;
-      } else {
-        console.log("Partial complete");
-
-        return ProjectState.PARTIAL;
-      }
+export function flowProjectState({
+  data,
+  loading,
+  error,
+  response
+}: PreflightChecklistFetchResponse): ProjectState.PreflightProjectState {
+  if (loading != null && loading.some) {
+    if (loading.every) {
+      return ProjectState.LOADING_ALL;
     } else {
-      console.log("Unknown error");
-
-      return ProjectState.ERROR_UNKNOWN;
+      return ProjectState.LOADING_SOME;
     }
+  } else if (response != null && error != null && error.every) {
+    if (
+      (Object.keys(response) as (keyof PreflightChecklistFetchData)[]).every(
+        k => response[k] != null && response[k].status === 404
+      )
+    ) {
+      return ProjectState.ERROR_MISSING_DATA;
+    } else {
+      return ProjectState.ERROR_API;
+    }
+  } else if (data != null && data.some) {
+    if (data.every) {
+      return ProjectState.COMPLETE;
+    } else {
+      return ProjectState.PARTIAL;
+    }
+  } else {
+    return ProjectState.ERROR_UNKNOWN;
   }
 }
 
