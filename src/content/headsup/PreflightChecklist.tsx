@@ -278,7 +278,18 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
   onChecklistItemClick,
   loading
 }) => {
-  if (findings == null) {
+  if (loading) {
+    return (
+      <PreflightChecklistItem
+        iconState={"warn"}
+        itemType="findings"
+        onChecklistItemClick={onChecklistItemClick}
+        loading={loading}
+      >
+        Loading...
+      </PreflightChecklistItem>
+    );
+  } else if (findings == null) {
     return (
       <PreflightChecklistItem
         iconState="neutral"
