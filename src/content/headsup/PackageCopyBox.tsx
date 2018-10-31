@@ -7,12 +7,14 @@ import {
   Intent,
   MenuItem,
   NonIdealState,
-  Position
+  Position,
+  Tooltip
 } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { ItemListPredicate, ItemRenderer, Select } from "@blueprintjs/select";
 import { l } from "@r2c/extension/analytics";
 import { PackageEntry, PackageResponse } from "@r2c/extension/api/package";
+import PluralizedList from "@r2c/extension/content/PluralizedList";
 import { MainToaster } from "@r2c/extension/content/Toaster";
 import CopyButton from "@r2c/extension/shared/CopyButton";
 import {
@@ -223,16 +225,54 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
   private renderPackageSelectEntry: ItemRenderer<PackageEntry> = (
     pkg,
     { handleClick, modifiers, query }
-  ) => (
-    <MenuItem
-      active={modifiers.active}
-      disabled={modifiers.disabled}
-      label={renderShortRank(pkg.package_rank)}
-      key={`${pkg.registry}/${pkg.name}`}
-      onClick={handleClick}
-      text={pkg.name}
-    />
-  );
+  ) => {
+    const entryText = (
+      <span className="package-menu-item">
+        {pkg.endorsers.length > 0 ? "⭐ " : ""}
+        {pkg.name}
+      </span>
+    );
+
+    return (
+      <MenuItem
+        active={modifiers.active}
+        disabled={modifiers.disabled}
+        label={renderShortRank(pkg.package_rank)}
+        key={`${pkg.registry}/${pkg.name}`}
+        onClick={handleClick}
+        text={
+          pkg.endorsers.length > 0 ? (
+            <Tooltip
+              key={`${pkg.registry}/${pkg.name}`}
+              position={Position.LEFT}
+              content={
+                <span className="endorsers-list">
+                  Used by{" "}
+                  <PluralizedList items={pkg.endorsers}>
+                    {endorser => (
+                      <span className="endorser-item">{endorser}</span>
+                    )}
+                  </PluralizedList>
+                </span>
+              }
+              modifiers={{
+                preventOverflow: {
+                  enabled: false,
+                  escapeWithReference: false,
+                  boundariesElement: "viewport"
+                },
+                flip: { enabled: false }
+              }}
+            >
+              {entryText}
+            </Tooltip>
+          ) : (
+            entryText
+          )
+        }
+      />
+    );
+  };
 
   private filterPackageList: ItemListPredicate<PackageEntry> = (query, items) =>
     items.filter(item => includes(item.name, query));
