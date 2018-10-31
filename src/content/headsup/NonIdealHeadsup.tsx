@@ -4,8 +4,13 @@ import { l } from "@r2c/extension/analytics";
 import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
 import { PreflightProjectState } from "@r2c/extension/content/headsup/PreflightProjectState";
 import { MainToaster } from "@r2c/extension/content/Toaster";
+import {
+  ExtensionState,
+  toggleExtensionExperiment
+} from "@r2c/extension/shared/ExtensionState";
 import * as classnames from "classnames";
 import * as React from "react";
+import { ExtensionContext } from "../index";
 import "./NonIdealHeadsup.css";
 
 enum HeadsupDisplayState {
@@ -23,85 +28,86 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   UnsupportedMessageState
 > {
   public state: UnsupportedMessageState = {
-    displayed: localStorage.getItem("closed") === "true" ? HeadsupDisplayState.Closed : HeadsupDisplayState.Open
+    displayed: HeadsupDisplayState.Open
   };
 
   public render() {
-
     if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
-    }
-    else if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
-      return (
-        <div
-        className={classnames(
-          "r2c-repo-headsup",
-          "nonideal-headsup",
-          "unsupported-headsup"
-        )}
-        >
-          <span className="dismiss-options">
-            <Button
-              id="dismiss-always-button"
-              small={true}
-              onClick={
-                this.handleDismissAlways
-              }
-              intent={Intent.DANGER}
-            >
-              Don't show again
-            </Button>
-          </span>
-            <Button
-              icon={IconNames.SMALL_CROSS}
-              minimal={true}
-              small={true}
-              onClick={this.closeMessage}
-            />
-        </div>
-      );
     }
 
     l("preflight-unsupported-repo-load");
 
     return (
-      <div
-        className={classnames(
-          "r2c-repo-headsup",
-          "nonideal-headsup",
-          "unsupported-headsup"
-        )}
-      >
-        <span className="unsupported-message-text">
-          🛫 Preflight couldn't find results or npm packages associated with
-          this repository. If this seems in error, please{" "}
-          <Button
-            id="unsupported-message-request-button"
-            rightIcon={IconNames.FLAG}
-            minimal={true}
-            small={true}
-            onClick={l(
-              "preflight-unsupported-request-click",
-              this.handleRequestClick
-            )}
-            intent={Intent.SUCCESS}
-          >
-            let us know!
-          </Button>
-        </span>
-        <Button
-          icon={IconNames.SMALL_CROSS}
-          minimal={true}
-          small={true}
-          onClick={this.closeMessage}
-        />
-      </div>
+      <ExtensionContext.Consumer>
+        {({ extensionState }) => {
+          if (
+            extensionState != null &&
+            !extensionState.experiments.hideOnUnsupported
+          ) {
+            return (
+              <div
+                className={classnames(
+                  "r2c-repo-headsup",
+                  "nonideal-headsup",
+                  "unsupported-headsup"
+                )}
+              >
+                {this.state.displayed ===
+                  HeadsupDisplayState.DisplayOptions && (
+                  <span className="dismiss-options">
+                    <Button
+                      id="dismiss-always-button"
+                      minimal={true}
+                      small={true}
+                      onClick={this.handleDismissAlways(extensionState)}
+                      intent={Intent.DANGER}
+                    >
+                      Don't show again
+                    </Button>
+                  </span>
+                )}
+
+                {this.state.displayed === HeadsupDisplayState.Open && (
+                  <span className="unsupported-message-text">
+                    🛫 Preflight couldn't find results or npm packages
+                    associated with this repository. If this seems in error,
+                    please{" "}
+                    <Button
+                      id="unsupported-message-request-button"
+                      rightIcon={IconNames.FLAG}
+                      minimal={true}
+                      small={true}
+                      onClick={l(
+                        "preflight-unsupported-request-click",
+                        this.handleRequestClick
+                      )}
+                      intent={Intent.SUCCESS}
+                    >
+                      let us know!
+                    </Button>
+                  </span>
+                )}
+
+                <Button
+                  icon={IconNames.SMALL_CROSS}
+                  minimal={true}
+                  small={true}
+                  onClick={this.closeMessage}
+                />
+              </div>
+            );
+          } else {
+            return null;
+          }
+        }}
+      </ExtensionContext.Consumer>
     );
   }
 
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
     if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
-      this.setState({displayed: HeadsupDisplayState.Closed});
+      this.setState({ displayed: HeadsupDisplayState.Closed });
     } else {
       this.setState({ displayed: HeadsupDisplayState.DisplayOptions });
     }
@@ -115,10 +121,12 @@ export class UnsupportedHeadsUp extends React.PureComponent<
     });
   };
 
-  private handleDismissAlways: React.MouseEventHandler<HTMLElement> = e => {
-    localStorage.setItem("closed", "true");
-    this.setState({displayed: HeadsupDisplayState.Closed});
-  }
+  private handleDismissAlways: (
+    extensionState: ExtensionState
+  ) => React.MouseEventHandler<HTMLElement> = extensionState => e => {
+    toggleExtensionExperiment(extensionState, "hideOnUnsupported");
+    this.setState({ displayed: HeadsupDisplayState.Closed });
+  };
 }
 
 interface ErrorHeadsUpProps {
@@ -196,7 +204,7 @@ export class LoadingHeadsUp extends React.PureComponent {
   public render() {
     if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
-    } 
+    }
 
     return (
       <div

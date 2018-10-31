@@ -1,11 +1,15 @@
 import { fetchFromStorage, updateStorage } from "@r2c/extension/utils";
 
-export type ExperimentName = "permissions" | "emptyPlaceholder";
+export type ExperimentName =
+  | "permissions"
+  | "hideOnUnsupported"
+  | "emptyPlaceholder";
 
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
   permissions: false,
+  hideOnUnsupported: false,
   emptyPlaceholder: false
 };
 
@@ -37,7 +41,7 @@ function updateExtensionState(newState: ExtensionState) {
 
 export function toggleExtensionExperiment(
   extensionState: ExtensionState,
-  experimentName: string
+  experimentName: ExperimentName
 ): ExtensionState {
   if (!DEFAULT_EXPERIMENTS.hasOwnProperty(experimentName)) {
     // do nothing
