@@ -1,13 +1,13 @@
 import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
 
-export function packageUrl() {
+export function packageUrl(version: string = "v2") {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/package/${domain}/${org}/${repo}`;
+  return `https://api.secarta.io/${version}/package/${domain}/${org}/${repo}`;
 }
 
 export function relatedPackagesUrl() {
-  return `${packageUrl()}/related`;
+  return `${packageUrl("v1")}/related`;
 }
 
 export interface PackageEntry {
@@ -18,18 +18,9 @@ export interface PackageEntry {
   rank_description: string;
 }
 
-export interface ScriptEntry {
-  script: string;
-
-  // Disabling TSlint because the API returns a property called `type`
-  // tslint:disable-next-line:no-reserved-keywords
-  type: string;
-}
-
 export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
-  npmScripts: ScriptEntry[];
 }
 
 export interface RelatedPackageEntry {

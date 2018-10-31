@@ -33,8 +33,9 @@ interface PackageCopyBoxProps {
   selectedPackage: PackageEntry;
   packageManager: PackageManagerChoice;
   onSelectPackage(
-    newPackage: PackageEntry
-  ): React.MouseEventHandler<HTMLElement>;
+    newPackage: PackageEntry,
+    event?: React.SyntheticEvent<HTMLElement>
+  ): void;
   onChangePackageManager(
     newManager: PackageManagerChoice
   ): React.MouseEventHandler<HTMLElement>;
@@ -50,7 +51,6 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       packages,
       selectedPackage,
       packageManager,
-      onSelectPackage,
       onChangePackageManager
     } = this.props;
 
@@ -140,7 +140,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
               items={packages.packages}
               itemListPredicate={this.filterPackageList}
               itemRenderer={this.renderPackageSelectEntry}
-              onItemSelect={onSelectPackage}
+              onItemSelect={this.handleSelectPackage}
               popoverProps={{
                 position: Position.BOTTOM_LEFT,
                 minimal: true,
@@ -185,6 +185,11 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       </section>
     );
   }
+
+  private handleSelectPackage = (
+    item: PackageEntry,
+    event?: React.SyntheticEvent<HTMLElement>
+  ) => this.props.onSelectPackage(item, event);
 
   private handleCopy = (registry: string, packageName: string) => (
     e: React.MouseEvent<HTMLElement>
@@ -239,6 +244,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
 }
 
 interface WrappedPackageCopyBoxProps {
+  loading: boolean | null;
   packages: PackageResponse | undefined;
   selectedPackage?: PackageEntry;
   packageManager?: PackageManagerChoice;
@@ -298,11 +304,17 @@ export default class WrappedPackageCopyBox extends React.Component<
   }
 
   public render() {
-    const { packages: data } = this.props;
+    const { packages: data, loading } = this.props;
 
     const { selectedPackage, packageManager } = this.state;
 
-    if (data == null || data.packages.length === 0) {
+    if (loading) {
+      return (
+        <section className={classnames("package-copy-box", Classes.SKELETON)}>
+          <NonIdealState icon="box" description="Loading..." />
+        </section>
+      );
+    } else if (data == null || data.packages.length === 0) {
       return (
         <section className="package-copy-box">
           <NonIdealState icon="box" description="Not published to npm" />
@@ -336,9 +348,12 @@ export default class WrappedPackageCopyBox extends React.Component<
     }
   };
 
-  private handlePackageSelect = (pkg: PackageEntry) => (
-    e: React.MouseEvent<HTMLElement>
-  ) => this.selectPackage(pkg);
+  private handlePackageSelect = (
+    pkg: PackageEntry,
+    e?: React.MouseEvent<HTMLElement>
+  ) => {
+    this.selectPackage(pkg);
+  };
 
   private selectPackage = (pkg: PackageEntry) => {
     if (this.props.onSelectPackage != null) {

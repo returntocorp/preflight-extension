@@ -6,11 +6,14 @@ import {
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
-import {
-  PreflightChecklistFetch,
-  PreflightChecklistItemType
-} from "@r2c/extension/content/headsup/PreflightChecklist";
-import { ExtractedRepoSlug } from "@r2c/extension/utils";
+import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
+import PreflightFetch, {
+  PreflightChecklistFetchData,
+  PreflightChecklistFetchResponse
+} from "@r2c/extension/content/headsup/PreflightFetch";
+import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
+import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
+import { map } from "lodash";
 import * as React from "react";
 import "./index.css";
 
@@ -29,7 +32,14 @@ export interface HeadsupState {
   closed: boolean;
 }
 
-class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
+interface RepoHeadsUpProps extends HeadsUpProps {
+  detectedLanguages: string[];
+}
+
+class RepoHeadsUp extends React.PureComponent<
+  RepoHeadsUpProps,
+  RepoHeadsUpState
+> {
   public state: RepoHeadsUpState = {
     error: undefined
   };
@@ -55,37 +65,96 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
 
   private renderInjectedOrError() {
     if (this.state.error) {
-      return <ErrorHeadsUp error={this.state.error} />;
+      return (
+        <ErrorHeadsUp
+          projectState={ProjectState.ERROR_UNKNOWN}
+          error={this.state.error}
+        />
+      );
     } else {
       return (
-        <PreflightChecklistFetch>
-          {({ loading, error, data, response }) => {
-            if (loading) {
-              return <LoadingHeadsUp />;
-            } else if (response != null && response.repo.status === 404) {
-              return <UnsupportedHeadsUp />;
-            } else if (
-              error &&
-              (response == null || response.repo.status !== 404) // Failed to make a network request or received a non-404 failure status code
-            ) {
-              return <ErrorHeadsUp error={error} />;
-            } else if (data != null) {
-              return <NormalHeadsUp data={data} {...this.props} />;
-            } else {
-              return (
-                <ErrorHeadsUp
-                  error={
-                    new Error(
-                      "Something went wrong! We're unable to determine the reason."
-                    )
-                  }
-                />
-              );
+        <PreflightFetch>
+          {fetchResponse => {
+            const { loading, error, data } = fetchResponse;
+            const state = flowProjectState(
+              fetchResponse,
+              this.props.detectedLanguages
+            );
+
+            switch (state) {
+              case ProjectState.LOADING_ALL:
+                return <LoadingHeadsUp />;
+              case ProjectState.EMPTY_UNSUPPORTED:
+                return <UnsupportedHeadsUp />;
+              case ProjectState.ERROR_API:
+              case ProjectState.ERROR_MISSING_DATA:
+                return (
+                  error != null && (
+                    <ErrorHeadsUp projectState={state} error={error} />
+                  )
+                );
+              case ProjectState.LOADING_SOME:
+              case ProjectState.PARTIAL:
+              case ProjectState.COMPLETE:
+                return (
+                  data != null && (
+                    <NormalHeadsUp
+                      data={data}
+                      loading={loading}
+                      {...this.props}
+                    />
+                  )
+                );
+              case ProjectState.ERROR_UNKNOWN:
+              default:
+                return (
+                  <ErrorHeadsUp
+                    projectState={state}
+                    error={
+                      new Error(
+                        "Something went wrong! We're unable to determine the reason."
+                      )
+                    }
+                  />
+                );
             }
           }}
-        </PreflightChecklistFetch>
+        </PreflightFetch>
       );
     }
+  }
+}
+
+export function flowProjectState(
+  { data, loading, error, response }: PreflightChecklistFetchResponse,
+  detectedLanguages: string[]
+): ProjectState.PreflightProjectState {
+  if (!hasSupportedLanguages(detectedLanguages)) {
+    return ProjectState.EMPTY_UNSUPPORTED;
+  } else if (loading != null && loading.some) {
+    if (loading.every) {
+      return ProjectState.LOADING_ALL;
+    } else {
+      return ProjectState.LOADING_SOME;
+    }
+  } else if (response != null && error != null && error.every) {
+    if (
+      (Object.keys(response) as (keyof PreflightChecklistFetchData)[]).every(
+        k => response[k] != null && response[k].status === 404
+      )
+    ) {
+      return ProjectState.ERROR_MISSING_DATA;
+    } else {
+      return ProjectState.ERROR_API;
+    }
+  } else if (data != null && data.some) {
+    if (data.every) {
+      return ProjectState.COMPLETE;
+    } else {
+      return ProjectState.PARTIAL;
+    }
+  } else {
+    return ProjectState.ERROR_UNKNOWN;
   }
 }
 
@@ -95,7 +164,7 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
   public render() {
     return (
       <DomElementLoadedWatcher querySelector=".repository-lang-stats-graph">
-        {({ done }) =>
+        {({ done, element }) =>
           done && (
             <DOMInjector
               destination=".repository-lang-stats-graph"
@@ -103,11 +172,28 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
               injectedClassName="r2c-repo-headsup-container"
               relation="after"
             >
-              <RepoHeadsUp {...this.props} />
+              <RepoHeadsUp
+                {...this.props}
+                detectedLanguages={this.getDetectedLanguages(element)}
+              />
             </DOMInjector>
           )
         }
       </DomElementLoadedWatcher>
     );
   }
+
+  private getDetectedLanguages = (element: Element | undefined): string[] => {
+    if (element == null) {
+      return [];
+    } else {
+      const languageSpans: NodeListOf<HTMLElement> = element.querySelectorAll(
+        "span.language-color:not(.color-block)"
+      );
+
+      return map(languageSpans, languageSpan =>
+        languageSpan.innerText.toLowerCase()
+      );
+    }
+  };
 }

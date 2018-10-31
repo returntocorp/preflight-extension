@@ -1,23 +1,18 @@
 import { Button, Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { ApiFetch } from "@r2c/extension/api/fetch";
-import {
-  FindingEntry,
-  FindingsResponse,
-  findingsUrl
-} from "@r2c/extension/api/findings";
-import {
-  PackageEntry,
-  PackageResponse,
-  packageUrl,
-  ScriptEntry
-} from "@r2c/extension/api/package";
+import { FindingEntry } from "@r2c/extension/api/findings";
+import { PackageEntry } from "@r2c/extension/api/package";
 import {
   PermissionsResponse,
   permissionsUrl
 } from "@r2c/extension/api/permissions";
-import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
+import { ScriptEntry } from "@r2c/extension/api/scripts";
 import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
+import {
+  PreflightChecklistFetchData,
+  PreflightChecklistLoading
+} from "@r2c/extension/content/headsup/PreflightFetch";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
@@ -51,13 +46,16 @@ function getIconPropsForState(state: ChecklistItemState): IIconProps {
 }
 
 interface PreflightChecklistInteractionProps {
-  onChecklistItemClick(
-    itemType: PreflightChecklistItemType
-  ): React.MouseEventHandler<HTMLElement>;
+  loading?: boolean | null;
+  onChecklistItemClick: PreflightChecklistItemClickHandler;
 }
 
+type PreflightChecklistItemClickHandler = (
+  itemType: PreflightChecklistItemType
+) => React.MouseEventHandler<HTMLElement>;
+
 interface PreflightChecklistItemProps {
-  loading?: boolean;
+  loading?: boolean | null;
   itemType: PreflightChecklistItemType;
   iconState: ChecklistItemState;
   onChecklistItemClick(
@@ -223,6 +221,7 @@ const PreflightScriptsItem: React.SFC<PreflightScriptsItemProps> = props => {
       iconState={itemState}
       itemType="scripts"
       onChecklistItemClick={props.onChecklistItemClick}
+      loading={props.loading}
     >
       {props.scripts != null
         ? props.scripts.length > 0
@@ -260,6 +259,7 @@ const PreflightRankItem: React.SFC<PreflightRankItemProps> = props => {
       iconState={itemState}
       itemType="rank"
       onChecklistItemClick={props.onChecklistItemClick}
+      loading={props.loading}
     >
       {props.pkg !== null && props.pkg && props.pkg.rank_description
         ? description
@@ -275,9 +275,21 @@ interface PreflightFindingsItemProps
 
 const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
   findings,
-  onChecklistItemClick
+  onChecklistItemClick,
+  loading
 }) => {
-  if (findings == null) {
+  if (loading) {
+    return (
+      <PreflightChecklistItem
+        iconState={"warn"}
+        itemType="findings"
+        onChecklistItemClick={onChecklistItemClick}
+        loading={loading}
+      >
+        Loading...
+      </PreflightChecklistItem>
+    );
+  } else if (findings == null) {
     return (
       <PreflightChecklistItem
         iconState="neutral"
@@ -303,6 +315,7 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
         iconState={"warn"}
         itemType="findings"
         onChecklistItemClick={onChecklistItemClick}
+        loading={loading}
       >
         {findings.length} {findings.length === 1 ? "issue" : "issues"} in code
       </PreflightChecklistItem>
@@ -310,91 +323,21 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
   }
 };
 
-interface PreflightChecklistFetchProps {
-  children(response: PreflightChecklistFetchResponse): React.ReactNode;
+interface PreflightChecklistProps {
+  data: PreflightChecklistFetchData;
+  loading: PreflightChecklistLoading;
+  onChecklistItemClick: PreflightChecklistItemClickHandler;
 }
-
-export interface PreflightChecklistFetchData {
-  repo: RepoResponse;
-  pkg: PackageResponse | undefined;
-  findings: FindingsResponse | undefined;
-}
-
-type PreflightChecklistFetchDataResponse = {
-  [K in keyof PreflightChecklistFetchData]: Response
-};
-
-interface PreflightChecklistFetchResponse {
-  loading: boolean | null;
-  error: Error | undefined;
-  data: PreflightChecklistFetchData | undefined;
-  response: PreflightChecklistFetchDataResponse | undefined;
-}
-
-export class PreflightChecklistFetch extends React.PureComponent<
-  PreflightChecklistFetchProps
-> {
-  public render() {
-    return (
-      <ApiFetch<RepoResponse> url={repoUrl()}>
-        {repoResponse => (
-          <ApiFetch<PackageResponse> url={packageUrl()}>
-            {packageResponse => (
-              <ApiFetch<FindingsResponse> url={findingsUrl()}>
-                {findingsResponse => {
-                  const loading =
-                    repoResponse.loading ||
-                    packageResponse.loading ||
-                    findingsResponse.loading;
-
-                  const error = !loading ? repoResponse.error : undefined;
-
-                  const data =
-                    !loading && repoResponse.data != null
-                      ? {
-                          repo: repoResponse.data,
-                          pkg: packageResponse.data,
-                          findings: findingsResponse.data
-                        }
-                      : undefined;
-
-                  const response =
-                    repoResponse.response != null &&
-                    packageResponse.response != null &&
-                    findingsResponse.response != null
-                      ? {
-                          repo: repoResponse.response,
-                          pkg: packageResponse.response,
-                          findings: findingsResponse.response
-                        }
-                      : undefined;
-
-                  const fetchResponse: PreflightChecklistFetchResponse = {
-                    loading,
-                    error,
-                    data,
-                    response
-                  };
-
-                  return this.props.children(fetchResponse);
-                }}
-              </ApiFetch>
-            )}
-          </ApiFetch>
-        )}
-      </ApiFetch>
-    );
-  }
-}
-
-type PreflightChecklistProps = PreflightChecklistFetchData &
-  PreflightChecklistInteractionProps;
 
 export class PreflightChecklist extends React.PureComponent<
   PreflightChecklistProps
 > {
   public render() {
-    const { pkg, findings, onChecklistItemClick: o } = this.props;
+    const {
+      data: { pkg, findings, scripts },
+      loading,
+      onChecklistItemClick: o
+    } = this.props;
 
     return (
       <section className="preflight-checklist-container">
@@ -406,8 +349,13 @@ export class PreflightChecklist extends React.PureComponent<
                   <PreflightPermissionsItem onChecklistItemClick={o} />
                 )}
               <PreflightScriptsItem
-                scripts={pkg ? pkg.npmScripts : undefined}
+                scripts={
+                  scripts != null && scripts.scripts != null
+                    ? scripts.scripts
+                    : undefined
+                }
                 onChecklistItemClick={o}
+                loading={loading.scripts}
               />
               <PreflightRankItem
                 onChecklistItemClick={o}
@@ -423,6 +371,7 @@ export class PreflightChecklist extends React.PureComponent<
               <PreflightFindingsItem
                 onChecklistItemClick={o}
                 findings={findings ? findings.findings : undefined}
+                loading={loading.findings}
               />
             </ul>
           )}

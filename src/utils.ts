@@ -1,3 +1,7 @@
+import { intersection } from "lodash";
+
+export const SUPPORTED_LANGUAGES = ["javascript", "typescript"];
+
 // tslint:disable:no-any
 type WindowBrowserShim = any;
 // tslint:enable:no-any
@@ -302,4 +306,8 @@ export function getBrowserType(): BrowserType {
 
 export function buildPackageLink(name: string): string {
   return `https://npmjs.com/package/${name}`;
+}
+
+export function hasSupportedLanguages(languages: string[]): boolean {
+  return intersection(languages, SUPPORTED_LANGUAGES).length > 0;
 }
