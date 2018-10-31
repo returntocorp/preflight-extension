@@ -12,7 +12,8 @@ import PreflightFetch, {
   PreflightChecklistFetchResponse
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
-import { ExtractedRepoSlug } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
+import { map } from "lodash";
 import * as React from "react";
 import "./index.css";
 
@@ -31,7 +32,14 @@ export interface HeadsupState {
   closed: boolean;
 }
 
-class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
+interface RepoHeadsUpProps extends HeadsUpProps {
+  detectedLanguages: string[];
+}
+
+class RepoHeadsUp extends React.PureComponent<
+  RepoHeadsUpProps,
+  RepoHeadsUpState
+> {
   public state: RepoHeadsUpState = {
     error: undefined
   };
@@ -68,7 +76,10 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
         <PreflightFetch>
           {fetchResponse => {
             const { loading, error, data } = fetchResponse;
-            const state = flowProjectState(fetchResponse);
+            const state = flowProjectState(
+              fetchResponse,
+              this.props.detectedLanguages
+            );
 
             switch (state) {
               case ProjectState.LOADING_ALL:
@@ -114,13 +125,13 @@ class RepoHeadsUp extends React.PureComponent<HeadsUpProps, RepoHeadsUpState> {
   }
 }
 
-export function flowProjectState({
-  data,
-  loading,
-  error,
-  response
-}: PreflightChecklistFetchResponse): ProjectState.PreflightProjectState {
-  if (loading != null && loading.some) {
+export function flowProjectState(
+  { data, loading, error, response }: PreflightChecklistFetchResponse,
+  detectedLanguages: string[]
+): ProjectState.PreflightProjectState {
+  if (!hasSupportedLanguages(detectedLanguages)) {
+    return ProjectState.EMPTY_UNSUPPORTED;
+  } else if (loading != null && loading.some) {
     if (loading.every) {
       return ProjectState.LOADING_ALL;
     } else {
@@ -153,7 +164,7 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
   public render() {
     return (
       <DomElementLoadedWatcher querySelector=".repository-lang-stats-graph">
-        {({ done }) =>
+        {({ done, element }) =>
           done && (
             <DOMInjector
               destination=".repository-lang-stats-graph"
@@ -161,11 +172,28 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
               injectedClassName="r2c-repo-headsup-container"
               relation="after"
             >
-              <RepoHeadsUp {...this.props} />
+              <RepoHeadsUp
+                {...this.props}
+                detectedLanguages={this.getDetectedLanguages(element)}
+              />
             </DOMInjector>
           )
         }
       </DomElementLoadedWatcher>
     );
   }
+
+  private getDetectedLanguages = (element: Element | undefined): string[] => {
+    if (element == null) {
+      return [];
+    } else {
+      const languageSpans: NodeListOf<HTMLElement> = element.querySelectorAll(
+        "span.language-color:not(.color-block)"
+      );
+
+      return map(languageSpans, languageSpan =>
+        languageSpan.innerText.toLowerCase()
+      );
+    }
+  };
 }

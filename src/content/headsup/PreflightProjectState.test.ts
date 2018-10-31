@@ -7,6 +7,7 @@ import {
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import {
   COMPLETE,
+  EMPTY_UNSUPPORTED,
   ERROR_API,
   ERROR_MISSING_DATA,
   ERROR_UNKNOWN,
@@ -40,7 +41,9 @@ describe("Project state", () => {
       repo: true,
       scripts: true
     };
-    expect(flowProjectState({ ...blank, loading })).toBe(LOADING_ALL);
+    expect(flowProjectState({ ...blank, loading }, ["typescript"])).toBe(
+      LOADING_ALL
+    );
   });
 
   it("shows partial loading when some stuff is loading", () => {
@@ -52,7 +55,9 @@ describe("Project state", () => {
       repo: true,
       scripts: true
     };
-    expect(flowProjectState({ ...blank, loading })).toBe(LOADING_SOME);
+    expect(flowProjectState({ ...blank, loading }, ["typescript"])).toBe(
+      LOADING_SOME
+    );
   });
 
   it("shows partial loading even if errors show up", () => {
@@ -72,7 +77,9 @@ describe("Project state", () => {
       repo: undefined,
       scripts: new Error("some error")
     };
-    expect(flowProjectState({ ...blank, loading, error })).toBe(LOADING_SOME);
+    expect(flowProjectState({ ...blank, loading, error }, ["typescript"])).toBe(
+      LOADING_SOME
+    );
   });
 
   it("shows unknown error when some responses have errored out and there's no data", () => {
@@ -84,7 +91,9 @@ describe("Project state", () => {
       repo: undefined,
       scripts: new Error("some error")
     };
-    expect(flowProjectState({ ...blank, error })).toBe(ERROR_UNKNOWN);
+    expect(flowProjectState({ ...blank, error }, ["typescript"])).toBe(
+      ERROR_UNKNOWN
+    );
   });
 
   it("shows partial data when there's data and some responses have errored out", () => {
@@ -104,7 +113,9 @@ describe("Project state", () => {
       repo: undefined,
       scripts: { gitUrl: "foo", scripts: [] }
     };
-    expect(flowProjectState({ ...blank, data, error })).toBe(PARTIAL);
+    expect(flowProjectState({ ...blank, data, error }, ["typescript"])).toBe(
+      PARTIAL
+    );
   });
 
   it("shows complete data when there's all data, but some responses have errored out", () => {
@@ -133,7 +144,9 @@ describe("Project state", () => {
       },
       scripts: { gitUrl: "foo", scripts: [] }
     };
-    expect(flowProjectState({ ...blank, data, error })).toBe(COMPLETE);
+    expect(flowProjectState({ ...blank, data, error }, ["typescript"])).toBe(
+      COMPLETE
+    );
   });
 
   it("shows missing data if all responses are 404 and all errors are triggered", () => {
@@ -153,8 +166,30 @@ describe("Project state", () => {
       scripts: new Response(null, { status: 404 })
     };
 
-    expect(flowProjectState({ ...blank, response, error })).toBe(
-      ERROR_MISSING_DATA
+    expect(
+      flowProjectState({ ...blank, response, error }, ["typescript"])
+    ).toBe(ERROR_MISSING_DATA);
+  });
+
+  it("shows unsupported if no languages are supported", () => {
+    const error: PreflightChecklistErrors = {
+      every: false,
+      some: true,
+      findings: undefined,
+      pkg: undefined,
+      repo: undefined,
+      scripts: new Error("some error")
+    };
+
+    const response: PreflightChecklistFetchDataResponse = {
+      findings: new Response(null, { status: 404 }),
+      pkg: new Response(null, { status: 404 }),
+      repo: new Response(null, { status: 404 }),
+      scripts: new Response(null, { status: 404 })
+    };
+
+    expect(flowProjectState({ ...blank, response, error }, ["c++"])).toBe(
+      EMPTY_UNSUPPORTED
     );
   });
 
@@ -175,7 +210,9 @@ describe("Project state", () => {
       scripts: new Response(null, { status: 500 })
     };
 
-    expect(flowProjectState({ ...blank, response, error })).toBe(ERROR_API);
+    expect(
+      flowProjectState({ ...blank, response, error }, ["typescript"])
+    ).toBe(ERROR_API);
   });
 
   it("shows API issues if not responses are 404 and all errors are triggered", () => {
@@ -188,6 +225,8 @@ describe("Project state", () => {
       scripts: new Error("some error")
     };
 
-    expect(flowProjectState({ ...blank, error })).toBe(ERROR_UNKNOWN);
+    expect(flowProjectState({ ...blank, error }, ["typescript"])).toBe(
+      ERROR_UNKNOWN
+    );
   });
 });
