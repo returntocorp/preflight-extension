@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - We show the "Current Commit" badge when viewing the master branch if we've analyzed the latest commit (previously you had to be looking at the specific commit, not master) (#147)
 - You can now discover packages frequently used alongside the package you're currently viewing
+- Added a star next to packages in the package chooser that are used by prominent orgs
 
 ### Changed
 
