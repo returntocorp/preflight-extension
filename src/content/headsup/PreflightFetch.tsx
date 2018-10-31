@@ -55,7 +55,7 @@ export default class PreflightFetch extends React.PureComponent<
                 {findingsResponse => (
                   <ApiFetch<ScriptsResponse> url={scriptsUrl()}>
                     {scriptsResponse => {
-                      // TODO yeah I know all of these ternaries are gross
+                      // TODO (lediur) yeah I know all of these ternaries are gross
                       // TBD spending some time figuring out how to build a typesafe
                       // way to reusably compute `every` and `some` as booleans
                       // tslint:disable-next-line:cyclomatic-complexity
