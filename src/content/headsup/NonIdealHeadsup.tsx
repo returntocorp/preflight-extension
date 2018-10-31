@@ -8,14 +8,14 @@ import * as classnames from "classnames";
 import * as React from "react";
 import "./NonIdealHeadsup.css";
 
-enum ClosedState {
+enum HeadsupDisplayState {
   Open,
   DisplayOptions,
   Closed
 }
 
 interface UnsupportedMessageState {
-  closed: ClosedState;
+  displayed: HeadsupDisplayState;
 }
 
 export class UnsupportedHeadsUp extends React.PureComponent<
@@ -23,15 +23,15 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   UnsupportedMessageState
 > {
   public state: UnsupportedMessageState = {
-    closed: localStorage.getItem("closed") === "true" ? ClosedState.Closed : ClosedState.Open
+    displayed: localStorage.getItem("closed") === "true" ? HeadsupDisplayState.Closed : HeadsupDisplayState.Open
   };
 
   public render() {
 
-    if (this.state.closed === ClosedState.Closed) {
+    if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
     }
-    else if (this.state.closed === ClosedState.DisplayOptions) {
+    else if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
       return (
         <div
         className={classnames(
@@ -43,25 +43,21 @@ export class UnsupportedHeadsUp extends React.PureComponent<
           <span className="dismiss-options">
             <Button
               id="dismiss-always-button"
-              minimal={true}
               small={true}
               onClick={
                 this.handleDismissAlways
               }
+              intent={Intent.DANGER}
             >
-              Dismiss Always
-            </Button>
-            <Button
-              id="dismiss-once-button"
-              minimal={true}
-              small={true}
-              onClick={
-                this.handleDismissOnce
-              }
-            >
-              Dismiss Once
+              Don't show again
             </Button>
           </span>
+            <Button
+              icon={IconNames.SMALL_CROSS}
+              minimal={true}
+              small={true}
+              onClick={this.closeMessage}
+            />
         </div>
       );
     }
@@ -104,7 +100,11 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   }
 
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({ closed: ClosedState.DisplayOptions });
+    if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
+      this.setState({displayed: HeadsupDisplayState.Closed});
+    } else {
+      this.setState({ displayed: HeadsupDisplayState.DisplayOptions });
+    }
   };
 
   private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
@@ -117,11 +117,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 
   private handleDismissAlways: React.MouseEventHandler<HTMLElement> = e => {
     localStorage.setItem("closed", "true");
-    this.setState({closed: ClosedState.Closed});
-  }
-
-  private handleDismissOnce: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({closed: ClosedState.Closed});
+    this.setState({displayed: HeadsupDisplayState.Closed});
   }
 }
 
@@ -194,11 +190,11 @@ export class ErrorHeadsUp extends React.PureComponent<
 
 export class LoadingHeadsUp extends React.PureComponent {
   public state: UnsupportedMessageState = {
-    closed: ClosedState.Open
+    displayed: HeadsupDisplayState.Open
   };
 
   public render() {
-    if (this.state.closed === ClosedState.Closed) {
+    if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
     } 
 

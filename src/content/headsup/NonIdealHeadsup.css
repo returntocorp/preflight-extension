@@ -15,12 +15,14 @@
 .r2c-repo-headsup .headsup-inline-message {
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .dismiss-options {
-  align-content: center
+  display: flex;
+  align-items: baseline;
+  margin-left: auto;
 }
 
 .loading-headsup .loading-message,
@@ -42,6 +44,7 @@
   justify-content: space-between;
 
   padding: 10px;
+  
 }
 
 .nonideal-headsup.error-headsup {
