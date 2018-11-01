@@ -55,15 +55,18 @@ export class UnsupportedHeadsUp extends React.PureComponent<
               >
                 {this.state.displayed ===
                   HeadsupDisplayState.DisplayOptions && (
-                  <span className="dismiss-options">
+                  <span className="hide-options">
                     <Button
-                      id="dismiss-always-button"
+                      id="hide-always-button"
                       minimal={true}
                       small={true}
-                      onClick={this.handleDismissAlways(extensionState)}
+                      onClick={l(
+                        "preflight-hide-always-click",
+                        this.handleDismissAlways(extensionState)
+                      )}
                       intent={Intent.DANGER}
                     >
-                      Don't show again
+                      Always hide if unsupported
                     </Button>
                   </span>
                 )}
