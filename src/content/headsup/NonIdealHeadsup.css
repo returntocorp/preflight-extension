@@ -11,6 +11,20 @@
   align-items: baseline;
 }
 
+.hide-options .unsupported-message,
+.r2c-repo-headsup .headsup-inline-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hide-options {
+  display: flex;
+  align-items: baseline;
+  margin-left: auto;
+}
+
 .loading-headsup .loading-message,
 .error-headsup .error-message {
   display: flex;

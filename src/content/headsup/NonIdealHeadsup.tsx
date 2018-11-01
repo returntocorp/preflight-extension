@@ -4,12 +4,23 @@ import { l } from "@r2c/extension/analytics";
 import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
 import { PreflightProjectState } from "@r2c/extension/content/headsup/PreflightProjectState";
 import { MainToaster } from "@r2c/extension/content/Toaster";
+import {
+  ExtensionState,
+  toggleExtensionExperiment
+} from "@r2c/extension/shared/ExtensionState";
 import * as classnames from "classnames";
 import * as React from "react";
+import { ExtensionContext } from "../index";
 import "./NonIdealHeadsup.css";
 
+enum HeadsupDisplayState {
+  Open,
+  DisplayOptions,
+  Closed
+}
+
 interface UnsupportedMessageState {
-  closed: boolean;
+  displayed: HeadsupDisplayState;
 }
 
 export class UnsupportedHeadsUp extends React.PureComponent<
@@ -17,53 +28,92 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   UnsupportedMessageState
 > {
   public state: UnsupportedMessageState = {
-    closed: false
+    displayed: HeadsupDisplayState.Open
   };
 
   public render() {
-    if (this.state.closed) {
+    if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
     }
 
     l("preflight-unsupported-repo-load");
 
     return (
-      <div
-        className={classnames(
-          "r2c-repo-headsup",
-          "nonideal-headsup",
-          "unsupported-headsup"
-        )}
-      >
-        <span className="unsupported-message-text">
-          🛫 Preflight couldn't find results or npm packages associated with
-          this repository. If this seems in error, please{" "}
-          <Button
-            id="unsupported-message-request-button"
-            rightIcon={IconNames.FLAG}
-            minimal={true}
-            small={true}
-            onClick={l(
-              "preflight-unsupported-request-click",
-              this.handleRequestClick
-            )}
-            intent={Intent.SUCCESS}
-          >
-            let us know!
-          </Button>
-        </span>
-        <Button
-          icon={IconNames.SMALL_CROSS}
-          minimal={true}
-          small={true}
-          onClick={this.closeMessage}
-        />
-      </div>
+      <ExtensionContext.Consumer>
+        {({ extensionState }) => {
+          if (
+            extensionState != null &&
+            !extensionState.experiments.hideOnUnsupported
+          ) {
+            return (
+              <div
+                className={classnames(
+                  "r2c-repo-headsup",
+                  "nonideal-headsup",
+                  "unsupported-headsup"
+                )}
+              >
+                {this.state.displayed ===
+                  HeadsupDisplayState.DisplayOptions && (
+                  <span className="hide-options">
+                    <Button
+                      id="hide-always-button"
+                      minimal={true}
+                      small={true}
+                      onClick={l(
+                        "preflight-hide-always-click",
+                        this.handleDismissAlways(extensionState)
+                      )}
+                      intent={Intent.DANGER}
+                    >
+                      Always hide if unsupported
+                    </Button>
+                  </span>
+                )}
+
+                {this.state.displayed === HeadsupDisplayState.Open && (
+                  <span className="unsupported-message-text">
+                    🛫 Preflight couldn't find results or npm packages
+                    associated with this repository. If this seems in error,
+                    please{" "}
+                    <Button
+                      id="unsupported-message-request-button"
+                      rightIcon={IconNames.FLAG}
+                      minimal={true}
+                      small={true}
+                      onClick={l(
+                        "preflight-unsupported-request-click",
+                        this.handleRequestClick
+                      )}
+                      intent={Intent.SUCCESS}
+                    >
+                      let us know!
+                    </Button>
+                  </span>
+                )}
+
+                <Button
+                  icon={IconNames.SMALL_CROSS}
+                  minimal={true}
+                  small={true}
+                  onClick={this.closeMessage}
+                />
+              </div>
+            );
+          } else {
+            return null;
+          }
+        }}
+      </ExtensionContext.Consumer>
     );
   }
 
   private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    this.setState({ closed: true });
+    if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
+      this.setState({ displayed: HeadsupDisplayState.Closed });
+    } else {
+      this.setState({ displayed: HeadsupDisplayState.DisplayOptions });
+    }
   };
 
   private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
@@ -72,6 +122,13 @@ export class UnsupportedHeadsUp extends React.PureComponent<
         "We've got your message! We'll look into why this project isn't available on Preflight.",
       icon: IconNames.HEART
     });
+  };
+
+  private handleDismissAlways: (
+    extensionState: ExtensionState
+  ) => React.MouseEventHandler<HTMLElement> = extensionState => e => {
+    toggleExtensionExperiment(extensionState, "hideOnUnsupported");
+    this.setState({ displayed: HeadsupDisplayState.Closed });
   };
 }
 
@@ -144,11 +201,11 @@ export class ErrorHeadsUp extends React.PureComponent<
 
 export class LoadingHeadsUp extends React.PureComponent {
   public state: UnsupportedMessageState = {
-    closed: false
+    displayed: HeadsupDisplayState.Open
   };
 
   public render() {
-    if (this.state.closed) {
+    if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
     }
 

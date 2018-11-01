@@ -5,6 +5,7 @@ import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
 import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
 import ProfileTab from "@r2c/extension/popup/ProfileTab";
 import {
+  ExperimentName,
   ExtensionState,
   getExtensionState,
   toggleExtensionExperiment
@@ -88,9 +89,9 @@ class Guide extends React.Component<{}, GuideState> {
     );
   }
 
-  private handleToggleExtensionExperiment = (experimentName: string) => (
-    e: React.FormEvent<HTMLInputElement>
-  ) => {
+  private handleToggleExtensionExperiment = (
+    experimentName: ExperimentName
+  ) => (e: React.FormEvent<HTMLInputElement>) => {
     if (this.state.extensionState != null) {
       this.setState({
         extensionState: toggleExtensionExperiment(
