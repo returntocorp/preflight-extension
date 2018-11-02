@@ -18,6 +18,10 @@ export const l = (
   }
 };
 
+export const li = (name: string, properties?: LoggingProperties) => {
+  logEvent(name, properties);
+};
+
 function logEvent(name: string, properties?: LoggingProperties) {
   const body = {
     name,

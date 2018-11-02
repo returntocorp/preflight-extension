@@ -1,3 +1,4 @@
+import { li } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import {
@@ -46,6 +47,7 @@ class RepoHeadsUp extends React.PureComponent<
 
   public componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ error: info });
+    li("repo-headsup-error");
   }
 
   public render() {
@@ -80,6 +82,8 @@ class RepoHeadsUp extends React.PureComponent<
               fetchResponse,
               this.props.detectedLanguages
             );
+
+            // state = ProjectState.ERROR_MISSING_DATA;
 
             switch (state) {
               case ProjectState.LOADING_ALL:
