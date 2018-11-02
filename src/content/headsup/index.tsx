@@ -3,6 +3,7 @@ import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
+  MissingDataHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
@@ -86,8 +87,9 @@ class RepoHeadsUp extends React.PureComponent<
                 return <LoadingHeadsUp />;
               case ProjectState.EMPTY_UNSUPPORTED:
                 return <UnsupportedHeadsUp />;
-              case ProjectState.ERROR_API:
               case ProjectState.ERROR_MISSING_DATA:
+                return <MissingDataHeadsUp />;
+              case ProjectState.ERROR_API:
                 return (
                   error != null && (
                     <ErrorHeadsUp projectState={state} error={error} />

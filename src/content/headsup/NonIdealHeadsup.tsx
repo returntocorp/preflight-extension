@@ -73,9 +73,9 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 
                 {this.state.displayed === HeadsupDisplayState.Open && (
                   <span className="unsupported-message-text">
-                    🛫 Preflight couldn't find results or npm packages
-                    associated with this repository. If this seems in error,
-                    please{" "}
+                    🛫 Preflight only supports JavaScript and TypeScript
+                    projects that have been published to NPM. If you'd like to
+                    see this project sooner on Preflight, please{" "}
                     <Button
                       id="unsupported-message-request-button"
                       rightIcon={IconNames.FLAG}
@@ -130,6 +130,28 @@ export class UnsupportedHeadsUp extends React.PureComponent<
     toggleExtensionExperiment(extensionState, "hideOnUnsupported");
     this.setState({ displayed: HeadsupDisplayState.Closed });
   };
+}
+
+export class MissingDataHeadsUp extends React.PureComponent {
+  public render() {
+    l("preflight-missing-data-repo-load");
+
+    return (
+      <div
+        className={classnames(
+          "r2c-repo-headsup",
+          "nonideal-headsup",
+          "missing-data-headsup"
+        )}
+      >
+        <span className="missing-data-message-text">
+          🛬 We couldn't find any data for this project. We're looking into it
+          now.
+        </span>
+        )}
+      </div>
+    );
+  }
 }
 
 interface ErrorHeadsUpProps {
