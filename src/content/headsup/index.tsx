@@ -83,8 +83,6 @@ class RepoHeadsUp extends React.PureComponent<
               this.props.detectedLanguages
             );
 
-            // state = ProjectState.ERROR_MISSING_DATA;
-
             switch (state) {
               case ProjectState.LOADING_ALL:
                 return <LoadingHeadsUp />;
