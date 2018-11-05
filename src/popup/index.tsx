@@ -1,9 +1,6 @@
 import { Tab, TabId, Tabs } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
-import { R2CLogo } from "@r2c/extension/icons";
 import ExtensionTab from "@r2c/extension/popup/ExtensionTab";
-import FirehoseTab from "@r2c/extension/popup/FirehoseTab";
-import ProfileTab from "@r2c/extension/popup/ProfileTab";
 import {
   ExperimentName,
   ExtensionState,
@@ -51,21 +48,6 @@ class Guide extends React.Component<{}, GuideState> {
           renderActiveTabPanelOnly={true}
           className="r2c-guide-tabs"
         >
-          <Tab
-            id="extension"
-            title={
-              <div className="r2c-tab">
-                <R2CLogo />
-              </div>
-            }
-            panel={
-              <ExtensionTab
-                extensionState={this.state.extensionState}
-                onToggleExperiment={this.handleToggleExtensionExperiment}
-              />
-            }
-          />
-          <Tab id="firehose" title="Activity Feed" panel={<FirehoseTab />} />
           <Tabs.Expander />
           <Tab
             id="feedback"
@@ -77,13 +59,16 @@ class Guide extends React.Component<{}, GuideState> {
               />
             }
           />
-          {this.state.user && (
-            <Tab
-              id="profile"
-              title="Inbox"
-              panel={<ProfileTab user={this.state.user} />}
-            />
-          )}
+          <Tab
+            id="extension"
+            title="Settings"
+            panel={
+              <ExtensionTab
+                extensionState={this.state.extensionState}
+                onToggleExperiment={this.handleToggleExtensionExperiment}
+              />
+            }
+          />
         </Tabs>
       </div>
     );
