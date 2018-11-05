@@ -11,9 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - You can now hide the "unsupported project" banner from always appearing (#122) (thanks @jruhland for the feedback!)
 
+### Changed
+
+- Clarified missing data and unsupported messages
+
 ### Fixed
 
 - Fixed an issue where we failed to display error/unsupported when no information for the repository is available (#157)
+- Fixed missing data handling so we display a helpful message instead of an error
 
 ## [1.12.0] - 2018-10-30
 
