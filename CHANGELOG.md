@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - You can now hide the "unsupported project" banner from always appearing (#122) (thanks @jruhland for the feedback!)
+- There is also a switch for toggling between showing the "unsupported project" banner in the popup settings! (#165)
 
 ### Changed
 
