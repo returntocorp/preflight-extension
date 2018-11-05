@@ -45,7 +45,7 @@ jobs:
           command: |
             sudo apt-get install moreutils
             EXT_VERSION=$(git describe --tags | sed -e 's/-/./g' | sed -e 's/\.g.*//')
-            # We use "." to indirectly determine if there are is a major, minor, patch, and tertiary version number group
+            # We use "." to indirectly determine if there is a major, minor, patch, and tertiary version number group
             [[ $(echo $EXT_VERSION | grep -o "\." | wc -l) = 2 ]] && EXT_NAME="Preflight Beta" || EXT_NAME="Preflight Alpha"
             jq --arg NAME "$EXT_NAME" '.name = $NAME' build/manifest.json | sponge build/manifest.json
             jq '.browser_action.default_title = "Preflight"' build/manifest.json | sponge build/manifest.json
