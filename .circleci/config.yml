@@ -8,7 +8,12 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish:
+      - publish-alpha:
+        requires:
+          - build
+        filters:
+          branches: master
+      - publish-beta:
           requires:
             - build
           filters:
@@ -39,9 +44,12 @@ jobs:
           name: Update manifest version
           command: |
             sudo apt-get install moreutils
-            jq '.name = "Preflight Beta"' build/manifest.json | sponge build/manifest.json
+            EXT_VERSION=$(git describe --tags | sed -e 's/-/./g' | sed -e 's/\.g.*//')
+            # We use "." to indirectly determine if there is a major, minor, patch, and tertiary version number group
+            [[ $(echo $EXT_VERSION | grep -o "\." | wc -l) = 2 ]] && EXT_NAME="Preflight Beta" || EXT_NAME="Preflight Alpha"
+            jq --arg NAME "$EXT_NAME" '.name = $NAME' build/manifest.json | sponge build/manifest.json
             jq '.browser_action.default_title = "Preflight"' build/manifest.json | sponge build/manifest.json
-            jq --arg VERSION "$(git describe --tags)" '.version = $VERSION' build/manifest.json | sponge build/manifest.json
+            jq --arg VERSION "$EXT_VERSION" '.version = $VERSION' build/manifest.json | sponge build/manifest.json
       - run:
           name: Build extension zip
           command: mkdir -p dist && cd build && zip -r ../dist/extension.zip *
@@ -50,7 +58,19 @@ jobs:
           paths:
             - extension.zip
 
-  publish:
+  publish-alpha:
+    docker:
+      - image: cibuilds/chrome-extension:latest
+    environment:
+      - APP_ID: cggodjpdhkjilgmgjcmjcnkgommdhmdb
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: "Publish to the Google Chrome Store"
+          command: publish /tmp/workspace/extension.zip
+
+  publish-beta:
     docker:
       - image: cibuilds/chrome-extension:latest
     environment:
