@@ -78,8 +78,8 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
             onToggleExperiment={this.props.onToggleExperiment}
           />
           <ExperimentSwitch
-            title="Hide headsup"
-            description="We'll hide the headsup component on unsupported repositories."
+            title="Hide on unsupported projects"
+            description="We'll hide the unsupported project banner from appearing on JavaScript/ TypeScript repositories."
             experiments={this.props.extensionState.experiments}
             experimentName="hideOnUnsupported"
             onToggleExperiment={this.props.onToggleExperiment}
