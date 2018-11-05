@@ -1,10 +1,6 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import { ApiFetch } from "@r2c/extension/api/fetch";
-import {
-  FindingsResponse,
-  findingsUrlFromSlug
-} from "@r2c/extension/api/findings";
-import Discussion from "@r2c/extension/content/Discussion";
+import { FindingsResponse, findingsUrlFromSlug } from "@r2c/extension/api/findings";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -12,19 +8,10 @@ import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
-import {
-  ExtensionState,
-  getExtensionState
-} from "@r2c/extension/shared/ExtensionState";
-import {
-  extractSlugFromCurrentUrl,
-  fetchOrCreateExtensionUniqueId,
-  getCurrentUrlWithoutHash,
-  isGitHubSlug,
-  isRepositoryPrivate
-} from "@r2c/extension/utils";
+import { ExtensionState, getExtensionState } from "@r2c/extension/shared/ExtensionState";
+import { extractSlugFromCurrentUrl, fetchOrCreateExtensionUniqueId, getCurrentUrlWithoutHash, isGitHubSlug, isRepositoryPrivate } from "@r2c/extension/utils";
 import * as React from "react";
-import { PlaneIcon, SpeechBubblesIcon } from "../icons";
+import { PlaneIcon } from "../icons";
 import DOMInjector from "./github/DomInjector";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
@@ -148,14 +135,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     repoSlug={this.repoSlug}
                     deepLink={this.state.checklistItem}
                   />
-                }
-              />
-              <Twist
-                id="discussion"
-                title="Comments"
-                icon={<SpeechBubblesIcon />}
-                panel={
-                  <Discussion user={user} installationId={installationId} />
                 }
               />
             </Twists>
