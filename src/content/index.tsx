@@ -4,7 +4,6 @@ import {
   FindingsResponse,
   findingsUrlFromSlug
 } from "@r2c/extension/api/findings";
-import Discussion from "@r2c/extension/content/Discussion";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -24,7 +23,7 @@ import {
   isRepositoryPrivate
 } from "@r2c/extension/utils";
 import * as React from "react";
-import { PlaneIcon, SpeechBubblesIcon } from "../icons";
+import { PlaneIcon } from "../icons";
 import DOMInjector from "./github/DomInjector";
 import { PreflightChecklistItemType } from "./headsup/PreflightChecklist";
 import "./index.css";
@@ -74,7 +73,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
   }
 
   public render() {
-    const { twistTab, user, installationId } = this.state;
+    const { twistTab, installationId } = this.state;
 
     if (isRepositoryPrivate()) {
       return null;
@@ -148,14 +147,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     repoSlug={this.repoSlug}
                     deepLink={this.state.checklistItem}
                   />
-                }
-              />
-              <Twist
-                id="discussion"
-                title="Comments"
-                icon={<SpeechBubblesIcon />}
-                panel={
-                  <Discussion user={user} installationId={installationId} />
                 }
               />
             </Twists>
