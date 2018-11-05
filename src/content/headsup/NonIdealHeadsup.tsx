@@ -136,7 +136,7 @@ export class MissingDataHeadsUp extends React.PureComponent {
             )}
             intent={Intent.SUCCESS}
           >
-            get our attention
+            give us a boost
           </Button>
         </span>
         )}
