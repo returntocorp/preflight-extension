@@ -1,12 +1,24 @@
 import { Spinner } from "@blueprintjs/core";
-import ProfileBadge from "@r2c/extension/shared/ProfileBadge";
+import ProfilePicture from "@r2c/extension/shared/ProfilePicture";
 import * as classnames from "classnames";
 import * as React from "react";
-// tslint:disable:no-var-requires
-// tslint:disable-next-line:no-require-imports
 import Timeago from "react-timeago";
 import "./UserMetadata.css";
-// tslint:enable:no-var-requires
+
+export interface ProfileBadgeProps {
+  user: string;
+  hideProfilePicture?: boolean;
+}
+
+const ProfileBadge: React.SFC<ProfileBadgeProps> = ({
+  user,
+  hideProfilePicture
+}) => (
+  <span className="user-profile">
+    {hideProfilePicture ? null : <ProfilePicture user={user} />}{" "}
+    <span className="user-profile-handle">{user}</span>
+  </span>
+);
 
 export interface UserMetadataFooterProps {
   className?: string;
