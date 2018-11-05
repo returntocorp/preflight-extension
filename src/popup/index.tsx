@@ -24,7 +24,7 @@ interface GuideState {
 
 class Guide extends React.Component<{}, GuideState> {
   public state: GuideState = {
-    selectedTabId: "firehose",
+    selectedTabId: "feedback",
     user: undefined,
     installationId: undefined,
     extensionState: undefined
