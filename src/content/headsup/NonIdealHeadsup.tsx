@@ -1,6 +1,6 @@
 import { Button, Icon, Intent, Spinner } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
-import { l } from "@r2c/extension/analytics";
+import { l, li } from "@r2c/extension/analytics";
 import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
 import { PreflightProjectState } from "@r2c/extension/content/headsup/PreflightProjectState";
 import { MainToaster } from "@r2c/extension/content/Toaster";
@@ -35,8 +35,7 @@ export class UnsupportedHeadsUp extends React.PureComponent<
     if (this.state.displayed === HeadsupDisplayState.Closed) {
       return null;
     }
-
-    l("preflight-unsupported-repo-load");
+    li("preflight-unsupported-repo-load");
 
     return (
       <ExtensionContext.Consumer>

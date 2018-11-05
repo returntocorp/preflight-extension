@@ -1,3 +1,4 @@
+import { li } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import {
@@ -47,6 +48,7 @@ class RepoHeadsUp extends React.PureComponent<
 
   public componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ error: info });
+    li("repo-headsup-error", { error: info });
   }
 
   public render() {
