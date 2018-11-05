@@ -62,7 +62,7 @@ jobs:
     docker:
       - image: cibuilds/chrome-extension:latest
     environment:
-      - APP_ID: TODO
+      - APP_ID: cggodjpdhkjilgmgjcmjcnkgommdhmdb
     steps:
       - attach_workspace:
           at: /tmp/workspace
