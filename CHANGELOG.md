@@ -14,11 +14,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Clarified missing data and unsupported messages
+- The popup now shows the feedback page by default
+- We've made the Settings page easier to find
 
 ### Fixed
 
 - Fixed an issue where we failed to display error/unsupported when no information for the repository is available (#157)
 - Fixed missing data handling so we display a helpful message instead of an error
+
+### Removed
+
+- Disabled the commenting feature while we look into better ways for people to share their knowledge and opinion about projects
+- Streamlined the popup by removing activity feed and inbox pages left over from earlier versions of the extension
 
 ## [1.12.0] - 2018-10-30
 
