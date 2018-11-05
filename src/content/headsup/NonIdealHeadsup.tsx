@@ -73,22 +73,9 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 
                 {this.state.displayed === HeadsupDisplayState.Open && (
                   <span className="unsupported-message-text">
-                    🛫 Preflight only supports JavaScript and TypeScript
-                    projects that have been published to NPM. If you'd like to
-                    see this project sooner on Preflight, please{" "}
-                    <Button
-                      id="unsupported-message-request-button"
-                      rightIcon={IconNames.FLAG}
-                      minimal={true}
-                      small={true}
-                      onClick={l(
-                        "preflight-unsupported-request-click",
-                        this.handleRequestClick
-                      )}
-                      intent={Intent.SUCCESS}
-                    >
-                      let us know!
-                    </Button>
+                    🛫 Preflight currently supports JavaScript and TypeScript
+                    projects that have been published to npm. We're exploring
+                    ways to support new projects and languages in the future.
                   </span>
                 )}
 
@@ -116,14 +103,6 @@ export class UnsupportedHeadsUp extends React.PureComponent<
     }
   };
 
-  private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
-    MainToaster.show({
-      message:
-        "We've got your message! We'll look into why this project isn't available on Preflight.",
-      icon: IconNames.HEART
-    });
-  };
-
   private handleDismissAlways: (
     extensionState: ExtensionState
   ) => React.MouseEventHandler<HTMLElement> = extensionState => e => {
@@ -134,8 +113,6 @@ export class UnsupportedHeadsUp extends React.PureComponent<
 
 export class MissingDataHeadsUp extends React.PureComponent {
   public render() {
-    l("preflight-missing-data-repo-load");
-
     return (
       <div
         className={classnames(
@@ -143,15 +120,37 @@ export class MissingDataHeadsUp extends React.PureComponent {
           "nonideal-headsup",
           "missing-data-headsup"
         )}
+        onLoad={l("preflight-missing-data-repo-load")} // TODO event bugfix
       >
         <span className="missing-data-message-text">
-          🛬 We couldn't find any data for this project. We're looking into it
-          now.
+          🛬 Preflight couldn't find any data for this project. We're looking
+          into it - click here to{" "}
+          <Button
+            id="unsupported-message-request-button"
+            rightIcon={IconNames.FLAG}
+            minimal={true}
+            small={true}
+            onClick={l(
+              "preflight-unsupported-request-click",
+              this.handleRequestClick
+            )}
+            intent={Intent.SUCCESS}
+          >
+            get our attention
+          </Button>
         </span>
         )}
       </div>
     );
   }
+
+  private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
+    MainToaster.show({
+      message:
+        "We've got your message! We'll look into why this project isn't available on Preflight.",
+      icon: IconNames.HEART
+    });
+  };
 }
 
 interface ErrorHeadsUpProps {
