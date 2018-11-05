@@ -47,7 +47,7 @@ class RepoHeadsUp extends React.PureComponent<
 
   public componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ error: info });
-    li("repo-headsup-error", { error: info });
+    li("repo-headsup-error", { error, info });
   }
 
   public render() {
