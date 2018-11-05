@@ -6,6 +6,7 @@ import {
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
+import "./ProfilePicture.css";
 
 interface ProfilePictureImageProps {
   user: string;
