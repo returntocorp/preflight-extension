@@ -2,20 +2,22 @@ version: 2
 
 workflows:
   version: 2
-  build_and_publish:
+  build-publish:
     jobs:
       - build
-      - publish_alpha:
+      - publish-alpha:
           requires:
             - build
           filters:
             branches:
               only: master
-      - publish_beta:
+      - publish-beta:
           requires:
             - build
           filters:
             tags:
+              # See https://developer.chrome.com/apps/manifest/version for valid Chrome version strings
+              # We've decided to enforce semver.
               only: /^[0-9]+(\.[0-9]+){2}$/
 
 jobs:
@@ -52,7 +54,7 @@ jobs:
           paths:
             - extension.zip
 
-  publish_alpha:
+  publish-alpha:
     docker:
       - image: cibuilds/chrome-extension:latest
     environment:
@@ -64,7 +66,7 @@ jobs:
           name: "Publish to the Google Chrome Store"
           command: publish /tmp/workspace/extension.zip
 
-  publish_beta:
+  publish-beta:
     docker:
       - image: cibuilds/chrome-extension:latest
     environment:
