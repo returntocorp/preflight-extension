@@ -9,10 +9,10 @@ workflows:
             tags:
               only: /.*/
       - publish-alpha:
-        requires:
-          - build
-        filters:
-          branches: master
+          requires:
+            - build
+          filters:
+            branches: master
       - publish-beta:
           requires:
             - build
