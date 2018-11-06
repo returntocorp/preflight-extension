@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.13.0] - 2018-11-05
+
 ### Added
 
 - We now publish an alpha version of the product for those we really want to be early adopters of features
