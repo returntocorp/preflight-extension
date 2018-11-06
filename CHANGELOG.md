@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.13.0] - 2018-11-05
+
 ### Added
 
 - You can now hide the "unsupported project" banner from always appearing (#122) (thanks @jruhland for the feedback!)
