@@ -121,12 +121,17 @@ export class MissingDataHeadsUp extends React.PureComponent {
         )}
         onLoad={l("preflight-missing-data-repo-load")} // TODO event bugfix
       >
-        <span className="missing-data-message-text">
+        <span
+          className={classnames(
+            "missing-data-message-text",
+            "headsup-inline-message"
+          )}
+        >
           🛬 Preflight couldn't find any data for this project. We're looking
-          into it - click here to{" "}
+          into it.
           <Button
-            id="unsupported-message-request-button"
-            rightIcon={IconNames.FLAG}
+            rightIcon={IconNames.AIRPLANE}
+            className="missing-data-request-button"
             minimal={true}
             small={true}
             onClick={l(
@@ -135,10 +140,9 @@ export class MissingDataHeadsUp extends React.PureComponent {
             )}
             intent={Intent.SUCCESS}
           >
-            give us a boost
+            Give us a boost!
           </Button>
         </span>
-        )}
       </div>
     );
   }
