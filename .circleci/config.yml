@@ -13,6 +13,8 @@ workflows:
             - build
           filters:
             branches: master
+            tags:
+              only: /.*/
       - publish-beta:
           requires:
             - build
