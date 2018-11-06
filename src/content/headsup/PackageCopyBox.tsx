@@ -179,6 +179,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
               disabled={selectedPackage == null}
               rightIcon={IconNames.SHARE}
               intent={Intent.PRIMARY}
+              onClick={l("see-on-npm-link-click")}
             >
               See on npm
             </AnchorButton>
