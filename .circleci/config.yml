@@ -4,13 +4,20 @@ workflows:
   version: 2
   build-n-publish:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
       - publish-alpha:
           requires:
             - build
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
       - publish-beta:
           requires:
             - build
