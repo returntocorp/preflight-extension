@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+
+- Fixed some centering and stray markup issues with the missing data message
+
 ## [1.13.0] - 2018-11-05
 
 ### Added
