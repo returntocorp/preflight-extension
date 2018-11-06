@@ -4,24 +4,17 @@ workflows:
   version: 2
   build-publish:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
+      - build
       - publish-alpha:
           requires:
             - build
           filters:
             branches:
               only: master
-            tags:
-              only: /.*/
       - publish-beta:
           requires:
             - build
           filters:
-            branches:
-              only: master
             tags:
               # See https://developer.chrome.com/apps/manifest/version for valid Chrome version strings
               # We've decided to enforce semver.
