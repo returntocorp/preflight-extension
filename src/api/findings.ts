@@ -7,11 +7,11 @@ export function findingsUrl() {
 }
 
 export function findingsUrlFromSlug({ domain, org, repo }: ExtractedRepoSlug) {
-  return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/finding/${domain}/${org}/${repo}`;
 }
 
 export function postFindingsUrl(domain: string, org: string, repo: string) {
-  return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/finding/${domain}/${org}/${repo}`;
 }
 
 export interface FindingsResponse {

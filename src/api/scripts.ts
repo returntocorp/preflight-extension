@@ -3,7 +3,7 @@ import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
 export function scriptsUrl() {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/scripts/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/scripts/${domain}/${org}/${repo}`;
 }
 
 export interface ScriptsResponse {

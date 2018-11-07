@@ -13,7 +13,7 @@ export interface FirehoseActivity {
 }
 
 function buildFirehoseUrl() {
-  return `https://api.secarta.io/v1/firehose`;
+  return `https://prodapi.secarta.io/v1/firehose`;
 }
 
 export async function getFirehose(): Promise<FirehoseResponse> {

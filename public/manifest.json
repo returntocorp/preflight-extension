@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Your GitHub copilot.",
   "manifest_version": 2,
-  "permissions": ["storage", "https://api.secarta.io/*", "activeTab"],
+  "permissions": ["storage", "https://prodapi.secarta.io/*", "activeTab"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

@@ -3,7 +3,7 @@ import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
 export function vulnsUrl() {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/vuln/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/vuln/${domain}/${org}/${repo}`;
 }
 
 export interface VulnsResponse {

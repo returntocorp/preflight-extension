@@ -39,11 +39,11 @@ export interface CommentPostBody {
 function buildCommentsUri(): string {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/comment/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/comment/${domain}/${org}/${repo}`;
 }
 
 function buildCommentMentionUri(user: string): string {
-  return `https://api.secarta.io/v1/comment/mention/${user}`;
+  return `https://prodapi.secarta.io/v1/comment/mention/${user}`;
 }
 
 export async function getComments(): Promise<CommentResponse> {

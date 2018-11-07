@@ -3,7 +3,7 @@ import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
 export function scoreRepoUrl() {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/score/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/score/${domain}/${org}/${repo}`;
 }
 
 interface MetascoreResponse {

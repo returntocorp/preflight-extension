@@ -28,7 +28,7 @@ function logEvent(name: string, properties?: LoggingProperties) {
     properties
   };
 
-  fetchJson(`https://api.secarta.io/logger`, {
+  fetchJson(`https://prodapi.secarta.io/logger`, {
     method: "POST",
     body: JSON.stringify(body)
   });

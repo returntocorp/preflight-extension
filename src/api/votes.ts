@@ -54,11 +54,11 @@ export function buildVotingUrl({
   const { domain, org, repo } = extractSlugFromCurrentUrl();
   const params = new URLSearchParams({ source, medium, content });
 
-  return `https://api.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
+  return `https://prodapi.secarta.io/v1/vote/${domain}/${org}/${repo}?${params}`;
 }
 
 function buildVoteOverviewUrl() {
-  return `https://api.secarta.io/v1/vote/overview`;
+  return `https://prodapi.secarta.io/v1/vote/overview`;
 }
 
 export async function DEPRECATED_getVotes(): Promise<VoteResponse> {

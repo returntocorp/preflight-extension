@@ -4,7 +4,7 @@ import { FindingEntry } from "./findings";
 export function permissionsUrl() {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/v1/permissions/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/v1/permissions/${domain}/${org}/${repo}`;
 }
 
 export interface PermissionEntry {

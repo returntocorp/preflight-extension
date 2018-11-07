@@ -3,7 +3,7 @@ import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
 export function packageUrl(version: string = "v2") {
   const { domain, org, repo } = extractSlugFromCurrentUrl();
 
-  return `https://api.secarta.io/${version}/package/${domain}/${org}/${repo}`;
+  return `https://prodapi.secarta.io/${version}/package/${domain}/${org}/${repo}`;
 }
 
 export function relatedPackagesUrl() {
