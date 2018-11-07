@@ -1,5 +1,6 @@
 import { Button, Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
+import { l } from "@r2c/extension/analytics";
 import { ApiFetch } from "@r2c/extension/api/fetch";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import { PackageEntry } from "@r2c/extension/api/package";
@@ -77,7 +78,10 @@ const PreflightChecklistItem: React.SFC<PreflightChecklistItemProps> = ({
       `${itemType}-checklist-item`,
       { [Classes.SKELETON]: loading }
     )}
-    onClick={onChecklistItemClick(itemType)}
+    onClick={l(
+      `preflight-checklist-item-${itemType}-click`,
+      onChecklistItemClick(itemType)
+    )}
     minimal={true}
     fill={true}
   >
