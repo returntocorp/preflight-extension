@@ -79,7 +79,7 @@ const PreflightChecklistItem: React.SFC<PreflightChecklistItemProps> = ({
       { [Classes.SKELETON]: loading }
     )}
     onClick={l(
-      `preflight-${itemType}-checklist-item-click`,
+      `preflight-checklist-item-${itemType}-click`,
       onChecklistItemClick(itemType)
     )}
     minimal={true}
