@@ -1,10 +1,10 @@
-import { ExtractedRepoSlug } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 import { FindingEntry } from "./findings";
 
 export function permissionsUrl(repoSlug: ExtractedRepoSlug) {
   const { domain, org, repo } = repoSlug;
 
-  return `https://api.secarta.io/v1/permissions/${domain}/${org}/${repo}`;
+  return `${getApiRootHostname()}/v1/permissions/${domain}/${org}/${repo}`;
 }
 
 export interface PermissionEntry {

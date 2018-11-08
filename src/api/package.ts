@@ -1,4 +1,4 @@
-import { ExtractedRepoSlug } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
 export function packageUrl(
   repoSlug: ExtractedRepoSlug,
@@ -6,7 +6,7 @@ export function packageUrl(
 ) {
   const { domain, org, repo } = repoSlug;
 
-  return `https://api.secarta.io/${version}/package/${domain}/${org}/${repo}`;
+  return `${getApiRootHostname()}/${version}/package/${domain}/${org}/${repo}`;
 }
 
 export function relatedPackagesUrl(repoSlug: ExtractedRepoSlug) {

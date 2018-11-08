@@ -1,3 +1,4 @@
+import { DEFAULT_API_ROOT_HOSTNAME } from "@r2c/extension/constants";
 import { intersection } from "lodash";
 
 export const SUPPORTED_LANGUAGES = ["javascript", "typescript"];
@@ -17,6 +18,10 @@ declare global {
 
 if (window.browser == null && window.chrome != null) {
   window.browser = window.chrome;
+}
+
+export function getApiRootHostname(): string {
+  return DEFAULT_API_ROOT_HOSTNAME;
 }
 
 export function getExtensionVersion(): string | undefined {
@@ -199,7 +204,13 @@ export async function fetchFromStorage<T>(key: string): Promise<T | undefined> {
 }
 
 export function updateStorage<T>(key: string, value: T) {
-  browser.storage.local.set({ [key]: value });
+  if (
+    browser != null &&
+    browser.storage != null &&
+    browser.storage.local != null
+  ) {
+    browser.storage.local.set({ [key]: value });
+  }
 }
 
 const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";
