@@ -38,7 +38,7 @@ interface RepoHeadsUpProps extends HeadsUpProps {
   detectedLanguages: string[];
 }
 
-class RepoHeadsUp extends React.PureComponent<
+export class RepoHeadsUp extends React.PureComponent<
   RepoHeadsUpProps,
   RepoHeadsUpState
 > {

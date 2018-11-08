@@ -14,7 +14,10 @@ export default class App extends React.PureComponent {
           <BrowserRouter>
             <Switch>
               <Route path="/" exact={true} component={Home} />
-              <Route path="/github" component={LandingPage} />
+              <Route
+                path={["/github/:profile/:repo", "/github.com/:profile/:repo"]}
+                component={LandingPage}
+              />
             </Switch>
           </BrowserRouter>
         </main>

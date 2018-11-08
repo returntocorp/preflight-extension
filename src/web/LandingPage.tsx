@@ -1,21 +1,39 @@
-import { ExtractedRepoSlug, parseSlugFromUrl } from "@r2c/extension/utils";
+import { li } from "@r2c/extension/analytics";
+import { RepoHeadsUp } from "@r2c/extension/content/headsup";
+import { parseSlugFromUrl } from "@r2c/extension/utils";
 import UnfurlBuilder from "@r2c/extension/web/UnfurlBuilder";
 import * as React from "react";
+import { RouteComponentProps } from "react-router";
 
-const codeSnippet = `const foo = exec("preflight");`;
+type LandingPageProps = RouteComponentProps;
 
-const repoSlug: ExtractedRepoSlug = parseSlugFromUrl(
-  "https://github.com/scravy/node-macaddress/blob/ee37051ebe4115cce0007c02ac9ecb2ac66154d4/lib/unix.js#L1"
-);
-
-export default class LandingPage extends React.PureComponent {
+export default class LandingPage extends React.PureComponent<LandingPageProps> {
   public render() {
+    const { location } = this.props;
+    console.log(location.pathname.slice(1));
+    const repoSlug = parseSlugFromUrl(`https://${location.pathname.slice(1)}`);
+
     return (
-      <UnfurlBuilder
-        landingDomain="strong-kangaroo-95.localtunnel.me"
-        codeSnippet={codeSnippet}
-        repoSlug={repoSlug}
-      />
+      <div className="r2c-web-landing-page">
+        <UnfurlBuilder
+          landingDomain="strong-kangaroo-95.localtunnel.me"
+          repoSlug={repoSlug}
+        />
+        <h1>
+          {repoSlug.org}/{repoSlug.repo}
+        </h1>
+        <RepoHeadsUp
+          repoSlug={repoSlug}
+          onChecklistItemClick={this.handleChecklistItemClick}
+          detectedLanguages={["JavaScript"]} // Shim since we can't detect languages obviously
+        />
+      </div>
     );
   }
+
+  private handleChecklistItemClick: (
+    itemType: string
+  ) => React.MouseEventHandler<HTMLElement> = (itemType: string) => () => {
+    li("landing-page-checklist-item-click", { itemType });
+  };
 }
