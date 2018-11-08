@@ -229,7 +229,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
 
   private getCurrentUser = async (): Promise<{
     user: string | undefined;
-    installationId: string;
+    installationId: string | undefined;
   }> => {
     const installationId = await fetchOrCreateExtensionUniqueId();
     const user = await extractCurrentUserFromPage();

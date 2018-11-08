@@ -24,9 +24,13 @@ export function buildExtensionHeaders(
   user: string | undefined,
   installationId: string | undefined
 ) {
+  const installationIdComplete: string =
+    installationId || "not-extension-source";
+
   return {
-    "X-Secarta-GitHub-User": user || `anonymous-${installationId}`,
-    "X-R2C-Extension-Installation-Id": installationId || "not-generated",
+    "X-Secarta-GitHub-User": user || `anonymous-${installationIdComplete}`,
+    "X-R2C-Extension-Installation-Id":
+      installationIdComplete || "not-generated",
     "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
 }

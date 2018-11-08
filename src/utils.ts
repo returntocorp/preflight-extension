@@ -20,7 +20,11 @@ if (window.browser == null && window.chrome != null) {
 }
 
 export function getExtensionVersion(): string | undefined {
-  if (browser != null && browser.runtime != null) {
+  if (
+    browser != null &&
+    browser.runtime != null &&
+    browser.runtime.getManifest != null
+  ) {
     const manifest = browser.runtime.getManifest();
 
     if (manifest != null) {
@@ -55,22 +59,32 @@ interface ExtensionStorage {
   SECARTA_EXTENSION_INSTALLATION_ID?: string;
 }
 
-export async function fetchOrCreateExtensionUniqueId(): Promise<string> {
+export async function fetchOrCreateExtensionUniqueId(): Promise<
+  string | undefined
+> {
   return new Promise<string>((resolve, reject) => {
-    browser.storage.local.get(
-      "SECARTA_EXTENSION_INSTALLATION_ID",
-      (res: ExtensionStorage) => {
-        if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
-          resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
-        } else {
-          const installationId: string = getRandomSha();
-          browser.storage.local.set({
-            SECARTA_EXTENSION_INSTALLATION_ID: installationId
-          });
-          resolve(installationId);
+    if (
+      browser != null &&
+      browser.storage != null &&
+      browser.storage.local != null
+    ) {
+      browser.storage.local.get(
+        "SECARTA_EXTENSION_INSTALLATION_ID",
+        (res: ExtensionStorage) => {
+          if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
+            resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
+          } else {
+            const installationId: string = getRandomSha();
+            browser.storage.local.set({
+              SECARTA_EXTENSION_INSTALLATION_ID: installationId
+            });
+            resolve(installationId);
+          }
         }
-      }
-    );
+      );
+    } else {
+      resolve(undefined);
+    }
   });
 }
 
@@ -134,7 +148,7 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   }
 }
 
-export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {
+export function naivelyExtractSlugFromCurrentUrl(): ExtractedRepoSlug {
   return parseSlugFromUrl(document.URL);
 }
 
