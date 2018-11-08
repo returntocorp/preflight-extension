@@ -15,7 +15,7 @@ import {
   PreflightChecklistLoading
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as classnames from "classnames";
-import { sumBy } from "lodash";
+import { reduce, sumBy } from "lodash";
 import * as React from "react";
 import { ExtensionContext } from "../index";
 
@@ -161,36 +161,34 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
           </PreflightChecklistItem>
         );
       } else if (data != null) {
-        // N.B. We currently restrict "permissions" to cover only network calls. We will update this
-        //      once more permissions land and the data is more comprehensive.
-        const networkPermission = data.permissions.network;
-        if (networkPermission != null) {
-          const networkCallCount = networkPermission.locations.length;
-          const itemState: ChecklistItemState = networkPermission.found
-            ? "warn"
-            : "ok";
+        const permissionCount = reduce(
+          data.permissions,
+          (count, permission) => {
+            return permission.found ? count + 1 : count;
+          },
+          0
+        );
 
+        if (permissionCount > 0) {
           return (
             <PreflightChecklistItem
               itemType="permissions"
               onChecklistItemClick={onChecklistItemClick}
-              iconState={itemState}
+              iconState="warn"
             >
-              {networkPermission.found
-                ? `Found ${networkCallCount} network ${
-                    networkCallCount > 1 ? "calls" : "call"
-                  }`
-                : "No network calls detected"}
+              {`Found ${permissionCount} ${
+                permissionCount > 1 ? "permissions" : "permission"
+              }`}
             </PreflightChecklistItem>
           );
         } else {
           return (
             <PreflightChecklistItem
-              onChecklistItemClick={onChecklistItemClick}
               itemType="permissions"
-              iconState="neutral"
+              onChecklistItemClick={onChecklistItemClick}
+              iconState="ok"
             >
-              Unable to load network call data
+              No permissions found
             </PreflightChecklistItem>
           );
         }
