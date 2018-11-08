@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed some centering and stray markup issues with the missing data message
 - Fixed an issue where the language breakdown graphic disappears after navigation (#182)
 
+### Changed
+
+- Updated the permissions experiment to include permissions beyond "Network Access"
+
 ## [1.13.0] - 2018-11-05
 
 ### Added
