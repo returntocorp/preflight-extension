@@ -52,21 +52,6 @@ class RepoHeadsUp extends React.PureComponent<
   }
 
   public render() {
-    return (
-      <DOMInjector
-        destination=".repository-lang-stats-graph"
-        childClassName="preflight-container"
-        injectedClassName="r2c-repo-headsup-container"
-        relation="after"
-      >
-        <div className="preflight-container">
-          {this.renderInjectedOrError()}
-        </div>
-      </DOMInjector>
-    );
-  }
-
-  private renderInjectedOrError() {
     if (this.state.error) {
       return (
         <ErrorHeadsUp
@@ -172,14 +157,16 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
           done && (
             <DOMInjector
               destination=".repository-lang-stats-graph"
-              childClassName="r2c-repo-headsup-container"
+              childClassName="preflight-container"
               injectedClassName="r2c-repo-headsup-container"
               relation="after"
             >
+              <div className="preflight-container">
               <RepoHeadsUp
                 {...this.props}
                 detectedLanguages={this.getDetectedLanguages(element)}
               />
+              </div>
             </DOMInjector>
           )
         }
