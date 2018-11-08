@@ -182,11 +182,20 @@ export async function fetchStringFromStorage(
 }
 
 export async function fetchFromStorage<T>(key: string): Promise<T | undefined> {
-  return new Promise<T | undefined>(resolve =>
-    browser.storage.local.get(key, (results: { [k: string]: T | undefined }) =>
-      resolve(results[key])
-    )
-  );
+  if (
+    browser != null &&
+    browser.storage != null &&
+    browser.storage.local != null
+  ) {
+    return new Promise<T | undefined>(resolve =>
+      browser.storage.local.get(
+        key,
+        (results: { [k: string]: T | undefined }) => resolve(results[key])
+      )
+    );
+  } else {
+    return Promise.resolve(undefined);
+  }
 }
 
 export function updateStorage<T>(key: string, value: T) {
