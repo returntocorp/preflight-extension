@@ -1,0 +1,17 @@
+.extension-promo .extension-source-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.extension-source-list .extension-source-button {
+  margin-right: 1em;
+}
+
+.extension-source-list .extension-source-button:last-child {
+  margin-right: 0;
+}
+
+.extension-source-list .extension-source-icon {
+  height: 60px;
+}
