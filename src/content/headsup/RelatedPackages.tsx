@@ -8,6 +8,7 @@ import {
 } from "@r2c/extension/api/package";
 import NonIdealInline from "@r2c/extension/content/NonIdealInline";
 import PluralizedList from "@r2c/extension/content/PluralizedList";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
 import "./RelatedPackages.css";
 
@@ -38,6 +39,7 @@ export class RelatedPackagesList extends React.PureComponent<
 }
 
 interface RelatedPackagesProps {
+  repoSlug: ExtractedRepoSlug;
   selectedPackage: PackageEntry;
 }
 
@@ -45,10 +47,10 @@ export default class RelatedPackages extends React.PureComponent<
   RelatedPackagesProps
 > {
   public render() {
-    const { selectedPackage } = this.props;
+    const { repoSlug, selectedPackage } = this.props;
 
     return (
-      <ApiFetch<RelatedPackagesResponse> url={relatedPackagesUrl()}>
+      <ApiFetch<RelatedPackagesResponse> url={relatedPackagesUrl(repoSlug)}>
         {({ loading, data, error }) => {
           if (loading) {
             return (

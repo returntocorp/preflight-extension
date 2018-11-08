@@ -1,4 +1,4 @@
-import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
+import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import { ExtensionContext } from "@r2c/extension/content/index";
 import {
   fetchOrCreateExtensionUniqueId,
@@ -53,7 +53,7 @@ export class ApiFetch<T> extends React.Component<FetchProps<T>> {
 
 export async function fetchJson<T>(url: string | Request, init?: RequestInit) {
   const installationId = await fetchOrCreateExtensionUniqueId();
-  const user = await extractCurrentUserFromPage();
+  const user = await naivelyExtractCurrentUserFromPage();
 
   const response = await fetch(url, {
     headers: buildExtensionHeaders(user, installationId),

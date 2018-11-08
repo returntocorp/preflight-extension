@@ -1,13 +1,16 @@
-import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 
-export function packageUrl(version: string = "v2") {
-  const { domain, org, repo } = extractSlugFromCurrentUrl();
+export function packageUrl(
+  repoSlug: ExtractedRepoSlug,
+  version: string = "v2"
+) {
+  const { domain, org, repo } = repoSlug;
 
   return `https://api.secarta.io/${version}/package/${domain}/${org}/${repo}`;
 }
 
-export function relatedPackagesUrl() {
-  return `${packageUrl("v1")}/related`;
+export function relatedPackagesUrl(repoSlug: ExtractedRepoSlug) {
+  return `${packageUrl(repoSlug, "v1")}/related`;
 }
 
 export interface PackageEntry {

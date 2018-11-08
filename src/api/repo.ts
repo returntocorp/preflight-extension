@@ -1,7 +1,7 @@
-import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 
-export function repoUrl() {
-  const { domain, org, repo } = extractSlugFromCurrentUrl();
+export function repoUrl(repoSlug: ExtractedRepoSlug) {
+  const { domain, org, repo } = repoSlug;
 
   return `https://api.secarta.io/v1/repo/${domain}/${org}/${repo}`;
 }

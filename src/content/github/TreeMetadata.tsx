@@ -1,8 +1,9 @@
-import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import { last } from "lodash";
 import * as React from "react";
 
 interface TreeMetadataProps {
+  repoSlug: ExtractedRepoSlug;
   children(state: TreeMetadataState): React.ReactNode;
 }
 
@@ -37,7 +38,7 @@ export default class TreeMetadata extends React.Component<
   }
 
   private extractTreeMetadata = () => {
-    const { rest } = extractSlugFromCurrentUrl();
+    const { rest } = this.props.repoSlug;
     const commitNode = document.querySelector(".commit-tease-sha");
     const commitLink =
       commitNode != null ? commitNode.getAttribute("href") : null;

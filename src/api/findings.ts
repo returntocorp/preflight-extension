@@ -1,12 +1,6 @@
-import { ExtractedRepoSlug, extractSlugFromCurrentUrl } from "../utils";
+import { ExtractedRepoSlug } from "../utils";
 
-export function findingsUrl() {
-  const repoSlug = extractSlugFromCurrentUrl();
-
-  return findingsUrlFromSlug(repoSlug);
-}
-
-export function findingsUrlFromSlug({ domain, org, repo }: ExtractedRepoSlug) {
+export function findingsUrl({ domain, org, repo }: ExtractedRepoSlug) {
   return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
 }
 

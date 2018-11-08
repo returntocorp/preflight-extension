@@ -232,7 +232,7 @@ export default class BlobFindingsInjector extends React.PureComponent<
         {({ done }) => (
           <>
             {done && (
-              <BlobMetadata>
+              <BlobMetadata repoSlug={repoSlug}>
                 {({ filePath, commitHash }) => (
                   <>
                     <BlobFindingsHighlighter

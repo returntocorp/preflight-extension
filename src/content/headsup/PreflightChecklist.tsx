@@ -14,6 +14,7 @@ import {
   PreflightChecklistFetchData,
   PreflightChecklistLoading
 } from "@r2c/extension/content/headsup/PreflightFetch";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import { sumBy } from "lodash";
 import * as React from "react";
@@ -47,6 +48,7 @@ function getIconPropsForState(state: ChecklistItemState): IIconProps {
 }
 
 interface PreflightChecklistInteractionProps {
+  repoSlug: ExtractedRepoSlug;
   loading?: boolean | null;
   onChecklistItemClick: PreflightChecklistItemClickHandler;
 }
@@ -91,9 +93,10 @@ const PreflightChecklistItem: React.SFC<PreflightChecklistItemProps> = ({
 
 type PreflightVulnsItemProps = PreflightChecklistInteractionProps;
 const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
-  onChecklistItemClick
+  onChecklistItemClick,
+  repoSlug
 }) => (
-  <ApiFetch<VulnsResponse> url={vulnsUrl()}>
+  <ApiFetch<VulnsResponse> url={vulnsUrl(repoSlug)}>
     {({ loading, data, error }) => {
       const itemState: ChecklistItemState =
         data && data.vuln.length > 0 ? "warn" : "ok";
@@ -145,9 +148,10 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
 
 type PreflightPermissionsItemProps = PreflightChecklistInteractionProps;
 const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
-  onChecklistItemClick
+  onChecklistItemClick,
+  repoSlug
 }) => (
-  <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
+  <ApiFetch<PermissionsResponse> url={permissionsUrl(repoSlug)}>
     {({ loading, data }) => {
       if (loading != null && loading === true) {
         return (
@@ -328,6 +332,7 @@ const PreflightFindingsItem: React.SFC<PreflightFindingsItemProps> = ({
 };
 
 interface PreflightChecklistProps {
+  repoSlug: ExtractedRepoSlug;
   data: PreflightChecklistFetchData;
   loading: PreflightChecklistLoading;
   onChecklistItemClick: PreflightChecklistItemClickHandler;
@@ -340,7 +345,8 @@ export class PreflightChecklist extends React.PureComponent<
     const {
       data: { pkg, findings, scripts },
       loading,
-      onChecklistItemClick: o
+      onChecklistItemClick: o,
+      repoSlug
     } = this.props;
 
     return (
@@ -350,9 +356,13 @@ export class PreflightChecklist extends React.PureComponent<
             <ul className="preflight-checklist">
               {extensionState != null &&
                 extensionState.experiments.permissions && (
-                  <PreflightPermissionsItem onChecklistItemClick={o} />
+                  <PreflightPermissionsItem
+                    repoSlug={repoSlug}
+                    onChecklistItemClick={o}
+                  />
                 )}
               <PreflightScriptsItem
+                repoSlug={repoSlug}
                 scripts={
                   scripts != null && scripts.scripts != null
                     ? scripts.scripts
@@ -362,6 +372,7 @@ export class PreflightChecklist extends React.PureComponent<
                 loading={loading.scripts}
               />
               <PreflightRankItem
+                repoSlug={repoSlug}
                 onChecklistItemClick={o}
                 pkg={
                   pkg
@@ -371,8 +382,12 @@ export class PreflightChecklist extends React.PureComponent<
                     : undefined
                 }
               />
-              <PreflightVulnsItem onChecklistItemClick={o} />
+              <PreflightVulnsItem
+                repoSlug={repoSlug}
+                onChecklistItemClick={o}
+              />
               <PreflightFindingsItem
+                repoSlug={repoSlug}
                 onChecklistItemClick={o}
                 findings={findings ? findings.findings : undefined}
                 loading={loading.findings}

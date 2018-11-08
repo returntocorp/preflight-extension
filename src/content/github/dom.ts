@@ -1,9 +1,12 @@
-import { extractSlugFromCurrentUrl, setGitHubUser } from "@r2c/extension/utils";
+import {
+  naivelyExtractSlugFromCurrentUrl,
+  setGitHubUser
+} from "@r2c/extension/utils";
 
-export async function extractCurrentUserFromPage(): Promise<
+export async function naivelyExtractCurrentUserFromPage(): Promise<
   string | undefined
 > {
-  const { domain } = extractSlugFromCurrentUrl();
+  const { domain } = naivelyExtractSlugFromCurrentUrl();
 
   if (domain.includes("github.com")) {
     const userLoginMetaTags = document.getElementsByName("user-login");
