@@ -29,8 +29,7 @@ export function buildExtensionHeaders(
 
   return {
     "X-Secarta-GitHub-User": user || `anonymous-${installationIdComplete}`,
-    "X-R2C-Extension-Installation-Id":
-      installationIdComplete || "not-generated",
+    "X-R2C-Extension-Installation-Id": installationIdComplete,
     "X-R2C-Extension-Version": getExtensionVersion() || "no version"
   };
 }
