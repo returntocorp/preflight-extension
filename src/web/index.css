@@ -1,24 +1,23 @@
-body#r2c-web-app {
+body.r2c-web-app {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body.r2c-web-app button {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 #r2c-web-root {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  justify-content: center;
+  align-items: center;
 }
 
-.r2c-web-placeholder {
-  background-color: #0870ae;
-
-  height: 100%;
-  width: 100%;
-
-  flex: 1 1 auto;
-  justify-self: stretch;
-  align-self: stretch;
+#r2c-web-root main.r2c-web-content {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 }
