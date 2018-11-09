@@ -1,3 +1,20 @@
 .r2c-web-landing-page > header {
   margin-bottom: 1ex;
 }
+
+.r2c-web-landing-page > header h1 {
+  font-weight: 600;
+}
+
+.invitation-contents h1 {
+  font-size: 2em;
+  font-weight: 600;
+  line-height: 1em;
+}
+
+.r2c-web-app .invitation-dialog {
+  border-radius: 3px;
+  background-color: #fff;
+  border: 1px solid rgba(16, 22, 26, 0.15);
+  line-height: 1ex;
+}

@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 
 interface UnfurlProps {
   repoSlug: ExtractedRepoSlug;
-  codeSnippet: string;
   landingDomain: string;
 }
 
@@ -60,13 +59,11 @@ export function buildUnfurlTitle({ repoSlug }: UnfurlProps): string {
   }
 }
 
-export function buildUnfurlDescription({ codeSnippet }: UnfurlProps): string {
-  return `\`\`\`
-${codeSnippet}
-\`\`\``;
+export function buildUnfurlDescription(props: UnfurlProps): string {
+  return "foo";
 }
 
-export function buildUnfurlImageUrl({ codeSnippet }: UnfurlProps): string {
+export function buildUnfurlImageUrl(props: UnfurlProps): string {
   // const encodedSnippet = btoa(codeSnippet);
 
   // return `https://unfurl.prf.lt/preview?language=ts&code=${encodedSnippet}`;
@@ -78,7 +75,7 @@ export function buildUnfurlUrl({
   repoSlug,
   landingDomain
 }: UnfurlProps): string {
-  return `https://${landingDomain}/gh/${repoSlug.org}/${repoSlug.repo}/f/`;
+  return `https://${landingDomain}/github.com/${repoSlug.org}/${repoSlug.repo}`;
 }
 
 export default class UnfurlBuilder extends React.PureComponent<UnfurlProps> {
