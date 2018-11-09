@@ -20,4 +20,6 @@ body.r2c-web-app button {
 #r2c-web-root main.r2c-web-content {
   display: flex;
   flex-direction: column;
+  width: 980px;
+  margin: 1ex;
 }
