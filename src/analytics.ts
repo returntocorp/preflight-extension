@@ -1,4 +1,5 @@
 import { fetchJson } from "@r2c/extension/api/fetch";
+import { getApiRootHostname } from "@r2c/extension/utils";
 import * as React from "react";
 
 // tslint:disable-next-line:no-any
@@ -28,7 +29,7 @@ function logEvent(name: string, properties?: LoggingProperties) {
     properties
   };
 
-  fetchJson(`https://api.secarta.io/logger`, {
+  fetchJson(`${getApiRootHostname()}/logger`, {
     method: "POST",
     body: JSON.stringify(body)
   });

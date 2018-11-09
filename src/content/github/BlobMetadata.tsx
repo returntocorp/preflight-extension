@@ -1,11 +1,9 @@
-import {
-  ExtractedRepoSlug,
-  extractSlugFromCurrentUrl
-} from "@r2c/extension/utils";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import { last } from "lodash";
 import * as React from "react";
 
 interface BlobMetadataProps {
+  repoSlug: ExtractedRepoSlug;
   children(state: BlobMetadataState): React.ReactNode;
 }
 
@@ -40,8 +38,7 @@ export default class BlobMetadata extends React.Component<
   }
 
   private extractBlobMetadata = () => {
-    const slug = extractSlugFromCurrentUrl();
-
+    const slug = this.props.repoSlug;
     this.extractBlobPath(slug);
     this.extractCommitHash(slug);
   };

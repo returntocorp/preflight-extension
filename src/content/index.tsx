@@ -1,11 +1,8 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import { ApiFetch } from "@r2c/extension/api/fetch";
-import {
-  FindingsResponse,
-  findingsUrlFromSlug
-} from "@r2c/extension/api/findings";
+import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
-import { extractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
+import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
@@ -16,11 +13,11 @@ import {
   getExtensionState
 } from "@r2c/extension/shared/ExtensionState";
 import {
-  extractSlugFromCurrentUrl,
   fetchOrCreateExtensionUniqueId,
   getCurrentUrlWithoutHash,
   isGitHubSlug,
-  isRepositoryPrivate
+  isRepositoryPrivate,
+  naivelyExtractSlugFromCurrentUrl
 } from "@r2c/extension/utils";
 import * as React from "react";
 import { PlaneIcon } from "../icons";
@@ -55,7 +52,7 @@ export const ExtensionContext = React.createContext<ContentHostState>(
 class ContentHost extends React.Component<{}, ContentHostState> {
   public state: ContentHostState = DEFAULT_STATE;
 
-  private repoSlug = extractSlugFromCurrentUrl();
+  private repoSlug = naivelyExtractSlugFromCurrentUrl();
 
   private navigationMutationObserver: MutationObserver | null = null;
 
@@ -100,9 +97,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
               onChecklistItemClick={this.handleChecklistItemClick}
             />
             {this.repoSlug != null && (
-              <ApiFetch<FindingsResponse>
-                url={findingsUrlFromSlug(this.repoSlug)}
-              >
+              <ApiFetch<FindingsResponse> url={findingsUrl(this.repoSlug)}>
                 {({
                   data: findingsData,
                   loading: findingsLoading,
@@ -229,10 +224,10 @@ class ContentHost extends React.Component<{}, ContentHostState> {
 
   private getCurrentUser = async (): Promise<{
     user: string | undefined;
-    installationId: string;
+    installationId: string | undefined;
   }> => {
     const installationId = await fetchOrCreateExtensionUniqueId();
-    const user = await extractCurrentUserFromPage();
+    const user = await naivelyExtractCurrentUserFromPage();
 
     return { user, installationId };
   };

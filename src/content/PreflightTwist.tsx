@@ -1,10 +1,7 @@
 import { Button, Spinner, Tag } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { ApiFetch } from "@r2c/extension/api/fetch";
-import {
-  FindingsResponse,
-  findingsUrlFromSlug
-} from "@r2c/extension/api/findings";
+import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
 import {
   PermissionsResponse,
   permissionsUrl
@@ -272,7 +269,7 @@ export default class PreflightTwist extends React.PureComponent<
 
     return (
       <div className={classnames("twist", "preflight-twist")}>
-        <ApiFetch<RepoResponse> url={repoUrl()}>
+        <ApiFetch<RepoResponse> url={repoUrl(repoSlug)}>
           {({ data, loading }) => (
             <header className="twist-header">
               <h1 className="twist-title">Manifest</h1>
@@ -291,7 +288,9 @@ export default class PreflightTwist extends React.PureComponent<
               <div className="twist-body">
                 {extensionState != null &&
                   extensionState.experiments.permissions && (
-                    <ApiFetch<PermissionsResponse> url={permissionsUrl()}>
+                    <ApiFetch<PermissionsResponse>
+                      url={permissionsUrl(repoSlug)}
+                    >
                       {({ data, loading }) => {
                         const numPermissionsFound =
                           data != null
@@ -344,7 +343,7 @@ export default class PreflightTwist extends React.PureComponent<
                       }}
                     </ApiFetch>
                   )}
-                <ApiFetch<VulnsResponse> url={vulnsUrl()}>
+                <ApiFetch<VulnsResponse> url={vulnsUrl(repoSlug)}>
                   {({ data, loading }) => (
                     <PreflightSection
                       check="vulns"
@@ -379,7 +378,7 @@ export default class PreflightTwist extends React.PureComponent<
                     </PreflightSection>
                   )}
                 </ApiFetch>
-                <ApiFetch<FindingsResponse> url={findingsUrlFromSlug(repoSlug)}>
+                <ApiFetch<FindingsResponse> url={findingsUrl(repoSlug)}>
                   {({ data, loading, error }) => (
                     <PreflightSection
                       check="findings"
@@ -410,7 +409,7 @@ export default class PreflightTwist extends React.PureComponent<
                     </PreflightSection>
                   )}
                 </ApiFetch>
-                <ApiFetch<ScriptsResponse> url={scriptsUrl()}>
+                <ApiFetch<ScriptsResponse> url={scriptsUrl(repoSlug)}>
                   {({ data, loading }) => (
                     <PreflightSection
                       check="scripts"

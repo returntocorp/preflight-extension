@@ -1,9 +1,9 @@
-import { extractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
-export function scriptsUrl() {
-  const { domain, org, repo } = extractSlugFromCurrentUrl();
+export function scriptsUrl(repoSlug: ExtractedRepoSlug) {
+  const { domain, org, repo } = repoSlug;
 
-  return `https://api.secarta.io/v1/scripts/${domain}/${org}/${repo}`;
+  return `${getApiRootHostname()}/v1/scripts/${domain}/${org}/${repo}`;
 }
 
 export interface ScriptsResponse {

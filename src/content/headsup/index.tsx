@@ -60,8 +60,10 @@ class RepoHeadsUp extends React.PureComponent<
         />
       );
     } else {
+      const { repoSlug } = this.props;
+
       return (
-        <PreflightFetch>
+        <PreflightFetch repoSlug={repoSlug}>
           {fetchResponse => {
             const { loading, error, data } = fetchResponse;
             const state = flowProjectState(
@@ -162,10 +164,10 @@ export default class RepoHeadsUpInjector extends React.PureComponent<
               relation="after"
             >
               <div className="preflight-container">
-              <RepoHeadsUp
-                {...this.props}
-                detectedLanguages={this.getDetectedLanguages(element)}
-              />
+                <RepoHeadsUp
+                  {...this.props}
+                  detectedLanguages={this.getDetectedLanguages(element)}
+                />
               </div>
             </DOMInjector>
           )

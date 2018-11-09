@@ -1,3 +1,4 @@
+import { DEFAULT_API_ROOT_HOSTNAME } from "@r2c/extension/constants";
 import { intersection } from "lodash";
 
 export const SUPPORTED_LANGUAGES = ["javascript", "typescript"];
@@ -19,8 +20,16 @@ if (window.browser == null && window.chrome != null) {
   window.browser = window.chrome;
 }
 
+export function getApiRootHostname(): string {
+  return DEFAULT_API_ROOT_HOSTNAME;
+}
+
 export function getExtensionVersion(): string | undefined {
-  if (browser != null && browser.runtime != null) {
+  if (
+    browser != null &&
+    browser.runtime != null &&
+    browser.runtime.getManifest != null
+  ) {
     const manifest = browser.runtime.getManifest();
 
     if (manifest != null) {
@@ -55,22 +64,32 @@ interface ExtensionStorage {
   SECARTA_EXTENSION_INSTALLATION_ID?: string;
 }
 
-export async function fetchOrCreateExtensionUniqueId(): Promise<string> {
+export async function fetchOrCreateExtensionUniqueId(): Promise<
+  string | undefined
+> {
   return new Promise<string>((resolve, reject) => {
-    browser.storage.local.get(
-      "SECARTA_EXTENSION_INSTALLATION_ID",
-      (res: ExtensionStorage) => {
-        if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
-          resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
-        } else {
-          const installationId: string = getRandomSha();
-          browser.storage.local.set({
-            SECARTA_EXTENSION_INSTALLATION_ID: installationId
-          });
-          resolve(installationId);
+    if (
+      browser != null &&
+      browser.storage != null &&
+      browser.storage.local != null
+    ) {
+      browser.storage.local.get(
+        "SECARTA_EXTENSION_INSTALLATION_ID",
+        (res: ExtensionStorage) => {
+          if (res.SECARTA_EXTENSION_INSTALLATION_ID != null) {
+            resolve(res.SECARTA_EXTENSION_INSTALLATION_ID);
+          } else {
+            const installationId: string = getRandomSha();
+            browser.storage.local.set({
+              SECARTA_EXTENSION_INSTALLATION_ID: installationId
+            });
+            resolve(installationId);
+          }
         }
-      }
-    );
+      );
+    } else {
+      resolve(undefined);
+    }
   });
 }
 
@@ -134,7 +153,7 @@ function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   }
 }
 
-export function extractSlugFromCurrentUrl(): ExtractedRepoSlug {
+export function naivelyExtractSlugFromCurrentUrl(): ExtractedRepoSlug {
   return parseSlugFromUrl(document.URL);
 }
 
@@ -168,15 +187,30 @@ export async function fetchStringFromStorage(
 }
 
 export async function fetchFromStorage<T>(key: string): Promise<T | undefined> {
-  return new Promise<T | undefined>(resolve =>
-    browser.storage.local.get(key, (results: { [k: string]: T | undefined }) =>
-      resolve(results[key])
-    )
-  );
+  if (
+    browser != null &&
+    browser.storage != null &&
+    browser.storage.local != null
+  ) {
+    return new Promise<T | undefined>(resolve =>
+      browser.storage.local.get(
+        key,
+        (results: { [k: string]: T | undefined }) => resolve(results[key])
+      )
+    );
+  } else {
+    return Promise.resolve(undefined);
+  }
 }
 
 export function updateStorage<T>(key: string, value: T) {
-  browser.storage.local.set({ [key]: value });
+  if (
+    browser != null &&
+    browser.storage != null &&
+    browser.storage.local != null
+  ) {
+    browser.storage.local.set({ [key]: value });
+  }
 }
 
 const MOST_RECENT_GITHUB_USER = "MOST_RECENT_GITHUB_USER";

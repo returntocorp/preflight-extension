@@ -31,7 +31,7 @@ export default class NormalHeadsUp extends React.PureComponent<
   };
 
   public render() {
-    const { data, loading } = this.props;
+    const { data, loading, repoSlug, onChecklistItemClick } = this.props;
     const { selectedPackage } = this.state;
 
     return (
@@ -45,7 +45,7 @@ export default class NormalHeadsUp extends React.PureComponent<
               <LastUpdatedBadge
                 commitHash={data.repo.commitHash}
                 lastUpdatedDate={new Date(data.repo.analyzedAt)}
-                repoSlug={this.props.repoSlug}
+                repoSlug={repoSlug}
               />
             )}
             <R2CLogo />
@@ -54,9 +54,10 @@ export default class NormalHeadsUp extends React.PureComponent<
         <div className="repo-headsup-body">
           <div className="repo-headsup-checklist repo-headsup-column">
             <PreflightChecklist
+              repoSlug={repoSlug}
               data={data}
               loading={loading}
-              onChecklistItemClick={this.props.onChecklistItemClick}
+              onChecklistItemClick={onChecklistItemClick}
             />
           </div>
           {data.pkg &&
@@ -67,7 +68,10 @@ export default class NormalHeadsUp extends React.PureComponent<
                   selectedPackage={selectedPackage}
                   loading={loading.pkg}
                 />
-                <RelatedPackages selectedPackage={selectedPackage} />
+                <RelatedPackages
+                  repoSlug={repoSlug}
+                  selectedPackage={selectedPackage}
+                />
               </div>
             )}
           <div className="repo-headsup-actions repo-headsup-column">

@@ -1,17 +1,11 @@
-import { ExtractedRepoSlug, extractSlugFromCurrentUrl } from "../utils";
+import { ExtractedRepoSlug, getApiRootHostname } from "../utils";
 
-export function findingsUrl() {
-  const repoSlug = extractSlugFromCurrentUrl();
-
-  return findingsUrlFromSlug(repoSlug);
-}
-
-export function findingsUrlFromSlug({ domain, org, repo }: ExtractedRepoSlug) {
-  return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
+export function findingsUrl({ domain, org, repo }: ExtractedRepoSlug) {
+  return `${getApiRootHostname()}/v1/finding/${domain}/${org}/${repo}`;
 }
 
 export function postFindingsUrl(domain: string, org: string, repo: string) {
-  return `https://api.secarta.io/v1/finding/${domain}/${org}/${repo}`;
+  return `${getApiRootHostname()}/v1/finding/${domain}/${org}/${repo}`;
 }
 
 export interface FindingsResponse {

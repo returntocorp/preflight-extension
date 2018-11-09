@@ -114,6 +114,8 @@ export default class TreeFindingsInjector extends React.PureComponent<
   TreeFindingsInjectorProps
 > {
   public render() {
+    const { repoSlug } = this.props;
+
     return (
       <DomElementLoadedWatcher
         querySelector={["table.files", ".commit-tease-sha"]}
@@ -121,7 +123,7 @@ export default class TreeFindingsInjector extends React.PureComponent<
         {({ done }) => (
           <>
             {done && (
-              <TreeMetadata>
+              <TreeMetadata repoSlug={repoSlug}>
                 {({ currentPath }) => (
                   <TreeFindingsHighlighter
                     currentPath={currentPath}

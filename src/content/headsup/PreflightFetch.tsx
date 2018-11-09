@@ -3,9 +3,11 @@ import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
 import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
 import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
 import { ScriptsResponse, scriptsUrl } from "@r2c/extension/api/scripts";
+import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
 
 interface PreflightChecklistFetchProps {
+  repoSlug: ExtractedRepoSlug;
   children(response: PreflightChecklistFetchResponse): React.ReactNode;
 }
 
@@ -46,14 +48,16 @@ export default class PreflightFetch extends React.PureComponent<
   PreflightChecklistFetchProps
 > {
   public render() {
+    const { repoSlug } = this.props;
+
     return (
-      <ApiFetch<RepoResponse> url={repoUrl()}>
+      <ApiFetch<RepoResponse> url={repoUrl(repoSlug)}>
         {repoResponse => (
-          <ApiFetch<PackageResponse> url={packageUrl()}>
+          <ApiFetch<PackageResponse> url={packageUrl(repoSlug)}>
             {packageResponse => (
-              <ApiFetch<FindingsResponse> url={findingsUrl()}>
+              <ApiFetch<FindingsResponse> url={findingsUrl(repoSlug)}>
                 {findingsResponse => (
-                  <ApiFetch<ScriptsResponse> url={scriptsUrl()}>
+                  <ApiFetch<ScriptsResponse> url={scriptsUrl(repoSlug)}>
                     {scriptsResponse => {
                       // TODO (lediur) yeah I know all of these ternaries are gross
                       // TBD spending some time figuring out how to build a typesafe
