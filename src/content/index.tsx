@@ -1,6 +1,5 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { ApiFetch } from "@r2c/extension/api/fetch";
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
+import { FindingsFetch } from "@r2c/extension/api/findings";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -97,7 +96,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
               onChecklistItemClick={this.handleChecklistItemClick}
             />
             {this.repoSlug != null && (
-              <ApiFetch<FindingsResponse> url={findingsUrl(this.repoSlug)}>
+              <FindingsFetch repoSlug={this.repoSlug}>
                 {({
                   data: findingsData,
                   loading: findingsLoading,
@@ -125,7 +124,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                     </>
                   )
                 }
-              </ApiFetch>
+              </FindingsFetch>
             )}
 
             <Twists

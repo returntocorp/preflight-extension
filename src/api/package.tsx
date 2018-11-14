@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
 export function packageUrl(
@@ -38,3 +39,8 @@ export interface RelatedPackagesResponse {
   gitUrl: string;
   related: { [k: string]: RelatedPackageEntry[] };
 }
+
+export const PackagesFetch = buildFetchComponent<PackageResponse>(packageUrl);
+export const RelatedPackagesFetch = buildFetchComponent<
+  RelatedPackagesResponse
+>(relatedPackagesUrl);

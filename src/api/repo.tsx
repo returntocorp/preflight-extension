@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
 export function repoUrl(repoSlug: ExtractedRepoSlug) {
@@ -18,3 +19,5 @@ export interface Activity {
   isActive: boolean;
   latestCommitDate: string;
 }
+
+export const RepoFetch = buildFetchComponent<RepoResponse>(repoUrl);

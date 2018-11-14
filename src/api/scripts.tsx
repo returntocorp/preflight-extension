@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
 export function scriptsUrl(repoSlug: ExtractedRepoSlug) {
@@ -18,3 +19,5 @@ export interface ScriptEntry {
   // tslint:disable-next-line:no-reserved-keywords
   type: string;
 }
+
+export const ScriptsFetch = buildFetchComponent<ScriptsResponse>(scriptsUrl);

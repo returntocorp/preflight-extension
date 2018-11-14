@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "../utils";
 
 export function findingsUrl({ domain, org, repo }: ExtractedRepoSlug) {
@@ -29,3 +30,5 @@ export interface FindingEntry {
   sentiment?: { [key: string]: number };
   tags?: string[];
 }
+
+export const FindingsFetch = buildFetchComponent<FindingsResponse>(findingsUrl);
