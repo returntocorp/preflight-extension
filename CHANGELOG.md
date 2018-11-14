@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.13.3] - 2018-11-14
+
 ### Fixed
 
 - Fixed some centering and stray markup issues with the missing data message
@@ -15,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Updated the permissions experiment to include permissions beyond "Network Access"
+
+### Added
+
+- Added logging for checklist items to better understand how users interact with surfaced data
 
 ## [1.13.0] - 2018-11-05
 
