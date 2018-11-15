@@ -37,7 +37,7 @@ export function buildExtensionHeaders(
 
 export interface ApiFetchProps<T> extends Partial<FetchProps<T>> {
   repoSlug: ExtractedRepoSlug;
-  children(result: FetchResult<T>): React.ReactNode | React.ReactNode;
+  children(result: FetchResult<T>): React.ReactNode;
 }
 
 export class RawApiFetch<T> extends React.Component<FetchProps<T>> {
@@ -75,6 +75,8 @@ export async function fetchJson<T>(url: string | Request, init?: RequestInit) {
 export interface PostResponse {
   recorded: boolean;
 }
+
+export type ApiFetchComponent<T> = React.ComponentType<ApiFetchProps<T>>;
 
 type FetchBuildUrlFunction = (repoSlug: ExtractedRepoSlug) => string;
 
