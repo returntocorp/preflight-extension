@@ -1,12 +1,13 @@
 import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import { ExtensionContext } from "@r2c/extension/content/index";
 import {
+  ExtractedRepoSlug,
   fetchOrCreateExtensionUniqueId,
   getExtensionVersion
 } from "@r2c/extension/utils";
 import { merge } from "lodash";
 import * as React from "react";
-import Fetch, { FetchProps } from "react-fetch-component";
+import Fetch, { FetchProps, FetchResult } from "react-fetch-component";
 
 export function getAnalyticsParams(): {
   source: string;
@@ -34,7 +35,12 @@ export function buildExtensionHeaders(
   };
 }
 
-export class ApiFetch<T> extends React.Component<FetchProps<T>> {
+export interface ApiFetchProps<T> extends Partial<FetchProps<T>> {
+  repoSlug: ExtractedRepoSlug;
+  children(result: FetchResult<T>): React.ReactNode | React.ReactNode;
+}
+
+export class RawApiFetch<T> extends React.Component<FetchProps<T>> {
   public render() {
     return (
       <ExtensionContext.Consumer>
@@ -68,4 +74,14 @@ export async function fetchJson<T>(url: string | Request, init?: RequestInit) {
 
 export interface PostResponse {
   recorded: boolean;
+}
+
+type FetchBuildUrlFunction = (repoSlug: ExtractedRepoSlug) => string;
+
+export function buildFetchComponent<ResponseT>(
+  urlFn: FetchBuildUrlFunction
+): React.SFC<ApiFetchProps<ResponseT>> {
+  return ({ repoSlug, ...otherProps }) => (
+    <RawApiFetch<ResponseT> {...otherProps} url={urlFn(repoSlug)} />
+  );
 }
