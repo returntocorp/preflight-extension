@@ -92,7 +92,9 @@ export class WrappedPreflightPermissionsDetails extends React.PureComponent<
               loading={loading}
               domRef={domRef}
             >
-              {data != null && <PermissionsDetails data={data} />}
+              {data != null && (
+                <PermissionsDetails data={data} repoSlug={repoSlug} />
+              )}
             </CollapsibleDetailsSection>
           );
         }}
@@ -128,7 +130,9 @@ export class WrappedPreflightFindingsDetails extends React.PureComponent<
             loading={loading}
             domRef={domRef}
           >
-            {data != null && <FindingsDetails data={data} />}
+            {data != null && (
+              <FindingsDetails data={data} repoSlug={repoSlug} />
+            )}
           </CollapsibleDetailsSection>
         )}
       </FindingsFetch>

@@ -1,17 +1,18 @@
 import { PermissionsResponse } from "@r2c/extension/api/permissions";
 import FindingsGroupedList from "@r2c/extension/content/FindingsGroupedList";
-import { parseSlugFromUrl } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, parseSlugFromUrl } from "@r2c/extension/utils";
 import * as React from "react";
 
 interface PermissionsDetailsProps {
   data: PermissionsResponse;
+  repoSlug?: ExtractedRepoSlug;
 }
 
 export default class PermissionsDetails extends React.PureComponent<
   PermissionsDetailsProps
 > {
   public render() {
-    const { data } = this.props;
+    const { data, repoSlug } = this.props;
 
     if (data != null && data.permissions != null) {
       return (
@@ -26,7 +27,7 @@ export default class PermissionsDetails extends React.PureComponent<
                   <FindingsGroupedList
                     commitHash={data.commitHash}
                     findings={data.permissions[key].locations}
-                    repoSlug={parseSlugFromUrl(data.gitUrl)}
+                    repoSlug={repoSlug || parseSlugFromUrl(data.gitUrl)}
                   />
                 </div>
               )
