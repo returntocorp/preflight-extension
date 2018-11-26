@@ -32,7 +32,7 @@ export interface PackageResponse {
   override: OverrideEntry | null;
 }
 
-type OverrideType = "blacklist";
+export type OverrideType = "blacklist" | "whitelist" | "promote";
 
 export interface OverrideEntry {
   overrideType: OverrideType;

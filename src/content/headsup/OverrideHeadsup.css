@@ -1,0 +1,60 @@
+.r2c-repo-headsup.override-headsup {
+  display: grid;
+  grid-template: "indicator content" / 30px auto;
+  gap: 15px;
+  padding: 10px;
+}
+
+.override-headsup.override-blacklist {
+  border: 1px solid #cb2431;
+  fill: #cb2431;
+}
+
+.override-headsup.override-whitelist {
+  border: 1px solid #2cbe4e;
+  fill: #2cbe4e;
+}
+
+.override-headsup.override-promote {
+  border: 1px solid #0a9bda;
+  fill: #0a9bda;
+}
+
+.override-headsup.override-blacklist header {
+  color: #cb2431;
+}
+
+.override-headsup aside.override-headsup-indicator {
+  grid-area: indicator;
+}
+
+.override-headsup aside.override-headsup-indicator svg {
+  width: 30px;
+  height: 30px;
+}
+
+.override-headsup .override-headsup-contents {
+  grid-area: content;
+}
+
+.override-headsup-headline {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  padding-right: 1ex;
+}
+
+.override-headsup header .override-headsup-headline p {
+  margin: 0;
+  padding: 0;
+}
+
+.override-headsup .override-headsup-details {
+  font-size: 12px;
+  line-height: 28px;
+  color: rgba(16, 22, 26, 0.6);
+}
+
+.override-headsup .override-headsup-details span.override-headsup-show {
+  padding-right: 1em;
+}
