@@ -131,7 +131,7 @@ describe("Project state", () => {
       some: true,
       every: true,
       findings: { gitUrl: "foo", findings: [], commitHash: "bar" },
-      pkg: { gitUrl: "foo", packages: [] },
+      pkg: { gitUrl: "foo", packages: [], override: null },
       repo: {
         gitUrl: "foo",
         commitHash: "bar",

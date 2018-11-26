@@ -1,5 +1,9 @@
 import { buildFetchComponent } from "@r2c/extension/api/fetch";
-import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
+import {
+  ExtractedRepoSlug,
+  getApiRootHostname,
+  MarkdownString
+} from "@r2c/extension/utils";
 
 export function packageUrl(
   repoSlug: ExtractedRepoSlug,
@@ -25,6 +29,16 @@ export interface PackageEntry {
 export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
+  override: OverrideEntry | null;
+}
+
+type OverrideType = "blacklist";
+
+export interface OverrideEntry {
+  overrideType: OverrideType;
+  headline: MarkdownString;
+  reporter: string;
+  reportedAt: Date;
 }
 
 export interface RelatedPackageEntry {
