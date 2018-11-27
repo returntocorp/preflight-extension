@@ -38,7 +38,11 @@ export default class NormalHeadsUp extends React.PureComponent<
       <div className="r2c-repo-headsup checklist-headsup">
         <header>
           <div className="checklist-left">
-            <span className="preflight-logo">preflight</span>
+            <span className="preflight-logo">
+              <a href="https://github.com/returntocorp/secarta-extension/">
+                preflight
+              </a>
+            </span>
           </div>
           <div className="checklist-right">
             {data.repo != null && (
