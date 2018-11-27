@@ -1,5 +1,7 @@
+import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
 import { OverrideEntry, OverrideType } from "@r2c/extension/api/package";
+import { MainToaster } from "@r2c/extension/content/Toaster";
 import * as classnames from "classnames";
 import * as React from "react";
 import * as Markdown from "react-markdown";
@@ -147,7 +149,13 @@ export class OverrideHeadsupWrapper extends React.PureComponent<
     );
   }
 
-  private handleReportClick: React.MouseEventHandler = () => null;
+  private handleReportClick: React.MouseEventHandler = () => {
+    MainToaster.show({
+      message:
+        "Thanks for letting us know. We'll take a look and make it right.",
+      icon: IconNames.HEART
+    });
+  };
 
   private handleShowAnyways: React.MouseEventHandler = () =>
     this.setState({ showMore: !this.state.showMore });
