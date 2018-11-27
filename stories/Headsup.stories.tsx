@@ -1,3 +1,4 @@
+import { OverrideType } from "@r2c/extension/api/package";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
@@ -23,6 +24,18 @@ storiesOf("Headsup", module)
     />
   ))
   .add("Non-ideal, unsupported", () => <UnsupportedHeadsUp />)
+  .add("Override, default", () => (
+    <OverrideHeadsup
+      override={{
+        headline: "Something else" as MarkdownString,
+        overrideType: "something-else" as OverrideType,
+        reportedAt: "2018-11-26T13:26:00-08:00",
+        reporter: "https://github.com/FallingSnow"
+      }}
+      onShowAnywaysClick={action("show anyways clicked")}
+      onReportClick={action("report issue clicked")}
+    />
+  ))
   .add("Override, blacklist", () => (
     <OverrideHeadsup
       override={{

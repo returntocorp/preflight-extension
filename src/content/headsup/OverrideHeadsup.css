@@ -3,6 +3,9 @@
   grid-template: "indicator content" / 30px auto;
   gap: 15px;
   padding: 10px;
+
+  border: 1px solid rgba(16, 22, 26, 0.6);
+  fill: rgba(16, 22, 26, 0.6);
 }
 
 .override-headsup.override-blacklist {
