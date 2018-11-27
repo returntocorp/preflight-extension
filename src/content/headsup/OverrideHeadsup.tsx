@@ -1,15 +1,10 @@
+import { l } from "@r2c/extension/analytics";
 import { OverrideEntry, OverrideType } from "@r2c/extension/api/package";
 import * as classnames from "classnames";
 import * as React from "react";
 import * as Markdown from "react-markdown";
 import TimeAgo from "react-timeago";
 import "./OverrideHeadsup.css";
-
-interface OverrideHeadsupProps {
-  override: OverrideEntry;
-  onShowAnywaysClick: React.MouseEventHandler;
-  onReportClick: React.MouseEventHandler;
-}
 
 const CrossIndicator: React.SFC = () => (
   <svg width="24" height="24" viewBox="0 0 24 24">
@@ -35,12 +30,19 @@ const PromoteIndicator: React.SFC = () => (
   </svg>
 );
 
+interface OverrideHeadsupProps {
+  override: OverrideEntry;
+  isShowing?: boolean;
+  onShowAnywaysClick: React.MouseEventHandler;
+  onReportClick: React.MouseEventHandler;
+}
+
 export default class OverrideHeadsup extends React.PureComponent<
   OverrideHeadsupProps
 > {
   public render() {
     const { headline, reportedAt, overrideType } = this.props.override;
-    const { onShowAnywaysClick, onReportClick } = this.props;
+    const { onShowAnywaysClick, onReportClick, isShowing } = this.props;
 
     return (
       <div
@@ -60,7 +62,7 @@ export default class OverrideHeadsup extends React.PureComponent<
           <section className="override-headsup-details">
             <span className="override-headsup-show">
               <a onClick={onShowAnywaysClick} role="button">
-                {this.renderShow(overrideType)}
+                {this.renderShow(overrideType, isShowing)}
               </a>
             </span>
             <span className="override-headsup-timestamp">
@@ -78,12 +80,17 @@ export default class OverrideHeadsup extends React.PureComponent<
     );
   }
 
-  private renderShow(overrideType: OverrideType) {
+  private renderShow(
+    overrideType: OverrideType,
+    isShowing: boolean | undefined
+  ) {
     switch (overrideType) {
       case "blacklist":
-        return "Show Preflight info anyways";
+        return isShowing
+          ? "Hide Preflight info"
+          : "Show Preflight info anyways (unsafe)";
       default:
-        return "Show details";
+        return isShowing ? "Hide Preflight info" : "Show Preflight info";
     }
   }
 
@@ -99,4 +106,49 @@ export default class OverrideHeadsup extends React.PureComponent<
         return <CircleIndicator />;
     }
   }
+}
+
+interface OverrideHeadsupWrapperProps {
+  override: OverrideEntry;
+  children: React.ReactChild;
+}
+
+interface OverrideHeadsupWrapperState {
+  showMore: boolean;
+}
+
+export class OverrideHeadsupWrapper extends React.PureComponent<
+  OverrideHeadsupWrapperProps,
+  OverrideHeadsupWrapperState
+> {
+  public state: OverrideHeadsupWrapperState = {
+    showMore: false
+  };
+
+  public render() {
+    const { override, children } = this.props;
+    const { showMore } = this.state;
+
+    return (
+      <>
+        <OverrideHeadsup
+          override={override}
+          onReportClick={
+            l(
+              "report-override-click",
+              this.handleReportClick
+            ) as React.MouseEventHandler
+          }
+          onShowAnywaysClick={this.handleShowAnyways}
+          isShowing={showMore}
+        />
+        {showMore && children}
+      </>
+    );
+  }
+
+  private handleReportClick: React.MouseEventHandler = () => null;
+
+  private handleShowAnyways: React.MouseEventHandler = () =>
+    this.setState({ showMore: !this.state.showMore });
 }

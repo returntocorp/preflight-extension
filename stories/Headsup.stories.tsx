@@ -3,7 +3,9 @@ import {
   LoadingHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import OverrideHeadsup from "@r2c/extension/content/headsup/OverrideHeadsup";
+import OverrideHeadsup, {
+  OverrideHeadsupWrapper
+} from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { ERROR_UNKNOWN } from "@r2c/extension/content/headsup/PreflightProjectState";
 import { MarkdownString } from "@r2c/extension/utils";
 import { action } from "@storybook/addon-actions";
@@ -56,4 +58,16 @@ storiesOf("Headsup", module)
       onShowAnywaysClick={action("show anyways clicked")}
       onReportClick={action("report issue clicked")}
     />
+  ))
+  .add("Override wrapper, promote", () => (
+    <OverrideHeadsupWrapper
+      override={{
+        headline: "Trusted package" as MarkdownString,
+        overrideType: "promote",
+        reportedAt: new Date("2018-11-26T13:26:00-08:00"),
+        reporter: "https://github.com/FallingSnow"
+      }}
+    >
+      <h1>foo</h1>
+    </OverrideHeadsupWrapper>
   ));

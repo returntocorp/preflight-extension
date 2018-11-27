@@ -8,6 +8,7 @@ import {
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
+import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
 import PreflightFetch, {
   PreflightChecklistFetchData,
@@ -84,6 +85,20 @@ class RepoHeadsUp extends React.PureComponent<
                     <ErrorHeadsUp projectState={state} error={error} />
                   )
                 );
+              case ProjectState.OVERRIDE:
+                return (
+                  data != null &&
+                  data.pkg != null &&
+                  data.pkg.override != null && (
+                    <OverrideHeadsupWrapper override={data.pkg.override}>
+                      <NormalHeadsUp
+                        data={data}
+                        loading={loading}
+                        {...this.props}
+                      />
+                    </OverrideHeadsupWrapper>
+                  )
+                );
               case ProjectState.LOADING_SOME:
               case ProjectState.PARTIAL:
               case ProjectState.COMPLETE:
@@ -139,7 +154,9 @@ export function flowProjectState(
       return ProjectState.ERROR_API;
     }
   } else if (data != null && data.some) {
-    if (data.every) {
+    if (data.pkg != null && data.pkg.override != null) {
+      return ProjectState.OVERRIDE;
+    } else if (data.every) {
       return ProjectState.COMPLETE;
     } else {
       return ProjectState.PARTIAL;
