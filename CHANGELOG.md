@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.14.0] - 2018-11-27
+
+### Added
+
+- Added support for R2C to flag projects as malicious / do not use (e.g. [event-stream](https://github.com/dominictarr/event-stream))
+
+### Fixed
+
+- Made "used by" data more complete - we now surface more major tech companies
+
 ## [1.13.3] - 2018-11-14
 
 ### Fixed
