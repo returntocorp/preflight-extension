@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Made "preflight" header and R2C logo link to the browser's GitHub repo and the R2C website respectively
+
 ## [1.14.0] - 2018-11-27
 
 ### Added
 
 - Added support for R2C to flag projects as malicious / do not use (e.g. [event-stream](https://github.com/dominictarr/event-stream))
-- Added link to secarta extension on github on the preflight text in the header as well as a link to R2C's website on the R2C logo in the header.
 
 ### Fixed
 
