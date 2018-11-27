@@ -28,7 +28,7 @@ storiesOf("Headsup", module)
       override={{
         headline: "Malicious package. See [dominictarr/event-stream#116](https://github.com/dominictarr/event-stream/issues/116)" as MarkdownString,
         overrideType: "blacklist",
-        reportedAt: new Date("2018-11-26T13:26:00-08:00"),
+        reportedAt: "2018-11-26T13:26:00-08:00",
         reporter: "https://github.com/FallingSnow"
       }}
       onShowAnywaysClick={action("show anyways clicked")}
@@ -40,7 +40,7 @@ storiesOf("Headsup", module)
       override={{
         headline: "Package passes all checks" as MarkdownString,
         overrideType: "whitelist",
-        reportedAt: new Date("2018-11-26T13:26:00-08:00"),
+        reportedAt: "2018-11-26T13:26:00-08:00",
         reporter: "https://github.com/FallingSnow"
       }}
       onShowAnywaysClick={action("show anyways clicked")}
@@ -52,7 +52,7 @@ storiesOf("Headsup", module)
       override={{
         headline: "Trusted package" as MarkdownString,
         overrideType: "promote",
-        reportedAt: new Date("2018-11-26T13:26:00-08:00"),
+        reportedAt: "2018-11-26T13:26:00-08:00",
         reporter: "https://github.com/FallingSnow"
       }}
       onShowAnywaysClick={action("show anyways clicked")}
@@ -64,7 +64,7 @@ storiesOf("Headsup", module)
       override={{
         headline: "Trusted package" as MarkdownString,
         overrideType: "promote",
-        reportedAt: new Date("2018-11-26T13:26:00-08:00"),
+        reportedAt: "2018-11-26T13:26:00-08:00",
         reporter: "https://github.com/FallingSnow"
       }}
     >

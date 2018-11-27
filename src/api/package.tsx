@@ -38,7 +38,7 @@ export interface OverrideEntry {
   overrideType: OverrideType;
   headline: MarkdownString;
   reporter: string;
-  reportedAt: Date;
+  reportedAt: string;
 }
 
 export interface RelatedPackageEntry {

@@ -67,9 +67,11 @@ export default class OverrideHeadsup extends React.PureComponent<
                 {this.renderShow(overrideType, isShowing)}
               </a>
             </span>
-            <span className="override-headsup-timestamp">
-              Updated <TimeAgo date={reportedAt} /> &middot;{" "}
-            </span>
+            {reportedAt != null && (
+              <span className="override-headsup-timestamp">
+                Updated <TimeAgo date={new Date(reportedAt)} /> &middot;{" "}
+              </span>
+            )}
             <span className="override-headsup-report">
               Is this a mistake?{" "}
               <a onClick={onReportClick} role="button">
