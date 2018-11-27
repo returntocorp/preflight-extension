@@ -74,7 +74,13 @@ export default class OverrideHeadsup extends React.PureComponent<
             )}
             <span className="override-headsup-report">
               Is this a mistake?{" "}
-              <a onClick={onReportClick} role="button">
+              <a
+                onClick={onReportClick}
+                href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                role="button"
+              >
                 Let us know.
               </a>
             </span>
