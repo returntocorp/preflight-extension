@@ -4,6 +4,7 @@ export type PreflightProjectState =
   | "loading-all"
   | "loading-some"
   | "empty-unsupported"
+  | "override"
   | "error-missing-data"
   | "error-api"
   | "error-unknown";
@@ -37,6 +38,11 @@ export const LOADING_SOME: PPS = "loading-some";
  * We don't have data because we don't support this language or project.
  */
 export const EMPTY_UNSUPPORTED: PPS = "empty-unsupported";
+
+/**
+ * We're showing exceptional state for the repo.
+ */
+export const OVERRIDE: PPS = "override";
 
 /**
  * We should have data, but for some reason we don't.

@@ -345,3 +345,5 @@ export function buildPackageLink(name: string): string {
 export function hasSupportedLanguages(languages: string[]): boolean {
   return intersection(languages, SUPPORTED_LANGUAGES).length > 0;
 }
+
+export type MarkdownString = string & { _markdownType: Symbol };
