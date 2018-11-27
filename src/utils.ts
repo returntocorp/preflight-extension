@@ -113,7 +113,7 @@ export interface ExtractedRepoSlug {
   endLineHash: number | null;
 }
 
-function parseSlugFromUrl(url: string): ExtractedRepoSlug {
+export function parseSlugFromUrl(url: string): ExtractedRepoSlug {
   const parsed = new URL(url);
   const { hostname: domain, pathname, hash } = parsed;
   const [org, repo, ...rest] = pathname.slice(1).split("/");

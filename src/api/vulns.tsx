@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 
 export function vulnsUrl(repoSlug: ExtractedRepoSlug) {
@@ -36,3 +37,5 @@ export interface VulnerabilityEntry {
   updated_at: Date;
   vulnerable_versions: string;
 }
+
+export const VulnsFetch = buildFetchComponent<VulnsResponse>(vulnsUrl);

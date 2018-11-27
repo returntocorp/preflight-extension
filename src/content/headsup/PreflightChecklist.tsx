@@ -1,15 +1,11 @@
 import { Button, Classes, Icon, IIconProps, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l } from "@r2c/extension/analytics";
-import { ApiFetch } from "@r2c/extension/api/fetch";
 import { FindingEntry } from "@r2c/extension/api/findings";
 import { PackageEntry } from "@r2c/extension/api/package";
-import {
-  PermissionsResponse,
-  permissionsUrl
-} from "@r2c/extension/api/permissions";
+import { PermissionsFetch } from "@r2c/extension/api/permissions";
 import { ScriptEntry } from "@r2c/extension/api/scripts";
-import { VulnsResponse, vulnsUrl } from "@r2c/extension/api/vulns";
+import { VulnsFetch } from "@r2c/extension/api/vulns";
 import {
   PreflightChecklistFetchData,
   PreflightChecklistLoading
@@ -96,7 +92,7 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
   onChecklistItemClick,
   repoSlug
 }) => (
-  <ApiFetch<VulnsResponse> url={vulnsUrl(repoSlug)}>
+  <VulnsFetch repoSlug={repoSlug}>
     {({ loading, data, error }) => {
       const itemState: ChecklistItemState =
         data && data.vuln.length > 0 ? "warn" : "ok";
@@ -143,7 +139,7 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
         );
       }
     }}
-  </ApiFetch>
+  </VulnsFetch>
 );
 
 type PreflightPermissionsItemProps = PreflightChecklistInteractionProps;
@@ -151,7 +147,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
   onChecklistItemClick,
   repoSlug
 }) => (
-  <ApiFetch<PermissionsResponse> url={permissionsUrl(repoSlug)}>
+  <PermissionsFetch repoSlug={repoSlug}>
     {({ loading, data }) => {
       if (loading != null && loading === true) {
         return (
@@ -208,7 +204,7 @@ const PreflightPermissionsItem: React.SFC<PreflightPermissionsItemProps> = ({
         );
       }
     }}
-  </ApiFetch>
+  </PermissionsFetch>
 );
 
 interface PreflightScriptsItemProps extends PreflightChecklistInteractionProps {

@@ -1,10 +1,8 @@
 import { Classes, Intent } from "@blueprintjs/core";
-import { ApiFetch } from "@r2c/extension/api/fetch";
 import {
   PackageEntry,
   RelatedPackageEntry,
-  RelatedPackagesResponse,
-  relatedPackagesUrl
+  RelatedPackagesFetch
 } from "@r2c/extension/api/package";
 import NonIdealInline from "@r2c/extension/content/NonIdealInline";
 import PluralizedList from "@r2c/extension/content/PluralizedList";
@@ -50,7 +48,7 @@ export default class RelatedPackages extends React.PureComponent<
     const { repoSlug, selectedPackage } = this.props;
 
     return (
-      <ApiFetch<RelatedPackagesResponse> url={relatedPackagesUrl(repoSlug)}>
+      <RelatedPackagesFetch repoSlug={repoSlug}>
         {({ loading, data, error }) => {
           if (loading) {
             return (
@@ -115,7 +113,7 @@ export default class RelatedPackages extends React.PureComponent<
             );
           }
         }}
-      </ApiFetch>
+      </RelatedPackagesFetch>
     );
   }
 }

@@ -78,6 +78,13 @@
   margin-left: -10px;
 }
 
+.repo-headsup-body .repo-headsup-column > section header h1,
+.repo-headsup-body .repo-headsup-column > section header h2 {
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+}
+
 .repo-headsup-body .repo-headsup-column:first-child {
   border-left: none;
   margin-left: 0;
@@ -111,6 +118,9 @@
 
 ul.preflight-checklist {
   list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
 }
 
 ul.preflight-checklist .preflight-checklist-item {

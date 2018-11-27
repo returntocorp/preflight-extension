@@ -1,3 +1,4 @@
+import { buildFetchComponent } from "@r2c/extension/api/fetch";
 import { ExtractedRepoSlug, getApiRootHostname } from "@r2c/extension/utils";
 import { FindingEntry } from "./findings";
 
@@ -21,3 +22,7 @@ export interface PermissionsResponse {
     [name: string]: PermissionEntry;
   };
 }
+
+export const PermissionsFetch = buildFetchComponent<PermissionsResponse>(
+  permissionsUrl
+);

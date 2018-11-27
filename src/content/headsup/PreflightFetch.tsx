@@ -1,8 +1,7 @@
-import { ApiFetch } from "@r2c/extension/api/fetch";
-import { FindingsResponse, findingsUrl } from "@r2c/extension/api/findings";
-import { PackageResponse, packageUrl } from "@r2c/extension/api/package";
-import { RepoResponse, repoUrl } from "@r2c/extension/api/repo";
-import { ScriptsResponse, scriptsUrl } from "@r2c/extension/api/scripts";
+import { FindingsFetch, FindingsResponse } from "@r2c/extension/api/findings";
+import { PackageResponse, PackagesFetch } from "@r2c/extension/api/package";
+import { RepoFetch, RepoResponse } from "@r2c/extension/api/repo";
+import { ScriptsFetch, ScriptsResponse } from "@r2c/extension/api/scripts";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
 import * as React from "react";
 
@@ -51,13 +50,13 @@ export default class PreflightFetch extends React.PureComponent<
     const { repoSlug } = this.props;
 
     return (
-      <ApiFetch<RepoResponse> url={repoUrl(repoSlug)}>
+      <RepoFetch repoSlug={repoSlug}>
         {repoResponse => (
-          <ApiFetch<PackageResponse> url={packageUrl(repoSlug)}>
+          <PackagesFetch repoSlug={repoSlug}>
             {packageResponse => (
-              <ApiFetch<FindingsResponse> url={findingsUrl(repoSlug)}>
+              <FindingsFetch repoSlug={repoSlug}>
                 {findingsResponse => (
-                  <ApiFetch<ScriptsResponse> url={scriptsUrl(repoSlug)}>
+                  <ScriptsFetch repoSlug={repoSlug}>
                     {scriptsResponse => {
                       // TODO (lediur) yeah I know all of these ternaries are gross
                       // TBD spending some time figuring out how to build a typesafe
@@ -139,13 +138,13 @@ export default class PreflightFetch extends React.PureComponent<
 
                       return this.props.children(fetchResponse);
                     }}
-                  </ApiFetch>
+                  </ScriptsFetch>
                 )}
-              </ApiFetch>
+              </FindingsFetch>
             )}
-          </ApiFetch>
+          </PackagesFetch>
         )}
-      </ApiFetch>
+      </RepoFetch>
     );
   }
 }

@@ -13,6 +13,7 @@
 
 .package-copy-box .package-action-description h2 {
   font-size: 14px;
+  font-weight: 600;
 }
 
 .package-copy-box .package-action-description p {
@@ -35,7 +36,8 @@
   margin-right: 3px;
 }
 
-.package-copy-box .package-npm-field {
+.package-copy-box .package-npm-field,
+.package-copy-box .package-npm-field input {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
 }
