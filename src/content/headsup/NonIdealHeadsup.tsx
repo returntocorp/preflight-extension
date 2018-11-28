@@ -73,8 +73,18 @@ export class UnsupportedHeadsUp extends React.PureComponent<
                 {this.state.displayed === HeadsupDisplayState.Open && (
                   <span className="unsupported-message-text">
                     🛫 Preflight currently supports JavaScript and TypeScript
-                    projects that have been published to npm. We're exploring
-                    ways to support new projects and languages in the future.
+                    projects that have been published to npm. Want to see this
+                    project on Preflight?{" "}
+                    <a
+                      onClick={l("preflight-unsupported-request-click")}
+                      href="https://github.com/returntocorp/secarta-extension/issues/new?template=request-a-project.md"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      role="button"
+                    >
+                      Send us a request
+                    </a>
+                    .
                   </span>
                 )}
 
@@ -130,10 +140,7 @@ export class MissingDataHeadsUp extends React.PureComponent {
           🛬 Preflight couldn't find any data for this project. We're looking
           into it. Help us out by
           <a
-            onClick={l(
-              "preflight-unsupported-request-click",
-              this.handleRequestClick
-            )}
+            onClick={l("preflight-missing-data-click", this.handleRequestClick)}
             href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
             target="_blank"
             rel="noopener noreferrer"
