@@ -39,4 +39,4 @@ At R2C, we are working on eliminating entire classes of vulnerabilities and bad 
 
 If that sounds like a good idea, join our Beta program or better yet... [join us](https://jobs.lever.co/returntocorp/)!
 
-You can read our privacy policy [here](./PRIVACY.md).
+We are committed to respecting and protecting your privacy. See our [Privacy Policy](../PRIVACY.md) to learn about what information we collect and how we might use that information. For information about our security policy and disclosure procedure, see our [Security Policy](../SECURITY.md).
