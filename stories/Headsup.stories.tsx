@@ -2,6 +2,7 @@ import { OverrideType } from "@r2c/extension/api/package";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
+  MissingDataHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import OverrideHeadsup, {
@@ -24,6 +25,7 @@ storiesOf("Headsup", module)
     />
   ))
   .add("Non-ideal, unsupported", () => <UnsupportedHeadsUp />)
+  .add("Non-ideal, missing data", () => <MissingDataHeadsUp />)
   .add("Override, default", () => (
     <OverrideHeadsup
       override={{
