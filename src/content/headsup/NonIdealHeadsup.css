@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.r2c-repo-headsup .headsup-inline-message a {
+  margin-left: 1ex;
+}
+
 .unsupported-message-text {
   display: flex;
   align-items: baseline;

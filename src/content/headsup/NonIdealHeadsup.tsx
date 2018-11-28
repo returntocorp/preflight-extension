@@ -128,20 +128,20 @@ export class MissingDataHeadsUp extends React.PureComponent {
           )}
         >
           🛬 Preflight couldn't find any data for this project. We're looking
-          into it.
-          <Button
-            rightIcon={IconNames.AIRPLANE}
-            className="missing-data-request-button"
-            minimal={true}
-            small={true}
+          into it. Help us out by
+          <a
             onClick={l(
               "preflight-unsupported-request-click",
               this.handleRequestClick
             )}
-            intent={Intent.SUCCESS}
+            href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
           >
-            Give us a boost!
-          </Button>
+            filing an issue
+          </a>
+          .
         </span>
       </div>
     );
