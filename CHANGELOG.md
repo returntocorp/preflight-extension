@@ -9,11 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-<<<<<<< HEAD
-- Made "preflight" header and R2C logo link to the browser's GitHub repo and the R2C website respectively
-=======
-- Added link to secarta extension on github on the preflight text in the header as well as a link to R2C's website on the R2C logo in the header.
->>>>>>> 15932c85a5c339827843ff6b39ab7cb2d6aeca6b
+- Made preflight title and R2C logo link to the browser extension's GitHub repo and the R2C website respectively
 
 ## [1.14.0] - 2018-11-27
 
