@@ -193,7 +193,17 @@ export class ErrorHeadsUp extends React.PureComponent<
             />
             <div className="error-message-text">
               Couldn't load Preflight. Check that <code>api.secarta.io</code> is
-              whitelisted in your browser.
+              whitelisted in your browser. Help us out by
+              <a
+                onClick={l("preflight-file-bug-click")}
+                href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-a-bug.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                role="button"
+              >
+                filing an issue
+              </a>
+              .
             </div>
           </div>
           {hasError && (
