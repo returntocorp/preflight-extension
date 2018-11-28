@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Made preflight title and R2C logo link to the browser extension's GitHub repo and the R2C website respectively
+
 ## [1.14.0] - 2018-11-27
 
 ### Added
