@@ -71,7 +71,12 @@ export class UnsupportedHeadsUp extends React.PureComponent<
                 )}
 
                 {this.state.displayed === HeadsupDisplayState.Open && (
-                  <span className="unsupported-message-text">
+                  <span
+                    className={classnames(
+                      "unsupported-message-text",
+                      "headsup-inline-message"
+                    )}
+                  >
                     🛫 Preflight currently supports JavaScript and TypeScript
                     projects that have been published to npm. Want to see this
                     project on Preflight?{" "}
@@ -198,7 +203,12 @@ export class ErrorHeadsUp extends React.PureComponent<
               className="error-icon"
               intent={Intent.DANGER}
             />
-            <div className="error-message-text">
+            <div
+              className={classnames(
+                "error-message-text",
+                "headsup-inline-message"
+              )}
+            >
               Couldn't load Preflight. Check that <code>api.secarta.io</code> is
               whitelisted in your browser. Help us out by
               <a
