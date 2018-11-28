@@ -9,7 +9,7 @@ import {
 import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
 import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
-import { R2CLogo } from "@r2c/extension/icons";
+import { R2CLogoLink } from "@r2c/extension/icons";
 import * as React from "react";
 import "./index.css";
 
@@ -52,7 +52,7 @@ export default class NormalHeadsUp extends React.PureComponent<
                 repoSlug={repoSlug}
               />
             )}
-            <R2CLogo />
+            <R2CLogoLink />
           </div>
         </header>
         <div className="repo-headsup-body">
