@@ -1,6 +1,6 @@
 # Security
 
-To report a security-related concern, please reach out to us at security@ret2.co. When sending sensitive information, you can use the PGP public key below to encrypt the contents of your message.
+To report a security-related concern, please reach out to us at security@returntocorp.com. When sending sensitive information, you can use the PGP public key below to encrypt the contents of your message.
 
 ## PGP key
 
