@@ -1,0 +1,63 @@
+.r2c-repo-headsup.simple-headsup {
+  height: 49px;
+}
+
+.simple-headsup {
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  -webkit-flex-flow: row nowrap;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.hidden {
+  display: none;
+}
+
+.detailed {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.simple-headsup-headline {
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 1em;
+}
+
+.simple-headsup > .simple-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 1.5em;
+}
+
+.simple-headsup > .simple-right {
+  padding-right: 1.5em;
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
+}
+
+.simple-danger {
+  border-color: #cb2431;
+}
+
+.simple-safe {
+  border-color: #5eba5c;
+}
+
+.simple-warning {
+  border-color: #f1e05a;
+}
+
+.simple-missing {
+  border-color: #959595;
+}
+
+.simple-loading {
+  border-color: #2d9cdb;
+}
+
+.simple-unsupported {
+  border-color: #bb6bd9;
+}

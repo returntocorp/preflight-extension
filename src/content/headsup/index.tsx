@@ -1,13 +1,8 @@
 import { li } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
-import {
-  ErrorHeadsUp,
-  LoadingHeadsUp,
-  MissingDataHeadsUp,
-  UnsupportedHeadsUp
-} from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
+import DetailedHeadsup from "@r2c/extension/content/headsup/DetailedHeadsup";
+import { ErrorHeadsUp } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
 import PreflightFetch, {
@@ -15,6 +10,9 @@ import PreflightFetch, {
   PreflightChecklistFetchResponse
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
+import SimpleHeadsup, {
+  SimpleHeadsupWrapper
+} from "@r2c/extension/content/headsup/SimpleHeadsup";
 import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
 import { map } from "lodash";
 import * as React from "react";
@@ -74,11 +72,11 @@ class RepoHeadsUp extends React.PureComponent<
 
             switch (state) {
               case ProjectState.LOADING_ALL:
-                return <LoadingHeadsUp />;
+                return <SimpleHeadsup simpleType="loading" />;
               case ProjectState.EMPTY_UNSUPPORTED:
-                return <UnsupportedHeadsUp />;
+                return <SimpleHeadsup simpleType="unsupported" />;
               case ProjectState.ERROR_MISSING_DATA:
-                return <MissingDataHeadsUp />;
+                return <SimpleHeadsup simpleType="missing" />;
               case ProjectState.ERROR_API:
                 return (
                   error != null && (
@@ -91,7 +89,7 @@ class RepoHeadsUp extends React.PureComponent<
                   data.pkg != null &&
                   data.pkg.override != null && (
                     <OverrideHeadsupWrapper override={data.pkg.override}>
-                      <NormalHeadsUp
+                      <DetailedHeadsup
                         data={data}
                         loading={loading}
                         {...this.props}
@@ -104,11 +102,13 @@ class RepoHeadsUp extends React.PureComponent<
               case ProjectState.COMPLETE:
                 return (
                   data != null && (
-                    <NormalHeadsUp
-                      data={data}
-                      loading={loading}
-                      {...this.props}
-                    />
+                    <SimpleHeadsupWrapper>
+                      <DetailedHeadsup
+                        data={data}
+                        loading={loading}
+                        {...this.props}
+                      />
+                    </SimpleHeadsupWrapper>
                   )
                 );
               case ProjectState.ERROR_UNKNOWN:
