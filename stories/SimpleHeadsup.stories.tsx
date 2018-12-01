@@ -1,13 +1,17 @@
-import { OverrideType } from "@r2c/extension/api/package";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import OverrideHeadsup, {
-  OverrideHeadsupWrapper
-} from "@r2c/extension/content/headsup/OverrideHeadsup";
+import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { ERROR_UNKNOWN } from "@r2c/extension/content/headsup/PreflightProjectState";
+import SimpleHeadsup from "@r2c/extension/content/headsup/SimpleHeadsup";
+import {
+  CheckmarkIcon,
+  DangerIcon,
+  MissingIcon,
+  WarningIcon
+} from "@r2c/extension/icons";
 import { MarkdownString } from "@r2c/extension/utils";
 import { action } from "@storybook/addon-actions";
 import centered from "@storybook/addon-centered";
@@ -24,55 +28,47 @@ storiesOf("SimpleHeadsup", module)
     />
   ))
   .add("Non-ideal, unsupported", () => <UnsupportedHeadsUp />)
-  .add("Override, default", () => (
-    <OverrideHeadsup
-      override={{
-        headline: "Something else" as MarkdownString,
-        overrideType: "something-else" as OverrideType,
-        reportedAt: "2018-11-26T13:26:00-08:00",
-        reporter: "https://github.com/FallingSnow"
-      }}
-      onShowAnywaysClick={action("show anyways clicked")}
-      onReportClick={action("report issue clicked")}
+  .add("Simple, default", () => (
+    <SimpleHeadsup
+      isExpanded={false}
+      status="safe"
+      icon={<MissingIcon />}
+      headline="Missing or unknown Preflight data."
+      handleClickChecksButton={action("show anyways clicked")}
+      showAllChecksButton={true}
     />
   ))
-  .add("Override, blacklist", () => (
-    <OverrideHeadsup
-      override={{
-        headline: "Malicious package. See [dominictarr/event-stream#116](https://github.com/dominictarr/event-stream/issues/116)" as MarkdownString,
-        overrideType: "blacklist",
-        reportedAt: "2018-11-26T13:26:00-08:00",
-        reporter: "https://github.com/FallingSnow"
-      }}
-      onShowAnywaysClick={action("show anyways clicked")}
-      onReportClick={action("report issue clicked")}
+  .add("Simple, blacklist", () => (
+    <SimpleHeadsup
+      isExpanded={false}
+      status="safe"
+      icon={<DangerIcon />}
+      headline="Malicious Package"
+      handleClickChecksButton={action("show anyways clicked")}
+      showAllChecksButton={true}
     />
   ))
-  .add("Override, whitelist", () => (
-    <OverrideHeadsup
-      override={{
-        headline: "Package passes all checks" as MarkdownString,
-        overrideType: "whitelist",
-        reportedAt: "2018-11-26T13:26:00-08:00",
-        reporter: "https://github.com/FallingSnow"
-      }}
-      onShowAnywaysClick={action("show anyways clicked")}
-      onReportClick={action("report issue clicked")}
+  .add("Simple, whitelist", () => (
+    <SimpleHeadsup
+      isExpanded={false}
+      status="safe"
+      icon={<CheckmarkIcon />}
+      headline="All Preflight checks pass."
+      handleClickChecksButton={action("show anyways clicked")}
+      showAllChecksButton={true}
     />
   ))
-  .add("Override, promote", () => (
-    <OverrideHeadsup
-      override={{
-        headline: "Trusted package" as MarkdownString,
-        overrideType: "promote",
-        reportedAt: "2018-11-26T13:26:00-08:00",
-        reporter: "https://github.com/FallingSnow"
-      }}
-      onShowAnywaysClick={action("show anyways clicked")}
-      onReportClick={action("report issue clicked")}
+  .add("Simple, warning", () => (
+    <SimpleHeadsup
+      isExpanded={false}
+      status="safe"
+      icon={<WarningIcon />}
+      headline="Some Preflight checks fail."
+      handleClickChecksButton={action("show anyways clicked")}
+      showAllChecksButton={true}
     />
   ))
-  .add("Override wrapper, promote", () => (
+  .add("Simple wrapper, promote", () => (
     <OverrideHeadsupWrapper
       override={{
         headline: "Trusted package" as MarkdownString,
