@@ -55,7 +55,7 @@ export default class SimpleHeadsup extends React.PureComponent<
 
   private renderRight(
     handleClickChecksButton: React.MouseEventHandler | undefined,
-    isShowing: boolean | undefined
+    isExpanded: boolean | undefined
   ) {
     return (
       <React.Fragment>
@@ -70,15 +70,15 @@ export default class SimpleHeadsup extends React.PureComponent<
             )}
             role="button"
           >
-            {this.renderShow(isShowing)}
+            {this.renderShow(isExpanded)}
           </a>
         </span>
       </React.Fragment>
     );
   }
 
-  private renderShow(isShowing: boolean | undefined) {
-    return isShowing ? "Hide all checks" : "Show all checks";
+  private renderShow(isExpanded: boolean | undefined) {
+    return isExpanded ? "Hide all checks" : "Show all checks";
   }
 }
 
@@ -105,7 +105,7 @@ export class SimpleHeadsupWrapper extends React.PureComponent<
     return (
       <>
         <SimpleHeadsup
-          isExpanded={false}
+          isExpanded={showMore}
           status="safe"
           icon={<CheckmarkIcon />}
           headline="Preflight"
