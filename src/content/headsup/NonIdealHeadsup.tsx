@@ -1,9 +1,11 @@
-import { Button, Icon, Intent, Spinner } from "@blueprintjs/core";
+import { Button, Icon, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l, li } from "@r2c/extension/analytics";
 import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
 import { PreflightProjectState } from "@r2c/extension/content/headsup/PreflightProjectState";
+import SimpleHeadsup from "@r2c/extension/content/headsup/SimpleHeadsup";
 import { MainToaster } from "@r2c/extension/content/Toaster";
+import { LoadingIcon, UnsupportedIcon } from "@r2c/extension/icons";
 import {
   ExtensionState,
   toggleExtensionExperiment
@@ -45,46 +47,42 @@ export class UnsupportedHeadsUp extends React.PureComponent<
             !extensionState.experiments.hideOnUnsupported
           ) {
             return (
-              <div
-                className={classnames(
-                  "r2c-repo-headsup",
-                  "nonideal-headsup",
-                  "unsupported-headsup"
-                )}
-              >
-                {this.state.displayed ===
-                  HeadsupDisplayState.DisplayOptions && (
-                  <span className="hide-options">
+              <SimpleHeadsup
+                isExpanded={false}
+                status="unsupported"
+                icon={<UnsupportedIcon />}
+                headline="Preflight currently only supports JavaScript and TypeScript projects that have been published to npm."
+                handleClickChecksButton={undefined}
+                showAllChecksButton={false}
+                rightSide={
+                  <React.Fragment>
+                    {this.state.displayed ===
+                      HeadsupDisplayState.DisplayOptions && (
+                      <span className="hide-options">
+                        <Button
+                          id="hide-always-button"
+                          minimal={true}
+                          small={true}
+                          onClick={l(
+                            "preflight-hide-always-click",
+                            this.handleDismissAlways(extensionState)
+                          )}
+                          intent={Intent.DANGER}
+                        >
+                          Always hide if unsupported
+                        </Button>
+                      </span>
+                    )}
+
                     <Button
-                      id="hide-always-button"
+                      icon={IconNames.SMALL_CROSS}
                       minimal={true}
                       small={true}
-                      onClick={l(
-                        "preflight-hide-always-click",
-                        this.handleDismissAlways(extensionState)
-                      )}
-                      intent={Intent.DANGER}
-                    >
-                      Always hide if unsupported
-                    </Button>
-                  </span>
-                )}
-
-                {this.state.displayed === HeadsupDisplayState.Open && (
-                  <span className="unsupported-message-text">
-                    🛫 Preflight currently supports JavaScript and TypeScript
-                    projects that have been published to npm. We're exploring
-                    ways to support new projects and languages in the future.
-                  </span>
-                )}
-
-                <Button
-                  icon={IconNames.SMALL_CROSS}
-                  minimal={true}
-                  small={true}
-                  onClick={this.closeMessage}
-                />
-              </div>
+                      onClick={this.closeMessage}
+                    />
+                  </React.Fragment>
+                }
+              />
             );
           } else {
             return null;
@@ -234,21 +232,14 @@ export class LoadingHeadsUp extends React.PureComponent {
     }
 
     return (
-      <div
-        className={classnames(
-          "r2c-repo-headsup",
-          "nonideal-headsup",
-          "loading-headsup"
-        )}
-      >
-        <div className="loading-message">
-          <Spinner
-            size={Spinner.SIZE_SMALL}
-            className="loading-headsup-spinner"
-          />
-          <span className="loading-message-text">Contacting tower...</span>
-        </div>
-      </div>
+      <SimpleHeadsup
+        isExpanded={false}
+        status="loading"
+        icon={<LoadingIcon />}
+        headline="Contacting tower ..."
+        handleClickChecksButton={undefined}
+        showAllChecksButton={false}
+      />
     );
   }
 }

@@ -10,7 +10,6 @@
   border-top-style: none;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
-  border-color: #5eba5c;
 }
 
 .r2c-repo-headsup > header {
@@ -172,4 +171,28 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   display: flex;
   flex-direction: row;
   justify-content: end;
+}
+
+.danger {
+  border-color: #cb2431;
+}
+
+.safe {
+  border-color: #5eba5c;
+}
+
+.warning {
+  border-color: #f1e05a;
+}
+
+.missing {
+  border-color: #959595;
+}
+
+.loading {
+  border-color: #2d9cdb;
+}
+
+.unsupported {
+  border-color: #bb6bd9;
 }

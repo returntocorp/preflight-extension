@@ -37,27 +37,3 @@
   font-size: 12px;
   color: rgba(16, 22, 26, 0.6);
 }
-
-.simple-danger {
-  border-color: #cb2431;
-}
-
-.simple-safe {
-  border-color: #5eba5c;
-}
-
-.simple-warning {
-  border-color: #f1e05a;
-}
-
-.simple-missing {
-  border-color: #959595;
-}
-
-.simple-loading {
-  border-color: #2d9cdb;
-}
-
-.simple-unsupported {
-  border-color: #bb6bd9;
-}

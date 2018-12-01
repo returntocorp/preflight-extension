@@ -2,17 +2,18 @@ import { li } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import DetailedHeadsup from "@r2c/extension/content/headsup/DetailedHeadsup";
-import { ErrorHeadsUp } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
+import {
+  ErrorHeadsUp,
+  LoadingHeadsUp,
+  UnsupportedHeadsUp
+} from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
 import PreflightFetch, {
   PreflightChecklistFetchData,
   PreflightChecklistFetchResponse
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
-import SimpleHeadsup, {
-  SimpleHeadsupWrapper
-} from "@r2c/extension/content/headsup/SimpleHeadsup";
+import { SimpleHeadsupWrapper } from "@r2c/extension/content/headsup/SimpleHeadsup";
 import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
 import { map } from "lodash";
 import * as React from "react";
@@ -72,11 +73,11 @@ class RepoHeadsUp extends React.PureComponent<
 
             switch (state) {
               case ProjectState.LOADING_ALL:
-                return <SimpleHeadsup simpleType="loading" />;
+                return <LoadingHeadsUp />;
               case ProjectState.EMPTY_UNSUPPORTED:
-                return <SimpleHeadsup simpleType="unsupported" />;
+                return <UnsupportedHeadsUp />;
               case ProjectState.ERROR_MISSING_DATA:
-                return <SimpleHeadsup simpleType="missing" />;
+                return <LoadingHeadsUp />;
               case ProjectState.ERROR_API:
                 return (
                   error != null && (
@@ -88,13 +89,13 @@ class RepoHeadsUp extends React.PureComponent<
                   data != null &&
                   data.pkg != null &&
                   data.pkg.override != null && (
-                    <OverrideHeadsupWrapper override={data.pkg.override}>
+                    <SimpleHeadsupWrapper>
                       <DetailedHeadsup
                         data={data}
                         loading={loading}
                         {...this.props}
                       />
-                    </OverrideHeadsupWrapper>
+                    </SimpleHeadsupWrapper>
                   )
                 );
               case ProjectState.LOADING_SOME:
