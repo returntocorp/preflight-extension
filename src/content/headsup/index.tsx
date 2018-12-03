@@ -87,9 +87,9 @@ class RepoHeadsUp extends React.PureComponent<
               case ProjectState.OVERRIDE:
                 return (
                   data != null &&
-                  data.pkg != null &&
-                  data.pkg.override != null && (
-                    <SimpleHeadsupWrapper>
+                  data.criteria != null &&
+                  data.criteria.criteria != null && (
+                    <SimpleHeadsupWrapper criteria={data.criteria.criteria}>
                       <DetailedHeadsup
                         data={data}
                         loading={loading}
@@ -102,8 +102,10 @@ class RepoHeadsUp extends React.PureComponent<
               case ProjectState.PARTIAL:
               case ProjectState.COMPLETE:
                 return (
-                  data != null && (
-                    <SimpleHeadsupWrapper>
+                  data != null &&
+                  data.criteria != null &&
+                  data.criteria.criteria != null && (
+                    <SimpleHeadsupWrapper criteria={data.criteria.criteria}>
                       <DetailedHeadsup
                         data={data}
                         loading={loading}

@@ -1,10 +1,12 @@
 import { l } from "@r2c/extension/analytics";
+import { CriteriaEntry } from "@r2c/extension/api/criteria";
 import { CheckmarkIcon } from "@r2c/extension/icons";
 import * as classnames from "classnames";
 import * as React from "react";
 import "./SimpleHeadsup.css";
 
 interface SimpleHeadsupProps {
+  criteria?: CriteriaEntry;
   isExpanded?: boolean;
   status: "safe" | "danger" | "warning" | "missing" | "unsupported" | "loading";
   icon: React.ReactChild;
@@ -83,6 +85,7 @@ export default class SimpleHeadsup extends React.PureComponent<
 }
 
 interface SimpleHeadsupWrapperProps {
+  criteria: CriteriaEntry;
   children: React.ReactChild;
 }
 
@@ -99,12 +102,13 @@ export class SimpleHeadsupWrapper extends React.PureComponent<
   };
 
   public render() {
-    const { children } = this.props;
+    const { criteria, children } = this.props;
     const { showMore } = this.state;
 
     return (
       <>
         <SimpleHeadsup
+          criteria={criteria}
           isExpanded={showMore}
           status="safe"
           icon={<CheckmarkIcon />}
