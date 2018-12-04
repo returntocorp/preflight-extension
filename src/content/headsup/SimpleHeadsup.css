@@ -16,6 +16,10 @@
   padding-left: 1em;
 }
 
+.simple-headsup-headline p {
+  margin: 0px;
+}
+
 .simple-headsup > .simple-left {
   display: flex;
   flex-direction: row;

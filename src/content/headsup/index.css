@@ -173,26 +173,26 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   justify-content: end;
 }
 
-.danger {
+.preflight-danger {
   border-color: #cb2431;
 }
 
-.safe {
+.preflight-safe {
   border-color: #5eba5c;
 }
 
-.warning {
+.preflight-warning {
   border-color: #f1e05a;
 }
 
-.missing {
+.preflight-missing {
   border-color: #959595;
 }
 
-.loading {
+.preflight-loading {
   border-color: #2d9cdb;
 }
 
-.unsupported {
+.preflight-unsupported {
   border-color: #bb6bd9;
 }

@@ -13,7 +13,6 @@ import {
   WarningIcon
 } from "@r2c/extension/icons";
 import { MarkdownString } from "@r2c/extension/utils";
-import { action } from "@storybook/addon-actions";
 import centered from "@storybook/addon-centered";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
@@ -34,8 +33,6 @@ storiesOf("SimpleHeadsup", module)
       status="safe"
       icon={<MissingIcon />}
       headline="Missing or unknown Preflight data."
-      handleClickChecksButton={action("show anyways clicked")}
-      showAllChecksButton={true}
     />
   ))
   .add("Simple, blacklist", () => (
@@ -44,8 +41,6 @@ storiesOf("SimpleHeadsup", module)
       status="safe"
       icon={<DangerIcon />}
       headline="Malicious Package"
-      handleClickChecksButton={action("show anyways clicked")}
-      showAllChecksButton={true}
     />
   ))
   .add("Simple, whitelist", () => (
@@ -54,8 +49,6 @@ storiesOf("SimpleHeadsup", module)
       status="safe"
       icon={<CheckmarkIcon />}
       headline="All Preflight checks pass."
-      handleClickChecksButton={action("show anyways clicked")}
-      showAllChecksButton={true}
     />
   ))
   .add("Simple, warning", () => (
@@ -64,8 +57,6 @@ storiesOf("SimpleHeadsup", module)
       status="safe"
       icon={<WarningIcon />}
       headline="Some Preflight checks fail."
-      handleClickChecksButton={action("show anyways clicked")}
-      showAllChecksButton={true}
     />
   ))
   .add("Simple wrapper, promote", () => (

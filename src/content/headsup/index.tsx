@@ -73,6 +73,7 @@ class RepoHeadsUp extends React.PureComponent<
 
             switch (state) {
               case ProjectState.LOADING_ALL:
+              case ProjectState.LOADING_SOME:
                 return <LoadingHeadsUp />;
               case ProjectState.EMPTY_UNSUPPORTED:
                 return <UnsupportedHeadsUp />;
@@ -84,15 +85,16 @@ class RepoHeadsUp extends React.PureComponent<
                     <ErrorHeadsUp projectState={state} error={error} />
                   )
                 );
-              case ProjectState.LOADING_SOME:
               case ProjectState.PARTIAL:
               case ProjectState.COMPLETE:
+              case ProjectState.OVERRIDE:
                 return (
                   data != null &&
                   data.criteria != null &&
                   data.criteria.criteria != null && (
                     <SimpleHeadsupDetailsWrapper
                       criteria={data.criteria.criteria}
+                      showAllChecksButton={false}
                     >
                       <DetailedHeadsup
                         data={data}

@@ -52,8 +52,6 @@ export class UnsupportedHeadsUp extends React.PureComponent<
                 status="unsupported"
                 icon={<UnsupportedIcon />}
                 headline="Preflight currently only supports JavaScript and TypeScript projects that have been published to npm."
-                handleClickChecksButton={undefined}
-                showAllChecksButton={false}
                 rightSide={
                   <React.Fragment>
                     {this.state.displayed ===
@@ -237,8 +235,6 @@ export class LoadingHeadsUp extends React.PureComponent {
         status="loading"
         icon={<LoadingIcon />}
         headline="Contacting tower ..."
-        handleClickChecksButton={undefined}
-        showAllChecksButton={false}
       />
     );
   }
