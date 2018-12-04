@@ -41,3 +41,17 @@
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+
+.simple-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.simple-headsup-timestamp {
+  padding-right: 0.5ex;
+}
+
+.simple-headsup-show {
+  padding-left: 0.5ex;
+}

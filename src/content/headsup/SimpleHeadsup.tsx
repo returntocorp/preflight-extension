@@ -1,12 +1,13 @@
 import { l } from "@r2c/extension/analytics";
 import { CriteriaEntry } from "@r2c/extension/api/criteria";
+import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import {
   CheckmarkIcon,
   DangerIcon,
   MissingIcon,
   WarningIcon
 } from "@r2c/extension/icons";
-import { MarkdownString } from "@r2c/extension/utils";
+import { ExtractedRepoSlug, MarkdownString } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
 import * as Markdown from "react-markdown";
@@ -54,6 +55,8 @@ interface SimpleHeadsUpCriteriaWrapperProps {
   criteria: CriteriaEntry;
   handleClickChecksButton?: React.MouseEventHandler;
   showAllChecksButton: boolean;
+  lastUpdatedDate: Date;
+  repoSlug: ExtractedRepoSlug;
 }
 
 export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
@@ -61,7 +64,12 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
 > {
   public render() {
     const { override, rating } = this.props.criteria;
-    const { handleClickChecksButton, showAllChecksButton } = this.props;
+    const {
+      handleClickChecksButton,
+      showAllChecksButton,
+      lastUpdatedDate,
+      repoSlug
+    } = this.props;
 
     if (override && rating === "danger") {
       const { headline } = override;
@@ -73,7 +81,9 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
           headline={headline}
           rightSide={this.renderRight(
             handleClickChecksButton,
-            showAllChecksButton
+            showAllChecksButton,
+            lastUpdatedDate,
+            repoSlug
           )}
         />
       );
@@ -86,7 +96,9 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
         headline={this.renderStatus(rating)[1]}
         rightSide={this.renderRight(
           handleClickChecksButton,
-          showAllChecksButton
+          showAllChecksButton,
+          lastUpdatedDate,
+          repoSlug
         )}
       />
     );
@@ -94,13 +106,19 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
 
   private renderRight(
     handleClickChecksButton: React.MouseEventHandler | undefined,
-    isExpanded: boolean | undefined
+    isExpanded: boolean | undefined,
+    lastUpdatedDate: Date,
+    repoSlug: ExtractedRepoSlug
   ) {
     return (
       <>
         <span className="simple-headsup-timestamp">
-          Updated 2 weeks ago &middot;{" "}
+          <LastUpdatedBadge
+            lastUpdatedDate={lastUpdatedDate}
+            repoSlug={repoSlug}
+          />{" "}
         </span>
+        &middot;
         <span className="simple-headsup-show">
           <a
             onClick={l(
@@ -140,6 +158,8 @@ interface SimpleHeadsupDetailsWrapperProps {
   handleClickChecksButton?: React.MouseEventHandler;
   showAllChecksButton: boolean;
   children: React.ReactChild;
+  lastUpdatedDate: Date;
+  repoSlug: ExtractedRepoSlug;
 }
 
 interface SimpleHeadsupDetailsWrapperState {
@@ -155,7 +175,7 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
   };
 
   public render() {
-    const { criteria, children } = this.props;
+    const { criteria, children, lastUpdatedDate, repoSlug } = this.props;
     const { rating } = this.props.criteria;
     const { showMore } = this.state;
 
@@ -165,6 +185,8 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
           criteria={criteria}
           showAllChecksButton={showMore}
           handleClickChecksButton={this.handleShowAllChecks}
+          lastUpdatedDate={lastUpdatedDate}
+          repoSlug={repoSlug}
         />
         <div
           className={classnames(

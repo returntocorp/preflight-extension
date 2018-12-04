@@ -92,10 +92,13 @@ class RepoHeadsUp extends React.PureComponent<
                 return (
                   data != null &&
                   data.criteria != null &&
+                  data.repo != null &&
                   data.criteria.criteria != null && (
                     <SimpleHeadsupDetailsWrapper
                       criteria={data.criteria.criteria}
                       showAllChecksButton={false}
+                      lastUpdatedDate={new Date(data.repo.analyzedAt)}
+                      repoSlug={repoSlug}
                     >
                       <DetailedHeadsup
                         data={data}
