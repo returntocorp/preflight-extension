@@ -1,3 +1,5 @@
+import { IconNames } from "@blueprintjs/icons";
+import { li } from "@r2c/extension/analytics";
 import { PackageEntry } from "@r2c/extension/api/package";
 import { HeadsUpProps } from "@r2c/extension/content/headsup";
 import PackageCopyBox from "@r2c/extension/content/headsup/PackageCopyBox";
@@ -8,18 +10,13 @@ import {
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
+import { MainToaster } from "@r2c/extension/content/Toaster";
+import { R2CLogoLink } from "@r2c/extension/icons";
 import * as classNames from "classnames";
 import * as React from "react";
 import "./index.css";
 
 interface DetailedHeadsupProps extends HeadsUpProps {
-  status?:
-    | "safe"
-    | "danger"
-    | "warning"
-    | "missing"
-    | "unsupported"
-    | "loading";
   data: PreflightChecklistFetchData;
   loading: PreflightChecklistLoading;
 }
@@ -77,11 +74,56 @@ export default class DetailedHeadsup extends React.PureComponent<
               onSelectPackage={this.handlePackageSelect}
               loading={loading.pkg}
             />
+            <div className="repo-headsup-actions-footer">
+              <R2CLogoLink />
+              {this.renderReport(
+                data && data.criteria && data.criteria.criteria
+                  ? data.criteria.criteria.rating
+                  : "safe"
+              )}
+            </div>
           </div>
         </div>
       </div>
     );
   }
+
+  private renderReport(
+    status:
+      | "safe"
+      | "danger"
+      | "warning"
+      | "missing"
+      | "unsupported"
+      | "loading"
+      | "error"
+  ) {
+    return (
+      status === "danger" && (
+        <span className="repo-headsup-report">
+          Is this a mistake?{" "}
+          <a
+            onClick={this.handleReportClick}
+            href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="button"
+          >
+            Let us know.
+          </a>
+        </span>
+      )
+    );
+  }
+
+  private handleReportClick: React.MouseEventHandler = () => {
+    li("preflight-report-mistake-click");
+    MainToaster.show({
+      message:
+        "Thanks for letting us know. We'll take a look and make it right.",
+      icon: IconNames.HEART
+    });
+  };
 
   private handlePackageSelect = (newPackage: PackageEntry) => {
     this.setState({ selectedPackage: newPackage });

@@ -145,10 +145,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       case "warning":
         return [<WarningIcon key={0} />, "Some Preflight checks fail."];
       default:
-        return [
-          <MissingIcon key={0} />,
-          "There's been an error fetching criteria"
-        ];
+        return [<MissingIcon key={0} />, "Missing or unknown Preflight data."];
     }
   }
 }

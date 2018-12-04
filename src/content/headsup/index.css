@@ -12,57 +12,31 @@
   border-top-right-radius: 0;
 }
 
-.r2c-repo-headsup > header {
+.repo-headsup-actions-footer {
+  padding-top: 2ex;
+  padding-right: 1ex;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 6px 10px;
-  border-bottom: 1px solid rgba(16, 22, 26, 0.1);
-
-  background-color: rgba(16, 22, 26, 0.03);
-}
-
-.r2c-repo-headsup > header .preflight-logo {
-  font-style: italic;
-  color: #0a9bda;
-}
-
-.r2c-repo-headsup > header .checklist-right {
-  display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   align-items: center;
 }
 
-.r2c-repo-headsup > header .checklist-right svg.r2c-logo {
+.repo-headsup-actions-footer svg.r2c-logo {
   height: 1em;
   width: auto;
-  margin-left: 1em;
 }
 
-.r2c-repo-headsup > header .checklist-right .r2c-logo-path {
+.repo-headsup-actions-footer .r2c-logo-path {
   fill: #0a9bda;
+}
+
+.repo-headsup-actions-footer .repo-headsup-report {
+  margin-right: auto;
 }
 
 .r2c-repo-headsup h1 {
   font-size: 18px;
   display: flex;
   align-items: center;
-}
-
-.r2c-repo-headsup > header .checklist-right .updated-message {
-  font-size: 12px;
-  color: rgba(16, 22, 26, 0.6);
-  cursor: pointer;
-}
-
-.r2c-repo-headsup
-  > header
-  .checklist-right
-  .updated-message:hover
-  .updated-timeago {
-  text-decoration: underline;
 }
 
 .r2c-repo-headsup.checklist-headsup .repo-headsup-body {
