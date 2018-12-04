@@ -10,15 +10,6 @@
   margin-top: 1em;
 }
 
-.hidden {
-  display: none;
-}
-
-.detailed {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-}
-
 .simple-headsup-headline {
   font-size: 16px;
   font-weight: 600;
@@ -36,4 +27,13 @@
   padding-right: 1.5em;
   font-size: 12px;
   color: rgba(16, 22, 26, 0.6);
+}
+
+.simple-headsup-hidden {
+  display: none;
+}
+
+.detailed-headsup-open {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }

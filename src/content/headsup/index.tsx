@@ -13,7 +13,7 @@ import PreflightFetch, {
   PreflightChecklistFetchResponse
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
-import { SimpleHeadsupWrapper } from "@r2c/extension/content/headsup/SimpleHeadsup";
+import { SimpleHeadsupDetailsWrapper } from "@r2c/extension/content/headsup/SimpleHeadsup";
 import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
 import { map } from "lodash";
 import * as React from "react";
@@ -84,20 +84,6 @@ class RepoHeadsUp extends React.PureComponent<
                     <ErrorHeadsUp projectState={state} error={error} />
                   )
                 );
-              case ProjectState.OVERRIDE:
-                return (
-                  data != null &&
-                  data.criteria != null &&
-                  data.criteria.criteria != null && (
-                    <SimpleHeadsupWrapper criteria={data.criteria.criteria}>
-                      <DetailedHeadsup
-                        data={data}
-                        loading={loading}
-                        {...this.props}
-                      />
-                    </SimpleHeadsupWrapper>
-                  )
-                );
               case ProjectState.LOADING_SOME:
               case ProjectState.PARTIAL:
               case ProjectState.COMPLETE:
@@ -105,13 +91,15 @@ class RepoHeadsUp extends React.PureComponent<
                   data != null &&
                   data.criteria != null &&
                   data.criteria.criteria != null && (
-                    <SimpleHeadsupWrapper criteria={data.criteria.criteria}>
+                    <SimpleHeadsupDetailsWrapper
+                      criteria={data.criteria.criteria}
+                    >
                       <DetailedHeadsup
                         data={data}
                         loading={loading}
                         {...this.props}
                       />
-                    </SimpleHeadsupWrapper>
+                    </SimpleHeadsupDetailsWrapper>
                   )
                 );
               case ProjectState.ERROR_UNKNOWN:
