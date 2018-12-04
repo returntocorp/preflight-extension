@@ -3,7 +3,6 @@ import {
   LoadingHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { ERROR_UNKNOWN } from "@r2c/extension/content/headsup/PreflightProjectState";
 import SimpleHeadsup from "@r2c/extension/content/headsup/SimpleHeadsup";
 import {
@@ -12,7 +11,6 @@ import {
   MissingIcon,
   WarningIcon
 } from "@r2c/extension/icons";
-import { MarkdownString } from "@r2c/extension/utils";
 import centered from "@storybook/addon-centered";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
@@ -54,16 +52,4 @@ storiesOf("SimpleHeadsup", module)
       icon={<WarningIcon />}
       headline="Some Preflight checks fail."
     />
-  ))
-  .add("Simple wrapper, promote", () => (
-    <OverrideHeadsupWrapper
-      override={{
-        headline: "Trusted package" as MarkdownString,
-        overrideType: "promote",
-        reportedAt: "2018-11-26T13:26:00-08:00",
-        reporter: "https://github.com/FallingSnow"
-      }}
-    >
-      <h1>foo</h1>
-    </OverrideHeadsupWrapper>
   ));

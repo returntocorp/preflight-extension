@@ -36,3 +36,8 @@
 .simple-headsup-hidden {
   display: none;
 }
+
+.detailed-headsup-open .simple-headsup {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
