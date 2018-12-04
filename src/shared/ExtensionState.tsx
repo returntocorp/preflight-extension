@@ -8,7 +8,7 @@ export type ExperimentName =
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
-  permissions: false,
+  permissions: true,
   hideOnUnsupported: false,
   emptyPlaceholder: false
 };
