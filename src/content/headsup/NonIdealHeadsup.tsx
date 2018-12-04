@@ -181,7 +181,7 @@ export class ErrorHeadsUp extends React.PureComponent<
     return (
       <>
         <SimpleHeadsup
-          status="missing"
+          status="error"
           icon={<MissingIcon />}
           headline={`
     Couldn't load Preflight. Check that ${<code>api.secarta.io</code>} is
