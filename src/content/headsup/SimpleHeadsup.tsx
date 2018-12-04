@@ -180,7 +180,12 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
     const { showMore } = this.state;
 
     return (
-      <div className={classnames({ "detailed-headsup-open": showMore })}>
+      <div
+        className={classnames(
+          { "detailed-headsup-open": showMore },
+          `preflight-${rating}`
+        )}
+      >
         <SimpleHeadsUpCriteriaWrapper
           criteria={criteria}
           showAllChecksButton={showMore}
@@ -188,12 +193,7 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
           lastUpdatedDate={lastUpdatedDate}
           repoSlug={repoSlug}
         />
-        <div
-          className={classnames(
-            { "simple-headsup-hidden": !showMore },
-            `preflight-${rating}`
-          )}
-        >
+        <div className={classnames({ "simple-headsup-hidden": !showMore })}>
           {children}
         </div>
       </div>

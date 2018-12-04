@@ -173,27 +173,35 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   justify-content: end;
 }
 
-.preflight-danger {
+.preflight-danger,
+.preflight-danger .r2c-repo-headsup {
   border-color: #cb2431;
 }
 
-.preflight-safe {
+.preflight-safe,
+.preflight-safe .r2c-repo-headsup {
   border-color: #5eba5c;
 }
 
-.preflight-warning {
+.preflight-warning,
+.preflight-warning .r2c-repo-headsup {
   border-color: #f1e05a;
 }
 
-.preflight-missing .preflight-error {
+.preflight-missing,
+.preflight-error,
+.preflight-missing .r2c-repo-headsup,
+.preflight-error .r2c-repo-headsup {
   border-color: #959595;
 }
 
-.preflight-loading {
+.preflight-loading,
+.preflight-loading .r2c-repo-headsup {
   border-color: #2d9cdb;
 }
 
-.preflight-unsupported {
+.preflight-unsupported,
+.preflight-unsupported .r2c-repo-headsup {
   border-color: #bb6bd9;
 }
 
