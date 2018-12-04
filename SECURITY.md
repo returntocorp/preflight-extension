@@ -1,5 +1,18 @@
 # Security
 
+## Why Trust Us?
+
+It's very to not trust the extension, especially if you don't know us personally! To ensure our integrity and that of the repository, we: 
+
+* require 2FA for the org (unfortunately GH doesn't let you verify that yet)
+* made master a protected branch
+* strictly limit access to the Chrome, Mozilla, and other extension publication credentials
+* have Keybase profiles which link the key contributors to Github and other networks: [1](https://keybase.io/derrickliu), [2](https://keybase.io/dlukeomalley), [3](https://keybase.io/notfalse) (which establishes cryptographic links to GitHub and other profiles). 
+
+We are indeed real people with real networks, and we welcome ideas on how to increase your confidence in the extensions source and publishing process.
+
+## Reporting Issues
+
 To report a security-related concern, please reach out to us at security@ret2.co. When sending sensitive information, you can use the PGP public key below to encrypt the contents of your message.
 
 ## PGP key
