@@ -112,19 +112,29 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                       loading: permissionsLoading,
                       error: permissionsError
                     }) => {
+                      let findings: FindingEntry[] = [];
+                      let commitHash = null;
                       if (
-                        findingsData == null ||
-                        findingsData.findings == null ||
-                        permissionsData == null ||
-                        permissionsData.permissions == null
+                        findingsData != null &&
+                        findingsData.findings != null
                       ) {
+                        findings = findings.concat(findingsData.findings);
+                        commitHash = findingsData.commitHash;
+                      }
+                      if (
+                        permissionsData != null &&
+                        permissionsData.permissions != null
+                      ) {
+                        findings = findings.concat(
+                          this.getFindingsFromPermissions(
+                            permissionsData.permissions
+                          )
+                        );
+                        commitHash = permissionsData.commitHash;
+                      }
+                      if (commitHash == null) {
                         return;
                       }
-                      const findings = findingsData.findings.concat(
-                        this.getFindingsFromPermissions(
-                          permissionsData.permissions
-                        )
-                      );
 
                       return (
                         <>
@@ -132,7 +142,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                             key={`BlobFindingsInjector ${
                               this.state.currentUrl
                             } ${this.state.navigationNonce}`}
-                            findingCommitHash={findingsData.commitHash}
+                            findingCommitHash={commitHash}
                             findings={findings}
                             repoSlug={this.repoSlug}
                           />
@@ -141,7 +151,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                               this.state.currentUrl
                             } ${this.state.navigationNonce}`}
                             findings={findings}
-                            commitHash={findingsData.commitHash}
+                            commitHash={commitHash}
                             repoSlug={this.repoSlug}
                           />
                         </>
