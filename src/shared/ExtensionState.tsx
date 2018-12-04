@@ -1,14 +1,10 @@
 import { fetchFromStorage, updateStorage } from "@r2c/extension/utils";
 
-export type ExperimentName =
-  | "permissions"
-  | "hideOnUnsupported"
-  | "emptyPlaceholder";
+export type ExperimentName = "hideOnUnsupported" | "emptyPlaceholder";
 
 export type ExperimentManifest = { [E in ExperimentName]: boolean };
 
 const DEFAULT_EXPERIMENTS: ExperimentManifest = {
-  permissions: true,
   hideOnUnsupported: false,
   emptyPlaceholder: false
 };

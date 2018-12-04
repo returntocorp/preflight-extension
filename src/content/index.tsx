@@ -73,7 +73,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
   }
 
   public render() {
-    const { twistTab, installationId, extensionState } = this.state;
+    const { twistTab, installationId } = this.state;
 
     if (isRepositoryPrivate()) {
       return null;
@@ -86,11 +86,6 @@ class ContentHost extends React.Component<{}, ContentHostState> {
     if (installationId == null) {
       return null;
     }
-
-    const permissionsEnabled =
-      extensionState != null &&
-      extensionState.experiments &&
-      extensionState.experiments.permissions != null;
 
     return (
       <div className="r2c-content-host">
@@ -110,67 +105,52 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                   data: findingsData,
                   loading: findingsLoading,
                   error: findingsError
-                }) =>
-                  findingsData != null &&
-                  findingsData.findings != null && (
-                    <>
-                      <BlobFindingsInjector
-                        key={`BlobFindingsInjector ${this.state.currentUrl} ${
-                          this.state.navigationNonce
-                        }`}
-                        findingCommitHash={findingsData.commitHash}
-                        findings={findingsData.findings}
-                        repoSlug={this.repoSlug}
-                      />
-                      <TreeFindingsInjector
-                        key={`TreeFindingsInjector ${this.state.currentUrl} ${
-                          this.state.navigationNonce
-                        }`}
-                        findings={findingsData.findings}
-                        commitHash={findingsData.commitHash}
-                        repoSlug={this.repoSlug}
-                      />
-                    </>
-                  )
-                }
+                }) => (
+                  <PermissionsFetch repoSlug={this.repoSlug}>
+                    {({
+                      data: permissionsData,
+                      loading: permissionsLoading,
+                      error: permissionsError
+                    }) => {
+                      if (
+                        findingsData == null ||
+                        findingsData.findings == null ||
+                        permissionsData == null ||
+                        permissionsData.permissions == null
+                      ) {
+                        return;
+                      }
+                      const findings = findingsData.findings.concat(
+                        this.getFindingsFromPermissions(
+                          permissionsData.permissions
+                        )
+                      );
+
+                      return (
+                        <>
+                          <BlobFindingsInjector
+                            key={`BlobFindingsInjector ${
+                              this.state.currentUrl
+                            } ${this.state.navigationNonce}`}
+                            findingCommitHash={findingsData.commitHash}
+                            findings={findings}
+                            repoSlug={this.repoSlug}
+                          />
+                          <TreeFindingsInjector
+                            key={`TreeFindingsInjector ${
+                              this.state.currentUrl
+                            } ${this.state.navigationNonce}`}
+                            findings={findings}
+                            commitHash={findingsData.commitHash}
+                            repoSlug={this.repoSlug}
+                          />
+                        </>
+                      );
+                    }}
+                  </PermissionsFetch>
+                )}
               </FindingsFetch>
             )}
-            {this.repoSlug != null &&
-              permissionsEnabled && (
-                <PermissionsFetch repoSlug={this.repoSlug}>
-                  {({
-                    data: permissionsData,
-                    loading: permissionsLoading,
-                    error: permissionsError
-                  }) =>
-                    permissionsData != null &&
-                    permissionsData.permissions != null && (
-                      <>
-                        <BlobFindingsInjector
-                          key={`BlobFindingsInjector ${this.state.currentUrl} ${
-                            this.state.navigationNonce
-                          }`}
-                          findingCommitHash={permissionsData.commitHash}
-                          findings={this.getFindingsFromPermissions(
-                            permissionsData.permissions
-                          )}
-                          repoSlug={this.repoSlug}
-                        />
-                        <TreeFindingsInjector
-                          key={`TreeFindingsInjector ${this.state.currentUrl} ${
-                            this.state.navigationNonce
-                          }`}
-                          findings={this.getFindingsFromPermissions(
-                            permissionsData.permissions
-                          )}
-                          commitHash={permissionsData.commitHash}
-                          repoSlug={this.repoSlug}
-                        />
-                      </>
-                    )
-                  }
-                </PermissionsFetch>
-              )}
             <Twists
               isOpen={twistTab != null}
               selectedTwistId={twistTab}

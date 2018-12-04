@@ -224,14 +224,11 @@ export default class PreflightTwist extends React.PureComponent<
           <ExtensionContext.Consumer>
             {({ extensionState }) => (
               <div className="twist-body">
-                {extensionState != null &&
-                  extensionState.experiments.permissions && (
-                    <WrappedPreflightPermissionsDetails
-                      domRef={this.twistRefs.permissions}
-                      focused={deepLink === "permissions"}
-                      repoSlug={repoSlug}
-                    />
-                  )}
+                <WrappedPreflightPermissionsDetails
+                  domRef={this.twistRefs.permissions}
+                  focused={deepLink === "permissions"}
+                  repoSlug={repoSlug}
+                />
                 <WrappedPreflightVulnsDetails
                   domRef={this.twistRefs.vulns}
                   focused={deepLink === "vulns"}

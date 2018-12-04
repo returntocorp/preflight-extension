@@ -71,13 +71,6 @@ export default class ExtensionTab extends React.Component<ExtensionTabProps> {
           className="extension-experiments-cp"
         >
           <ExperimentSwitch
-            title="Permission checks"
-            description="We'll show capabilities and permissions that we've detected in this project as issues you can interact with."
-            experiments={this.props.extensionState.experiments}
-            experimentName="permissions"
-            onToggleExperiment={this.props.onToggleExperiment}
-          />
-          <ExperimentSwitch
             title="Hide on unsupported projects"
             description="We'll hide the unsupported project banner from appearing on JavaScript / TypeScript repositories."
             experiments={this.props.extensionState.experiments}
