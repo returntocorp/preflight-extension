@@ -13,8 +13,14 @@ import * as Markdown from "react-markdown";
 import "./SimpleHeadsup.css";
 
 interface SimpleHeadsupProps {
-  isExpanded?: boolean;
-  status: "safe" | "danger" | "warning" | "missing" | "unsupported" | "loading";
+  status:
+    | "safe"
+    | "danger"
+    | "warning"
+    | "missing"
+    | "unsupported"
+    | "loading"
+    | "error";
   icon: React.ReactChild;
   headline: string | MarkdownString;
   rightSide?: React.ReactChild;
@@ -24,17 +30,13 @@ export default class SimpleHeadsup extends React.PureComponent<
   SimpleHeadsupProps
 > {
   public render() {
-    const { isExpanded, status, icon, headline, rightSide } = this.props;
-
-    const simpleStyle = isExpanded
-      ? "simple-headsup detailed-headsup-open"
-      : "simple-headsup";
+    const { status, icon, headline, rightSide } = this.props;
 
     return (
       <div
         className={classnames(
           "r2c-repo-headsup",
-          `${simpleStyle}`,
+          "simple-headsup",
           `preflight-${status}`
         )}
       >
@@ -95,7 +97,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
     isExpanded: boolean | undefined
   ) {
     return (
-      <React.Fragment>
+      <>
         <span className="simple-headsup-timestamp">
           Updated 2 weeks ago &middot;{" "}
         </span>
@@ -110,7 +112,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
             {this.renderShow(isExpanded)}
           </a>
         </span>
-      </React.Fragment>
+      </>
     );
   }
 
@@ -154,19 +156,25 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
 
   public render() {
     const { criteria, children } = this.props;
+    const { rating } = this.props.criteria;
     const { showMore } = this.state;
 
     return (
-      <>
+      <div className={classnames({ "detailed-headsup-open": showMore })}>
         <SimpleHeadsUpCriteriaWrapper
           criteria={criteria}
           showAllChecksButton={showMore}
           handleClickChecksButton={this.handleShowAllChecks}
         />
-        <div className={!showMore ? "simple-headsup-hidden" : ""}>
+        <div
+          className={classnames(
+            { "simple-headsup-hidden": !showMore },
+            `preflight-${rating}`
+          )}
+        >
           {children}
         </div>
-      </>
+      </div>
     );
   }
 

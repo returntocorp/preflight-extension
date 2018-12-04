@@ -29,7 +29,6 @@ storiesOf("SimpleHeadsup", module)
   .add("Non-ideal, unsupported", () => <UnsupportedHeadsUp />)
   .add("Simple, default", () => (
     <SimpleHeadsup
-      isExpanded={false}
       status="safe"
       icon={<MissingIcon />}
       headline="Missing or unknown Preflight data."
@@ -37,7 +36,6 @@ storiesOf("SimpleHeadsup", module)
   ))
   .add("Simple, blacklist", () => (
     <SimpleHeadsup
-      isExpanded={false}
       status="safe"
       icon={<DangerIcon />}
       headline="Malicious Package"
@@ -45,7 +43,6 @@ storiesOf("SimpleHeadsup", module)
   ))
   .add("Simple, whitelist", () => (
     <SimpleHeadsup
-      isExpanded={false}
       status="safe"
       icon={<CheckmarkIcon />}
       headline="All Preflight checks pass."
@@ -53,7 +50,6 @@ storiesOf("SimpleHeadsup", module)
   ))
   .add("Simple, warning", () => (
     <SimpleHeadsup
-      isExpanded={false}
       status="safe"
       icon={<WarningIcon />}
       headline="Some Preflight checks fail."

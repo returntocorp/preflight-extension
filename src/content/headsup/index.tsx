@@ -5,6 +5,7 @@ import DetailedHeadsup from "@r2c/extension/content/headsup/DetailedHeadsup";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
+  MissingDataHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
 import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
@@ -78,7 +79,7 @@ class RepoHeadsUp extends React.PureComponent<
               case ProjectState.EMPTY_UNSUPPORTED:
                 return <UnsupportedHeadsUp />;
               case ProjectState.ERROR_MISSING_DATA:
-                return <LoadingHeadsUp />;
+                return <MissingDataHeadsUp />;
               case ProjectState.ERROR_API:
                 return (
                   error != null && (

@@ -17,7 +17,7 @@
 }
 
 .simple-headsup-headline p {
-  margin: 0px;
+  margin: 0;
 }
 
 .simple-headsup > .simple-left {
@@ -35,9 +35,4 @@
 
 .simple-headsup-hidden {
   display: none;
-}
-
-.detailed-headsup-open {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
 }

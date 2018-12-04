@@ -15,7 +15,7 @@ export type CriteriaType = "safe" | "warning" | "danger" | "missing";
 
 export interface CriteriaEntry {
   override?: OverrideEntry;
-  checklist: Number;
+  checklist: number;
   rating: CriteriaType;
 }
 

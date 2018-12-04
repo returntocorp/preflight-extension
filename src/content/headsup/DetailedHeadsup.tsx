@@ -8,10 +8,18 @@ import {
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
+import * as classNames from "classnames";
 import * as React from "react";
 import "./index.css";
 
 interface DetailedHeadsupProps extends HeadsUpProps {
+  status?:
+    | "safe"
+    | "danger"
+    | "warning"
+    | "missing"
+    | "unsupported"
+    | "loading";
   data: PreflightChecklistFetchData;
   loading: PreflightChecklistLoading;
 }
@@ -33,7 +41,13 @@ export default class DetailedHeadsup extends React.PureComponent<
     const { selectedPackage } = this.state;
 
     return (
-      <div className="r2c-repo-headsup checklist-headsup detailed">
+      <div
+        className={classNames(
+          "r2c-repo-headsup",
+          "checklist-headsup",
+          "detailed-headsup"
+        )}
+      >
         <div className="repo-headsup-body">
           <div className="repo-headsup-checklist repo-headsup-column">
             <PreflightChecklist
