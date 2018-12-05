@@ -1,6 +1,9 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import { FindingEntry, FindingsFetch } from "@r2c/extension/api/findings";
-import { PermissionsFetch, PermissionsResponse } from "@r2c/extension/api/permissions";
+import {
+  PermissionsFetch,
+  PermissionsResponse
+} from "@r2c/extension/api/permissions";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -8,8 +11,17 @@ import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
 import Twist, { TwistId } from "@r2c/extension/content/Twist";
 import Twists from "@r2c/extension/content/Twists";
-import { ExtensionState, getExtensionState } from "@r2c/extension/shared/ExtensionState";
-import { fetchOrCreateExtensionUniqueId, getCurrentUrlWithoutHash, isGitHubSlug, isRepositoryPrivate, naivelyExtractSlugFromCurrentUrl } from "@r2c/extension/utils";
+import {
+  ExtensionState,
+  getExtensionState
+} from "@r2c/extension/shared/ExtensionState";
+import {
+  fetchOrCreateExtensionUniqueId,
+  getCurrentUrlWithoutHash,
+  isGitHubSlug,
+  isRepositoryPrivate,
+  naivelyExtractSlugFromCurrentUrl
+} from "@r2c/extension/utils";
 import { concat, flatten, get } from "lodash";
 import * as React from "react";
 import { PlaneIcon } from "../icons";
@@ -110,7 +122,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                         )
                       );
 
-                      const commitHash =
+                      const commitHash: string | undefined =
                         get(permissionsData, "commitHash") ||
                         get(findingsData, "commitHash");
 
