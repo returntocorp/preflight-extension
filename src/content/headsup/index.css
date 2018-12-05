@@ -30,7 +30,7 @@
   flex: 0 0 auto;
 }
 
-.repo-headsup-actions-footer div:last-child {
+.repo-headsup-actions-footer a {
   margin-left: auto;
 }
 

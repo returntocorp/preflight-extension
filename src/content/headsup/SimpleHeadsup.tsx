@@ -13,18 +13,23 @@ import * as React from "react";
 import * as Markdown from "react-markdown";
 import "./SimpleHeadsup.css";
 
-interface SimpleHeadsupProps {
-  status:
-    | "safe"
-    | "danger"
-    | "warning"
-    | "missing"
-    | "unsupported"
-    | "loading"
-    | "error";
+interface StatusDescription {
   icon: React.ReactChild;
   headline: string | MarkdownString;
-  rightSide?: React.ReactChild;
+}
+
+export type StatusType =
+  | "safe"
+  | "danger"
+  | "warning"
+  | "missing"
+  | "unsupported"
+  | "loading"
+  | "error";
+
+interface SimpleHeadsupProps extends StatusDescription {
+  status: StatusType;
+  rightSide?: React.ReactChild | null;
 }
 
 export default class SimpleHeadsup extends React.PureComponent<
@@ -138,14 +143,23 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
     return isExpanded ? "Hide all checks" : "Show all checks";
   }
 
-  private renderStatus(status: string): [React.ReactChild, string] {
+  private renderStatus(status: string): StatusDescription {
     switch (status) {
       case "safe":
-        return [<CheckmarkIcon key={0} />, "All Preflight checks pass."];
+        return {
+          icon: <CheckmarkIcon />,
+          headline: "All Preflight checks pass."
+        };
       case "warning":
-        return [<WarningIcon key={0} />, "Some Preflight checks fail."];
+        return {
+          icon: <WarningIcon />,
+          headline: "Some Preflight checks fail."
+        };
       default:
-        return [<MissingIcon key={0} />, "Missing or unknown Preflight data."];
+        return {
+          icon: <MissingIcon />,
+          headline: "Missing or unknown Preflight data."
+        };
     }
   }
 }

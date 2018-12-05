@@ -16,6 +16,34 @@ import * as classNames from "classnames";
 import * as React from "react";
 import "./index.css";
 
+export class ReportMistakeActionButton extends React.PureComponent {
+  public render() {
+    return (
+      <div className="repo-headsup-report">
+        Is this a mistake?{" "}
+        <a
+          onClick={this.handleReportClick}
+          href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          role="button"
+        >
+          Let us know.
+        </a>
+      </div>
+    );
+  }
+
+  private handleReportClick: React.MouseEventHandler = () => {
+    li("preflight-report-mistake-click");
+    MainToaster.show({
+      message:
+        "Thanks for letting us know. We'll take a look and make it right.",
+      icon: IconNames.HEART
+    });
+  };
+}
+
 interface DetailedHeadsupProps extends HeadsUpProps {
   data: PreflightChecklistFetchData;
   loading: PreflightChecklistLoading;
@@ -75,57 +103,20 @@ export default class DetailedHeadsup extends React.PureComponent<
               loading={loading.pkg}
             />
             <div className="repo-headsup-actions-footer">
-              {this.renderReport(
-                data && data.criteria && data.criteria.criteria
-                  ? data.criteria.criteria.rating
-                  : "safe"
-              )}
-              <div>
-                <R2CLogoLink />
-              </div>
+              {data &&
+                data.criteria &&
+                data.criteria.criteria &&
+                data.criteria.criteria.rating &&
+                data.criteria.criteria.rating === "danger" && (
+                  <ReportMistakeActionButton />
+                )}
+              <R2CLogoLink />
             </div>
           </div>
         </div>
       </div>
     );
   }
-
-  private renderReport(
-    status:
-      | "safe"
-      | "danger"
-      | "warning"
-      | "missing"
-      | "unsupported"
-      | "loading"
-      | "error"
-  ) {
-    return (
-      status === "danger" && (
-        <div className="repo-headsup-report">
-          Is this a mistake?{" "}
-          <a
-            onClick={this.handleReportClick}
-            href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
-            target="_blank"
-            rel="noopener noreferrer"
-            role="button"
-          >
-            Let us know.
-          </a>
-        </div>
-      )
-    );
-  }
-
-  private handleReportClick: React.MouseEventHandler = () => {
-    li("preflight-report-mistake-click");
-    MainToaster.show({
-      message:
-        "Thanks for letting us know. We'll take a look and make it right.",
-      icon: IconNames.HEART
-    });
-  };
 
   private handlePackageSelect = (newPackage: PackageEntry) => {
     this.setState({ selectedPackage: newPackage });

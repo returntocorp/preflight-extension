@@ -32,7 +32,9 @@ interface ClosedHeadsupProps {
   extensionState: ExtensionState;
 }
 
-export class CloseHeadsup extends React.PureComponent<ClosedHeadsupProps> {
+export class CloseHeadsupButton extends React.PureComponent<
+  ClosedHeadsupProps
+> {
   public state: UnsupportedMessageState = {
     displayed: HeadsupDisplayState.Open
   };
@@ -110,7 +112,9 @@ export class UnsupportedHeadsUp extends React.PureComponent<
                 status="unsupported"
                 icon={<UnsupportedIcon />}
                 headline="Preflight currently only supports JavaScript and TypeScript projects that have been published to npm."
-                rightSide={<CloseHeadsup extensionState={extensionState} />}
+                rightSide={
+                  <CloseHeadsupButton extensionState={extensionState} />
+                }
               />
             );
           } else {
@@ -122,30 +126,22 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   }
 }
 
-export class MissingDataHeadsUp extends React.PureComponent {
+export class MissingDataRequestButton extends React.PureComponent {
   public render() {
     return (
-      <SimpleHeadsup
-        status="missing"
-        icon={<MissingIcon />}
-        headline="🛬 Preflight couldn't find any data for this project. We're looking
-            into it."
-        rightSide={
-          <Button
-            rightIcon={IconNames.AIRPLANE}
-            className="missing-data-request-button"
-            minimal={true}
-            small={true}
-            onClick={l(
-              "preflight-unsupported-request-click",
-              this.handleRequestClick
-            )}
-            intent={Intent.SUCCESS}
-          >
-            Give us a boost!
-          </Button>
-        }
-      />
+      <Button
+        rightIcon={IconNames.AIRPLANE}
+        className="missing-data-request-button"
+        minimal={true}
+        small={true}
+        onClick={l(
+          "preflight-unsupported-request-click",
+          this.handleRequestClick
+        )}
+        intent={Intent.SUCCESS}
+      >
+        Give us a boost!
+      </Button>
     );
   }
 
@@ -156,6 +152,20 @@ export class MissingDataHeadsUp extends React.PureComponent {
       icon: IconNames.HEART
     });
   };
+}
+
+export class MissingDataHeadsUp extends React.PureComponent {
+  public render() {
+    return (
+      <SimpleHeadsup
+        status="missing"
+        icon={<MissingIcon />}
+        headline="🛬 Preflight couldn't find any data for this project. We're looking
+            into it."
+        rightSide={<MissingDataRequestButton />}
+      />
+    );
+  }
 }
 
 interface ErrorHeadsUpProps {
@@ -213,7 +223,7 @@ export class ErrorHeadsUp extends React.PureComponent<
         </div>
       );
     } else {
-      return <></>;
+      return null;
     }
   }
 
