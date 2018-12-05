@@ -348,13 +348,10 @@ export class PreflightChecklist extends React.PureComponent<
         <ExtensionContext.Consumer>
           {({ extensionState }) => (
             <ul className="preflight-checklist">
-              {extensionState != null &&
-                extensionState.experiments.permissions && (
-                  <PreflightPermissionsItem
-                    repoSlug={repoSlug}
-                    onChecklistItemClick={o}
-                  />
-                )}
+              <PreflightPermissionsItem
+                repoSlug={repoSlug}
+                onChecklistItemClick={o}
+              />
               <PreflightScriptsItem
                 repoSlug={repoSlug}
                 scripts={

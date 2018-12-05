@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Made preflight title and R2C logo link to the browser extension's GitHub repo and the R2C website respectively
+- Promoted our permissions experiment to a "permanent" feature that is always on
+- When viewing a file in GitHub, we now mark lines that are related to a permission as well as issues
 
 ## [1.14.0] - 2018-11-27
 

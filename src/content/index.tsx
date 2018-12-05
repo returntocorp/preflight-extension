@@ -1,5 +1,9 @@
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { FindingsFetch } from "@r2c/extension/api/findings";
+import { FindingEntry, FindingsFetch } from "@r2c/extension/api/findings";
+import {
+  PermissionsFetch,
+  PermissionsResponse
+} from "@r2c/extension/api/permissions";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
@@ -18,6 +22,7 @@ import {
   isRepositoryPrivate,
   naivelyExtractSlugFromCurrentUrl
 } from "@r2c/extension/utils";
+import { concat, flatten, get } from "lodash";
 import * as React from "react";
 import { PlaneIcon } from "../icons";
 import DOMInjector from "./github/DomInjector";
@@ -101,32 +106,55 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                   data: findingsData,
                   loading: findingsLoading,
                   error: findingsError
-                }) =>
-                  findingsData != null &&
-                  findingsData.findings != null && (
-                    <>
-                      <BlobFindingsInjector
-                        key={`BlobFindingsInjector ${this.state.currentUrl} ${
-                          this.state.navigationNonce
-                        }`}
-                        findingCommitHash={findingsData.commitHash}
-                        findings={findingsData.findings}
-                        repoSlug={this.repoSlug}
-                      />
-                      <TreeFindingsInjector
-                        key={`TreeFindingsInjector ${this.state.currentUrl} ${
-                          this.state.navigationNonce
-                        }`}
-                        findings={findingsData.findings}
-                        commitHash={findingsData.commitHash}
-                        repoSlug={this.repoSlug}
-                      />
-                    </>
-                  )
-                }
+                }) => (
+                  <PermissionsFetch repoSlug={this.repoSlug}>
+                    {({
+                      data: permissionsData,
+                      loading: permissionsLoading,
+                      error: permissionsError
+                    }) => {
+                      const findings = flatten(
+                        concat(
+                          this.getFindingsFromPermissionsData(permissionsData),
+                          findingsData != null && findingsData.findings != null
+                            ? findingsData.findings
+                            : []
+                        )
+                      );
+
+                      const commitHash: string | undefined =
+                        get(permissionsData, "commitHash") ||
+                        get(findingsData, "commitHash");
+
+                      if (commitHash == null) {
+                        return null;
+                      }
+
+                      return (
+                        <>
+                          <BlobFindingsInjector
+                            key={`BlobFindingsInjector ${
+                              this.state.currentUrl
+                            } ${this.state.navigationNonce}`}
+                            findingCommitHash={commitHash}
+                            findings={findings}
+                            repoSlug={this.repoSlug}
+                          />
+                          <TreeFindingsInjector
+                            key={`TreeFindingsInjector ${
+                              this.state.currentUrl
+                            } ${this.state.navigationNonce}`}
+                            findings={findings}
+                            commitHash={commitHash}
+                            repoSlug={this.repoSlug}
+                          />
+                        </>
+                      );
+                    }}
+                  </PermissionsFetch>
+                )}
               </FindingsFetch>
             )}
-
             <Twists
               isOpen={twistTab != null}
               selectedTwistId={twistTab}
@@ -240,6 +268,20 @@ class ContentHost extends React.Component<{}, ContentHostState> {
     } else {
       this.setState({ twistTab: undefined, checklistItem: undefined });
     }
+  };
+
+  private getFindingsFromPermissionsData = (
+    permissionsData: PermissionsResponse | undefined
+  ): FindingEntry[] => {
+    const permissionLocations: FindingEntry[] = [];
+    if (permissionsData == null || permissionsData.permissions == null) {
+      return permissionLocations;
+    }
+    Object.keys(permissionsData.permissions).map(key => {
+      permissionLocations.push(...permissionsData.permissions[key].locations);
+    });
+
+    return permissionLocations;
   };
 }
 
