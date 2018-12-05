@@ -127,7 +127,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                         get(findingsData, "commitHash");
 
                       if (commitHash == null) {
-                        return;
+                        return null;
                       }
 
                       return (
