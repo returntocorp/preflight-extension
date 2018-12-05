@@ -1,7 +1,6 @@
 .r2c-repo-headsup {
   border: 1px solid #dfe2e5;
   border-radius: 3px;
-
   display: flex;
   flex-direction: column;
 }
@@ -12,25 +11,41 @@
   border-top-right-radius: 0;
 }
 
-.repo-headsup-actions-footer {
-  padding-top: 2ex;
-  padding-right: 1ex;
+.repo-headsup-actions {
   display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.repo-headsup-actions-footer svg.r2c-logo {
+.repo-headsup-actions .package-copy-box {
+  flex: 1 1 auto;
+}
+
+.repo-headsup-actions-footer {
+  padding-right: 1ex;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  flex: 0 0 auto;
+}
+
+.repo-headsup-actions-footer div:last-child {
+  margin-left: auto;
+}
+
+.repo-headsup-actions-footer a svg.r2c-logo {
   height: 1em;
   width: auto;
 }
 
-.repo-headsup-actions-footer .r2c-logo-path {
+.repo-headsup-actions-footer a .r2c-logo-path {
   fill: #0a9bda;
 }
 
 .repo-headsup-actions-footer .repo-headsup-report {
-  margin-right: auto;
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
 }
 
 .r2c-repo-headsup h1 {

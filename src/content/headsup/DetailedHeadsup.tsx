@@ -75,12 +75,14 @@ export default class DetailedHeadsup extends React.PureComponent<
               loading={loading.pkg}
             />
             <div className="repo-headsup-actions-footer">
-              <R2CLogoLink />
               {this.renderReport(
                 data && data.criteria && data.criteria.criteria
                   ? data.criteria.criteria.rating
                   : "safe"
               )}
+              <div>
+                <R2CLogoLink />
+              </div>
             </div>
           </div>
         </div>
@@ -100,7 +102,7 @@ export default class DetailedHeadsup extends React.PureComponent<
   ) {
     return (
       status === "danger" && (
-        <span className="repo-headsup-report">
+        <div className="repo-headsup-report">
           Is this a mistake?{" "}
           <a
             onClick={this.handleReportClick}
@@ -111,7 +113,7 @@ export default class DetailedHeadsup extends React.PureComponent<
           >
             Let us know.
           </a>
-        </span>
+        </div>
       )
     );
   }
