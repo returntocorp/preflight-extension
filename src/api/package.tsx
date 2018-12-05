@@ -24,12 +24,19 @@ export interface PackageEntry {
   registry: string;
   package_rank: number;
   rank_description: string;
+  types: TypesResponse | null;
 }
 
 export interface PackageResponse {
   gitUrl: string;
   packages: PackageEntry[];
   override: OverrideEntry | null;
+}
+
+export interface TypesResponse {
+  package_name: string;
+  source: string;
+  package_url: string;
 }
 
 export type OverrideType = "blacklist" | "whitelist" | "promote";

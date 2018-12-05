@@ -2,6 +2,7 @@ import {
   AnchorButton,
   Button,
   ButtonGroup,
+  Checkbox,
   Classes,
   InputGroup,
   Intent,
@@ -20,7 +21,9 @@ import CopyButton from "@r2c/extension/shared/CopyButton";
 import {
   buildPackageLink,
   getPreferredPackageManager,
-  setPreferredPackageManager
+  getTypesInclusionPreference,
+  setPreferredPackageManager,
+  setTypesInclusionPreference
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
@@ -34,6 +37,7 @@ interface PackageCopyBoxProps {
   packages: PackageResponse;
   selectedPackage: PackageEntry;
   packageManager: PackageManagerChoice;
+  typesInclusion: boolean;
   onSelectPackage(
     newPackage: PackageEntry,
     event?: React.SyntheticEvent<HTMLElement>
@@ -41,6 +45,7 @@ interface PackageCopyBoxProps {
   onChangePackageManager(
     newManager: PackageManagerChoice
   ): React.MouseEventHandler<HTMLElement>;
+  onChangeTypesInclusion(event: React.FormEvent<HTMLInputElement>): void;
 }
 
 const PackageSelect = Select.ofType<PackageEntry>();
@@ -53,14 +58,25 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       packages,
       selectedPackage,
       packageManager,
-      onChangePackageManager
+      typesInclusion,
+      onChangePackageManager,
+      onChangeTypesInclusion
     } = this.props;
+
+    console.log("selectedPackage=", selectedPackage);
+    console.log("props typesInclusion=", typesInclusion);
 
     return (
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
             <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
+            <Checkbox
+              checked={typesInclusion}
+              label="including @types"
+              onChange={onChangeTypesInclusion}
+            />
+
             <p>
               Save time and{" "}
               <a
@@ -111,13 +127,18 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 type="text"
                 value={buildInstallCommand(
                   packageManager,
-                  selectedPackage.name
+                  selectedPackage.name,
+                  typesInclusion
                 )}
                 rightElement={
                   <CopyButton
                     onClick={l(
                       "copy-package-button-click",
-                      this.handleCopy(packageManager, selectedPackage.name),
+                      this.handleCopy(
+                        packageManager,
+                        selectedPackage.name,
+                        typesInclusion
+                      ),
                       {
                         packageManager: packageManager,
                         name: selectedPackage.name
@@ -131,6 +152,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                   packageManager,
                   selectedPackage.name
                 )}
+                small={true}
                 readOnly={true}
               />
             </div>
@@ -194,16 +216,20 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
     event?: React.SyntheticEvent<HTMLElement>
   ) => this.props.onSelectPackage(item, event);
 
-  private handleCopy = (registry: string, packageName: string) => (
-    e: React.MouseEvent<HTMLElement>
-  ) => {
+  private handleCopy = (
+    registry: string,
+    packageName: string,
+    typesInclusion: boolean
+  ) => (e: React.MouseEvent<HTMLElement>) => {
     const key = this.buildPackageFieldRefKey(registry, packageName);
     const toCopy = this.packageFieldRef[key];
 
     if (toCopy != null) {
       toCopy.focus();
       toCopy.setSelectionRange(0, toCopy.value.length);
-      this.copyToClipboard(buildInstallCommand(registry, packageName));
+      this.copyToClipboard(
+        buildInstallCommand(registry, packageName, typesInclusion)
+      );
     }
   };
 
@@ -289,8 +315,10 @@ interface WrappedPackageCopyBoxProps {
   packages: PackageResponse | undefined;
   selectedPackage?: PackageEntry;
   packageManager?: PackageManagerChoice;
+  typesInclusion?: boolean;
   onSelectPackage?(newPackage: PackageEntry): void;
   onChangePackageManager?(newManager: PackageManagerChoice): void;
+  onChangeTypesInclusion?(): void;
 }
 
 interface WrappedPackageCopyBoxState {
@@ -298,6 +326,7 @@ interface WrappedPackageCopyBoxState {
   selectedPackage: PackageEntry | undefined;
   controlPackageManager: boolean;
   packageManager: PackageManagerChoice;
+  typesInclusion: boolean;
 }
 
 export default class WrappedPackageCopyBox extends React.Component<
@@ -305,6 +334,7 @@ export default class WrappedPackageCopyBox extends React.Component<
   WrappedPackageCopyBoxState
 > {
   public DEFAULT_PACKAGE_MANAGER: PackageManagerChoice = "npm";
+  public DEFAULT_TYPES_INCLUSION: boolean = true;
 
   public constructor(props: WrappedPackageCopyBoxProps) {
     super(props);
@@ -312,13 +342,17 @@ export default class WrappedPackageCopyBox extends React.Component<
       controlSelectedPackage: props.selectedPackage != null,
       selectedPackage: props.selectedPackage || undefined,
       controlPackageManager: props.packageManager != null,
-      packageManager: props.packageManager || this.DEFAULT_PACKAGE_MANAGER
+      packageManager: props.packageManager || this.DEFAULT_PACKAGE_MANAGER,
+      typesInclusion:
+        props.typesInclusion != null
+          ? props.typesInclusion
+          : this.DEFAULT_TYPES_INCLUSION
     };
   }
 
   public componentDidMount() {
     this.fetchPreferredPackageManager();
-
+    this.fetchTypesInclusionPreference();
     // Race condition may cause data to be loaded already, so we need to set
     // defaults on both mount and update
     this.setDefaultSelectedPackage();
@@ -347,8 +381,8 @@ export default class WrappedPackageCopyBox extends React.Component<
   public render() {
     const { packages: data, loading } = this.props;
 
-    const { selectedPackage, packageManager } = this.state;
-
+    const { selectedPackage, packageManager, typesInclusion } = this.state;
+    console.log("state.typesInclusion= ", typesInclusion);
     if (loading) {
       return (
         <section className={classnames("package-copy-box", Classes.SKELETON)}>
@@ -373,8 +407,10 @@ export default class WrappedPackageCopyBox extends React.Component<
           packages={data}
           selectedPackage={selectedPackage}
           packageManager={packageManager}
+          typesInclusion={typesInclusion}
           onSelectPackage={this.handlePackageSelect}
           onChangePackageManager={this.handlePackageManagerChange}
+          onChangeTypesInclusion={this.handleEnabledChange}
         />
       );
     }
@@ -389,6 +425,15 @@ export default class WrappedPackageCopyBox extends React.Component<
     }
   };
 
+  private fetchTypesInclusionPreference = async () => {
+    const includeTypes = await getTypesInclusionPreference();
+    console.log("got includeTypes to be=", includeTypes);
+    if (includeTypes != null) {
+      this.setState({
+        typesInclusion: includeTypes
+      });
+    }
+  };
   private handlePackageSelect = (
     pkg: PackageEntry,
     e?: React.MouseEvent<HTMLElement>
@@ -404,6 +449,13 @@ export default class WrappedPackageCopyBox extends React.Component<
     if (!this.state.controlSelectedPackage) {
       this.setState({ selectedPackage: pkg });
     }
+  };
+
+  private handleEnabledChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const checked: boolean = e.target.checked;
+    console.log("inside handleEnabledChange, checked=", checked);
+    this.setState({ typesInclusion: checked });
+    setTypesInclusionPreference(checked);
   };
 
   private handlePackageManagerChange = (
@@ -447,16 +499,31 @@ function renderShortRank(rank: number): string {
 function buildInstallCommand(
   registry: string,
   packageName: string,
+  includeTypes: boolean,
   dev: boolean = false
 ): string {
   const cmds = {
     npm: `npm install ${dev ? "-D " : ""}${packageName}`,
     yarn: `yarn add ${dev ? "-D " : ""}${packageName}`
   };
+
+  const typesCmds = {
+    npm: `npm install -D @types/${packageName}`,
+    yarn: `yarn add -D @types/${packageName}`
+  };
+
   switch (registry) {
     case "npm":
+      if (includeTypes) {
+        return `${cmds.npm};${typesCmds.npm}`;
+      }
+
       return cmds.npm;
     case "yarn":
+      if (includeTypes) {
+        return `${cmds.yarn};${typesCmds.yarn}`;
+      }
+
       return cmds.yarn;
     default:
       return cmds.npm;
