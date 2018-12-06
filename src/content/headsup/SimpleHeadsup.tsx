@@ -97,8 +97,8 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
     return (
       <SimpleHeadsup
         status={rating}
-        icon={this.renderStatus(rating)[0]}
-        headline={this.renderStatus(rating)[1]}
+        icon={this.renderStatus(rating).icon}
+        headline={this.renderStatus(rating).headline}
         rightSide={this.renderRight(
           handleClickChecksButton,
           showAllChecksButton,
