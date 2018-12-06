@@ -214,8 +214,6 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
       borderOverrideColor = override.overrideType;
     }
 
-    console.log(borderOverrideColor);
-
     return (
       <div
         className={classnames(
