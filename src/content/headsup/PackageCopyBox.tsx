@@ -63,20 +63,19 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       onChangeTypesInclusion
     } = this.props;
 
-    console.log("selectedPackage=", selectedPackage);
-    console.log("props typesInclusion=", typesInclusion);
-
     return (
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
-            <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
+            <span>
+              Install with {packageManager === "npm" ? "npm" : "Yarn"}
+            </span>
             <Checkbox
+              className="package-install-action-includes"
               checked={typesInclusion}
               label="including @types"
               onChange={onChangeTypesInclusion}
             />
-
             <p>
               Save time and{" "}
               <a
@@ -152,7 +151,6 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                   packageManager,
                   selectedPackage.name
                 )}
-                small={true}
                 readOnly={true}
               />
             </div>
@@ -382,7 +380,6 @@ export default class WrappedPackageCopyBox extends React.Component<
     const { packages: data, loading } = this.props;
 
     const { selectedPackage, packageManager, typesInclusion } = this.state;
-    console.log("state.typesInclusion= ", typesInclusion);
     if (loading) {
       return (
         <section className={classnames("package-copy-box", Classes.SKELETON)}>
@@ -427,7 +424,6 @@ export default class WrappedPackageCopyBox extends React.Component<
 
   private fetchTypesInclusionPreference = async () => {
     const includeTypes = await getTypesInclusionPreference();
-    console.log("got includeTypes to be=", includeTypes);
     if (includeTypes != null) {
       this.setState({
         typesInclusion: includeTypes
@@ -453,7 +449,6 @@ export default class WrappedPackageCopyBox extends React.Component<
 
   private handleEnabledChange = (e: React.FormEvent<HTMLInputElement>) => {
     const checked: boolean = e.target.checked;
-    console.log("inside handleEnabledChange, checked=", checked);
     this.setState({ typesInclusion: checked });
     setTypesInclusionPreference(checked);
   };

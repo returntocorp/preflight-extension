@@ -231,7 +231,6 @@ export function setPreferredPackageManager(packageManager: string) {
 
 const TYPES_INCLUSION_PREFERENCE = "TYPES_INCLUSION_PREFERENCE";
 export function setTypesInclusionPreference(checked: boolean) {
-  console.log("seting preference to be ", checked);
   browser.storage.local.set({ [TYPES_INCLUSION_PREFERENCE]: checked });
 }
 

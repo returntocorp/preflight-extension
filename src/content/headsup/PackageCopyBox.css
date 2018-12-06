@@ -11,7 +11,8 @@
   align-items: center;
 }
 
-.package-copy-box .package-action-description h2 {
+.package-copy-box .package-action-description span,
+.package-copy-box .package-action-description .package-install-action-includes {
   font-size: 14px;
   font-weight: 600;
 }
@@ -40,6 +41,7 @@
 .package-copy-box .package-npm-field input {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
+  font-size: 12px;
 }
 
 .package-copy-box .package-npm-field .bp3-input {
