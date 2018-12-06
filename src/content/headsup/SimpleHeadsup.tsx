@@ -1,10 +1,12 @@
 import { l } from "@r2c/extension/analytics";
-import { CriteriaEntry } from "@r2c/extension/api/criteria";
+import { CriteriaEntry, CriteriaType } from "@r2c/extension/api/criteria";
+import { OverrideType } from "@r2c/extension/api/package";
 import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
 import {
   CheckmarkIcon,
   DangerIcon,
   MissingIcon,
+  PromoteIcon,
   WarningIcon
 } from "@r2c/extension/icons";
 import { ExtractedRepoSlug, MarkdownString } from "@r2c/extension/utils";
@@ -19,13 +21,11 @@ interface StatusDescription {
 }
 
 export type StatusType =
-  | "safe"
-  | "danger"
-  | "warning"
-  | "missing"
+  | CriteriaType
   | "unsupported"
   | "loading"
-  | "error";
+  | "error"
+  | "promote";
 
 interface SimpleHeadsupProps extends StatusDescription {
   status: StatusType;
@@ -76,22 +76,40 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       repoSlug
     } = this.props;
 
-    if (override && rating === "danger") {
-      const { headline } = override;
+    if (override) {
+      const { headline, overrideType } = override;
 
-      return (
-        <SimpleHeadsup
-          status={rating}
-          icon={<DangerIcon />}
-          headline={headline}
-          rightSide={this.renderRight(
-            handleClickChecksButton,
-            showAllChecksButton,
-            lastUpdatedDate,
-            repoSlug
-          )}
-        />
-      );
+      switch (overrideType) {
+        case "promote":
+          return (
+            <SimpleHeadsup
+              status={overrideType}
+              icon={<PromoteIcon />}
+              headline={headline}
+              rightSide={this.renderRight(
+                handleClickChecksButton,
+                showAllChecksButton,
+                lastUpdatedDate,
+                repoSlug
+              )}
+            />
+          );
+
+        default:
+          return (
+            <SimpleHeadsup
+              status={rating}
+              icon={<DangerIcon />}
+              headline={headline}
+              rightSide={this.renderRight(
+                handleClickChecksButton,
+                showAllChecksButton,
+                lastUpdatedDate,
+                repoSlug
+              )}
+            />
+          );
+      }
     }
 
     return (
@@ -187,14 +205,22 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
 
   public render() {
     const { criteria, children, lastUpdatedDate, repoSlug } = this.props;
-    const { rating } = this.props.criteria;
+    const { rating, override } = this.props.criteria;
     const { showMore } = this.state;
+
+    let borderOverrideColor: OverrideType | CriteriaType = rating;
+
+    if (override) {
+      borderOverrideColor = override.overrideType;
+    }
+
+    console.log(borderOverrideColor);
 
     return (
       <div
         className={classnames(
           { "detailed-headsup-open": showMore },
-          `preflight-${rating}`
+          `preflight-${borderOverrideColor}`
         )}
       >
         <SimpleHeadsUpCriteriaWrapper

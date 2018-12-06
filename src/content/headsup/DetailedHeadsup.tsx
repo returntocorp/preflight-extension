@@ -107,7 +107,10 @@ export default class DetailedHeadsup extends React.PureComponent<
                 data.criteria &&
                 data.criteria.criteria &&
                 data.criteria.criteria.rating &&
-                (data.criteria.criteria.rating === "danger" ||
+                ((data.criteria.criteria.rating === "danger" &&
+                  data.criteria.criteria.override &&
+                  data.criteria.criteria.override.overrideType ===
+                    "blacklist") ||
                   data.criteria.criteria.rating === "warning") && (
                   <ReportMistakeActionButton />
                 )}
