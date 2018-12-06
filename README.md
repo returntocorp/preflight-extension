@@ -15,4 +15,4 @@ If any of our checks come back with concerning answers we'll notify you through 
 
 To install the extension, visit the [Chrome Web Store](https://chrome.google.com/webstore/detail/emaioeinhnifhcmlihcbooknbpjdbllb) or our [Mozilla Add-ons page](https://addons.mozilla.org/addon/r2c-beta/).
 
-If you have questions, feedback, or ideas, please reach out to us at support@ret2.co.
+If you have questions, feedback, or ideas, please reach out to us at support@returntocorp.com.
