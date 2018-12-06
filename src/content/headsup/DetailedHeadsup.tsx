@@ -1,3 +1,5 @@
+import { IconNames } from "@blueprintjs/icons";
+import { li } from "@r2c/extension/analytics";
 import { PackageEntry } from "@r2c/extension/api/package";
 import { HeadsUpProps } from "@r2c/extension/content/headsup";
 import PackageCopyBox from "@r2c/extension/content/headsup/PackageCopyBox";
@@ -8,25 +10,54 @@ import {
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import RelatedPackages from "@r2c/extension/content/headsup/RelatedPackages";
 import UsedBy from "@r2c/extension/content/headsup/UsedBy";
-import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
+import { MainToaster } from "@r2c/extension/content/Toaster";
 import { R2CLogoLink } from "@r2c/extension/icons";
+import * as classNames from "classnames";
 import * as React from "react";
 import "./index.css";
 
-interface NormalHeadsUpProps extends HeadsUpProps {
+export class ReportMistakeActionButton extends React.PureComponent {
+  public render() {
+    return (
+      <div className="repo-headsup-report">
+        Is this a mistake?{" "}
+        <a
+          onClick={this.handleReportClick}
+          href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          role="button"
+        >
+          Let us know.
+        </a>
+      </div>
+    );
+  }
+
+  private handleReportClick: React.MouseEventHandler = () => {
+    li("preflight-report-mistake-click");
+    MainToaster.show({
+      message:
+        "Thanks for letting us know. We'll take a look and make it right.",
+      icon: IconNames.HEART
+    });
+  };
+}
+
+interface DetailedHeadsupProps extends HeadsUpProps {
   data: PreflightChecklistFetchData;
   loading: PreflightChecklistLoading;
 }
 
-interface NormalHeadsUpState {
+interface DetailedHeadsupState {
   selectedPackage: PackageEntry | undefined;
 }
 
-export default class NormalHeadsUp extends React.PureComponent<
-  NormalHeadsUpProps,
-  NormalHeadsUpState
+export default class DetailedHeadsup extends React.PureComponent<
+  DetailedHeadsupProps,
+  DetailedHeadsupState
 > {
-  public state: NormalHeadsUpState = {
+  public state: DetailedHeadsupState = {
     selectedPackage: undefined
   };
 
@@ -35,26 +66,13 @@ export default class NormalHeadsUp extends React.PureComponent<
     const { selectedPackage } = this.state;
 
     return (
-      <div className="r2c-repo-headsup checklist-headsup">
-        <header>
-          <div className="checklist-left">
-            <span className="preflight-logo">
-              <a href="https://github.com/returntocorp/secarta-extension/">
-                preflight
-              </a>
-            </span>
-          </div>
-          <div className="checklist-right">
-            {data.repo != null && (
-              <LastUpdatedBadge
-                commitHash={data.repo.commitHash}
-                lastUpdatedDate={new Date(data.repo.analyzedAt)}
-                repoSlug={repoSlug}
-              />
-            )}
-            <R2CLogoLink />
-          </div>
-        </header>
+      <div
+        className={classNames(
+          "r2c-repo-headsup",
+          "checklist-headsup",
+          "detailed-headsup"
+        )}
+      >
         <div className="repo-headsup-body">
           <div className="repo-headsup-checklist repo-headsup-column">
             <PreflightChecklist
@@ -84,6 +102,16 @@ export default class NormalHeadsUp extends React.PureComponent<
               onSelectPackage={this.handlePackageSelect}
               loading={loading.pkg}
             />
+            <div className="repo-headsup-actions-footer">
+              {data &&
+                data.criteria &&
+                data.criteria.criteria &&
+                data.criteria.criteria.rating &&
+                data.criteria.criteria.rating === "danger" && (
+                  <ReportMistakeActionButton />
+                )}
+              <R2CLogoLink />
+            </div>
           </div>
         </div>
       </div>

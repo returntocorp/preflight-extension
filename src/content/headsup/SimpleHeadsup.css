@@ -1,0 +1,57 @@
+.r2c-repo-headsup.simple-headsup {
+  height: 49px;
+}
+
+.simple-headsup {
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  -webkit-flex-flow: row nowrap;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.simple-headsup-headline {
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 1ex;
+}
+
+.simple-headsup-headline p {
+  margin: 0;
+}
+
+.simple-headsup > .simple-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.simple-headsup > .simple-right {
+  padding-right: 1.5em;
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
+}
+
+.simple-headsup-hidden {
+  display: none;
+}
+
+.detailed-headsup-open .simple-headsup {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.simple-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.simple-headsup-timestamp {
+  padding-right: 0.5ex;
+}
+
+.simple-headsup-show {
+  padding-left: 0.5ex;
+}

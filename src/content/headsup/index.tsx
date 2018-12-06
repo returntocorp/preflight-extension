@@ -1,20 +1,20 @@
 import { li } from "@r2c/extension/analytics";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
+import DetailedHeadsup from "@r2c/extension/content/headsup/DetailedHeadsup";
 import {
   ErrorHeadsUp,
   LoadingHeadsUp,
   MissingDataHeadsUp,
   UnsupportedHeadsUp
 } from "@r2c/extension/content/headsup/NonIdealHeadsup";
-import NormalHeadsUp from "@r2c/extension/content/headsup/NormalHeadsup";
-import { OverrideHeadsupWrapper } from "@r2c/extension/content/headsup/OverrideHeadsup";
 import { PreflightChecklistItemType } from "@r2c/extension/content/headsup/PreflightChecklist";
 import PreflightFetch, {
   PreflightChecklistFetchData,
   PreflightChecklistFetchResponse
 } from "@r2c/extension/content/headsup/PreflightFetch";
 import * as ProjectState from "@r2c/extension/content/headsup/PreflightProjectState";
+import { SimpleHeadsupDetailsWrapper } from "@r2c/extension/content/headsup/SimpleHeadsup";
 import { ExtractedRepoSlug, hasSupportedLanguages } from "@r2c/extension/utils";
 import { map } from "lodash";
 import * as React from "react";
@@ -74,6 +74,7 @@ class RepoHeadsUp extends React.PureComponent<
 
             switch (state) {
               case ProjectState.LOADING_ALL:
+              case ProjectState.LOADING_SOME:
                 return <LoadingHeadsUp />;
               case ProjectState.EMPTY_UNSUPPORTED:
                 return <UnsupportedHeadsUp />;
@@ -85,30 +86,26 @@ class RepoHeadsUp extends React.PureComponent<
                     <ErrorHeadsUp projectState={state} error={error} />
                   )
                 );
+              case ProjectState.PARTIAL:
+              case ProjectState.COMPLETE:
               case ProjectState.OVERRIDE:
                 return (
                   data != null &&
-                  data.pkg != null &&
-                  data.pkg.override != null && (
-                    <OverrideHeadsupWrapper override={data.pkg.override}>
-                      <NormalHeadsUp
+                  data.criteria != null &&
+                  data.repo != null &&
+                  data.criteria.criteria != null && (
+                    <SimpleHeadsupDetailsWrapper
+                      criteria={data.criteria.criteria}
+                      showAllChecksButton={false}
+                      lastUpdatedDate={new Date(data.repo.analyzedAt)}
+                      repoSlug={repoSlug}
+                    >
+                      <DetailedHeadsup
                         data={data}
                         loading={loading}
                         {...this.props}
                       />
-                    </OverrideHeadsupWrapper>
-                  )
-                );
-              case ProjectState.LOADING_SOME:
-              case ProjectState.PARTIAL:
-              case ProjectState.COMPLETE:
-                return (
-                  data != null && (
-                    <NormalHeadsUp
-                      data={data}
-                      loading={loading}
-                      {...this.props}
-                    />
+                    </SimpleHeadsupDetailsWrapper>
                   )
                 );
               case ProjectState.ERROR_UNKNOWN:

@@ -23,7 +23,8 @@ describe("Project state", () => {
     findings: false,
     pkg: false,
     repo: false,
-    scripts: false
+    scripts: false,
+    criteria: false
   };
   const blank = {
     loading: notLoading,
@@ -39,7 +40,8 @@ describe("Project state", () => {
       findings: true,
       pkg: true,
       repo: true,
-      scripts: true
+      scripts: true,
+      criteria: true
     };
     expect(flowProjectState({ ...blank, loading }, ["typescript"])).toBe(
       LOADING_ALL
@@ -53,7 +55,8 @@ describe("Project state", () => {
       findings: true,
       pkg: true,
       repo: true,
-      scripts: true
+      scripts: true,
+      criteria: true
     };
     expect(flowProjectState({ ...blank, loading }, ["typescript"])).toBe(
       LOADING_SOME
@@ -67,7 +70,8 @@ describe("Project state", () => {
       findings: true,
       pkg: true,
       repo: true,
-      scripts: true
+      scripts: true,
+      criteria: true
     };
     const error: PreflightChecklistErrors = {
       every: false,
@@ -75,7 +79,8 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: undefined
     };
     expect(flowProjectState({ ...blank, loading, error }, ["typescript"])).toBe(
       LOADING_SOME
@@ -89,7 +94,8 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: undefined
     };
     expect(flowProjectState({ ...blank, error }, ["typescript"])).toBe(
       ERROR_UNKNOWN
@@ -103,7 +109,8 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: undefined
     };
     const data: PreflightChecklistFetchData = {
       some: true,
@@ -111,7 +118,8 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: { gitUrl: "foo", scripts: [] }
+      scripts: { gitUrl: "foo", scripts: [] },
+      criteria: undefined
     };
     expect(flowProjectState({ ...blank, data, error }, ["typescript"])).toBe(
       PARTIAL
@@ -125,7 +133,8 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: undefined
     };
     const data: PreflightChecklistFetchData = {
       some: true,
@@ -142,7 +151,11 @@ describe("Project state", () => {
         },
         analyzedAt: "analyzed"
       },
-      scripts: { gitUrl: "foo", scripts: [] }
+      scripts: { gitUrl: "foo", scripts: [] },
+      criteria: {
+        gitUrl: "criteria",
+        criteria: { checklist: 1, rating: "warning" }
+      }
     };
     expect(flowProjectState({ ...blank, data, error }, ["typescript"])).toBe(
       COMPLETE
@@ -156,14 +169,16 @@ describe("Project state", () => {
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: new Error("some error")
     };
 
     const response: PreflightChecklistFetchDataResponse = {
       findings: new Response(null, { status: 404 }),
       pkg: new Response(null, { status: 404 }),
       repo: new Response(null, { status: 404 }),
-      scripts: new Response(null, { status: 404 })
+      scripts: new Response(null, { status: 404 }),
+      criteria: new Response(null, { status: 404 })
     };
 
     expect(
@@ -178,14 +193,16 @@ describe("Project state", () => {
       findings: undefined,
       pkg: undefined,
       repo: undefined,
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: undefined
     };
 
     const response: PreflightChecklistFetchDataResponse = {
       findings: new Response(null, { status: 404 }),
       pkg: new Response(null, { status: 404 }),
       repo: new Response(null, { status: 404 }),
-      scripts: new Response(null, { status: 404 })
+      scripts: new Response(null, { status: 404 }),
+      criteria: new Response(null, { status: 404 })
     };
 
     expect(flowProjectState({ ...blank, response, error }, ["c++"])).toBe(
@@ -200,14 +217,16 @@ describe("Project state", () => {
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: new Error("some error")
     };
 
     const response: PreflightChecklistFetchDataResponse = {
       findings: new Response(null, { status: 404 }),
       pkg: new Response(null, { status: 404 }),
       repo: new Response(null, { status: 404 }),
-      scripts: new Response(null, { status: 500 })
+      scripts: new Response(null, { status: 500 }),
+      criteria: new Response(null, { status: 404 })
     };
 
     expect(
@@ -222,7 +241,8 @@ describe("Project state", () => {
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
-      scripts: new Error("some error")
+      scripts: new Error("some error"),
+      criteria: new Error("some error")
     };
 
     expect(flowProjectState({ ...blank, error }, ["typescript"])).toBe(

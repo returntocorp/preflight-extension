@@ -1,63 +1,57 @@
 .r2c-repo-headsup {
   border: 1px solid #dfe2e5;
   border-radius: 3px;
-  margin-top: 10px;
-
   display: flex;
   flex-direction: column;
 }
 
-.r2c-repo-headsup > header {
+.checklist-headsup.detailed-headsup {
+  border-top-style: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.repo-headsup-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.repo-headsup-actions .package-copy-box {
+  flex: 1 1 auto;
+}
+
+.repo-headsup-actions-footer {
+  padding-right: 1ex;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 
-  padding: 6px 10px;
-  border-bottom: 1px solid rgba(16, 22, 26, 0.1);
-
-  background-color: rgba(16, 22, 26, 0.03);
+  flex: 0 0 auto;
 }
 
-.r2c-repo-headsup > header .preflight-logo {
-  font-style: italic;
-  color: #0a9bda;
+.repo-headsup-actions-footer a {
+  margin-left: auto;
 }
 
-.r2c-repo-headsup > header .checklist-right {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.r2c-repo-headsup > header .checklist-right svg.r2c-logo {
+.repo-headsup-actions-footer a svg.r2c-logo {
   height: 1em;
   width: auto;
-  margin-left: 1em;
 }
 
-.r2c-repo-headsup > header .checklist-right .r2c-logo-path {
+.repo-headsup-actions-footer a .r2c-logo-path {
   fill: #0a9bda;
+}
+
+.repo-headsup-actions-footer .repo-headsup-report {
+  font-size: 12px;
+  color: rgba(16, 22, 26, 0.6);
 }
 
 .r2c-repo-headsup h1 {
   font-size: 18px;
   display: flex;
   align-items: center;
-}
-
-.r2c-repo-headsup > header .checklist-right .updated-message {
-  font-size: 12px;
-  color: rgba(16, 22, 26, 0.6);
-  cursor: pointer;
-}
-
-.r2c-repo-headsup
-  > header
-  .checklist-right
-  .updated-message:hover
-  .updated-timeago {
-  text-decoration: underline;
 }
 
 .r2c-repo-headsup.checklist-headsup .repo-headsup-body {
@@ -166,4 +160,49 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   display: flex;
   flex-direction: row;
   justify-content: end;
+}
+
+.preflight-danger,
+.preflight-danger .r2c-repo-headsup {
+  border-color: #cb2431;
+}
+
+.preflight-safe,
+.preflight-safe .r2c-repo-headsup {
+  border-color: #5eba5c;
+}
+
+.preflight-warning,
+.preflight-warning .r2c-repo-headsup {
+  border-color: #f1e05a;
+}
+
+.preflight-missing,
+.preflight-error,
+.preflight-missing .r2c-repo-headsup,
+.preflight-error .r2c-repo-headsup {
+  border-color: #959595;
+}
+
+.preflight-loading,
+.preflight-loading .r2c-repo-headsup {
+  border-color: #2d9cdb;
+}
+
+.preflight-unsupported,
+.preflight-unsupported .r2c-repo-headsup {
+  border-color: #bb6bd9;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#loading {
+  animation: spin 1s infinite cubic-bezier(0.645, 0.2, 0.355, 0.7);
 }

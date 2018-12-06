@@ -1,3 +1,4 @@
+import { CriteriaFetch, CriteriaResponse } from "@r2c/extension/api/criteria";
 import { FindingsFetch, FindingsResponse } from "@r2c/extension/api/findings";
 import { PackageResponse, PackagesFetch } from "@r2c/extension/api/package";
 import { RepoFetch, RepoResponse } from "@r2c/extension/api/repo";
@@ -17,6 +18,7 @@ interface PreflightChecklistFetchDataContents {
   pkg: PackageResponse | undefined;
   scripts: ScriptsResponse | undefined;
   findings: FindingsResponse | undefined;
+  criteria: CriteriaResponse | undefined;
 }
 
 export type PreflightChecklistFetchData = PreflightChecklistFetchDataContents &
@@ -57,87 +59,103 @@ export default class PreflightFetch extends React.PureComponent<
               <FindingsFetch repoSlug={repoSlug}>
                 {findingsResponse => (
                   <ScriptsFetch repoSlug={repoSlug}>
-                    {scriptsResponse => {
-                      // TODO (lediur) yeah I know all of these ternaries are gross
-                      // TBD spending some time figuring out how to build a typesafe
-                      // way to reusably compute `every` and `some` as booleans
-                      // tslint:disable-next-line:cyclomatic-complexity
-                      const loading: PreflightChecklistLoading = {
-                        repo: repoResponse.loading,
-                        pkg: packageResponse.loading,
-                        findings: findingsResponse.loading,
-                        scripts: scriptsResponse.loading,
-                        every:
-                          repoResponse.loading &&
-                          packageResponse.loading &&
-                          findingsResponse.loading &&
-                          scriptsResponse.loading,
-                        some:
-                          repoResponse.loading ||
-                          packageResponse.loading ||
-                          findingsResponse.loading ||
-                          scriptsResponse.loading
-                      };
-
-                      const error = !loading.every
-                        ? {
-                            repo: repoResponse.error,
-                            pkg: packageResponse.error,
-                            findings: findingsResponse.error,
-                            scripts: scriptsResponse.error,
-                            some:
-                              repoResponse.error != null ||
-                              packageResponse.error != null ||
-                              findingsResponse.error != null ||
-                              scriptsResponse.error != null,
+                    {scriptsResponse => (
+                      <CriteriaFetch repoSlug={repoSlug}>
+                        {criteriaResponse => {
+                          // TODO (lediur) yeah I know all of these ternaries are gross
+                          // TBD spending some time figuring out how to build a typesafe
+                          // way to reusably compute `every` and `some` as booleans
+                          // tslint:disable-next-line:cyclomatic-complexity
+                          const loading: PreflightChecklistLoading = {
+                            repo: repoResponse.loading,
+                            pkg: packageResponse.loading,
+                            findings: findingsResponse.loading,
+                            scripts: scriptsResponse.loading,
+                            criteria: criteriaResponse.loading,
                             every:
-                              repoResponse.error != null &&
-                              packageResponse.error != null &&
-                              findingsResponse != null &&
-                              scriptsResponse.error != null
-                          }
-                        : undefined;
+                              repoResponse.loading &&
+                              packageResponse.loading &&
+                              findingsResponse.loading &&
+                              scriptsResponse.loading &&
+                              criteriaResponse.loading,
 
-                      const data = !loading.every
-                        ? {
-                            repo: repoResponse.data,
-                            pkg: packageResponse.data,
-                            findings: findingsResponse.data,
-                            scripts: scriptsResponse.data,
-                            every:
-                              repoResponse.data != null &&
-                              packageResponse.data != null &&
-                              findingsResponse.data != null &&
-                              scriptsResponse.data != null,
                             some:
-                              repoResponse.data != null ||
-                              packageResponse.data != null ||
-                              findingsResponse.data != null ||
-                              scriptsResponse.data != null
-                          }
-                        : undefined;
+                              repoResponse.loading ||
+                              packageResponse.loading ||
+                              findingsResponse.loading ||
+                              scriptsResponse.loading ||
+                              criteriaResponse.loading
+                          };
 
-                      const response =
-                        repoResponse.response != null &&
-                        packageResponse.response != null &&
-                        findingsResponse.response != null
-                          ? {
-                              repo: repoResponse.response,
-                              pkg: packageResponse.response,
-                              findings: findingsResponse.response,
-                              scripts: scriptsResponse.response
-                            }
-                          : undefined;
+                          const error = !loading.every
+                            ? {
+                                repo: repoResponse.error,
+                                pkg: packageResponse.error,
+                                findings: findingsResponse.error,
+                                scripts: scriptsResponse.error,
+                                criteria: criteriaResponse.error,
+                                some:
+                                  repoResponse.error != null ||
+                                  packageResponse.error != null ||
+                                  findingsResponse.error != null ||
+                                  scriptsResponse.error != null ||
+                                  criteriaResponse.error != null,
+                                every:
+                                  repoResponse.error != null &&
+                                  packageResponse.error != null &&
+                                  findingsResponse != null &&
+                                  scriptsResponse.error != null &&
+                                  criteriaResponse.error != null
+                              }
+                            : undefined;
 
-                      const fetchResponse: PreflightChecklistFetchResponse = {
-                        loading,
-                        error,
-                        data,
-                        response
-                      };
+                          const data = !loading.every
+                            ? {
+                                repo: repoResponse.data,
+                                pkg: packageResponse.data,
+                                findings: findingsResponse.data,
+                                scripts: scriptsResponse.data,
+                                criteria: criteriaResponse.data,
+                                every:
+                                  repoResponse.data != null &&
+                                  packageResponse.data != null &&
+                                  findingsResponse.data != null &&
+                                  scriptsResponse.data != null &&
+                                  criteriaResponse.data != null,
+                                some:
+                                  repoResponse.data != null ||
+                                  packageResponse.data != null ||
+                                  findingsResponse.data != null ||
+                                  scriptsResponse.data != null ||
+                                  criteriaResponse.data != null
+                              }
+                            : undefined;
 
-                      return this.props.children(fetchResponse);
-                    }}
+                          const response =
+                            repoResponse.response != null &&
+                            packageResponse.response != null &&
+                            findingsResponse.response != null &&
+                            scriptsResponse.response != null
+                              ? {
+                                  repo: repoResponse.response,
+                                  pkg: packageResponse.response,
+                                  findings: findingsResponse.response,
+                                  scripts: scriptsResponse.response,
+                                  criteria: criteriaResponse.response
+                                }
+                              : undefined;
+
+                          const fetchResponse: PreflightChecklistFetchResponse = {
+                            loading,
+                            error,
+                            data,
+                            response
+                          };
+
+                          return this.props.children(fetchResponse);
+                        }}
+                      </CriteriaFetch>
+                    )}
                   </ScriptsFetch>
                 )}
               </FindingsFetch>
