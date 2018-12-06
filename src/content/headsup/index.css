@@ -194,6 +194,12 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
   border-color: #bb6bd9;
 }
 
+.preflight-promote,
+.preflight-promote .r2c-repo-headsup {
+  border-color: #0a9bda;
+  fill: #0a9bda;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
