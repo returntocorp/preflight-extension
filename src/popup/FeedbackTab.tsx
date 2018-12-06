@@ -44,7 +44,7 @@ export default class FeedbackTab extends React.PureComponent<FeedbackTabProps> {
               >
                 Chat with us on Intercom
               </Button>
-              <AnchorButton href="mailto:preflight@ret2.co" target="_blank" rel="noopener noreferrer">
+              <AnchorButton href="mailto:preflight@returntocorp.com" target="_blank" rel="noopener noreferrer">
                 Or, send us an email
               </AnchorButton>
             </>
@@ -61,7 +61,7 @@ export default class FeedbackTab extends React.PureComponent<FeedbackTabProps> {
               We take your privacy seriously. For more information on how we use
               Intercom,{" "}
               <a
-                href="https://github.com/returntocorp/secarta-extension/blob/master/PRIVACY.md"
+                href="https://github.com/returntocorp/preflight-extension/blob/master/PRIVACY.md"
                 target="_blank"
                 rel="noopener noreferrer"
               >

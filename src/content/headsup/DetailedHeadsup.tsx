@@ -23,7 +23,7 @@ export class ReportMistakeActionButton extends React.PureComponent {
         Is this a mistake?{" "}
         <a
           onClick={this.handleReportClick}
-          href="https://github.com/returntocorp/secarta-extension/issues/new?template=report-bad-data.md"
+          href="https://github.com/returntocorp/preflight-extension/issues/new?template=report-bad-data.md"
           target="_blank"
           rel="noopener noreferrer"
           role="button"

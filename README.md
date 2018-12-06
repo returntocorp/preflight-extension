@@ -1,7 +1,3 @@
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb) [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/emaioeinhnifhcmlihcbooknbpjdbllb.svg)](https://chrome.google.com/webstore/detail/r2c-beta/emaioeinhnifhcmlihcbooknbpjdbllb)
-
-[![Mozilla Add-on registry](https://img.shields.io/amo/v/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/) [![Number of Mozilla users](https://img.shields.io/amo/users/r2c-beta.svg)](https://addons.mozilla.org/addon/r2c-beta/)
-
 # Preflight Beta - Your GitHub Copilot 🛫
 
 <a href="http://usepreflight.com/chrome"><img src="./docs/images/preflight_headsup.png"></a>
@@ -19,4 +15,4 @@ If any of our checks come back with concerning answers we'll notify you through 
 
 To install the extension, visit the [Chrome Web Store](https://chrome.google.com/webstore/detail/emaioeinhnifhcmlihcbooknbpjdbllb) or our [Mozilla Add-ons page](https://addons.mozilla.org/addon/r2c-beta/).
 
-If you have questions, feedback, or ideas, please reach out to us at support@ret2.co.
+If you have questions, feedback, or ideas, please reach out to us at [preflight@returntocorp.com](mailto:preflight@returntocorp.com).

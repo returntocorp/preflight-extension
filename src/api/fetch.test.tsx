@@ -10,7 +10,7 @@ import * as React from "react";
 describe("Fetch wrapper component builder", () => {
   it("constructs a wrapper function as expected", () => {
     const repoSlug: ExtractedRepoSlug = parseSlugFromUrl(
-      "https://github.com/returntocorp/secarta-extension"
+      "https://github.com/returntocorp/preflight-extension"
     );
     const fakeChild = () => null;
     const expected = (
