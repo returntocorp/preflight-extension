@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Made preflight title and R2C logo link to the browser extension's GitHub repo and the R2C website respectively
+- Made Preflight similar to a PR status check, showing ✅ , ⚠️, or ❌ based on this criteria [link:criteria write-up when available]
 - Promoted our permissions experiment to a "permanent" feature that is always on
 - When viewing a file in GitHub, we now mark lines that are related to a permission as well as issues
 
