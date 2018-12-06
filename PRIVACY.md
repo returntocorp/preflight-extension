@@ -1,6 +1,6 @@
 # Privacy
 
-This document is a work-in-progress. If you have feedback or concerns about topics concerning privacy, please [open a GitHub issue](https://github.com/returntocorp/secarta-extension/issues/new).
+This document is a work-in-progress. If you have feedback or concerns about topics concerning privacy, please [open a GitHub issue](https://github.com/returntocorp/preflight-extension/issues/new).
 
 We plan to maintain transparency about our use of information and our stance on privacy, and we plan to provide tools in the future that enable you to manage our use and storage of your data.
 

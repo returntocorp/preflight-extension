@@ -30,7 +30,7 @@ Make sure to login to Chrome browser with a non-r2c login. Then, load the extens
 - Make sure `CHANGELOG.md` is up to date with your changes. Add `added`, `changed`, `fixed` headings as necessary.
 - Add a heading between `## Unreleased` and the latest changes with the new version and current date (e.g. `## [1.5.0] - 2018-09-18`). Follow semver.
 - Commit your changes and merge to `master`.
-- [Create a new release](https://github.com/returntocorp/secarta-extension/releases/new) off of `master` with the same version verbatim (e.g. `1.5.0` with no `v`). Title the release `VERSION - DESCRIPTION` (e.g. `1.5.0 - Electric boogaloo`) and copy-paste the whole version section from the changelog, including all headers.
+- [Create a new release](https://github.com/returntocorp/preflight-extension/releases/new) off of `master` with the same version verbatim (e.g. `1.5.0` with no `v`). Title the release `VERSION - DESCRIPTION` (e.g. `1.5.0 - Electric boogaloo`) and copy-paste the whole version section from the changelog, including all headers.
 
 ### Chrome Extension Store
 
@@ -63,7 +63,7 @@ Publishing to the Mozilla Add-ons repository is a manual process right now.
 - You should upload a freshly cloned version of the source code checked out to your tag. The easiest way to do this is probably to clone to a fresh repo and do a checkout.
 
   ```sh
-  git clone https://github.com/returntocorp/secarta-extension secarta-1.5.0
+  git clone https://github.com/returntocorp/preflight-extension secarta-1.5.0
   cd secarta-1.5.0
   git checkout 1.5.0
   zip -r ../secarta-src-1.5.0.zip *
@@ -78,7 +78,7 @@ Publishing to the Mozilla Add-ons repository is a manual process right now.
   ```md
   Source code is available at:
 
-  https://github.com/returntocorp/secarta-extension
+  https://github.com/returntocorp/preflight-extension
 
   See the `CONTRIBUTING.md` file for details on how to build and run the extension.
   ```

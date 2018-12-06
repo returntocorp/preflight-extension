@@ -150,7 +150,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Fixed [#58](https://github.com/returntocorp/secarta-extension/issues/58): Incorrect vulnerability count on checklist
+- Fixed [#58](https://github.com/returntocorp/preflight-extension/issues/58): Incorrect vulnerability count on checklist
 
 ## [1.9.1] - 2018-09-20
 
