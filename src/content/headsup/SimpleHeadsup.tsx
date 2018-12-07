@@ -81,11 +81,11 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       const { headline, overrideType } = override;
 
       switch (overrideType) {
-        case "promote":
+        case "blacklist":
           return (
             <SimpleHeadsup
-              status={overrideType}
-              icon={<PromoteIcon />}
+              status={rating}
+              icon={<DangerIcon />}
               headline={headline}
               rightSide={this.renderRight(
                 handleClickChecksButton,
@@ -99,8 +99,8 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
         default:
           return (
             <SimpleHeadsup
-              status={rating}
-              icon={<DangerIcon />}
+              status={"promote"}
+              icon={<PromoteIcon />}
               headline={headline}
               rightSide={this.renderRight(
                 handleClickChecksButton,
