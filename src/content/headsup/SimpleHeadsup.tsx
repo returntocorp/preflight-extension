@@ -84,7 +84,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
         case "blacklist":
           return (
             <SimpleHeadsup
-              status={rating}
+              status={"danger"}
               icon={<DangerIcon />}
               headline={headline}
               rightSide={this.renderRight(

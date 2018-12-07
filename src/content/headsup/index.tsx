@@ -1,4 +1,5 @@
 import { li } from "@r2c/extension/analytics";
+import { CriteriaType } from "@r2c/extension/api/criteria";
 import DomElementLoadedWatcher from "@r2c/extension/content/github/DomElementLoadedWatcher";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import DetailedHeadsup from "@r2c/extension/content/headsup/DetailedHeadsup";
@@ -86,21 +87,6 @@ class RepoHeadsUp extends React.PureComponent<
                     <ErrorHeadsUp projectState={state} error={error} />
                   )
                 );
-              case ProjectState.PARTIAL:
-                return (
-                  data != null && (
-                    <SimpleHeadsupDetailsWrapper
-                      criteria={{ checklist: 0, rating: "missing" }}
-                      showAllChecksButton={false}
-                    >
-                      <DetailedHeadsup
-                        data={data}
-                        loading={loading}
-                        {...this.props}
-                      />
-                    </SimpleHeadsupDetailsWrapper>
-                  )
-                );
               case ProjectState.COMPLETE:
               case ProjectState.OVERRIDE:
                 return (
@@ -113,6 +99,36 @@ class RepoHeadsUp extends React.PureComponent<
                       showAllChecksButton={false}
                       lastUpdatedDate={new Date(data.repo.analyzedAt)}
                       repoSlug={repoSlug}
+                    >
+                      <DetailedHeadsup
+                        data={data}
+                        loading={loading}
+                        {...this.props}
+                      />
+                    </SimpleHeadsupDetailsWrapper>
+                  )
+                );
+              case ProjectState.PARTIAL:
+                let tempCriteria = {
+                  checklist: 0,
+                  rating: "missing" as CriteriaType
+                };
+
+                if (
+                  data &&
+                  data.criteria &&
+                  data.criteria.criteria &&
+                  data.criteria.criteria.override &&
+                  data.criteria.criteria.override.overrideType === "promote"
+                ) {
+                  tempCriteria = data.criteria.criteria;
+                }
+
+                return (
+                  data != null && (
+                    <SimpleHeadsupDetailsWrapper
+                      criteria={tempCriteria}
+                      showAllChecksButton={false}
                     >
                       <DetailedHeadsup
                         data={data}
