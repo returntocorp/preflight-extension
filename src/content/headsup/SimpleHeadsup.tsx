@@ -182,7 +182,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       default:
         return {
           icon: <MissingIcon />,
-          headline: "Missing or unknown Preflight data."
+          headline: "Incomplete or unknown Preflight data."
         };
     }
   }
