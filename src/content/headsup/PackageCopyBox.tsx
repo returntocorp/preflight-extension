@@ -45,7 +45,7 @@ interface PackageCopyBoxProps {
   onChangePackageManager(
     newManager: PackageManagerChoice
   ): React.MouseEventHandler<HTMLElement>;
-  onChangeTypesInclusion(event: React.FormEvent<HTMLInputElement>): void;
+  onChangeTypesInclusion?(event: React.FormEvent<HTMLInputElement>): void;
 }
 
 const PackageSelect = Select.ofType<PackageEntry>();
@@ -63,17 +63,22 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       onChangeTypesInclusion
     } = this.props;
 
+    const typesPackage: string | null = selectedPackage.types
+      ? selectedPackage.types.package_name
+      : null;
+
     return (
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
-            <span>
-              Install with {packageManager === "npm" ? "npm" : "Yarn"}
-            </span>
+            <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
             <Checkbox
               className="package-install-action-includes"
-              checked={typesInclusion}
-              label="including @types"
+              checked={typesInclusion && typesPackage != null}
+              label={
+                typesPackage == null ? "No types info" : "including @types"
+              }
+              disabled={typesPackage == null}
               onChange={onChangeTypesInclusion}
             />
             <p>
@@ -316,7 +321,7 @@ interface WrappedPackageCopyBoxProps {
   typesInclusion?: boolean;
   onSelectPackage?(newPackage: PackageEntry): void;
   onChangePackageManager?(newManager: PackageManagerChoice): void;
-  onChangeTypesInclusion?(): void;
+  onChangeTypesInclusion?(event: React.FormEvent<HTMLInputElement>): void;
 }
 
 interface WrappedPackageCopyBoxState {
@@ -448,7 +453,7 @@ export default class WrappedPackageCopyBox extends React.Component<
   };
 
   private handleEnabledChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const checked: boolean = e.target.checked;
+    const checked: boolean = (e.target as HTMLInputElement).checked;
     this.setState({ typesInclusion: checked });
     setTypesInclusionPreference(checked);
   };
