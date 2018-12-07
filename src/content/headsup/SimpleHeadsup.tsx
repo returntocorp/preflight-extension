@@ -25,7 +25,8 @@ export type StatusType =
   | "unsupported"
   | "loading"
   | "error"
-  | "promote";
+  | "promote"
+  | "incomplete";
 
 interface SimpleHeadsupProps extends StatusDescription {
   status: StatusType;
@@ -60,8 +61,8 @@ interface SimpleHeadsUpCriteriaWrapperProps {
   criteria: CriteriaEntry;
   handleClickChecksButton?: React.MouseEventHandler;
   showAllChecksButton: boolean;
-  lastUpdatedDate: Date;
-  repoSlug: ExtractedRepoSlug;
+  lastUpdatedDate?: Date;
+  repoSlug?: ExtractedRepoSlug;
 }
 
 export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
@@ -130,18 +131,23 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
   private renderRight(
     handleClickChecksButton: React.MouseEventHandler | undefined,
     isExpanded: boolean | undefined,
-    lastUpdatedDate: Date,
-    repoSlug: ExtractedRepoSlug
+    lastUpdatedDate?: Date,
+    repoSlug?: ExtractedRepoSlug
   ) {
     return (
       <>
-        <span className="simple-headsup-timestamp">
-          <LastUpdatedBadge
-            lastUpdatedDate={lastUpdatedDate}
-            repoSlug={repoSlug}
-          />{" "}
-        </span>
-        &middot;
+        {lastUpdatedDate &&
+          repoSlug && (
+            <>
+              <span className="simple-headsup-timestamp">
+                <LastUpdatedBadge
+                  lastUpdatedDate={lastUpdatedDate}
+                  repoSlug={repoSlug}
+                />{" "}
+              </span>
+              &middot;
+            </>
+          )}
         <span className="simple-headsup-show">
           <a
             onClick={l(
@@ -187,8 +193,8 @@ interface SimpleHeadsupDetailsWrapperProps {
   handleClickChecksButton?: React.MouseEventHandler;
   showAllChecksButton: boolean;
   children: React.ReactChild;
-  lastUpdatedDate: Date;
-  repoSlug: ExtractedRepoSlug;
+  lastUpdatedDate?: Date;
+  repoSlug?: ExtractedRepoSlug;
 }
 
 interface SimpleHeadsupDetailsWrapperState {
@@ -205,10 +211,10 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
 
   public render() {
     const { criteria, children, lastUpdatedDate, repoSlug } = this.props;
-    const { rating, override } = this.props.criteria;
+    const { rating, override } = criteria;
     const { showMore } = this.state;
 
-    let borderOverrideColor: OverrideType | CriteriaType = rating;
+    let borderOverrideColor: OverrideType | StatusType = rating;
 
     if (override) {
       borderOverrideColor = override.overrideType;

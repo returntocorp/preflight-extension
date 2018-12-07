@@ -87,6 +87,20 @@ class RepoHeadsUp extends React.PureComponent<
                   )
                 );
               case ProjectState.PARTIAL:
+                return (
+                  data != null && (
+                    <SimpleHeadsupDetailsWrapper
+                      criteria={{ checklist: 0, rating: "missing" }}
+                      showAllChecksButton={false}
+                    >
+                      <DetailedHeadsup
+                        data={data}
+                        loading={loading}
+                        {...this.props}
+                      />
+                    </SimpleHeadsupDetailsWrapper>
+                  )
+                );
               case ProjectState.COMPLETE:
               case ProjectState.OVERRIDE:
                 return (
@@ -140,11 +154,17 @@ export function flowProjectState(
     } else {
       return ProjectState.LOADING_SOME;
     }
-  } else if (response != null && error != null && error.every) {
+  } else if (response != null && error != null && error.hackExcludeCriteria) {
+    const tempArray = Object.keys(
+      response
+    ) as (keyof PreflightChecklistFetchData)[];
+
+    const indexCriteria = tempArray.indexOf("criteria");
+    if (indexCriteria > -1) {
+      tempArray.splice(indexCriteria);
+    }
     if (
-      (Object.keys(response) as (keyof PreflightChecklistFetchData)[]).every(
-        k => response[k] != null && response[k].status === 404
-      )
+      tempArray.every(k => response[k] != null && response[k].status === 404)
     ) {
       return ProjectState.ERROR_MISSING_DATA;
     } else {
