@@ -2,7 +2,6 @@ import {
   AnchorButton,
   Button,
   ButtonGroup,
-  Checkbox,
   Classes,
   InputGroup,
   Intent,
@@ -45,7 +44,9 @@ interface PackageCopyBoxProps {
   onChangePackageManager(
     newManager: PackageManagerChoice
   ): React.MouseEventHandler<HTMLElement>;
-  onChangeTypesInclusion?(event: React.FormEvent<HTMLInputElement>): void;
+  onChangeTypesInclusion(
+    includeTypesCommand: boolean
+  ): React.MouseEventHandler<HTMLElement>;
 }
 
 const PackageSelect = Select.ofType<PackageEntry>();
@@ -63,22 +64,15 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       onChangeTypesInclusion
     } = this.props;
 
-    const typesFound: boolean = selectedPackage.types
-      ? selectedPackage.types.package_name != null
-      : false;
+    const typesFound: boolean =
+      selectedPackage.types != null &&
+      selectedPackage.types.package_name != null;
 
     return (
       <section className="package-copy-box">
         <header>
           <div className="package-action-description">
             <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
-            <Checkbox
-              className="package-install-action-includes"
-              checked={typesInclusion && typesFound}
-              label={!typesFound ? "No types info" : "including @types"}
-              disabled={!typesFound}
-              onChange={onChangeTypesInclusion}
-            />
             <p>
               Save time and{" "}
               <a
@@ -89,6 +83,20 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
               </a>{" "}
               using this command.
             </p>
+          </div>
+          <div className="package-include-type-command">
+            {typesFound ? (
+              <a
+                onClick={l(
+                  "include-types-command",
+                  onChangeTypesInclusion(!typesInclusion),
+                  { typesInclusion: typesInclusion }
+                )}
+                role="button"
+              >
+                {typesInclusion ? "Exclude @types" : "Include @types"}
+              </a>
+            ) : null}
           </div>
           <div className="package-registry-toggle">
             {packageManager === "npm" ? (
@@ -319,7 +327,7 @@ interface WrappedPackageCopyBoxProps {
   typesInclusion?: boolean;
   onSelectPackage?(newPackage: PackageEntry): void;
   onChangePackageManager?(newManager: PackageManagerChoice): void;
-  onChangeTypesInclusion?(event: React.FormEvent<HTMLInputElement>): void;
+  onChangeTypesInclusion?(includeTypesCommand: boolean): void;
 }
 
 interface WrappedPackageCopyBoxState {
@@ -426,10 +434,10 @@ export default class WrappedPackageCopyBox extends React.Component<
   };
 
   private fetchTypesInclusionPreference = async () => {
-    const includeTypes = await getTypesInclusionPreference();
-    if (includeTypes != null) {
+    const includeTypesCommand = await getTypesInclusionPreference();
+    if (includeTypesCommand != null) {
       this.setState({
-        typesInclusion: includeTypes
+        typesInclusion: includeTypesCommand
       });
     }
   };
@@ -450,10 +458,11 @@ export default class WrappedPackageCopyBox extends React.Component<
     }
   };
 
-  private handleEnabledChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const checked: boolean = (e.target as HTMLInputElement).checked;
-    this.setState({ typesInclusion: checked });
-    setTypesInclusionPreference(checked);
+  private handleEnabledChange = (changeIncludeTypesCommand: boolean) => (
+    e: React.MouseEvent<HTMLElement>
+  ) => {
+    this.setState({ typesInclusion: changeIncludeTypesCommand });
+    setTypesInclusionPreference(changeIncludeTypesCommand);
   };
 
   private handlePackageManagerChange = (
@@ -497,7 +506,7 @@ function renderShortRank(rank: number): string {
 function buildInstallCommand(
   registry: string,
   packageName: string,
-  includeTypes: boolean,
+  includeTypesCommand: boolean,
   dev: boolean = false
 ): string {
   const cmds = {
@@ -512,13 +521,13 @@ function buildInstallCommand(
 
   switch (registry) {
     case "npm":
-      if (includeTypes) {
+      if (includeTypesCommand) {
         return `${cmds.npm};${typesCmds.npm}`;
       }
 
       return cmds.npm;
     case "yarn":
-      if (includeTypes) {
+      if (includeTypesCommand) {
         return `${cmds.yarn};${typesCmds.yarn}`;
       }
 
