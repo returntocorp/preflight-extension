@@ -20,6 +20,7 @@ describe("Project state", () => {
   const notLoading: PreflightChecklistLoading = {
     every: false,
     some: false,
+    hackExcludeCriteria: false,
     findings: false,
     pkg: false,
     repo: false,
@@ -37,6 +38,7 @@ describe("Project state", () => {
     const loading: PreflightChecklistLoading = {
       every: true,
       some: true,
+      hackExcludeCriteria: true,
       findings: true,
       pkg: true,
       repo: true,
@@ -52,10 +54,11 @@ describe("Project state", () => {
     const loading: PreflightChecklistLoading = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: true,
       pkg: true,
       repo: true,
-      scripts: true,
+      scripts: false,
       criteria: true
     };
     expect(flowProjectState({ ...blank, loading }, ["typescript"])).toBe(
@@ -67,6 +70,7 @@ describe("Project state", () => {
     const loading: PreflightChecklistLoading = {
       every: false,
       some: true,
+      hackExcludeCriteria: false,
       findings: true,
       pkg: true,
       repo: true,
@@ -76,6 +80,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -91,6 +96,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -106,6 +112,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -115,6 +122,7 @@ describe("Project state", () => {
     const data: PreflightChecklistFetchData = {
       some: true,
       every: false,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -130,6 +138,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -139,6 +148,7 @@ describe("Project state", () => {
     const data: PreflightChecklistFetchData = {
       some: true,
       every: true,
+      hackExcludeCriteria: true,
       findings: { gitUrl: "foo", findings: [], commitHash: "bar" },
       pkg: { gitUrl: "foo", packages: [], override: null },
       repo: {
@@ -166,6 +176,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: true,
       some: true,
+      hackExcludeCriteria: true,
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
@@ -190,6 +201,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: false,
       some: true,
+      hackExcludeCriteria: true,
       findings: undefined,
       pkg: undefined,
       repo: undefined,
@@ -214,6 +226,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: true,
       some: true,
+      hackExcludeCriteria: true,
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
@@ -238,6 +251,7 @@ describe("Project state", () => {
     const error: PreflightChecklistErrors = {
       every: true,
       some: true,
+      hackExcludeCriteria: true,
       findings: new Error("some error"),
       pkg: new Error("some error"),
       repo: new Error("some error"),
