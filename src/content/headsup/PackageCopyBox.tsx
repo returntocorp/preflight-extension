@@ -63,9 +63,9 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       onChangeTypesInclusion
     } = this.props;
 
-    const typesPackage: string | null = selectedPackage.types
-      ? selectedPackage.types.package_name
-      : null;
+    const typesFound: boolean = selectedPackage.types
+      ? selectedPackage.types.package_name != null
+      : false;
 
     return (
       <section className="package-copy-box">
@@ -74,11 +74,9 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
             <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
             <Checkbox
               className="package-install-action-includes"
-              checked={typesInclusion && typesPackage != null}
-              label={
-                typesPackage == null ? "No types info" : "including @types"
-              }
-              disabled={typesPackage == null}
+              checked={typesInclusion && typesFound}
+              label={!typesFound ? "No types info" : "including @types"}
+              disabled={!typesFound}
               onChange={onChangeTypesInclusion}
             />
             <p>
@@ -132,7 +130,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 value={buildInstallCommand(
                   packageManager,
                   selectedPackage.name,
-                  typesInclusion
+                  typesInclusion && typesFound
                 )}
                 rightElement={
                   <CopyButton
@@ -141,7 +139,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                       this.handleCopy(
                         packageManager,
                         selectedPackage.name,
-                        typesInclusion
+                        typesInclusion && typesFound
                       ),
                       {
                         packageManager: packageManager,
