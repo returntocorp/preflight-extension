@@ -29,7 +29,7 @@ storiesOf("SimpleHeadsup", module)
     <SimpleHeadsup
       status="safe"
       icon={<MissingIcon />}
-      headline="Missing or unknown Preflight data."
+      headline="Incomplete or unknown Preflight data."
     />
   ))
   .add("Simple, blacklist", () => (
