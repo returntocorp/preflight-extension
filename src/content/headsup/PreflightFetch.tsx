@@ -11,7 +11,11 @@ interface PreflightChecklistFetchProps {
   children(response: PreflightChecklistFetchResponse): React.ReactNode;
 }
 
-type PartialCoverage = { every: boolean | null; some: boolean | null };
+type PartialCoverage = {
+  every: boolean | null;
+  some: boolean | null;
+  hackExcludeCriteria: boolean | null;
+};
 
 interface PreflightChecklistFetchDataContents {
   repo: RepoResponse | undefined;
@@ -84,7 +88,12 @@ export default class PreflightFetch extends React.PureComponent<
                               packageResponse.loading ||
                               findingsResponse.loading ||
                               scriptsResponse.loading ||
-                              criteriaResponse.loading
+                              criteriaResponse.loading,
+                            hackExcludeCriteria:
+                              repoResponse.loading &&
+                              packageResponse.loading &&
+                              findingsResponse.loading &&
+                              scriptsResponse.loading
                           };
 
                           const error = !loading.every
@@ -105,7 +114,12 @@ export default class PreflightFetch extends React.PureComponent<
                                   packageResponse.error != null &&
                                   findingsResponse != null &&
                                   scriptsResponse.error != null &&
-                                  criteriaResponse.error != null
+                                  criteriaResponse.error != null,
+                                hackExcludeCriteria:
+                                  repoResponse.error != null &&
+                                  packageResponse.error != null &&
+                                  findingsResponse.error != null &&
+                                  scriptsResponse.error != null
                               }
                             : undefined;
 
@@ -127,7 +141,12 @@ export default class PreflightFetch extends React.PureComponent<
                                   packageResponse.data != null ||
                                   findingsResponse.data != null ||
                                   scriptsResponse.data != null ||
-                                  criteriaResponse.data != null
+                                  criteriaResponse.data != null,
+                                hackExcludeCriteria:
+                                  repoResponse.data != null &&
+                                  packageResponse.data != null &&
+                                  findingsResponse.data != null &&
+                                  scriptsResponse.data != null
                               }
                             : undefined;
 

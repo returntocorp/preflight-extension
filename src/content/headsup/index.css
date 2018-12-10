@@ -163,7 +163,9 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
 }
 
 .preflight-danger,
-.preflight-danger .r2c-repo-headsup {
+.preflight-danger .r2c-repo-headsup,
+.preflight-blacklist,
+.preflight-blacklist .r2c-repo-headsup {
   border-color: #cb2431;
 }
 
@@ -192,6 +194,12 @@ ul.preflight-checklist .preflight-checklist-item .preflight-checklist-title {
 .preflight-unsupported,
 .preflight-unsupported .r2c-repo-headsup {
   border-color: #bb6bd9;
+}
+
+.preflight-promote,
+.preflight-promote .r2c-repo-headsup {
+  border-color: #0a9bda;
+  fill: #0a9bda;
 }
 
 @keyframes spin {

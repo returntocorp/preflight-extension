@@ -103,13 +103,7 @@ export default class DetailedHeadsup extends React.PureComponent<
               loading={loading.pkg}
             />
             <div className="repo-headsup-actions-footer">
-              {data &&
-                data.criteria &&
-                data.criteria.criteria &&
-                data.criteria.criteria.rating &&
-                data.criteria.criteria.rating === "danger" && (
-                  <ReportMistakeActionButton />
-                )}
+              {this.renderReportButton(data)}
               <R2CLogoLink />
             </div>
           </div>
@@ -117,6 +111,26 @@ export default class DetailedHeadsup extends React.PureComponent<
       </div>
     );
   }
+
+  private renderReportButton = (
+    data: PreflightChecklistFetchData
+  ): JSX.Element | null => {
+    const dataCorrect =
+      data &&
+      data.criteria &&
+      data.criteria.criteria &&
+      data.criteria.criteria.rating &&
+      ((data.criteria.criteria.rating === "danger" &&
+        data.criteria.criteria.override &&
+        data.criteria.criteria.override.overrideType === "blacklist") ||
+        data.criteria.criteria.rating === "warning");
+
+    if (dataCorrect) {
+      return <ReportMistakeActionButton />;
+    } else {
+      return null;
+    }
+  };
 
   private handlePackageSelect = (newPackage: PackageEntry) => {
     this.setState({ selectedPackage: newPackage });
