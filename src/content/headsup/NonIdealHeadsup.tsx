@@ -126,29 +126,28 @@ export class UnsupportedHeadsUp extends React.PureComponent<
   }
 }
 
-export class MissingDataRequestButton extends React.PureComponent {
+export class FileIssueActionButton extends React.PureComponent {
   public render() {
     return (
-      <Button
-        rightIcon={IconNames.AIRPLANE}
-        className="missing-data-request-button"
-        minimal={true}
-        small={true}
-        onClick={l(
-          "preflight-unsupported-request-click",
-          this.handleRequestClick
-        )}
-        intent={Intent.SUCCESS}
-      >
-        Give us a boost!
-      </Button>
+      <div className="repo-headsup-issue">
+        Want to help?{" "}
+        <a
+          onClick={l("preflight-file-issue-click", this.handleFileActionClick)}
+          href="https://github.com/returntocorp/preflight-extension/issues/new?template=report-bad-data.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          role="button"
+          className="bp3-button bp3-small bp3-minimal bp3-intent-primary"
+        >
+          File an issue
+        </a>
+      </div>
     );
   }
-
-  private handleRequestClick: React.MouseEventHandler<HTMLElement> = e => {
+  private handleFileActionClick: React.MouseEventHandler = () => {
     MainToaster.show({
       message:
-        "We've got your message! We'll look into why this project isn't available on Preflight.",
+        "Thanks for letting us know. We'll take a look and make it right.",
       icon: IconNames.HEART
     });
   };
@@ -160,9 +159,9 @@ export class MissingDataHeadsUp extends React.PureComponent {
       <SimpleHeadsup
         status="missing"
         icon={<MissingIcon />}
-        headline="🛬 Preflight couldn't find any data for this project. We're looking
+        headline="Preflight couldn't find any data for this project. We're looking
             into it."
-        rightSide={<MissingDataRequestButton />}
+        rightSide={<FileIssueActionButton />}
       />
     );
   }
@@ -194,7 +193,7 @@ export class ErrorHeadsUp extends React.PureComponent<
           status="error"
           icon={<MissingIcon />}
           headline={`
-    Couldn't load Preflight. Check that ${<code>api.secarta.io</code>} is
+    Couldn't load Preflight. Check that api.secarta.io is
               whitelisted in your browser.`}
           rightSide={this.renderRight(hasError)}
         />
@@ -213,7 +212,12 @@ export class ErrorHeadsUp extends React.PureComponent<
       return (
         <div className="error-briefing-action">
           <Button
-            onClick={this.handleToggleShowDetails}
+            onClick={l(
+              `preflight-error-${
+                this.state.showDetails ? "show-less" : "show-details"
+              }-button-click`,
+              this.handleToggleShowDetails
+            )}
             className="error-message-show-more"
             small={true}
             minimal={true}

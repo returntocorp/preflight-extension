@@ -45,7 +45,20 @@
 
 .repo-headsup-actions-footer .repo-headsup-report {
   font-size: 12px;
-  color: rgba(16, 22, 26, 0.6);
+  color: rgba(68, 111, 139, 0.6);
+}
+
+.repo-headsup-issue {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+
+  font-size: 14px;
+}
+
+.repo-headsup-issue a {
+  margin-left: 0.5ex;
 }
 
 .r2c-repo-headsup h1 {
