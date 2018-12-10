@@ -94,8 +94,10 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
 }) => (
   <VulnsFetch repoSlug={repoSlug}>
     {({ loading, data, error }) => {
-      const itemState: ChecklistItemState =
-        data && data.vuln.length > 0 ? "warn" : "ok";
+      // TODO: changing checklist state to always show ok for historical vulns
+      // -- eventually want to change once we have non-stale vuln data
+      // const itemState: ChecklistItemState =
+      //   data && data.vuln.length > 0 ? "warn" : "ok";
 
       if (loading != null && loading === true) {
         return (
@@ -118,7 +120,7 @@ const PreflightVulnsItem: React.SFC<PreflightVulnsItemProps> = ({
           <PreflightChecklistItem
             onChecklistItemClick={onChecklistItemClick}
             itemType="vulns"
-            iconState={itemState}
+            iconState="ok"
           >
             {data.vuln.length > 0
               ? `Has ${vulnCount} historical ${
