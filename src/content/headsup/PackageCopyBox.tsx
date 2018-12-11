@@ -522,13 +522,13 @@ function buildInstallCommand(
   switch (registry) {
     case "npm":
       if (includeTypesCommand) {
-        return `${cmds.npm};${typesCmds.npm}`;
+        return `${cmds.npm}; ${typesCmds.npm}`;
       }
 
       return cmds.npm;
     case "yarn":
       if (includeTypesCommand) {
-        return `${cmds.yarn};${typesCmds.yarn}`;
+        return `${cmds.yarn}; ${typesCmds.yarn}`;
       }
 
       return cmds.yarn;
