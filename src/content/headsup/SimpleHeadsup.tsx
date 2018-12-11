@@ -224,10 +224,9 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
           criteria={criteria}
           showAllChecksButton={showMore}
           handleClickChecksButton={l(
-            `preflight-${rating}-${
-              showMore ? "hide" : "show"
-            }-checks-button-click`,
-            this.handleShowAllChecks
+            `preflight-${showMore ? "hide" : "show"}-checks-button-click`,
+            this.handleShowAllChecks,
+            { status: rating }
           )}
           lastUpdatedDate={lastUpdatedDate}
           repoSlug={repoSlug}
