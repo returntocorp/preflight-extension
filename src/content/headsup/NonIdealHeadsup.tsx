@@ -1,4 +1,4 @@
-import { Button, Intent } from "@blueprintjs/core";
+import { AnchorButton, Button, Intent } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { l, li } from "@r2c/extension/analytics";
 import { PreflightChecklistErrors } from "@r2c/extension/content/headsup/PreflightFetch";
@@ -131,16 +131,14 @@ export class FileIssueActionButton extends React.PureComponent {
     return (
       <div className="repo-headsup-issue">
         Want to help?{" "}
-        <a
+        <AnchorButton
+          text="File an issue"
           onClick={l("preflight-file-issue-click", this.handleFileActionClick)}
           href="https://github.com/returntocorp/preflight-extension/issues/new?template=report-bad-data.md"
-          target="_blank"
-          rel="noopener noreferrer"
-          role="button"
-          className="bp3-button bp3-small bp3-minimal bp3-intent-primary"
-        >
-          File an issue
-        </a>
+          small={true}
+          minimal={true}
+          intent="primary"
+        />
       </div>
     );
   }
