@@ -149,13 +149,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
             </>
           )}
         <span className="simple-headsup-show">
-          <a
-            onClick={l(
-              "preflight-show-checks-button-click",
-              handleClickChecksButton
-            )}
-            role="button"
-          >
+          <a onClick={handleClickChecksButton} role="button">
             {this.renderShow(isExpanded)}
           </a>
         </span>
@@ -215,7 +209,6 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
     const { showMore } = this.state;
 
     let borderOverrideColor: OverrideType | StatusType = rating;
-
     if (override) {
       borderOverrideColor = override.overrideType;
     }
@@ -230,7 +223,11 @@ export class SimpleHeadsupDetailsWrapper extends React.PureComponent<
         <SimpleHeadsUpCriteriaWrapper
           criteria={criteria}
           showAllChecksButton={showMore}
-          handleClickChecksButton={this.handleShowAllChecks}
+          handleClickChecksButton={l(
+            `preflight-${showMore ? "hide" : "show"}-checks-button-click`,
+            this.handleShowAllChecks,
+            { status: rating }
+          )}
           lastUpdatedDate={lastUpdatedDate}
           repoSlug={repoSlug}
         />

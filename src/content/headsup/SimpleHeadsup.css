@@ -18,6 +18,7 @@
 
 .simple-headsup-headline p {
   margin: 0;
+  padding-left: 2px;
 }
 
 .simple-headsup > .simple-left {
