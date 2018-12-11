@@ -19,10 +19,10 @@ import { MainToaster } from "@r2c/extension/content/Toaster";
 import CopyButton from "@r2c/extension/shared/CopyButton";
 import {
   buildPackageLink,
+  getIncludeTypesPreference,
   getPreferredPackageManager,
-  getTypesInclusionPreference,
-  setPreferredPackageManager,
-  setTypesInclusionPreference
+  setIncludeTypesPreference,
+  setPreferredPackageManager
 } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as copy from "copy-to-clipboard";
@@ -36,7 +36,7 @@ interface PackageCopyBoxProps {
   packages: PackageResponse;
   selectedPackage: PackageEntry;
   packageManager: PackageManagerChoice;
-  typesInclusion: boolean;
+  includeTypesCommand: boolean;
   onSelectPackage(
     newPackage: PackageEntry,
     event?: React.SyntheticEvent<HTMLElement>
@@ -59,7 +59,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       packages,
       selectedPackage,
       packageManager,
-      typesInclusion,
+      includeTypesCommand,
       onChangePackageManager,
       onChangeTypesInclusion
     } = this.props;
@@ -89,12 +89,12 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
               <a
                 onClick={l(
                   "include-types-command",
-                  onChangeTypesInclusion(!typesInclusion),
-                  { typesInclusion: typesInclusion }
+                  onChangeTypesInclusion(!includeTypesCommand),
+                  { includeTypesCommand: includeTypesCommand }
                 )}
                 role="button"
               >
-                {typesInclusion ? "Exclude @types" : "Include @types"}
+                {includeTypesCommand ? "Exclude @types" : "Include @types"}
               </a>
             ) : null}
           </div>
@@ -138,7 +138,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 value={buildInstallCommand(
                   packageManager,
                   selectedPackage.name,
-                  typesInclusion && typesFound
+                  includeTypesCommand && typesFound
                 )}
                 rightElement={
                   <CopyButton
@@ -147,7 +147,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                       this.handleCopy(
                         packageManager,
                         selectedPackage.name,
-                        typesInclusion && typesFound
+                        includeTypesCommand && typesFound
                       ),
                       {
                         packageManager: packageManager,
@@ -228,7 +228,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
   private handleCopy = (
     registry: string,
     packageName: string,
-    typesInclusion: boolean
+    includeTypes: boolean
   ) => (e: React.MouseEvent<HTMLElement>) => {
     const key = this.buildPackageFieldRefKey(registry, packageName);
     const toCopy = this.packageFieldRef[key];
@@ -237,7 +237,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       toCopy.focus();
       toCopy.setSelectionRange(0, toCopy.value.length);
       this.copyToClipboard(
-        buildInstallCommand(registry, packageName, typesInclusion)
+        buildInstallCommand(registry, packageName, includeTypes)
       );
     }
   };
@@ -324,10 +324,10 @@ interface WrappedPackageCopyBoxProps {
   packages: PackageResponse | undefined;
   selectedPackage?: PackageEntry;
   packageManager?: PackageManagerChoice;
-  typesInclusion?: boolean;
+  includeTypesCommand?: boolean;
   onSelectPackage?(newPackage: PackageEntry): void;
   onChangePackageManager?(newManager: PackageManagerChoice): void;
-  onChangeTypesInclusion?(includeTypesCommand: boolean): void;
+  onChangeincludeTypes?(includeTypesCommand: boolean): void;
 }
 
 interface WrappedPackageCopyBoxState {
@@ -335,7 +335,7 @@ interface WrappedPackageCopyBoxState {
   selectedPackage: PackageEntry | undefined;
   controlPackageManager: boolean;
   packageManager: PackageManagerChoice;
-  typesInclusion: boolean;
+  includeTypesCommand: boolean;
 }
 
 export default class WrappedPackageCopyBox extends React.Component<
@@ -352,9 +352,9 @@ export default class WrappedPackageCopyBox extends React.Component<
       selectedPackage: props.selectedPackage || undefined,
       controlPackageManager: props.packageManager != null,
       packageManager: props.packageManager || this.DEFAULT_PACKAGE_MANAGER,
-      typesInclusion:
-        props.typesInclusion != null
-          ? props.typesInclusion
+      includeTypesCommand:
+        props.includeTypesCommand != null
+          ? props.includeTypesCommand
           : this.DEFAULT_TYPES_INCLUSION
     };
   }
@@ -390,7 +390,7 @@ export default class WrappedPackageCopyBox extends React.Component<
   public render() {
     const { packages: data, loading } = this.props;
 
-    const { selectedPackage, packageManager, typesInclusion } = this.state;
+    const { selectedPackage, packageManager, includeTypesCommand } = this.state;
     if (loading) {
       return (
         <section className={classnames("package-copy-box", Classes.SKELETON)}>
@@ -415,7 +415,7 @@ export default class WrappedPackageCopyBox extends React.Component<
           packages={data}
           selectedPackage={selectedPackage}
           packageManager={packageManager}
-          typesInclusion={typesInclusion}
+          includeTypesCommand={includeTypesCommand}
           onSelectPackage={this.handlePackageSelect}
           onChangePackageManager={this.handlePackageManagerChange}
           onChangeTypesInclusion={this.handleEnabledChange}
@@ -434,10 +434,10 @@ export default class WrappedPackageCopyBox extends React.Component<
   };
 
   private fetchTypesInclusionPreference = async () => {
-    const includeTypesCommand = await getTypesInclusionPreference();
+    const includeTypesCommand = await getIncludeTypesPreference();
     if (includeTypesCommand != null) {
       this.setState({
-        typesInclusion: includeTypesCommand
+        includeTypesCommand: includeTypesCommand
       });
     }
   };
@@ -461,8 +461,8 @@ export default class WrappedPackageCopyBox extends React.Component<
   private handleEnabledChange = (changeIncludeTypesCommand: boolean) => (
     e: React.MouseEvent<HTMLElement>
   ) => {
-    this.setState({ typesInclusion: changeIncludeTypesCommand });
-    setTypesInclusionPreference(changeIncludeTypesCommand);
+    this.setState({ includeTypesCommand: changeIncludeTypesCommand });
+    setIncludeTypesPreference(changeIncludeTypesCommand);
   };
 
   private handlePackageManagerChange = (
