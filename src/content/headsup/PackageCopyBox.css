@@ -36,6 +36,10 @@
   margin-right: 3px;
 }
 
+.package-copy-box .nutrition-section-value {
+  margin-top: 3px;
+}
+
 .package-copy-box .package-npm-field,
 .package-copy-box .package-npm-field input {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
