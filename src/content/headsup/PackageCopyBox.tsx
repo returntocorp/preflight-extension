@@ -44,7 +44,7 @@ interface PackageCopyBoxProps {
   onChangePackageManager(
     newManager: PackageManagerChoice
   ): React.MouseEventHandler<HTMLElement>;
-  onChangeTypesInclusion(
+  onChangeIncludeTypes(
     includeTypesCommand: boolean
   ): React.MouseEventHandler<HTMLElement>;
 }
@@ -61,7 +61,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
       packageManager,
       includeTypesCommand,
       onChangePackageManager,
-      onChangeTypesInclusion
+      onChangeIncludeTypes
     } = this.props;
 
     const typesFound: boolean =
@@ -79,7 +79,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 <a
                   onClick={l(
                     "include-types-command",
-                    onChangeTypesInclusion(!includeTypesCommand),
+                    onChangeIncludeTypes(!includeTypesCommand),
                     { includeTypesCommand: includeTypesCommand }
                   )}
                   role="button"
@@ -336,7 +336,7 @@ export default class WrappedPackageCopyBox extends React.Component<
   WrappedPackageCopyBoxState
 > {
   public DEFAULT_PACKAGE_MANAGER: PackageManagerChoice = "npm";
-  public DEFAULT_TYPES_INCLUSION: boolean = true;
+  public DEFAULT_INCLUDE_TYPES: boolean = true;
 
   public constructor(props: WrappedPackageCopyBoxProps) {
     super(props);
@@ -348,13 +348,13 @@ export default class WrappedPackageCopyBox extends React.Component<
       includeTypesCommand:
         props.includeTypesCommand != null
           ? props.includeTypesCommand
-          : this.DEFAULT_TYPES_INCLUSION
+          : this.DEFAULT_INCLUDE_TYPES
     };
   }
 
   public componentDidMount() {
     this.fetchPreferredPackageManager();
-    this.fetchTypesInclusionPreference();
+    this.fetchIncludeTypesPreference();
     // Race condition may cause data to be loaded already, so we need to set
     // defaults on both mount and update
     this.setDefaultSelectedPackage();
@@ -411,7 +411,7 @@ export default class WrappedPackageCopyBox extends React.Component<
           includeTypesCommand={includeTypesCommand}
           onSelectPackage={this.handlePackageSelect}
           onChangePackageManager={this.handlePackageManagerChange}
-          onChangeTypesInclusion={this.handleEnabledChange}
+          onChangeIncludeTypes={this.handleEnabledChange}
         />
       );
     }
@@ -426,7 +426,7 @@ export default class WrappedPackageCopyBox extends React.Component<
     }
   };
 
-  private fetchTypesInclusionPreference = async () => {
+  private fetchIncludeTypesPreference = async () => {
     const includeTypesCommand = await getIncludeTypesPreference();
     if (includeTypesCommand != null) {
       this.setState({
