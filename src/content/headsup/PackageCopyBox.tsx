@@ -73,29 +73,22 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
         <header>
           <div className="package-action-description">
             <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
-            <p>
-              Save time and{" "}
-              <a
-                href="https://blog.npmjs.org/post/163723642530/crossenv-malware-on-the-npm-registry"
-                title="Information about and example of typosquatting"
-              >
-                avoid typos
-              </a>{" "}
-              using this command.
-            </p>
-          </div>
-          <div className="package-include-type-command">
             {typesFound ? (
-              <a
-                onClick={l(
-                  "include-types-command",
-                  onChangeTypesInclusion(!includeTypesCommand),
-                  { includeTypesCommand: includeTypesCommand }
-                )}
-                role="button"
-              >
-                {includeTypesCommand ? "Exclude @types" : "Include @types"}
-              </a>
+              <p>
+                Use TypeScript?{" "}
+                <a
+                  onClick={l(
+                    "include-types-command",
+                    onChangeTypesInclusion(!includeTypesCommand),
+                    { includeTypesCommand: includeTypesCommand }
+                  )}
+                  role="button"
+                >
+                  {includeTypesCommand
+                    ? "Hide @types command"
+                    : "Show @types commmand as well"}
+                </a>
+              </p>
             ) : null}
           </div>
           <div className="package-registry-toggle">

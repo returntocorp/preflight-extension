@@ -32,13 +32,6 @@
   font-size: 12px;
 }
 
-.package-copy-box header .package-include-type-command {
-  position: absolute;
-  right: 65px;
-  top: 0;
-  font-size: 12px;
-}
-
 .package-endorsers .package-endorser {
   margin-right: 3px;
 }
