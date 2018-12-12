@@ -75,7 +75,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
             <h2>Install with {packageManager === "npm" ? "npm" : "Yarn"}</h2>
             {typesFound ? (
               <p>
-                Use TypeScript?{" "}
+                {includeTypesCommand ? null : "Use TypeScript? "}
                 <a
                   onClick={l(
                     "include-types-command",
@@ -86,7 +86,7 @@ export class PackageCopyBox extends React.PureComponent<PackageCopyBoxProps> {
                 >
                   {includeTypesCommand
                     ? "Hide @types command"
-                    : "Show @types commmand as well"}
+                    : "Show @types command as well"}
                 </a>
               </p>
             ) : null}
