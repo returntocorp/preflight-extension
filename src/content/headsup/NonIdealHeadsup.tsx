@@ -29,21 +29,28 @@ interface UnsupportedMessageState {
 }
 
 interface ClosedHeadsupProps {
+  displayed: HeadsupDisplayState;
   extensionState: ExtensionState;
+  closeMessage: React.MouseEventHandler;
+  onDismissAlways(
+    extensionState: ExtensionState
+  ): React.MouseEventHandler<HTMLElement>;
 }
 
 export class CloseHeadsupButton extends React.PureComponent<
   ClosedHeadsupProps
 > {
-  public state: UnsupportedMessageState = {
-    displayed: HeadsupDisplayState.Open
-  };
   public render() {
-    const { extensionState } = this.props;
+    const {
+      displayed,
+      extensionState,
+      closeMessage,
+      onDismissAlways
+    } = this.props;
 
     return (
       <>
-        {this.state.displayed === HeadsupDisplayState.DisplayOptions && (
+        {displayed === HeadsupDisplayState.DisplayOptions && (
           <span className="hide-options">
             <Button
               id="hide-always-button"
@@ -51,7 +58,7 @@ export class CloseHeadsupButton extends React.PureComponent<
               small={true}
               onClick={l(
                 "preflight-hide-always-click",
-                this.handleDismissAlways(extensionState)
+                onDismissAlways(extensionState)
               )}
               intent={Intent.DANGER}
             >
@@ -64,26 +71,11 @@ export class CloseHeadsupButton extends React.PureComponent<
           icon={IconNames.SMALL_CROSS}
           minimal={true}
           small={true}
-          onClick={this.closeMessage}
+          onClick={closeMessage}
         />
       </>
     );
   }
-
-  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
-    if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
-      this.setState({ displayed: HeadsupDisplayState.Closed });
-    } else {
-      this.setState({ displayed: HeadsupDisplayState.DisplayOptions });
-    }
-  };
-
-  private handleDismissAlways: (
-    extensionState: ExtensionState
-  ) => React.MouseEventHandler<HTMLElement> = extensionState => e => {
-    toggleExtensionExperiment(extensionState, "hideOnUnsupported");
-    this.setState({ displayed: HeadsupDisplayState.Closed });
-  };
 }
 
 export class UnsupportedHeadsUp extends React.PureComponent<
@@ -113,7 +105,12 @@ export class UnsupportedHeadsUp extends React.PureComponent<
                 icon={<UnsupportedIcon />}
                 headline="Preflight currently only supports JavaScript and TypeScript projects that have been published to npm."
                 rightSide={
-                  <CloseHeadsupButton extensionState={extensionState} />
+                  <CloseHeadsupButton
+                    displayed={this.state.displayed}
+                    extensionState={extensionState}
+                    closeMessage={this.closeMessage}
+                    onDismissAlways={this.handleDismissAlways}
+                  />
                 }
               />
             );
@@ -124,6 +121,21 @@ export class UnsupportedHeadsUp extends React.PureComponent<
       </ExtensionContext.Consumer>
     );
   }
+
+  private handleDismissAlways: (
+    extensionState: ExtensionState
+  ) => React.MouseEventHandler<HTMLElement> = extensionState => e => {
+    toggleExtensionExperiment(extensionState, "hideOnUnsupported");
+    this.setState({ displayed: HeadsupDisplayState.Closed });
+  };
+
+  private closeMessage: React.MouseEventHandler<HTMLElement> = e => {
+    if (this.state.displayed === HeadsupDisplayState.DisplayOptions) {
+      this.setState({ displayed: HeadsupDisplayState.Closed });
+    } else {
+      this.setState({ displayed: HeadsupDisplayState.DisplayOptions });
+    }
+  };
 }
 
 export class FileIssueActionButton extends React.PureComponent {
