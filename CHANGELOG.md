@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.15.1] - 2018-12-13
+
+### Changed
+
+- Changed the color of the warning symbol in the checklist to match the yellow used elsewhere
+- Updated language in the headline to better indicate that Preflight checks are what are failing/ passing
+
 ## [1.15.0] - 2018-12-12
 
 ### Added
