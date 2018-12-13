@@ -20,7 +20,7 @@ export class ReportMistakeActionButton extends React.PureComponent {
   public render() {
     return (
       <div className="repo-headsup-report">
-        Is this a mistake?{" "}
+        See any problems?{" "}
         <a
           onClick={this.handleReportClick}
           href="https://github.com/returntocorp/preflight-extension/issues/new?template=report-bad-data.md"
@@ -103,7 +103,7 @@ export default class DetailedHeadsup extends React.PureComponent<
               loading={loading.pkg}
             />
             <div className="repo-headsup-actions-footer">
-              {this.renderReportButton(data)}
+              <ReportMistakeActionButton />
               <R2CLogoLink />
             </div>
           </div>
@@ -111,26 +111,6 @@ export default class DetailedHeadsup extends React.PureComponent<
       </div>
     );
   }
-
-  private renderReportButton = (
-    data: PreflightChecklistFetchData
-  ): JSX.Element | null => {
-    const dataCorrect =
-      data &&
-      data.criteria &&
-      data.criteria.criteria &&
-      data.criteria.criteria.rating &&
-      ((data.criteria.criteria.rating === "danger" &&
-        data.criteria.criteria.override &&
-        data.criteria.criteria.override.overrideType === "blacklist") ||
-        data.criteria.criteria.rating === "warning");
-
-    if (dataCorrect) {
-      return <ReportMistakeActionButton />;
-    } else {
-      return null;
-    }
-  };
 
   private handlePackageSelect = (newPackage: PackageEntry) => {
     this.setState({ selectedPackage: newPackage });

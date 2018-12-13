@@ -3,13 +3,7 @@ import { l } from "@r2c/extension/analytics";
 import { CriteriaEntry, CriteriaType } from "@r2c/extension/api/criteria";
 import { OverrideType } from "@r2c/extension/api/package";
 import LastUpdatedBadge from "@r2c/extension/content/LastUpdatedBadge";
-import {
-  CheckmarkIcon,
-  DangerIcon,
-  MissingIcon,
-  PromoteIcon,
-  WarningIcon
-} from "@r2c/extension/icons";
+import { CheckmarkIcon, DangerIcon, MissingIcon, PromoteIcon, WarningIcon } from "@r2c/extension/icons";
 import { ExtractedRepoSlug, MarkdownString } from "@r2c/extension/utils";
 import * as classnames from "classnames";
 import * as React from "react";
@@ -172,17 +166,17 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       case "safe":
         return {
           icon: <CheckmarkIcon />,
-          headline: "All Preflight checks pass"
+          headline: "Passes all Preflight checks"
         };
       case "warning":
         return {
           icon: <WarningIcon />,
-          headline: "Some Preflight checks fail"
+          headline: "Fails some Preflight checks"
         };
       case "danger":
         return {
           icon: <DangerIcon />,
-          headline: "Most Preflight checks fail"
+          headline: "Fails most Preflight checks"
         };
       default:
         return {

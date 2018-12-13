@@ -35,7 +35,11 @@ function renderIconForState(state: ChecklistItemState) {
 function getIconPropsForState(state: ChecklistItemState): IIconProps {
   switch (state) {
     case "warn":
-      return { intent: Intent.WARNING, icon: IconNames.SYMBOL_TRIANGLE_UP };
+      return {
+        intent: Intent.WARNING,
+        icon: IconNames.SYMBOL_TRIANGLE_UP,
+        color: "#f4d03f"
+      };
     case "ok":
       return { intent: Intent.SUCCESS, icon: IconNames.TICK };
     default:
