@@ -147,7 +147,6 @@ export class FileIssueActionButton extends React.PureComponent {
           text="File an issue"
           onClick={l("preflight-file-issue-click", this.handleFileActionClick)}
           href="https://github.com/returntocorp/preflight-extension/issues/new?template=report-bad-data.md"
-          small={true}
           minimal={true}
           intent="primary"
         />
