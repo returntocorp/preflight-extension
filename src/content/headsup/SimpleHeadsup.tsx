@@ -166,17 +166,22 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
       case "safe":
         return {
           icon: <CheckmarkIcon />,
-          headline: "All Preflight checks pass."
+          headline: "All Preflight checks pass"
         };
       case "warning":
         return {
           icon: <WarningIcon />,
-          headline: "Some Preflight checks fail."
+          headline: "Some Preflight checks fail"
+        };
+      case "danger":
+        return {
+          icon: <DangerIcon />,
+          headline: "Most Preflight checks fail"
         };
       default:
         return {
           icon: <MissingIcon />,
-          headline: "Incomplete or unknown Preflight data."
+          headline: "Incomplete or unknown Preflight data"
         };
     }
   }
