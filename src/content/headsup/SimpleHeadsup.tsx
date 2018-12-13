@@ -179,6 +179,11 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
           icon: <WarningIcon />,
           headline: "Some Preflight checks fail"
         };
+      case "danger":
+        return {
+          icon: <DangerIcon />,
+          headline: "Most Preflight checks fail"
+        };
       default:
         return {
           icon: <MissingIcon />,
