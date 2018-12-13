@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Made Preflight similar to a PR status check, showing ✅ , ⚠️, or ❌ based on this criteria [link:criteria write-up when available]
 - Promoted our permissions experiment to a "permanent" feature that is always on
 - When viewing a file in GitHub, we now mark lines that are related to a permission as well as issues
+- Added toggle for including @types definitions in for typescript projects with types defined in DefinitelyTyped
 
 ## [1.14.0] - 2018-11-27
 

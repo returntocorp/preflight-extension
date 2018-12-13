@@ -19,7 +19,7 @@ const Copy: React.SFC = () => (
 );
 
 const CopyButton: React.SFC<CopyButtonProps> = ({ onClick }) => (
-  <Button icon={<Copy />} minimal={true} onClick={onClick} />
+  <Button icon={<Copy />} minimal={false} onClick={onClick} />
 );
 
 export default CopyButton;

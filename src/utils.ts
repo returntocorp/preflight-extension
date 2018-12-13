@@ -229,6 +229,17 @@ export function setPreferredPackageManager(packageManager: string) {
   browser.storage.local.set({ [PREFERRED_PACKAGE_MANAGER]: packageManager });
 }
 
+const INCLUDE_TYPES_PREFERENCE = "INCLUDE_TYPES_PREFERENCE";
+export function setIncludeTypesPreference(checked: boolean) {
+  browser.storage.local.set({ [INCLUDE_TYPES_PREFERENCE]: checked });
+}
+
+export async function getIncludeTypesPreference(): Promise<
+  boolean | undefined
+> {
+  return fetchFromStorage<boolean>(INCLUDE_TYPES_PREFERENCE);
+}
+
 export async function getPreferredPackageManager(): Promise<
   string | undefined
 > {
