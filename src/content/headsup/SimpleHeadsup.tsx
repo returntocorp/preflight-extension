@@ -1,3 +1,4 @@
+import { Button, IconName } from "@blueprintjs/core";
 import { l } from "@r2c/extension/analytics";
 import { CriteriaEntry, CriteriaType } from "@r2c/extension/api/criteria";
 import { OverrideType } from "@r2c/extension/api/package";
@@ -136,22 +137,23 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
   ) {
     return (
       <>
-        {lastUpdatedDate &&
-          repoSlug && (
-            <>
-              <span className="simple-headsup-timestamp">
-                <LastUpdatedBadge
-                  lastUpdatedDate={lastUpdatedDate}
-                  repoSlug={repoSlug}
-                />{" "}
-              </span>
-              &middot;
-            </>
-          )}
+        {lastUpdatedDate && repoSlug && (
+          <span className="simple-headsup-timestamp">
+            <LastUpdatedBadge
+              lastUpdatedDate={lastUpdatedDate}
+              repoSlug={repoSlug}
+            />{" "}
+          </span>
+        )}
         <span className="simple-headsup-show">
-          <a onClick={handleClickChecksButton} role="button">
+          <Button
+            minimal={true}
+            intent="primary"
+            onClick={handleClickChecksButton}
+            rightIcon={this.renderShowIcon(isExpanded)}
+          >
             {this.renderShow(isExpanded)}
-          </a>
+          </Button>
         </span>
       </>
     );
@@ -161,22 +163,26 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
     return isExpanded ? "Hide all checks" : "Show all checks";
   }
 
+  private renderShowIcon(isExpanded: boolean | undefined): IconName {
+    return isExpanded ? "chevron-up" : "chevron-down";
+  }
+
   private renderStatus(status: string): StatusDescription {
     switch (status) {
       case "safe":
         return {
           icon: <CheckmarkIcon />,
-          headline: "All Preflight checks pass."
+          headline: "All Preflight checks pass"
         };
       case "warning":
         return {
           icon: <WarningIcon />,
-          headline: "Some Preflight checks fail."
+          headline: "Some Preflight checks fail"
         };
       default:
         return {
           icon: <MissingIcon />,
-          headline: "Incomplete or unknown Preflight data."
+          headline: "Incomplete or unknown Preflight data"
         };
     }
   }
