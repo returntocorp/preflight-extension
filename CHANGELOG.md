@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+
+- Updated language for "Show all checks / Hide all checks" to "Show checks / Hide checks"
+
 ## [1.15.1] - 2018-12-13
 
 ### Changed
