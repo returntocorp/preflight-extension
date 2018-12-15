@@ -154,7 +154,7 @@ export class SimpleHeadsUpCriteriaWrapper extends React.PureComponent<
   }
 
   private renderShow(isExpanded: boolean | undefined) {
-    return isExpanded ? "Hide all checks" : "Show all checks";
+    return isExpanded ? "Hide checks" : "Show checks";
   }
 
   private renderShowIcon(isExpanded: boolean | undefined): IconName {
