@@ -1,4 +1,4 @@
-import { Popover, Position } from "@blueprintjs/core";
+import { Popover, PopoverInteractionKind, Position } from "@blueprintjs/core";
 import { buildLineNoElemIdForBlobLine } from "@r2c/extension/content/github/BlobFindingsInjector";
 import DOMInjector from "@r2c/extension/content/github/DomInjector";
 import { ExtractedRepoSlug } from "@r2c/extension/utils";
@@ -11,22 +11,13 @@ interface PackageInfo {
   startLine: number | null;
 }
 
-// interface PackageCriteriaInjectorProps {
-//   criteria: CriteriaEntry[];
-//   repoSlug: ExtractedRepoSlug;
-// }
-
-// interface PackageCriteriaHighlighterProps extends PackageCriteriaInjectorProps {
-//   filePath: string;
-//   repoSlug: ExtractedRepoSlug;
-// }
-
-interface PackageCriteriaDetailsProps {
+interface PackageCriteriaInjectorProps {
   // criteria: CriteriaEntry[];
   repoSlug: ExtractedRepoSlug;
 }
 
 interface CriteriaSpan {
+  key: number;
   height: number;
   top: number;
   bottom: number;
@@ -44,56 +35,59 @@ interface CriteriaSpan {
 
 */
 
-export default class PackageCriteriaHighlight extends React.PureComponent<
-  PackageCriteriaDetailsProps
+export default class PackageCriteriaInjector extends React.PureComponent<
+  PackageCriteriaInjectorProps
 > {
   public render() {
     // const { criteria, repoSlug } = this.props;
     const packageInfos: PackageInfo[] = this.computePackageInfo();
-
-    console.log(packageInfos);
-
     const criteriaSpan = this.computeCriteriaSpan(packageInfos);
 
-    if (criteriaSpan == null || criteriaSpan.startGutterElem == null) {
+    if (criteriaSpan == null) {
       return null;
     }
 
-    return (
-      <DOMInjector
-        destination={criteriaSpan.startGutterElem}
-        childClassName="r2c-blob-finding-highlight-wrapper"
-        injectedClassName="r2c-blob-finding-highlight"
-        relation="direct"
-      >
-        <Popover
-          className="r2c-blob-finding-highlight-wrapper"
-          content={<>Hello</>}
-          position={Position.RIGHT_TOP}
-          minimal={true}
-          modifiers={{
-            preventOverflow: { boundariesElement: "viewport" },
-            offset: { offset: "0px,40px" }
-          }}
-          defaultIsOpen={false}
+    return criteriaSpan.map(criteria => {
+      return (
+        <DOMInjector
+          key={criteria.key}
+          destination={criteria.startGutterElem}
+          childClassName="r2c-blob-finding-highlight-wrapper"
+          injectedClassName="r2c-blob-finding-highlight"
+          relation="direct"
         >
-          <div className="r2c-blob-finding-highlight-hitbox">
-            <div
-              className={classNames(
-                "finding-highlight-marker",
-                "marker-commit-match"
-              )}
-            />
-          </div>
-        </Popover>
-      </DOMInjector>
-    );
+          <Popover
+            className="r2c-blob-finding-highlight-wrapper"
+            content={<>Hello</>}
+            position={Position.RIGHT_TOP}
+            minimal={true}
+            modifiers={{
+              preventOverflow: { boundariesElement: "viewport" },
+              offset: { offset: "0px,40px" }
+            }}
+            interactionKind={PopoverInteractionKind.HOVER}
+            defaultIsOpen={false}
+          >
+            <div className="r2c-blob-finding-highlight-hitbox">
+              <div
+                className={classNames(
+                  "finding-highlight-marker",
+                  "marker-commit-match"
+                )}
+              />
+            </div>
+          </Popover>
+        </DOMInjector>
+      );
+    });
   }
 
   private computeCriteriaSpan = (
     packageInfos: PackageInfo[]
-  ): CriteriaSpan | null => {
+  ): CriteriaSpan[] | null => {
+    const criteriaSpans: CriteriaSpan[] = [];
     if (packageInfos) {
+      let keyTemp = 0;
       for (const packageInfo of packageInfos) {
         if (packageInfo.startLine == null) {
           return null;
@@ -113,7 +107,8 @@ export default class PackageCriteriaHighlight extends React.PureComponent<
         const startLineBounds = lineGutter.getBoundingClientRect();
         const startCodeBounds = lineCode.getBoundingClientRect();
 
-        return {
+        criteriaSpans.push({
+          key: keyTemp,
           height: endLineBounds.bottom - startLineBounds.top,
           top: startLineBounds.top + window.scrollY,
           bottom: endLineBounds.bottom + window.scrollY,
@@ -124,8 +119,11 @@ export default class PackageCriteriaHighlight extends React.PureComponent<
           startGutterElem: lineGutter,
           endCodeElem: lineCode,
           endGutterElem: lineGutter
-        };
+        });
+        keyTemp = keyTemp + 1;
       }
+
+      return criteriaSpans;
     }
 
     return null;
@@ -170,9 +168,3 @@ export default class PackageCriteriaHighlight extends React.PureComponent<
     return packageInfo;
   };
 }
-
-// class PackageCriteriaHighlighter extends React.PureComponent<
-//   PackageCriteriaHighlighterProps
-// > {
-//   public render() {}
-// }
