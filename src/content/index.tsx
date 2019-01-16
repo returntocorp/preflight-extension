@@ -6,6 +6,7 @@ import {
 } from "@r2c/extension/api/permissions";
 import BlobFindingsInjector from "@r2c/extension/content/github/BlobFindingsInjector";
 import { naivelyExtractCurrentUserFromPage } from "@r2c/extension/content/github/dom";
+import PackageCriteriaHighlight from "@r2c/extension/content/github/PackageCriteriaInjector";
 import TreeFindingsInjector from "@r2c/extension/content/github/TreeFindingsInjector";
 import RepoHeadsUpInjector from "@r2c/extension/content/headsup";
 import PreflightTwist from "@r2c/extension/content/PreflightTwist";
@@ -140,6 +141,7 @@ class ContentHost extends React.Component<{}, ContentHostState> {
                             findings={findings}
                             repoSlug={this.repoSlug}
                           />
+                          <PackageCriteriaHighlight repoSlug={this.repoSlug} />
                           <TreeFindingsInjector
                             key={`TreeFindingsInjector ${
                               this.state.currentUrl

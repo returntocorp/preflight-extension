@@ -288,6 +288,6 @@ function buildCodeElemIdForBlobLine(line: number): string {
   return `#LC${line}`;
 }
 
-function buildLineNoElemIdForBlobLine(line: number): string {
+export function buildLineNoElemIdForBlobLine(line: number): string {
   return `#L${line}`;
 }
